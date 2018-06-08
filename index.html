@@ -1,83 +1,53 @@
 <!doctype html>
-<html>
-<head>
-  <title>polymer-image-slider demo</title>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Soo Philip Jason Kim">
+    <meta name="description" content="philipjkim.github.io">
 
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.1/examples/cover/cover.css" rel="stylesheet">
 
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="bower_components/polymer/polymer.html">
-  <link rel="import" href="bower_components/iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="bower_components/paper-styles/color.html">
-  <link rel="import" href="bower_components/polymer-image-slider/polymer-image-slider.html">
-  <style is="custom-style" include="demo-pages-shared-styles">
-    .centered:not([style-scope]):not(.style-scope) {
-      max-width: 100%;
-    }
-  </style>
-</head>
-<body unresolved>
-<div class="vertical-section-container centered">
-  <h3>paper-sliders have <code>images</code> attribute,
-    and dynamically change images by modifying the attribute value.</h3>
-  <demo-snippet>
-    <template>
-      <!--
-      max-width is adjustable via CSS variable `--image-slider-max-width`.
-      -->
-      <style is="custom-style">
-        #slider {
-          --image-slider-max-width: 300px;
-        }
-      </style>
+    <title>philipjkim.github.io</title>
+  </head>
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">philipjkim</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="">Home</a>
+            <a class="nav-link" href="https://github.com/philipjkim" target="_blank">GitHub</a>
+            <a class="nav-link" href="https://stackoverflow.com/users/337988/philipjkim" target="_blank">StackOverflow</a>
+          </nav>
+        </div>
+      </header>
 
-      <!--
-      Use single-quotes for `images` attribute - the value should be a valid JSON string.
+      <main role="main" class="inner cover">
+        <p class="lead">Demos</p>
+        <p class="lead">
+          <a href="/vue2-flip-countdown/index.html" target="_blank" class="btn btn-lg btn-secondary">vue2-flip-countdown</a>
+        </p>
+        <p class="lead">
+          <a href="/polymer-image-slider/index.html" target="_blank" class="btn btn-lg btn-secondary">polymer-image-slider</a>
+        </p>
+      </main>
 
-      <image-slider id="slider" images='["1.jpg","2.jpg"]'></image-slider>
-      -->
-      <image-slider id="slider" images='["1.jpg","2.jpg"]'></image-slider>
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+        </div>
+      </footer>
+    </div>
 
-      <!-- Manipulation using JS -->
-      <button id="btn-change" onclick="changeImages();">Change images</button>
-      <button id="btn-bullet" onclick="toggleBullet();">Show/hide bullets</button>
-
-      <script>
-        function changeImages() {
-          var imageSet1 = ["1.jpg","2.jpg"];
-          var imageSet2 = ["3.jpg","4.jpg","5.jpg"];
-          var images = document.querySelector('#slider').images;
-          if (images.length == 2) {
-            document.querySelector('#slider').images = imageSet2;
-          } else {
-            document.querySelector('#slider').images = imageSet1;
-          }
-        }
-
-        function toggleBullet() {
-          var noBullets = document.querySelector('#slider').noBullets;
-          document.querySelector('#slider').noBullets = !noBullets;
-        }
-      </script>
-    </template>
-  </demo-snippet>
-
-  <h3>If you want to show images in actual size,
-    set <code>--image-slider-max-width</code> to <code>none</code>.</h3>
-  <demo-snippet>
-    <template>
-      <style is="custom-style">
-        #slider2 {
-          --image-slider-max-width: none;
-        }
-      </style>
-
-      <image-slider id="slider2" images='["1.jpg","2.jpg"]'></image-slider>
-    </template>
-  </demo-snippet>
-</div>
-</body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+  </body>
 </html>
