@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>훌라 카드 합계 계산기</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .card-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .card-button {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            text-align: center;
+            cursor: pointer;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+        .card-button.selected {
+            background-color: #ddd;
+        }
+        .selected-cards {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .result {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>훌라 카드 합계 계산기</h1>
+    <div class="card-buttons">
+        <button class="card-button" data-value="1" data-alt-value="14">A</button>
+        <button class="card-button" data-value="2">2</button>
+        <button class="card-button" data-value="3">3</button>
+        <button class="card-button" data-value="4">4</button>
+        <button class="card-button" data-value="5">5</button>
+        <button class="card-button" data-value="6">6</button>
+        <button class="card-button" data-value="7">7</button>
+        <button class="card-button" data-value="8">8</button>
+        <button class="card-button" data-value="9">9</button>
+        <button class="card-button" data-value="10">10</button>
+        <button class="card-button" data-value="11">J</button>
+        <button class="card-button" data-value="12">Q</button>
+        <button class="card-button" data-value="13">K</button>
+    </div>
+    <div class="selected-cards">선택한 카드: </div>
+    <div class="result">총합: </div>
+    <button id="reset-button">초기화</button>
+
+    <script>
+        const cardButtons = document.querySelectorAll('.card-button');
+        const selectedCardsDiv = document.querySelector('.selected-cards');
+        const resultDiv = document.querySelector('.result');
+        const resetButton = document.getElementById('reset-button');
+        let selectedCards = [];
+
+        cardButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const value = parseInt(this.dataset.value);
+                const altValue = this.dataset.altValue ? parseInt(this.dataset.altValue) : null;
+                selectedCards.push({ value: value, altValue: altValue, display: this.textContent });
+                this.classList.add('selected');
+                updateDisplay();
+                calculateSum();
+            });
+        });
+
+        resetButton.addEventListener('click', function() {
+            selectedCards = [];
+            cardButtons.forEach(button => button.classList.remove('selected'));
+            updateDisplay();
+            calculateSum();
+        });
+
+        function updateDisplay() {
+            selectedCardsDiv.textContent = '선택한 카드: ' + selectedCards.map(card => card.display).join(', ');
+        }
+
+        function calculateSum() {
+            if (selectedCards.length === 0) {
+                resultDiv.textContent = '총합: ';
+                return;
+            }
+
+            const hasAce = selectedCards.some(card => card.display === 'A');
+
+            if (hasAce) {
+                let sumWithAas1 = 0;
+                let sumWithAas14 = 0;
+                selectedCards.forEach(card => {
+                    sumWithAas1 += (card.display === 'A' ? 1 : card.value);
+                    sumWithAas14 += (card.display === 'A' ? 14 : card.value);
+                });
+                resultDiv.textContent = '총합: ' + sumWithAas1 + ' / ' + sumWithAas14;
+            } else {
+                const totalSum = selectedCards.reduce((sum, card) => sum + card.value, 0);
+                resultDiv.textContent = '총합: ' + totalSum;
+            }
+        }
+    </script>
+</body>
+</html>
