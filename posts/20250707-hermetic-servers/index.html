@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>헤르메틱 서버 (Hermetic Servers) :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="복잡하고 풍부한 웹 앱은 일반적으로 여러 서버가 각기 다른 작업을 수행하며 서로 통신하는 미로와 같습니다. 사용자 작업은 사용자로부터 데이터 저장소로, 그리고 다시 돌아오는 왕복 과정에서 이 서버 미로를 탐색합니다. [Gmail](https://mail.google.com/)과 [Google&#43;](https://plus.google.com/)를 포함한 많은 Google 웹 앱이 이와 같습니다. 그렇다면 이러한 앱에 대한 종단 간 테스트는 어떻게 작성할까요?" />
+<meta name="keywords" content="programming, testing, dev" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250707-hermetic-servers/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="헤르메틱 서버 (Hermetic Servers)">
+<meta property="og:description" content="복잡하고 풍부한 웹 앱은 일반적으로 여러 서버가 각기 다른 작업을 수행하며 서로 통신하는 미로와 같습니다. 사용자 작업은 사용자로부터 데이터 저장소로, 그리고 다시 돌아오는 왕복 과정에서 이 서버 미로를 탐색합니다. [Gmail](https://mail.google.com/)과 [Google&#43;](https://plus.google.com/)를 포함한 많은 Google 웹 앱이 이와 같습니다. 그렇다면 이러한 앱에 대한 종단 간 테스트는 어떻게 작성할까요?" />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250707-hermetic-servers/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-07 13:08:09 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250707-hermetic-servers/">헤르메틱 서버 (Hermetic Servers)</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-07</time><span class="post-author">Chaitali Narla and Diego Salas</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2012/10/hermetic-servers.html">https://testing.googleblog.com/2012/10/hermetic-servers.html</a> (Translated by Google Gemini)</p>
+<hr>
+<h2 id="종단-간-테스트">&ldquo;종단 간&rdquo; 테스트<a href="#종단-간-테스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Google 테스트 세계에서 종단 간 테스트는 사용자 요청부터 응답까지 전체 서버 스택을 실행하는 테스트입니다. 다음은 종단 간 테스트가 검증할 시스템 테스트 대상(SUT)의 간략한 모습입니다. SUT의 프런트엔드 서버가 특정 사용자 요청에 필요하지 않은 세 번째 백엔드에 연결된다는 점에 유의하십시오.</p>
+<p><img src="https://1.bp.blogspot.com/-lwP4J6FcN34/UGx-bU41ImI/AAAAAAAAAP8/l5M0J3A0Xgk/s640/1-SUT.jpg" alt="system_under_test"></p>
+<p>이러한 시스템에 대한 빠르고 신뢰할 수 있는 종단 간 테스트를 작성하는 데 있어 한 가지 과제는 네트워크 액세스를 피하는 것입니다. 네트워크 액세스가 포함된 테스트는 로컬 리소스만 액세스하는 테스트보다 느리며, 외부 서버에 액세스하면 비결정성 또는 외부 서버의 가용성 부족으로 인해 <a href="http://googletesting.blogspot.com/2008/04/tott-avoiding-flakey-tests.html">불확실성</a>이 발생할 수 있습니다.</p>
+<h2 id="헤르메틱-서버">헤르메틱 서버<a href="#헤르메틱-서버" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Google에서 종단 간 테스트를 설계하는 데 사용하는 방법 중 하나는 헤르메틱 서버입니다.</p>
+<p>헤르메틱 서버란 무엇일까요? 간단히 정의하면 <em>&ldquo;상자 안의 서버&rdquo;</em> 입니다. 네트워크 연결 없이 단일 머신에서 전체 서버를 시작할 수 있고 서버가 예상대로 작동한다면 헤르메틱 서버입니다! 이것은 단일 머신에만 국한되지 않는 격리된 시스템에 적용되는 보다 일반적인 &ldquo;헤르메틱&rdquo; 개념의 특수 사례입니다.</p>
+<p>헤르메틱 서버가 유용한 이유는 무엇일까요? 전체 SUT가 헤르메틱 서버로 구성되어 있다면, 테스트를 위해 단일 머신에서 모두 시작할 수 있기 때문입니다. 네트워크 연결이 필요 없습니다! 단일 머신은 물리적 또는 가상 머신일 수 있습니다.</p>
+<h2 id="헤르메틱-서버-설계">헤르메틱 서버 설계<a href="#헤르메틱-서버-설계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>헤르메틱 서버를 구축하는 프로세스는 모든 새 서버의 설계 단계 초기에 시작됩니다. 우리가 주의 깊게 살펴보는 몇 가지 사항은 다음과 같습니다.</p>
+<ul>
+<li>다른 서버에 대한 모든 연결은 명령줄 플래그 또는 <a href="http://code.google.com/p/google-guice/">Guice</a>와 같은 적절한 형태의 <a href="http://en.wikipedia.org/wiki/Dependency_injection">의존성 주입</a>을 사용하여 런타임에 서버에 주입됩니다.</li>
+<li>필요한 모든 정적 파일은 서버 바이너리에 번들로 제공됩니다.</li>
+<li>서버가 데이터 저장소와 통신하는 경우, 데이터 저장소가 데이터 파일 또는 인메모리 구현으로 <a href="http://xunitpatterns.com/Fake%20Object.html">모의</a>될 수 있는지 확인합니다.</li>
+</ul>
+<p>위의 요구 사항을 충족하면 헤르메틱 서버가 될 가능성이 있는 고도로 구성 가능한 서버를 확보할 수 있습니다. 그러나 아직 테스트에 사용할 준비가 된 것은 아닙니다. 패키지를 완성하기 위해 몇 가지 추가 작업을 수행합니다.</p>
+<ul>
+<li>테스트가 실행하지 않을 연결 지점에 적절한 <a href="http://xunitpatterns.com/Fake%20Object.html">모의</a> 또는 목이 있어 비상호 작용을 확인할 수 있는지 확인합니다.</li>
+<li>테스트 데이터로 데이터 저장소를 쉽게 채울 수 있는 모듈을 제공합니다.</li>
+<li>SUT를 통해 요청/응답 경로를 추적하는 데 도움이 되는 로깅 모듈을 제공합니다.</li>
+</ul>
+<h2 id="테스트에서-헤르메틱-서버-사용">테스트에서 헤르메틱 서버 사용<a href="#테스트에서-헤르메틱-서버-사용" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>앞서 보여드린 SUT를 가져와 그 안에 있는 모든 서버가 헤르메틱 서버라고 가정해 보겠습니다. 동일한 사용자 요청에 대한 종단 간 테스트는 다음과 같습니다.</p>
+<p><img src="https://2.bp.blogspot.com/-Y3IxG8HH1Og/UGyJPxQE4EI/AAAAAAAAAQM/RMxO1VsdovI/s640/2-E2ETest.jpg" alt="e2e_test"></p>
+<p>종단 간 테스트는 다음 단계를 수행합니다.</p>
+<ul>
+<li>단일 머신에서 다이어그램에 표시된 대로 전체 SUT를 시작합니다.</li>
+<li>테스트 클라이언트를 통해 서버에 요청합니다.</li>
+<li>서버의 응답을 검증합니다.</li>
+</ul>
+<p>여기서 한 가지 주목할 점은 백엔드에 대한 모의 서버 연결이 이 테스트에서는 필요하지 않다는 것입니다. 이 백엔드가 필요한 요청을 테스트하려면 해당 연결 지점에도 헤르메틱 서버를 제공해야 합니다.</p>
+<p>이 종단 간 테스트는 네트워크 연결을 사용하지 않기 때문에 더 안정적입니다. 필요한 모든 것이 인메모리 또는 로컬 하드 디스크에 있기 때문에 더 빠릅니다. 이러한 테스트는 연속 빌드에서 실행되므로 SUT의 서버에 영향을 미치는 각 변경 목록마다 실행됩니다. 테스트가 실패하면 로깅 모듈이 SUT에서 실패가 발생한 위치를 추적하는 데 도움이 됩니다.</p>
+<p>우리는 많은 종단 간 테스트에서 헤르메틱 서버를 사용합니다. 일반적인 사례는 다음과 같습니다.</p>
+<ul>
+<li><a href="http://code.google.com/p/google-guice/">Guice</a>를 사용하는 서버의 시작 테스트를 통해 시작 시 Guice 오류가 없는지 확인합니다.</li>
+<li>백엔드 서버에 대한 API 테스트.</li>
+<li>마이크로 벤치마크 성능 테스트.</li>
+<li>프런트엔드 서버에 대한 UI 및 API 테스트.</li>
+</ul>
+<h2 id="결론">결론<a href="#결론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>헤르메틱 서버에는 몇 가지 한계가 있습니다. 종단 간 테스트를 실행할 때마다 전체 SUT를 시작해야 하므로 테스트 런타임이 증가합니다. 테스트가 메모리 및 CPU와 같은 제한된 리소스에서 실행되는 경우, 서버 상호 작용이 복잡해짐에 따라 헤르메틱 서버가 테스트를 이러한 한계를 넘어서게 할 수 있습니다. 인메모리 데이터 저장소에서 사용할 수 있는 데이터 세트 크기는 프로덕션 데이터 저장소보다 훨씬 작습니다.</p>
+<p>헤르메틱 서버는 훌륭한 테스트 도구입니다. 다른 모든 도구와 마찬가지로 적절한 곳에 신중하게 사용해야 합니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20250707-testing-on-toilet-fake-your-way-to/" class="button inline prev">
+        &lt; [<span class="button__text">화장실에서 테스트하기: 더 나은 테스트를 위한 가짜(Fake) 사용하기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250707-testing-on-the-toilet-dont-overuse-mocks/" class="button inline next">
+         [<span class="button__text">화장실에서 테스트하기: 목(Mock)을 과도하게 사용하지 마세요</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
