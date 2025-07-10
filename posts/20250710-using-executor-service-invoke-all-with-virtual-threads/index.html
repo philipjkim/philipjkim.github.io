@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>ExecutorService invokeAll 과 가상 스레드 사용하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="`invokeAll` 은 `ExecutorService` 의 메서드로, 여러 제출된 작업을 동시에 시작합니다. `ExecutorService` 는 스레드 풀에서 플랫폼 스레드를 사용하여 제출된 작업을 실행합니다. 이 비싸고 리소스 집약적인 플랫폼 스레드를 사용하는 대신, 가상 스레드를 사용하여 `ExecutorService` 에 제출된 작업을 실행할 수도 있습니다. 이 글에서는 `invokeAll` 메서드를 가상 스레드 (virtual threads), 구조화된 동시성 (structured concurrency) 및 플랫폼 스레드 (platform threads) 와 함께 구현하는 모든 방법을 다룰 것입니다." />
+<meta name="keywords" content="java, programming, dev, concurrency, multi-threading" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250710-using-executor-service-invoke-all-with-virtual-threads/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="ExecutorService invokeAll 과 가상 스레드 사용하기">
+<meta property="og:description" content="`invokeAll` 은 `ExecutorService` 의 메서드로, 여러 제출된 작업을 동시에 시작합니다. `ExecutorService` 는 스레드 풀에서 플랫폼 스레드를 사용하여 제출된 작업을 실행합니다. 이 비싸고 리소스 집약적인 플랫폼 스레드를 사용하는 대신, 가상 스레드를 사용하여 `ExecutorService` 에 제출된 작업을 실행할 수도 있습니다. 이 글에서는 `invokeAll` 메서드를 가상 스레드 (virtual threads), 구조화된 동시성 (structured concurrency) 및 플랫폼 스레드 (platform threads) 와 함께 구현하는 모든 방법을 다룰 것입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250710-using-executor-service-invoke-all-with-virtual-threads/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-10 09:41:55 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250710-using-executor-service-invoke-all-with-virtual-threads/">ExecutorService invokeAll 과 가상 스레드 사용하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-10</time><span class="post-author">David Vlijmincx</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/java/">java</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/concurrency/">concurrency</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/multi-threading/">multi-threading</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="서론">서론<a href="#서론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>invokeAll</code> 은 <code>ExecutorService</code> 의 메서드로, 여러 제출된 작업을 동시에 시작합니다. <code>ExecutorService</code> 는 스레드 풀에서 플랫폼 스레드를 사용하여 제출된 작업을 실행합니다. 이 비싸고 리소스 집약적인 플랫폼 스레드를 사용하는 대신, 가상 스레드를 사용하여 <code>ExecutorService</code> 에 제출된 작업을 실행할 수도 있습니다. 이 글에서는 <code>invokeAll</code> 메서드를 가상 스레드 (virtual threads), 구조화된 동시성 (structured concurrency) 및 플랫폼 스레드 (platform threads) 와 함께 구현하는 모든 방법을 다룰 것입니다.</p>
+<h2 id="가상-스레드를-사용한-invokeall">가상 스레드를 사용한 <code>invokeAll</code><a href="#가상-스레드를-사용한-invokeall" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>우리가 살펴볼 첫 번째 예제는 가상 스레드 (virtual threads) 를 사용합니다. 각 작업에 대해 가상 스레드를 생성하는 Executor 를 생성하는 try-with-resources 문이 있습니다. 7행에서 <code>invokeAll</code> 메서드가 작업 목록과 함께 호출됩니다.</p>
+<p>모든 작업을 시작한 후 결과를 기다리고 반환하는 스트림을 생성합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">static</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">invokeAllWithVirtualThreads</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">ExecutionException</span><span class="p">,</span><span class="w"> </span><span class="n">InterruptedException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">ExecutorService</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Executors</span><span class="p">.</span><span class="na">newVirtualThreadPerTaskExecutor</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">tasks</span><span class="p">.</span><span class="na">add</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">getStringFromResourceA</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">tasks</span><span class="p">.</span><span class="na">add</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">getStringFromResourceB</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">futures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="na">invokeAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">futures</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">map</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">InterruptedException</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ExecutionException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeRuntimeException</span><span class="p">(</span><span class="n">e</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}).</span><span class="na">collect</span><span class="p">(</span><span class="n">Collectors</span><span class="p">.</span><span class="na">toList</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="구조화된-동시성을-사용한-invokeall">구조화된 동시성을 사용한 <code>invokeAll</code><a href="#구조화된-동시성을-사용한-invokeall" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>구조화된 동시성 (structured concurrency) 은 Java 에서 스레드의 수명을 관리하는 새로운 방법입니다. 수명은 <code>StructuredTaskScope</code> 를 통해 제어됩니다. 주로 <code>invokeAny</code> 동작과 <code>invokeAll</code> 동작을 가진 두 가지 Scope 가 있습니다. 이 글에서는 <code>invokeAll</code> 을 구현할 것입니다. 모든 스레드가 실행을 마칠 때까지 기다리는 <code>StructuredTaskScope</code> 를 만들려면 <code>ShutdownOnFailure</code> 메서드를 호출해야 합니다.</p>
+<p>Scope 가 실행할 작업을 추가하려면 <code>fork</code> 메서드를 호출해야 합니다. 7행의 <code>scope.join()</code> 메서드 호출은 모든 스레드가 완료될 때까지 차단됩니다. 10행에서 결과를 얻기 전에 예외가 발생했는지 확인합니다.</p>
+<p>Scope 내부에 있기 때문에 <code>get</code> 을 호출하는 대신 새로운 <code>resultNow</code> 메서드를 사용하여 <code>Future</code> 에서 결과를 얻을 것입니다. 이는 스레드가 이미 완료될 때까지 기다렸기 때문에 새로운 선호되는 방법입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">invokeAllWithStructuredConcurrency</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">ExecutionException</span><span class="p">,</span><span class="w"> </span><span class="n">InterruptedException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StructuredTaskScope</span><span class="p">.</span><span class="na">ShutdownOnFailure</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">futureA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scope</span><span class="p">.</span><span class="na">fork</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">getStringFromResourceA</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">futureB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scope</span><span class="p">.</span><span class="na">fork</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">getStringFromResourceB</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="cm">/* wait till all threads are done */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">scope</span><span class="p">.</span><span class="na">join</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="cm">/* throw an exception if one occurred */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">scope</span><span class="p">.</span><span class="na">throwIfFailed</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">&#34;result: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">futureA</span><span class="p">.</span><span class="na">resultNow</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34; &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">futureB</span><span class="p">.</span><span class="na">resultNow</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="플랫폼-스레드를-사용한-invokeall">플랫폼 스레드를 사용한 <code>invokeAll</code><a href="#플랫폼-스레드를-사용한-invokeall" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>플랫폼 스레드 (platform threads) 는 이전 Java 버전에서 우리가 알고 있는 스레드입니다. 이 스레드는 운영 체제에서 관리되는 스레드와 밀접하게 연결되어 있습니다. 아래 예제는 <code>ExecutorService</code> 를 사용하기 때문에 가상 스레드를 사용하는 첫 번째 예제와 유사합니다. 이번에 사용하는 <code>ExecutorService</code> 는 <code>CachedThreadPool</code> 입니다. 이 풀은 필요할 때 새 스레드를 생성하지만 이미 작업을 마친 스레드를 재사용합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">static</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">invokeAllWithPlatformThreads</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">ExecutionException</span><span class="p">,</span><span class="w"> </span><span class="n">InterruptedException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">ExecutorService</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Executors</span><span class="p">.</span><span class="na">newCachedThreadPool</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">tasks</span><span class="p">.</span><span class="na">add</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">getStringFromResourceA</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">tasks</span><span class="p">.</span><span class="na">add</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">getStringFromResourceB</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">futures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="na">invokeAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">futures</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">map</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">InterruptedException</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ExecutionException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeRuntimeException</span><span class="p">(</span><span class="n">e</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}).</span><span class="na">collect</span><span class="p">(</span><span class="n">Collectors</span><span class="p">.</span><span class="na">toList</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="결론">결론<a href="#결론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 글에서는 <code>invokeAll</code> 메서드를 구현하는 세 가지 방법을 살펴보았습니다. 먼저 각 작업을 수행하는 가상 스레드를 생성하는 <code>ExecutorService</code> 를 사용했습니다. 그 다음에는 <code>invokeAll</code> 메서드처럼 동작하는 <code>StructuredTaskScope</code> 를 만드는 방법을 보았습니다. 마지막 예제는 이전 Java 버전에서 이미 익숙한 플랫폼 스레드를 사용했습니다.</p>
+<hr>
+<h2 id="더-읽어보기">더 읽어보기<a href="#더-읽어보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Java의 가상 스레드에 대한 추가 정보:</p>
+<ul>
+<li><a href="https://davidvlijmincx.com/posts/loom/enable-virtual-threads-java-19/">Java 19에서 가상 스레드를 활성화하는 방법</a></li>
+<li><a href="https://davidvlijmincx.com/posts/loom/jep_428_structured_concurrency/">Loom을 사용한 Java의 구조화된 동시성</a></li>
+<li><a href="https://davidvlijmincx.com/posts/create_virtual_threads_with_project_loom/">가상 스레드 생성하기</a></li>
+<li><a href="https://openjdk.org/jeps/425">가상 스레드 문서</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250709-effective-bluffing-in-pot-limit-omaha/" class="button inline next">
+         [<span class="button__text">PLO (팟 리밋 오마하) 에서 효과적인 블러핑</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
