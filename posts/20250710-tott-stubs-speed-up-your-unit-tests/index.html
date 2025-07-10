@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 스텁이 단위 테스트 속도를 높여줍니다 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Michael Feathers는 좋은 단위 테스트의 특징을 &#39;빠르게 실행되고 문제 위치를 파악하는 데 도움이 된다&#39; 고 정의합니다. 코드에 데이터베이스 액세스, 다른 서버와의 통신, 시간 의존성 등이 있을 때는 이를 달성하기 어렵습니다." />
+<meta name="keywords" content="programming, testing, dev, TotT" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250710-tott-stubs-speed-up-your-unit-tests/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 스텁이 단위 테스트 속도를 높여줍니다">
+<meta property="og:description" content="Michael Feathers는 좋은 단위 테스트의 특징을 &#39;빠르게 실행되고 문제 위치를 파악하는 데 도움이 된다&#39; 고 정의합니다. 코드에 데이터베이스 액세스, 다른 서버와의 통신, 시간 의존성 등이 있을 때는 이를 달성하기 어렵습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250710-tott-stubs-speed-up-your-unit-tests/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-10 16:01:59 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250710-tott-stubs-speed-up-your-unit-tests/">TotT: 스텁이 단위 테스트 속도를 높여줍니다</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-10</time><span class="post-author">testing.googleblog.com</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2007/04/tott-stubs-speed-up-your-unit-tests.html">https://testing.googleblog.com/2007/04/tott-stubs-speed-up-your-unit-tests.html</a> (Translated by Google Gemini)</p>
+<hr>
+<p>Michael Feathers는 좋은 단위 테스트의 특징을 &ldquo;빠르게 실행되고 문제 위치를 파악하는 데 도움이 된다&quot;고 정의합니다. 코드에 데이터베이스 액세스, 다른 서버와의 통신, 시간 의존성 등이 있을 때는 이를 달성하기 어렵습니다.</p>
+<p>모듈의 일부 종속성에 커스텀 객체를 대체하여 코드를 철저히 테스트하고, 커버리지를 높이며, 1초 이내에 실행할 수 있습니다. 데이터베이스 오류와 같은 드문 시나리오도 시뮬레이션하여 오류 처리 코드를 테스트할 수도 있습니다.</p>
+<p>이러한 &ldquo;커스텀 객체&quot;를 지칭하는 다양한 용어가 사용됩니다. 용어를 명확히 하기 위해 Gerard Meszaros는 다음 정의를 제공합니다.</p>
+<ul>
+<li><strong>테스트 더블(Test Double)</strong> 은 프로덕션 객체를 대체하는 모든 테스트 객체에 대한 일반적인 용어입니다.</li>
+<li><strong>더미(Dummy)</strong> 객체는 전달되지만 실제로 사용되지 않습니다. 주로 매개변수 목록의 채우기 역할입니다.</li>
+<li><strong>페이크(Fakes)</strong> 는 작동하는 구현을 가지고 있지만 일부 지름길을 사용합니다(예: 메모리 내 데이터베이스).</li>
+<li><strong>스텁(Stubs)</strong> 은 테스트 중에 이루어진 호출에 대해 미리 정해진 응답을 제공합니다.</li>
+<li><strong>목(Mocks)</strong> 은 수신하는 호출과 수신하지 않는 호출의 사양을 형성하는 기대를 가집니다.</li>
+</ul>
+<p>예를 들어, <code>IdGetter</code> 클래스의 <code>getIdPrefix()</code> 와 같은 간단한 메서드를 테스트하려면:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">IdGetter</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Constructor omitted.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getIdPrefix</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="na">selectString</span><span class="p">(</span><span class="s">&#34;select id from foo&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">substring</span><span class="p">(</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">5</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">SQLException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>다음과 같이 작성할 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">db</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;create table foo (id varchar(40))&#34;</span><span class="p">);</span><span class="w"> </span><span class="c1">// db created in setUp().</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">db</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;insert into foo (id) values (&#39;hello world\\!&#39;)&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">IdGetter</span><span class="w"> </span><span class="n">getter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IdGetter</span><span class="p">(</span><span class="n">db</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">getter</span><span class="p">.</span><span class="na">getIdPrefix</span><span class="p">());</span><span class="w">
+</span></span></span></code></pre></div><p>위 테스트는 작동하지만 실행하는 데 상대적으로 오랜 시간이 걸리고(네트워크 액세스), 신뢰할 수 없으며(DB 머신이 다운될 수 있음), 오류 테스트를 어렵게 만듭니다. <strong>스텁을 사용하면 이러한 함정을 피할 수 있습니다.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">StubDbThatReturnsId</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Database</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">selectString</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&#34;hello world&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">StubDbThatFails</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Database</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">selectString</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SQLException</span><span class="p">(</span><span class="s">&#34;Fake DB failure&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testReturnsFirstFiveCharsOfId</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">IdGetter</span><span class="w"> </span><span class="n">getter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IdGetter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">StubDbThatReturnsId</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">getter</span><span class="p">.</span><span class="na">getIdPrefix</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testReturnsEmptyStringIfIdNotFound</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">IdGetter</span><span class="w"> </span><span class="n">getter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IdGetter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">StubDbThatFails</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">getter</span><span class="p">.</span><span class="na">getIdPrefix</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div>
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250710-using-executor-service-invoke-all-with-virtual-threads/" class="button inline next">
+         [<span class="button__text">ExecutorService invokeAll 과 가상 스레드 사용하기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
