@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 싱글턴을 피하기 위한 의존성 주입 사용하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="싱글턴을 사용하는 코드를 테스트하기는 어렵습니다. 일반적으로 테스트하려는 코드는 싱글턴 인스턴스와 강력하게 결합되어 있습니다. 싱글턴 객체가 종종 정적 이니셜라이저나 정적 메서드에서 생성되기 때문에 싱글턴 객체의 생성을 제어할 수 없습니다. 결과적으로 싱글턴 인스턴스의 동작을 목킹(mocking)할 수도 없습니다." />
+<meta name="keywords" content="programming, testing, dev, TotT, DI" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250715-tott-using-dependency-injection-to-avoid-singletons/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 싱글턴을 피하기 위한 의존성 주입 사용하기">
+<meta property="og:description" content="싱글턴을 사용하는 코드를 테스트하기는 어렵습니다. 일반적으로 테스트하려는 코드는 싱글턴 인스턴스와 강력하게 결합되어 있습니다. 싱글턴 객체가 종종 정적 이니셜라이저나 정적 메서드에서 생성되기 때문에 싱글턴 객체의 생성을 제어할 수 없습니다. 결과적으로 싱글턴 인스턴스의 동작을 목킹(mocking)할 수도 없습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250715-tott-using-dependency-injection-to-avoid-singletons/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-15 14:06:34 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250715-tott-using-dependency-injection-to-avoid-singletons/">TotT: 싱글턴을 피하기 위한 의존성 주입 사용하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-15</time><span class="post-author">testing.googleblog.com</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/di/">DI</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2008/05/tott-using-dependancy-injection-to.html">https://testing.googleblog.com/2008/05/tott-using-dependancy-injection-to.html</a> (Translated by Google Gemini)</p>
+<hr>
+<p>싱글턴을 사용하는 코드를 테스트하기는 어렵습니다. 일반적으로 테스트하려는 코드는 싱글턴 인스턴스와 강력하게 결합되어 있습니다. 싱글턴 객체가 종종 정적 생성자나 정적 메서드에서 생성되기 때문에 싱글턴 객체의 생성을 제어할 수 없습니다. 결과적으로 싱글턴 인스턴스의 동작을 시뮬레이션할 수도 없습니다.</p>
+<p>싱글턴 클래스의 구현 변경이 불가능하지만, 싱글턴 클라이언트는 변경이 가능하다면 간단한 리팩터링으로 테스트를 더 쉽게 만들 수 있습니다. 싱글턴 인스턴스로 <code>Server</code>를 사용하는 메서드가 있다고 가정해 봅시다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Client</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">Params</span><span class="w"> </span><span class="n">params</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Server</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Server</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Data</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">.</span><span class="na">retrieveData</span><span class="p">(</span><span class="n">params</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>Client</code>를 리팩터링하여 의존성 주입을 사용하고 싱글턴 패턴의 사용을 완전히 피할 수 있습니다. 어떤 기능도 잃지 않았고, <code>Server</code>의 싱글턴 인스턴스만 존재해야 한다는 요구 사항도 잃지 않았습니다. 유일한 차이점은 <code>Server</code> 인스턴스를 정적 <code>getInstance</code> 메서드에서 가져오는 대신, <code>Client</code>가 생성자에서 받는다는 것입니다. 클래스를 테스트하기 더 쉽게 만들었습니다!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Client</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Server</span><span class="w"> </span><span class="n">server</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="nf">Client</span><span class="p">(</span><span class="n">Server</span><span class="w"> </span><span class="n">server</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="na">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">Params</span><span class="w"> </span><span class="n">params</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Data</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">server</span><span class="p">.</span><span class="na">retrieveData</span><span class="p">(</span><span class="n">params</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>테스트할 때, 필요한 예상 동작을 가진 목 (mock) <code>Server</code>를 생성하여 테스트 중인 <code>Client</code>에 전달할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcess</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Server</span><span class="w"> </span><span class="n">mockServer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createMock</span><span class="p">(</span><span class="n">Server</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Client</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Client</span><span class="p">(</span><span class="n">mockServer</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="n">5</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="na">process</span><span class="p">(</span><span class="n">params</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<p>(역자 주: 이례적으로 이 글에 댓글 논의가 많아 댓글들도 가져왔습니다.)</p>
+<h2 id="댓글-12개-">댓글 12개 :<a href="#댓글-12개-" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<blockquote>
+<p><strong>Calvin Spealman</strong> 2008년 5월 18일 오후 3:34:00 PDT</p>
+<p>이 방법에는 몇 가지 단점이 있습니다.
+클라이언트 사용자가 싱글턴을 어디서 가져와야 하는지 알아야 하고, 클라이언트 클래스를 생성할 때마다 접근해야 합니다.
+또 다른 문제는 이 싱글턴이 싱글턴을 얻는 시점의 차이를 무시한다는 것인데, 이는 중요한 의미를 가질 수 있으며 해결해야 합니다.
+이러한 제안에는 클라이언트 클래스가 싱글턴 주입을 <strong>선택적</strong> 매개변수로 취하고 기본적으로 싱글턴에 액세스해야 하며, 가능하면 싱글턴을 사용할 때마다 특별히 액세스해야 한다고 포함되어야 합니다.</p></blockquote>
+<blockquote>
+<p><strong>Ran Biron</strong> 2008년 5월 19일 오전 11:07:00 PDT</p>
+<p>몇 번의 실패 끝에 우리(저와 제가 일하는 비공개 회사의 팀)는 몇 가지 결론에 도달했습니다.</p>
+<ol>
+<li>DI 프레임워크(예: Spring)는 테스트를 매우 편하게 할 수 있게 해줍니다.</li>
+<li>DI 프레임워크를 사용할 수 없다면 (간단한) 프레임워크를 만드십시오.</li>
+</ol>
+<p>이제 2번에 대한 설명이 필요합니다. 우리가 하는 일은 실제 싱글턴 하나를 갖는 것입니다. 싱글턴(애플리케이션 컨텍스트, 컨테이너, 신(god) – 원하는 것을 선택하십시오)은 여러 컨텍스트 &ldquo;허브&quot;에 대한 매우 제한적인 액세스 맵 역할을 합니다. 각 허브는 맵과 직접 통신하여 필요한 객체를 먼저 로드한 다음 필요에 따라 추출하고 형 변환합니다. 컨텍스트 객체는 생성 시 매우 작은 공간을 차지하며 이벤트(애플리케이션 초기화) / 요청(실제 싱글턴과 동일) 시에만 초기화됩니다.</p>
+<p>테스트는 아래 두 방법 중 하나로 가능합니다:</p>
+<ol>
+<li>적은 수의 목 컨텍스트만 필요한 경우, 수동으로 생성하여 싱글턴 맵에 로드합니다. 향후 요청은 이를 검색할 것입니다. 테스트 해체 시 전체 맵을 비웁니다.</li>
+<li>많은 수의 목 컨텍스트(대규모 단위 테스트 / 통합 테스트)가 필요한 경우, 실제 허브 중 하나(또는 그 이상)를 실행하고 맵에서 필요한 것만(있는 경우) 목 구현으로 덮어씁니다.</li>
+</ol>
+<p>이 접근 방식은 프로덕션 코드에 매우 용이하면서도 실제 DI만큼 테스트 가능합니다.</p></blockquote>
+<blockquote>
+<p><strong>Unknown</strong> 2008년 5월 19일 오후 11:03:00 PDT</p>
+<p>솔직히, 장점을 모르겠습니다&hellip;</p>
+<p><code>Client</code> 클래스의 첫 번째 구현에서는 다음과 같이 할 수 있었습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Client</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Client</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">client</span><span class="p">.</span><span class="na">process</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></div><p>그게 다입니다&hellip; 여기서 단점은 무엇입니까?</p>
+<blockquote>
+<p><strong>Leo Gutierrez R</strong> 2016년 12월 25일 오후 4:02:00 PST</p>
+<p>흠, 장점은 두 번째 접근 방식에서 <code>Server</code> 생성을 추출하여 이를 목킹할 수 있다는 것입니다. 첫 번째 접근 방식에서는 불가능했습니다.</p></blockquote></blockquote>
+<blockquote>
+<p><strong>Unknown</strong> 2008년 5월 20일 오전 9:43:00 PDT</p>
+<p>싱글턴을 사용하는 코드를 테스트하기는 어렵습니다. &lt;&lt; 올해의 과소평가 :P
+우리는 테스트를 위해 DI를 사용하여 많은 운을 얻었으며, 싱글턴이 필요한 경우 테스트를 위해 객체를 구성할 매개변수를 받는 대체 <code>getInstance</code> 메서드를 제공합니다.</p></blockquote>
+<blockquote>
+<p><strong>David</strong> 2008년 5월 20일 오후 3:31:00 PDT</p>
+<p>이런 일을 위해 Guice를 사용합니다.</p></blockquote>
+<blockquote>
+<p><strong>Gauthier</strong> 2014년 11월 19일 오전 2:29:00 PST</p>
+<p>물론입니다. 하지만 여전히 API는 좀 별로입니다. Client가 Server에 대해 강한 의존성을 갖는지 여부(public process() 내부인지 protected obtainServer() 메서드 내부인지)는 제대로 문서화되지 않으면 명확하지 않습니다. 의존성 주입은 이러한 의존성을 API에 바로 보여줍니다. 그리고 Client를 재사용할 때마다 다른 서브클래스를 만들어야 할 것입니다.</p></blockquote>
+<blockquote>
+<p><strong>roni</strong> 2014년 10월 3일 오전 2:26:00 PDT</p>
+<p>싱글턴을 사용하는 코드를 테스트하는 것은 어렵지 않습니다.</p>
+<p>쉽습니다.</p>
+<p>싱글턴을 사용하는 클라이언트를 테스트하는 방법은 다음과 같습니다.
+먼저, 싱글턴 인스턴스를 얻는 코드를 다음과 같이 새 protected 메서드로 리팩토링합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Client</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">Params</span><span class="w"> </span><span class="n">params</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">Server</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obtainServer</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">Data</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">.</span><span class="na">retrieveData</span><span class="p">(</span><span class="n">params</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//new method</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Server</span><span class="w"> </span><span class="nf">obtainServer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="n">Server</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>그런 다음 다음과 같이 목 Server를 사용하여 테스트합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ClientTest</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Client</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcess</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">Client</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Client</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nd">@Override</span><span class="w"> </span><span class="kd">protected</span><span class="w"> </span><span class="n">Server</span><span class="w"> </span><span class="nf">obtainServer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">             </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyMockServer</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">assertEquals</span><span class="p">(</span><span class="n">5</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="na">process</span><span class="p">(</span><span class="n">params</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p><strong>Unknown</strong> 2016년 9월 25일 오전 7:56:00 PDT</p>
+<p>이렇게 오랜 시간이 지난 후에 질문해서 죄송하지만, 자신만의 목 클라이언트를 만드는 방법에 대해 설명해주시거나 자료를 알려주실 수 있나요?</p>
+<p>감사합니다!</p></blockquote>
+<blockquote>
+<p><strong>Anonymous</strong> 2018년 1월 15일 오전 10:55:00 PST</p>
+<p>우리는 1990년대 후반 이리듐 위성 페이로드 프로젝트에서 이런 아이디어를 광범위하게 사용했습니다. 모든 인터페이스에는 의존성 인라인 함수가 있는 include 파일이 있었는데, include를 교체함으로써 <em>모든 것</em>을 목킹할 수 있었습니다. 그 결과, 각 서비스의 언어가 완전히 다르고 거의 무작위적이었기 때문에 아무도 다른 사람의 코드를 읽을 수 없었습니다.</p></blockquote></blockquote>
+<blockquote>
+<p><strong>JB</strong> 2014년 11월 19일 오전 2:29:00 PST</p>
+<p>확실히 그렇지만, 여전히 당신의 API는 좀 엉망입니다. Client가 Server에 강력한 의존성을 가지고 있는지(public process() 안에 있는지 protected obtainServer() 메서드 안에 있는지) 적절하게 문서화되지 않으면 명확하지 않습니다. 의존성 주입은 이러한 의존성을 API에 직접 보여줍니다. 그리고 obtainServer()에 다른 로직이 필요한 Client를 재사용할 때마다 다른 서브클래스를 만들어야 할 것입니다. 클라이언트가 서버를 얻는다는 것은 - 적어도 저에게는 - 범위를 훨씬 벗어나는 것처럼 보인다는 것은 말할 것도 없습니다. 제 짧은 의견일 뿐입니다 (just my 2 cents).</p></blockquote>
+<blockquote>
+<p><strong>Alexander Todorov</strong> 2015년 11월 4일 오후 3:03:00 PST</p>
+<p>그건 그렇고, 이 페이지 제목에 오타가 있습니다. Dependancy와 Dependency를 보세요.</p>
+<p>이 페이지로 연결되는 기사를 맞춤법 검사하고 있었는데 이것이 나타났습니다.</p></blockquote>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250715-fantasy-baseball-points-league-strategy/" class="button inline next">
+         [<span class="button__text">판타지 야구 포인트 리그 전략: 야후의 기본 설정에 대해 알아야 할 모든 것</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
