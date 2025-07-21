@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 인터페이스 테스트하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="부족함에 대한 지속적인 느낌을 억누르기 위해, 당신은 공학 분야의 진정한 통과 의례인 자신만의 행성 파괴 광선총을 만드는 데 시간을 들였습니다. 축하합니다. 그리고 당신은 매우 자랑스러워했지만, 그 다음 주말에 이워크 해설이 포함된 한정판 스타워즈 삼부작을 구매하여 데스스타가 알데라안을 파괴하는 것을 보고 잘못된 결정을 내렸다는 것을 깨달았습니다. 당신의 행성 파괴 광선총은 파란색 레이저를 가지고 있지만, 녹색 레이저가 훨씬 더 멋있어 보입니다. 하지만 라디오 셕에 가서 기존의 파괴 광선총에 끼울 수 있는 녹색 레이저를 사는 것은 간단한 문제가 아닙니다. 녹색 레이저를 가지려면 처음부터 다른 행성 파괴 광선총을 만들어야 할 것입니다. 두 개의 파괴 광선총을 소유하는 것이 하나보다 이웃들의 질투심을 더 자극할 것이므로 당신에게는 괜찮습니다." />
+<meta name="keywords" content="programming, testing, dev, TotT, refactoring" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250721-tott-testing-against-interfaces/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 인터페이스 테스트하기">
+<meta property="og:description" content="부족함에 대한 지속적인 느낌을 억누르기 위해, 당신은 공학 분야의 진정한 통과 의례인 자신만의 행성 파괴 광선총을 만드는 데 시간을 들였습니다. 축하합니다. 그리고 당신은 매우 자랑스러워했지만, 그 다음 주말에 이워크 해설이 포함된 한정판 스타워즈 삼부작을 구매하여 데스스타가 알데라안을 파괴하는 것을 보고 잘못된 결정을 내렸다는 것을 깨달았습니다. 당신의 행성 파괴 광선총은 파란색 레이저를 가지고 있지만, 녹색 레이저가 훨씬 더 멋있어 보입니다. 하지만 라디오 셕에 가서 기존의 파괴 광선총에 끼울 수 있는 녹색 레이저를 사는 것은 간단한 문제가 아닙니다. 녹색 레이저를 가지려면 처음부터 다른 행성 파괴 광선총을 만들어야 할 것입니다. 두 개의 파괴 광선총을 소유하는 것이 하나보다 이웃들의 질투심을 더 자극할 것이므로 당신에게는 괜찮습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250721-tott-testing-against-interfaces/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-21 10:01:35 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250721-tott-testing-against-interfaces/">TotT: 인터페이스 테스트하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-21</time><span class="post-author">testing.googleblog.com</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/refactoring/">refactoring</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2008/07/tott-testing-against-interfaces.html">https://testing.googleblog.com/2008/07/tott-testing-against-interfaces.html</a> (Translated by Google Gemini)</p>
+<hr>
+<p>부족함에 대한 지속적인 느낌을 억누르기 위해, 당신은 공학 분야의 진정한 통과 의례인 자신만의 행성 파괴 광선총을 만드는 데 시간을 들였습니다. 축하합니다. 그리고 당신은 매우 자랑스러워했지만, 그 다음 주말에 이워크<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> 해설이 포함된 한정판 스타워즈 3부작을 구매하여 데스스타<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>가 알데라안<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>을 파괴하는 것을 보고 잘못된 결정을 내렸다는 것을 깨달았습니다. 당신의 행성 파괴 광선총은 파란색 레이저를 가지고 있지만, 녹색 레이저가 훨씬 더 멋있어 보입니다. 하지만 라디오셱<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>에 가서 기존의 파괴 광선총에 끼울 수 있는 녹색 레이저를 사는 것은 간단한 문제가 아닙니다. 녹색 레이저를 가지려면 처음부터 다른 행성 파괴 광선총을 만들어야 할 것입니다. 두 개의 파괴 광선총을 소유하는 것이 하나보다 이웃들의 질투심을 더 자극할 것이므로 당신에게는 괜찮습니다.</p>
+<p>두 행성 파괴 광선총은 다양한 다른 오싹할 정도로 멋진 기술과 상호 운용되어야 하므로, 동일한 Java API를 내보내는 것이 당연합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">PlanetaryDeathRay</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">aim</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">xPosition</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">yPosition</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">fire</span><span class="p">();</span><span class="w"> </span><span class="cm">/* 반란군 기지가 단투인에 있다고 그녀가 말하면 이것을 호출합니다 */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">BlueLaserPlanetaryDeathRay</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">PlanetaryDeathRay</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* 여기에 구현 */</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">GreenLaserPlanetaryDeathRay</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">implements</span><span class="w"> </span><span class="n">PlanetaryDeathRay</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* 여기에 구현 */</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>옴니크론 페르세이 VIII 대신 옴니크론 페르세이 VII를 파괴하는 것과 같은 큰 오작동이 없도록 두 파괴 광선총을 테스트하는 것이 중요합니다. 동일한 테스트를 두 구현에 대해 실행하여 동일한 동작을 보이는지 확인하고 싶습니다. 이는 어떤 PlanetaryDeathRay 구현에 대해서도 실행되는 테스트를 한 번만 정의하면 쉽게 할 수 있습니다. <code>junit.framework.TestCase</code><sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>를 확장하는 다음 추상 클래스를 작성하는 것으로 시작하십시오.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PlanetaryDeathRayTestCase</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">extends</span><span class="w"> </span><span class="n">TestCase</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">protected</span><span class="w"> </span><span class="n">PlanetaryDeathRay</span><span class="w"> </span><span class="n">deathRay</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nd">@Override</span><span class="w"> </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setUp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">deathRay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createDeathRay</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nd">@Override</span><span class="w"> </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">tearDown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">deathRay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">protected</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="n">PlanetaryDeathRay</span><span class="w"> </span><span class="nf">createDeathRay</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="cm">/* 테스트할 PlanetaryDeathRay를 생성합니다 */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testAim</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/* deathRay.aim()에 대해 구현 독립적인 테스트를 여기에 작성합니다 */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testFire</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/* deathRay.fire()에 대해 구현 독립적인 테스트를 여기에 작성합니다 */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>setUp</code> 메서드가 추상 <code>createDeathRay</code> 메서드에서 테스트할 특정 <code>PlanetaryDeathRay</code> 구현을 가져오는 것을 주목하십시오. 서브클래스는 완전한 테스트를 생성하기 위해 이 메서드만 구현하면 됩니다. 상속받은 <code>testAim</code> 및 <code>testFire</code> 메서드는 실행될 때 테스트의 일부가 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">BlueLaserPlanetaryDeathRayTest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">extends</span><span class="w"> </span><span class="n">PlanetaryDeathRayTestCase</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">protected</span><span class="w"> </span><span class="n">PlanetaryDeathRay</span><span class="w"> </span><span class="nf">createDeathRay</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlueLaserPlanetaryDeathRay</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 클래스에 새로운 테스트를 쉽게 추가하여 <code>BlueLaserPlanetaryDeathRay</code> 에 특정한 기능을 테스트할 수 있습니다.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>&ldquo;스타워즈: 제다이의 귀환&rdquo; 에서 등장하는 외계 종족. 엔도의 달의 숲 지역에서 서식하는 포유류, 정확히는 설치류형 종족이다. 작은 곰이 두 발로 걸어다니는 것처럼 생겼고, 키는 약 1미터 정도로 단신이다. 문명 수준은 말 그대로 구석기시대 수준 수렵채집민 부족 정도로, 함정이나 창이나 활 따위로 사냥을 하며 살아간다. 그나마 투석기가 있는걸보니 수학적 지식은 뛰어난 것 같다. ( 인용: <a href="https://namu.wiki/w/%EC%9D%B4%EC%9B%8C%ED%81%AC">https://namu.wiki/w/%EC%9D%B4%EC%9B%8C%ED%81%AC</a> )&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>데스스타는 스타워즈 시리즈에 등장하는 행성 파괴 무기이다. 공포에 의한 지배라는 은하 제국의 통치 이념 타킨 독트린에 최적화된 병기이며, 현재까지 스타워즈 캐넌에 등장한 병기 중 두 번째[3]로 강력한 위력을 지녔다. 그리고 대중매체에서 가장 유명한 플래닛 킬러로 꼽힌다. ( 인용: <a href="https://namu.wiki/w/%EC%A3%BD%EC%9D%8C%EC%9D%98%20%EB%B3%84?from=%EB%8D%B0%EC%8A%A4%EC%8A%A4%ED%83%80">https://namu.wiki/w/%EC%A3%BD%EC%9D%8C%EC%9D%98%20%EB%B3%84?from=%EB%8D%B0%EC%8A%A4%EC%8A%A4%ED%83%80</a> )&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>스타워즈에 등장하는 알더란(Alderaan)은 레아 오르가나 공주의 고향으로, 무기를 갖지 않을 만큼 평화롭고 아름다운 행성이었지만 제국의 슈퍼무기 &lsquo;데스스타&rsquo;에 의해 은하계 최초로 파괴되는 비극을 맞이한 행성입니다.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p>&lsquo;라디오셱(Radio Shack)&lsquo;은 스타워즈 오리지널 3부작 제작 당시, 루크 스카이워커의 통신기(컴링크)와 같은 미래적인 소품을 만들기 위해 제작진이 부품을 구매했던 미국의 실제 전자제품 판매점 이름입니다. 이는 저예산 환경에서 창의적인 방식으로 세계관을 구축했던 당시의 재미있는 일화로 팬들 사이에서 회자되는 용어입니다.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5">
+<p>jUnit 3.x 시절 사용하던 클래스로 <code>junit.framework.TestCase</code> 는 더 이상 최신 JUnit (JUnit 5)의 일부가 아니며, JUnit 5를 사용한다면 <code>org.junit.jupiter.api</code> 패키지의 어노테이션과 <code>Assertions</code> 클래스를 사용하여 테스트를 작성해야 합니다.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250718-about-phil-ivey/" class="button inline next">
+         [<span class="button__text">필 아이비(Phil Ivey), 살아있는 전설</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
