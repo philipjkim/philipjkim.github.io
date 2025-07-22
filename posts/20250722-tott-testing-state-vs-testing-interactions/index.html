@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 상태 테스트 vs. 상호작용 테스트 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="단위 테스트가 테스트 중인 코드가 제대로 작동하는지 확인하는 방법은 일반적으로 두 가지가 있습니다: 상태 테스트 또는 상호작용 테스트. 이들의 차이점은 무엇일까요?" />
+<meta name="keywords" content="programming, testing, dev, TotT" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250722-tott-testing-state-vs-testing-interactions/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 상태 테스트 vs. 상호작용 테스트">
+<meta property="og:description" content="단위 테스트가 테스트 중인 코드가 제대로 작동하는지 확인하는 방법은 일반적으로 두 가지가 있습니다: 상태 테스트 또는 상호작용 테스트. 이들의 차이점은 무엇일까요?" />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250722-tott-testing-state-vs-testing-interactions/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-22 13:11:07 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250722-tott-testing-state-vs-testing-interactions/">TotT: 상태 테스트 vs. 상호작용 테스트</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-22</time><span class="post-author">Andrew Trenk</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2013/03/testing-on-toilet-testing-state-vs.html">https://testing.googleblog.com/2013/03/testing-on-toilet-testing-state-vs.html</a> (Translated by Google Gemini)</p>
+<hr>
+<p>단위 테스트가 테스트 중인 코드가 제대로 작동하는지 확인하는 방법은 일반적으로 두 가지가 있습니다: 상태 테스트 또는 상호작용 테스트. 이들의 차이점은 무엇일까요?</p>
+<p><strong>상태 테스트는 테스트 중인 코드가 올바른 결과를 반환하는지 확인하는 것을 의미합니다.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testSortNumbers</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">NumberSorter</span><span class="w"> </span><span class="n">numberSorter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NumberSorter</span><span class="p">(</span><span class="n">quicksort</span><span class="p">,</span><span class="w"> </span><span class="n">bubbleSort</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 반환된 목록이 정렬되었는지 확인합니다. 어떤 정렬 알고리즘이 사용되었는지는 중요하지 않으며,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 올바른 결과가 반환되기만 하면 됩니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">3</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">numberSorter</span><span class="p">.</span><span class="na">sortNumbers</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="p">(</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>상호작용 테스트는 테스트 중인 코드가 특정 메서드를 올바르게 호출하는지 확인하는 것을 의미합니다.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testSortNumbers_quicksortIsUsed</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 클래스에 목(mock) 객체를 전달하고 테스트 중인 메서드를 호출합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">NumberSorter</span><span class="w"> </span><span class="n">numberSorter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NumberSorter</span><span class="p">(</span><span class="n">mockQuicksort</span><span class="p">,</span><span class="w"> </span><span class="n">mockBubbleSort</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">numberSorter</span><span class="p">.</span><span class="na">sortNumbers</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="p">(</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// numberSorter.sortNumbers()가 quicksort를 사용했는지 확인합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// mockQuicksort.sort()가 전혀 호출되지 않거나 잘못된 인수로 호출되면 (예: mockBubbleSort가 숫자를 정렬하는 데 사용된 경우)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 테스트는 실패해야 합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockQuicksort</span><span class="p">).</span><span class="na">sort</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="p">(</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>두 번째 테스트는 좋은 코드 커버리지를 제공할 수 있지만, 정렬이 제대로 작동하는지 여부는 알려주지 않고 quicksort.sort()가 호출되었는지 여부만 알려줍니다. <strong>상호작용을 사용하는 테스트가 통과했다고 해서 코드가 제대로 작동한다는 의미는 아닙니다.</strong> 이것이 <strong>대부분의 경우 상호작용이 아닌 상태를 테스트</strong>해야 하는 이유입니다.</p>
+<p>일반적으로 <strong>상호작용은 코드의 출력이 무엇인지 뿐만 아니라 출력이 어떻게 결정되는지에 따라 정확성이 달라지는 경우에 테스트해야 합니다</strong>. 위 예시에서, quicksort가 사용되는 것이 중요하다면 (예: 다른 정렬 알고리즘을 사용하면 메서드가 너무 느리게 실행될 경우) 상태 테스트에 더해 상호작용을 테스트해야 하며, 그렇지 않으면 상호작용을 사용하는 테스트는 불필요합니다.</p>
+<p><strong>상호작용을 테스트하고 싶은 다른 사례들은 무엇일까요?</strong></p>
+<ul>
+<li>
+<p><strong>테스트 중인 코드가 호출 횟수나 순서의 차이가 원치 않는 동작을 유발할 수 있는 메서드를 호출하는 경우</strong> - 사이드이펙트(예: 이메일을 하나만 보내고 싶은 경우), 지연(예: 특정 횟수의 디스크 읽기만 발생시키고 싶은 경우) 또는 멀티스레딩 문제(예: 코드가 잘못된 순서로 일부 메서드를 호출하면 교착 상태에 빠지는 경우) - 상호작용 테스트는 이러한 메서드가 제대로 호출되지 않으면 테스트가 실패하도록 보장합니다.</p>
+</li>
+<li>
+<p><strong>UI의 렌더링 세부 정보가 UI 논리에서 추상화된 UI를 테스트하는 경우</strong> - 예: MVC 또는 MVP 사용 - 컨트롤러/프레젠터 테스트에서는 뷰의 특정 메서드가 호출되었는지 여부만 중요하고 실제로 무엇이 렌더링되었는지는 중요하지 않으므로 뷰와의 상호작용을 테스트할 수 있습니다. 마찬가지로 뷰를 테스트할 때는 컨트롤러/프레젠터와의 상호작용을 테스트할 수 있습니다.</p>
+</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250722-tott-be-an-mvp-of-gui-testing/" class="button inline next">
+         [<span class="button__text">TotT: GUI 테스팅의 MVP 되기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
