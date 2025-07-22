@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: GUI 테스팅의 MVP 되기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="최근의 모든 스포츠 약물 스캔들로 인해 요즘 좋은 롤 모델을 찾기가 어렵습니다. 하지만 롤 모델이 도메인 모델(비즈니스 엔티티의 객체 모델)이라면 MVP가 되기 위해 속임수를 쓸 필요가 없습니다. Model-View-Presenter를 사용하세요!" />
+<meta name="keywords" content="programming, testing, dev, TotT, GUI" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250722-tott-be-an-mvp-of-gui-testing/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: GUI 테스팅의 MVP 되기">
+<meta property="og:description" content="최근의 모든 스포츠 약물 스캔들로 인해 요즘 좋은 롤 모델을 찾기가 어렵습니다. 하지만 롤 모델이 도메인 모델(비즈니스 엔티티의 객체 모델)이라면 MVP가 되기 위해 속임수를 쓸 필요가 없습니다. Model-View-Presenter를 사용하세요!" />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250722-tott-be-an-mvp-of-gui-testing/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-22 10:49:31 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250722-tott-be-an-mvp-of-gui-testing/">TotT: GUI 테스팅의 MVP 되기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-22</time><span class="post-author">testing.googleblog.com</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/gui/">GUI</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2009/02/with-all-sport-drug-scandals-of-late.html">https://testing.googleblog.com/2009/02/with-all-sport-drug-scandals-of-late.html</a> (Translated by Google Gemini)</p>
+<hr>
+<p>최근의 모든 스포츠 약물 스캔들로 인해 요즘 좋은 롤 모델을 찾기가 어렵습니다. 하지만 롤 모델이 도메인 모델(비즈니스 엔티티의 객체 모델)이라면 MVP가 되기 위해 속임수를 쓸 필요가 없습니다. Model-View-Presenter를 사용하세요!</p>
+<p>MVP는 MVC(Model-View-Controller)와 매우 유사합니다.</p>
+<p><strong>MVC에서는 아래 다이어그램과 같이 프레젠테이션 로직이 Controller와 View에 의해 공유됩니다.</strong> View는 일반적으로 가시적인 GUI 프레임워크 구성 요소에서 직접 파생되며, 모델을 관찰하고 사용자에게 시각적으로 보여줍니다. Controller는 사용자 이벤트를 모델 변경으로 변환하는 방법을 결정하는 역할을 합니다. <strong>MVP에서는 프레젠테이션 로직이 Presenter라고도 알려진 Supervising Controller에 의해 전적으로 처리됩니다.</strong></p>
+<p>MVC</p>
+<p><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOu2B2YTH1WxmlY3g2N2zzBpApZdACPJKBZ3YWRxj1uWiGZFMT35m4MToVO6ZQ0J7J1kYgBC_qJYAzsc2DTmmAM_Zu4B5oT0U6k3llRm96c9ces_y_hnFgFr1JbD1WK2i7q5LB/s400/mvc.png" alt="mvc"></p>
+<p>MVP</p>
+<p><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEge1HzG0Z4WMf-68di9zjnNGi5uheqygXSP_hBKikKqsxz257izlgHBGCyMRbihQ_7spPddNQPxMgRhqPHob1lU5ZbRkJTfTBsIqYtBql5mO4AObp1N31zqY8AaKCCJnu5gjJqg/s400/mvp.png" alt="mvp"></p>
+<p>View는 수동적이 되어 Presenter에 위임합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="nf">CongressionalHearingView</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">testimonyWidget</span><span class="p">.</span><span class="na">addModifyListener</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">ModifyListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">modifyText</span><span class="p">(</span><span class="n">ModifyEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">presenter</span><span class="p">.</span><span class="na">onModifyTestimony</span><span class="p">();</span><span class="w"> </span><span class="c1">// presenter가 취할 행동을 결정</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Presenter는 Model에서 데이터를 가져와 View를 업데이트합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CongressionalHearingPresenter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">onModifyTestimony</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">model</span><span class="p">.</span><span class="na">parseTestimony</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="na">getTestimonyText</span><span class="p">());</span><span class="w"> </span><span class="c1">// 모델 조작</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setWitness</span><span class="p">(</span><span class="n">Witness</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">view</span><span class="p">.</span><span class="na">setTestimonyText</span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="na">getTestimony</span><span class="p">());</span><span class="w"> </span><span class="c1">// 뷰 업데이트</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이러한 책임 분리를 통해 <strong>더 모듈화된 코드</strong>를 만들 수 있으며, <strong>Presenter와 View의 쉬운 단위 테스트</strong>를 가능하게 합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testSetWitness</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">spyView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SpyCongressionalHearingView</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">presenter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CongressionalHearingPresenter</span><span class="p">(</span><span class="n">spyView</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">presenter</span><span class="p">.</span><span class="na">setWitness</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Witness</span><span class="p">(</span><span class="s">&#34;Mark McGwire&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;I didn&#39;t do it&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;I didn&#39;t do it&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">spyView</span><span class="p">.</span><span class="na">getTestimonyText</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이는 완벽하게 합법적인 의존성 주입(Dependency Injection)을 사용합니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250721-bet-size-strategy-tips-rules/" class="button inline next">
+         [<span class="button__text">벳 사이즈 전략: 완벽한 벳 사이즈를 선택하는 데 도움이 되는 8가지 규칙</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
