@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   
-    <title>TotT: 효과적인 테스트 :: philipjkim</title>
+    <title>TotT: 위험 중심 테스트 (Risk-Driven Test) :: philipjkim</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="개별 단위 테스트를 작성하든 제품의 전체 테스트 프로세스를 설계하든, 테스트가 코드의 버그를 얼마나 효과적으로 감지하고 보고하는지 다시 한번 생각해보는 것이 중요합니다. 효과적이려면 모든 테스트가 극대화하려고 노력해야 하는 세 가지 중요한 품질이 있습니다." />
+<meta name="description" content="테스트는 목적을 위한 수단입니다: 프로젝트의 주요 위험을 줄이고, 가장 큰 효과를 얻기 위함입니다. 이 효과는 항상 표준 관행에 따라 작성하는 테스트에서 나오지 않을 수 있으며, 심지어 테스트에서 전혀 나오지 않을 수도 있습니다." />
 <meta name="keywords" content="programming, testing, dev, TotT" />
 
   <meta name="robots" content="noodp" />
 
-<link rel="canonical" href="https://philipjkim.github.io/posts/20250728-tott-effective-testing/" />
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250729-tott-risk-driven-testing/" />
 
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
@@ -81,9 +81,9 @@
 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="TotT: 효과적인 테스트">
-<meta property="og:description" content="개별 단위 테스트를 작성하든 제품의 전체 테스트 프로세스를 설계하든, 테스트가 코드의 버그를 얼마나 효과적으로 감지하고 보고하는지 다시 한번 생각해보는 것이 중요합니다. 효과적이려면 모든 테스트가 극대화하려고 노력해야 하는 세 가지 중요한 품질이 있습니다." />
-<meta property="og:url" content="https://philipjkim.github.io/posts/20250728-tott-effective-testing/" />
+<meta property="og:title" content="TotT: 위험 중심 테스트 (Risk-Driven Test)">
+<meta property="og:description" content="테스트는 목적을 위한 수단입니다: 프로젝트의 주요 위험을 줄이고, 가장 큰 효과를 얻기 위함입니다. 이 효과는 항상 표준 관행에 따라 작성하는 테스트에서 나오지 않을 수 있으며, 심지어 테스트에서 전혀 나오지 않을 수도 있습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250729-tott-risk-driven-testing/" />
 <meta property="og:site_name" content="philipjkim" />
 
   <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
@@ -92,7 +92,7 @@
 <meta property="og:image:height" content="627">
 
 
-  <meta property="article:published_time" content="2025-07-28 10:24:47 &#43;0900 KST" />
+  <meta property="article:published_time" content="2025-07-29 10:35:40 &#43;0900 KST" />
 
 
 
@@ -169,9 +169,9 @@
     
 <article class="post">
   <h1 class="post-title">
-    <a href="https://philipjkim.github.io/posts/20250728-tott-effective-testing/">TotT: 효과적인 테스트</a>
+    <a href="https://philipjkim.github.io/posts/20250729-tott-risk-driven-testing/">TotT: 위험 중심 테스트 (Risk-Driven Test)</a>
   </h1>
-  <div class="post-meta"><time class="post-date">2025-07-28</time><span class="post-author">Rich Martin</span></div>
+  <div class="post-meta"><time class="post-date">2025-07-29</time><span class="post-author">Peter Arrenbrecht</span></div>
 
   
     <span class="post-tags">
@@ -192,19 +192,24 @@
   
 
   <div class="post-content"><div>
-        <p>원문: <a href="https://testing.googleblog.com/2014/05/testing-on-toilet-effective-testing.html">https://testing.googleblog.com/2014/05/testing-on-toilet-effective-testing.html</a> (Translated by Google Gemini)</p>
+        <p>원문: <a href="https://testing.googleblog.com/2014/05/testing-on-toilet-risk-driven-testing.html">https://testing.googleblog.com/2014/05/testing-on-toilet-risk-driven-testing.html</a> (Translated by Google Gemini)</p>
 <hr>
-<p>개별 단위 테스트를 작성하든 제품의 전체 테스트 프로세스를 설계하든, <strong>테스트가 코드의 버그를 얼마나 효과적으로 감지하고 보고하는지</strong> 다시 한번 생각해보는 것이 중요합니다. 효과적이려면 모든 테스트가 극대화하려고 노력해야 하는 <strong>세 가지 중요한 품질</strong>이 있습니다.</p>
-<h2 id="충실도-fidelity">충실도 (Fidelity)<a href="#충실도-fidelity" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p>테스트 대상 코드가 손상되면 테스트는 실패합니다. <strong>고충실도 테스트는 테스트 대상 코드의 결함에 매우 민감하여 버그가 코드에 침투하는 것을 방지하는 데 도움이 됩니다.</strong></p>
-<p><strong>테스트가 코드의 모든 경로를 다루고 예상 상태에 대한 모든 관련 assertions 을 포함하는지 확인하여 충실도를 극대화하십시오.</strong></p>
-<h2 id="탄력성-resilience">탄력성 (Resilience)<a href="#탄력성-resilience" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p>테스트 대상 코드가 결함이 없다면 테스트가 실패해서는 안 됩니다. <strong>탄력적인 테스트는 테스트 대상 코드에 파괴적인 변경이 가해질 때만 실패하는 테스트입니다.</strong> 리팩토링 및 테스트 대상 코드에 대한 기타 비파괴적인 변경은 테스트를 수정할 필요 없이 수행할 수 있으므로 테스트 유지 관리 비용이 절감됩니다.</p>
-<p><strong>테스트 대상 코드의 노출된 API만 테스트하여 탄력성을 극대화하십시오. 내부로 들어가지 마십시오.</strong> 목(mock) 대신 스텁(stub)과 가짜(fake)를 선호하십시오. 명시적으로 검증하는 상호 작용이 아니라면 종속성과의 상호 작용을 검증하지 마십시오. 불안정한 테스트는 분명히 탄력성이 매우 낮습니다.</p>
-<h2 id="정밀도-precision">정밀도 (Precision)<a href="#정밀도-precision" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p>테스트가 실패하면 고정밀 테스트는 결함이 정확히 어디에 있는지 알려줍니다. <strong>잘 작성된 단위 테스트는 어떤 코드 줄에 결함이 있는지 정확히 알려줄 수 있습니다.</strong> 잘못 작성된 테스트(특히 대규모 종단 간 테스트)는 종종 정밀도가 매우 낮아 무언가 고장났다는 것을 알려주지만 어디가 고장났는지 알려주지 않습니다.</p>
-<p><strong>테스트를 작고 집중적으로 유지하여 정밀도를 극대화하십시오.</strong> 테스트가 정확히 무엇을 검증하는지 전달하는 설명적인 메서드 이름을 선택하십시오. 시스템 통합 테스트의 경우 모든 경계에서 상태를 검증하십시오.</p>
-<p>이 세 가지 품질은 종종 서로 긴장 관계에 있습니다. 탄력성이 높은 테스트(예: 빈 테스트)를 작성하는 것은 쉽지만, 탄력성이 높고 충실도가 높은 테스트를 작성하는 것은 어렵습니다. 테스트를 설계하고 작성할 때 이러한 품질을 구현을 안내하는 프레임워크로 사용하십시오.</p>
+<p>우리는 모두 코드를 작성할 때 <strong>테스트를 작성하도록 길들여져 있습니다</strong> : 단위, 기능, UI 등 모든 것을 말이죠. 우리는 결국 전문가입니다. 우리 중 많은 사람들은 작은 테스트가 작업을 빠르게 진행하게 하고, 더 큰 테스트가 안전과 마무리에 영감을 주는 것을 좋아합니다. 아니면 단순히 검토 중에 비난을 예상할 수도 있습니다. 우리는 이러한 테스트에 너무 익숙해져서 <strong>왜 테스트를 작성하는지 더 이상 질문하지 않는 경우</strong>가 많습니다. 이것은 낭비적이고 위험할 수 있습니다.</p>
+<p><strong>테스트는 목적을 위한 수단입니다</strong> : 프로젝트의 <strong>주요 위험을 줄이고</strong> , <strong>가장 큰 효과를 얻기 위함</strong>입니다. 이 효과는 항상 표준 관행에 따라 작성하는 테스트에서 나오지 않을 수 있으며, 심지어 테스트에서 전혀 나오지 않을 수도 있습니다.</p>
+<p>두 가지 예시:</p>
+<blockquote>
+<p>“우리는 새로운 디버깅 도구를 만들었습니다. 단위, 통합, UI 테스트를 작성했습니다. 출시할 준비가 되었습니다.”</p>
+<p>뛰어난 관행입니다. 하지만 <strong>목표를 놓쳤습니다</strong>.</p>
+<p>우리의 주요 위험은 디버깅 도구를 위해 데이터를 손상시키거나 서버를 다운시키는 것이었습니다. 어떤 테스트도 이를 해결하지 못했지만, 거짓된 안전감과 &ldquo;완료되었다는&rdquo; 느낌을 주었습니다.</p>
+<p><strong>우리는 출시를 중단했습니다.</strong></p></blockquote>
+<blockquote>
+<p>“우리는 기능을 중단하고 싶었고, 그래서 영향을 받는 사용자에게 알림을 보내야 했습니다. 다시 단위 및 통합 테스트가 있었고, 심지어 비용이 많이 드는 엔드투엔드 테스트도 있었습니다.”</p>
+<p>표준 관행입니다. <strong>낭비된 노력입니다.</strong></p>
+<p>이 알림은 모든 시나리오에 대해 엔드투엔드 커버리지가 실제로 필요할 정도로 중요했습니다. 하지만 단 세 번의 릴리스 동안만 활성화될 것이었습니다. 가장 저렴하고 효과적인 테스트는? 각 릴리스 전에 수동 테스트를 하는 것이었습니다.</p></blockquote>
+<h2 id="더-나은-접근-방식-위험-우선">더 나은 접근 방식: 위험 우선<a href="#더-나은-접근-방식-위험-우선" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>모든 프로젝트나 기능에 대해 <strong>테스트를 고려</strong>하세요. 주요 위험과 이를 줄이기 위한 최상의 옵션을 브레인스토밍하세요. 노력을 낭비하지 않고 설계를 조정할 수 있도록 <strong>시작할 때 이 작업을 수행하세요</strong>. 검토 및 토론에서 참조할 수 있도록 QA 설계로 <strong>작성해 두세요</strong>.</p>
+<p>확실히, <strong>표준 관행은 대부분의 경우에 여전히 좋은 생각입니다</strong> (그래서 표준입니다). 작은 테스트는 저렴하고 코딩 및 유지 보수 속도를 높이며, 더 큰 테스트는 핵심 사용 사례 및 통합을 보호합니다.</p>
+<p><strong>기억하세요</strong>: 테스트는 수단입니다. <strong>중요한 것은 효과입니다.</strong> <strong>그것을 극대화하는 것</strong>이 당신의 일입니다.</p>
 
       </div></div>
 
@@ -217,16 +222,10 @@
   </div>
   <div class="pagination__buttons">
     
-      <a href="https://philipjkim.github.io/posts/20250729-tott-risk-driven-testing/" class="button inline prev">
-        &lt; [<span class="button__text">TotT: 위험 중심 테스트 (Risk-Driven Test)</span>]
-      </a>
     
     
-      ::
-    
-    
-      <a href="https://philipjkim.github.io/posts/20250725-tott-test-behaviors-not-methods/" class="button inline next">
-         [<span class="button__text">TotT: 메서드가 아닌 동작을 테스트하라</span>] &gt;
+      <a href="https://philipjkim.github.io/posts/20250728-tott-effective-testing/" class="button inline next">
+         [<span class="button__text">TotT: 효과적인 테스트</span>] &gt;
       </a>
     
   </div>
