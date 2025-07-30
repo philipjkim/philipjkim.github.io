@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Gemini CLI: 소개 및 그 진정한 가치 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content=" 서버가 과부하되었다는 소식이 들려왔습니다. 사람들은 왜 Gemini CLI에 그렇게 열광하는 걸까요? 우리는 이미 웹과 데스크톱에서 사용할 수 있는 ChatGPT와 Claude, 그리고 Cursor와 Windsurf 같은 코딩 AI 도구, 심지어 Lovable과 V0 같은 바이브 코딩 도구까지 가지고 있습니다. 터미널 기반의 새로운 CLI 기반 AI가 이 시장에 어떤 영향을 미칠 수 있을까요?" />
+<meta name="keywords" content="AI, LLM, dev, vibe-coding, review" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250730-gemini-cli-an-introduction-and-its-real-value/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Gemini CLI: 소개 및 그 진정한 가치">
+<meta property="og:description" content=" 서버가 과부하되었다는 소식이 들려왔습니다. 사람들은 왜 Gemini CLI에 그렇게 열광하는 걸까요? 우리는 이미 웹과 데스크톱에서 사용할 수 있는 ChatGPT와 Claude, 그리고 Cursor와 Windsurf 같은 코딩 AI 도구, 심지어 Lovable과 V0 같은 바이브 코딩 도구까지 가지고 있습니다. 터미널 기반의 새로운 CLI 기반 AI가 이 시장에 어떤 영향을 미칠 수 있을까요?" />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250730-gemini-cli-an-introduction-and-its-real-value/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-07-30 09:08:43 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250730-gemini-cli-an-introduction-and-its-real-value/">Gemini CLI: 소개 및 그 진정한 가치</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-07-30</time><span class="post-author">Terry Cho</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/vibe-coding/">vibe-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/review/">review</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>원문: <a href="https://medium.com/@terrycho/gemini-cli-an-introduction-and-its-real-value-15bd070fb011">https://medium.com/@terrycho/gemini-cli-an-introduction-and-its-real-value-15bd070fb011</a> (translated by Google Gemini)</em></p>
+<hr>
+<p>얼마 전, Gemini CLI 발표 직후 구글의 Gemini 서버가 과부하되었다는 소식이 들려왔습니다. 사람들은 왜 Gemini CLI에 그렇게 열광하는 걸까요? 우리는 이미 웹과 데스크톱에서 사용할 수 있는 ChatGPT와 Claude, 그리고 Cursor와 Windsurf 같은 코딩 AI 도구, 심지어 Lovable과 V0 같은 바이브 코딩 도구까지 가지고 있습니다. 터미널 기반의 새로운 CLI 기반 AI가 이 시장에 어떤 영향을 미칠 수 있을까요?</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*mnQoAMyjje5FOHG5TT85qA.png" alt="img1"></p>
+<p>무료 서비스 발표가 상당한 인기를 얻었지만, Gemini CLI는 전체 소프트웨어 개발 수명 주기(SDLC)를 아우르는 오케스트레이터로서 새로운 입지를 확립했습니다. 이는 소프트웨어 개발 전체를 포괄하려는 야심 찬 계획을 엿볼 수 있게 합니다. 이 글에서는 Gemini CLI가 왜 그렇게 인기 있는지, 그 특징과 차별점, 숨겨진 가치, 그리고 미래 개발 가능성에 대해 논의할 것입니다.</p>
+<h2 id="사람들이-gemini-cli에-열광하는-이유">사람들이 Gemini CLI에 열광하는 이유<a href="#사람들이-gemini-cli에-열광하는-이유" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>무엇보다도 Gemini CLI에 대한 기대감의 이유는 성능과 가격입니다. Gemini CLI는 당연히 유료 등급이 있지만, 무료 등급은 막강합니다. 초당 60개의 요청을 허용하며, 하루 최대 1,000개의 요청 제한이 있습니다.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*07vAzCWIa9N4iwaqZf6Ttg.png" alt="img2"></p>
+<p>Gemini CLI는 구글의 대표 모델인 Gemini 2.5 Pro를 기반으로 합니다. “사고 모델”인 Gemini 2.5 Pro는 답변을 생성하기 전에 사고 과정을 거치기 때문에 응답 시간이 상대적으로 느리며, 일반적으로 30~40초 범위입니다. 이는 일반 사용자가 분당 약 1~2개의 요청을 할 수 있음을 의미합니다. 분당 60개의 요청이라는 무료 등급 제한과 비교하면, 분당 1~2개의 요청 속도는 사용자가 불편을 겪지 않을 것임을 의미합니다. 이는 병렬 처리에도 충분한 양이며, 8시간 동안 Gemini를 사용하는 경우에도 충분합니다(60분 * 2요청/분 * 8시간 = 960요청).</p>
+<p>또한, 다른 모델과 달리 1M 토큰 입력 창 크기는 ChatGPT의 200K보다 훨씬 커서 코딩과 같은 사용 사례를 위해 많은 양의 코드와 정보를 참조할 수 있다는 장점을 제공합니다.</p>
+<h2 id="gemini-25-pro의-뛰어난-코딩-성능">Gemini 2.5 Pro의 뛰어난 코딩 성능<a href="#gemini-25-pro의-뛰어난-코딩-성능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Gemini CLI에 사용된 모델은 2.5 Pro로, lmarena.ai에 따르면 기존 모델 중 가장 높은 코딩 성능을 가진 프리미엄 모델입니다. 물론 lmarena.ai가 100% 신뢰할 수 있는 리더보드는 아니며, 많은 개발자들이 여전히 Anthropic 모델을 선호하고 실제 코딩 시나리오에서는 Anthropic의 성능이 우수하다고 말합니다. 그럼에도 불구하고 Gemini 2.5 Pro가 코딩에 탁월한 모델이라는 것은 사실입니다. Anthropic의 월 구독료가 최소 20달러이고 최대 플랜은 100~200달러에 달하는 것을 고려할 때, 이 정도 수준의 모델을 무료로 제공하는 것은 부인할 수 없이 매력적입니다.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*xBZL4MvNhZJ7UfNkBZPUyg.png" alt="img3"></p>
+<h2 id="무료-코드-어시스트-ai-ide도-제공">무료 코드 어시스트 AI IDE도 제공<a href="#무료-코드-어시스트-ai-ide도-제공" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이에 더해, Cursor AI / Windsurf AI와 유사한 AI 기반 IDE 도구인 Cloud Code의 무료 등급도 출시되었습니다. Visual Studio Code나 IntelliJ와 같은 기존 IDE의 플러그인으로 설치됩니다. Cursor AI와 같은 것을 이미 사용하고 있다면, Google의 Cloud Code를 함께 설치할 수 있습니다.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*MwNENaHDptf95B4l_IxoMA.png" alt="img4"></p>
+<h2 id="gemini-cli의-특징">Gemini CLI의 특징<a href="#gemini-cli의-특징" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>그렇다면 Gemini CLI는 기존 도구들과 비교하여 어떤 다른 경험을 제공할까요?</p>
+<h3 id="로컬-파일-시스템-연결">로컬 파일 시스템 연결<a href="#로컬-파일-시스템-연결" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>첫째, API나 웹 서비스가 아닌 CLI이기 때문에 로컬 머신에서 실행됩니다. 이는 Gemini 모델이 로컬 환경에 액세스할 수 있음을 의미합니다. 다시 말해, 디스크의 파일을 읽고 모든 로컬 명령을 실행할 수 있습니다. 이것이 대단한 일처럼 보이지 않을 수 있지만, 엄청난 가치를 지닙니다. 예를 들어, 코딩할 때 로컬 디렉토리의 코드를 참조하여 코드를 생성하게 하고, Node.js 또는 Python과 같은 도구를 사용하여 생성된 코드를 직접 실행하고 테스트 케이스를 실행할 수 있습니다. 이를 통해 로컬 개발 환경에 대한 완전한 제어 및 자동화가 가능합니다.</p>
+<h3 id="샌드박스-지원">샌드박스 지원<a href="#샌드박스-지원" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>AI 에이전트가 로컬 파일 시스템에 액세스하도록 허용할 때 가장 큰 우려 사항은 보안입니다. 전체 디스크 액세스가 허용되면 에이전트의 확장 프로그램(예: MCP 서버)이 개인 정보를 악의적으로 훔치거나 내 컴퓨터 설정을 임의로 변경할 위험이 있습니다. 이를 방지하기 위해 Gemini CLI는 “샌드박스”라는 기능을 지원합니다. 이 기능은 파일 액세스를 Gemini가 실행되는 디렉토리(하위 디렉토리 포함)로만 제한하여 에이전트가 의도하지 않은 로컬 리소스에 액세스하는 것을 방지합니다.</p>
+<h3 id="구글-도구-지원">구글 도구 지원<a href="#구글-도구-지원" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>다른 모델과 비교하여 Gemini 모델의 차별화되는 특징 중 하나는 구글 검색과의 통합입니다. LLM은 본질적으로 훈련 데이터에 기반하여 답변할 수 있으므로 최신 정보를 제공할 수 없습니다. 또한 학습된 정보가 올바른지 확인할 수 없어 “환각”(LLM이 잘못된 답변을 생성하는 현상) 발생 확률이 높습니다. Gemini는 구글 검색을 내장 도구로 지원합니다. LLM이 모르는 정보가 있거나 최신 정보가 필요하거나 사용자의 검색 지시가 있을 때 외부 구글 검색의 정보를 참조할 수 있습니다.</p>
+<h3 id="mcp-지원">MCP 지원<a href="#mcp-지원" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>그리고 물론, 로컬 데스크톱에서 실행될 수 있는 도구로서 MCP를 지원합니다. MCP에 대한 정보가 많으므로 여기서는 자세한 설명을 생략하겠습니다. 향후 기사에서는 Gemini CLI와 Zapier MCP를 사용하여 5,000개 이상의 도구를 한 번에 쉽게 연결하는 방법을 소개하겠습니다.</p>
+<h2 id="gemini-cli가-목표로-하는-궁극적인-가치">Gemini CLI가 목표로 하는 궁극적인 가치<a href="#gemini-cli가-목표로-하는-궁극적인-가치" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Gemini CLI가 제공할 수 있는 추가 가치를 이해하려면, 먼저 CLI가 기존 LLM 모델, API 또는 Cursor와 같은 AI IDE 도구가 할 수 없는 일을 무엇을 할 수 있는지 이해해야 합니다.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1048/format:webp/1*iWDK2xhpyUR0x-9sdKs8nA.png" alt="img5"></p>
+<p>명령줄 도구로서 CLI는 셸 명령을 사용하여 다른 도구에 의해 호출될 수 있습니다. 반대로, Gemini CLI는 로컬 환경에서 작동하므로 셸 명령 또는 MCP를 통해 다른 도구를 호출할 수 있습니다.</p>
+<p>Cursor와 같은 AI IDE 도구는 사람이 앉아서 명령을 내리는 대화형 환경이며, 그들의 AI IDE 기능은 다른 도구에 의해 호출될 수 없습니다. 또한 AI IDE는 MCP를 사용하여 다른 도구를 호출할 수 있지만, 이는 사용자의 명령에 의해 실행되며 자동으로 수행될 수 없습니다.</p>
+<p>요약하자면, Gemini CLI는 자동으로(예: cron과 같은 스케줄러를 통해) 다른 도구를 자유롭게 호출할 수 있으며, 반대로 다른 도구에 의해 자유롭게 호출될 수 있습니다.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*SpZWgTKa6GdN8zRPv9xjjA.png" alt="img6"></p>
+<p>이해를 돕기 위해 실제 사용 시나리오의 예를 들어보겠습니다.</p>
+<ol>
+<li>Gemini CLI를 사용하여 PRD(제품 요구사항 문서)를 생성하고 MCP를 사용하여 Google Docs에 생성합니다.</li>
+<li>Gemini CLI를 사용하여 생성된 PRD를 사용자 스토리로 분해하고 MCP를 통해 JIRA에 등록합니다.</li>
+<li>Gemini CLI를 사용하여 JIRA에서 사용자 스토리를 읽고 각 스토리에 대한 코드를 생성합니다.</li>
+<li>Gemini CLI를 사용하여 로컬에 생성된 코드에 대한 JUnit 테스트 케이스를 생성하고 실행합니다.</li>
+</ol>
+<p>이 시나리오에서 Gemini는 전체 SDLC(소프트웨어 개발 수명 주기)를 아우르는 오케스트레이터로 사용되었습니다. 단순한 CLI 도구가 아니라 SDLC의 오케스트레이터로 자리매김하려는 전략을 엿볼 수 있습니다. 위 사례 외에도 Jenkins에 의해 호출되어 데이터를 정화하거나 ArgoCD를 통해 배포 자동화를 수행하는 등 코딩을 넘어 전체 소프트웨어 개발 수명 주기에서 사용될 것으로 예상됩니다.</p>
+<h2 id="잠재력">잠재력<a href="#잠재력" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>만약 Gemini CLI 발표와 함께 구글의 전략이 무료 등급으로 사용자 기반을 확장하는 것이었다면, 다음 단계는 CLI를 오픈 소스화하여 생태계를 구축하는 것이었습니다. 셸 명령으로도 완벽하게 사용할 수 있지만, Jenkins/Argo와 같은 CI/CD 도구와 추가로 통합되거나 코드를 특정 워크플로우에 맞게 수정하여 훨씬 더 많은 확장성을 제공할 수 있습니다.</p>
+<p>Gemini CLI가 오픈 소스 및 무료 등급 정책 덕분에 얼마나 활성화될지, 그리고 SDLC의 전체적인 발전에 얼마나 기여할지는 두고 봐야 할 것입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250729-pls7-english-guide/" class="button inline next">
+         [<span class="button__text">Game Guide for Sampyong Hi-Lo (a.k.a. PLS7: Pot Limit Sampyong - 7 or better)</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
