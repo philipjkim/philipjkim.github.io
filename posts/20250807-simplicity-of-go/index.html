@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Go 의 단순함(simplicity) 더 들여다보기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="이 글에서는 Go의 핵심 철학인 &#39;단순함&#39;이 코드 수준에서 어떻게 드러나는지, 그리고 이 철학이 왜 어떤 개발자에게는 최고의 장점이 되고 다른 개발자에게는 답답한 단점으로 여겨지는지 가감 없이 살펴보겠습니다." />
+<meta name="keywords" content="golang, programming, dev, review" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250807-simplicity-of-go/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go 의 단순함(simplicity) 더 들여다보기">
+<meta property="og:description" content="이 글에서는 Go의 핵심 철학인 &#39;단순함&#39;이 코드 수준에서 어떻게 드러나는지, 그리고 이 철학이 왜 어떤 개발자에게는 최고의 장점이 되고 다른 개발자에게는 답답한 단점으로 여겨지는지 가감 없이 살펴보겠습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250807-simplicity-of-go/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-08-07 08:08:20 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250807-simplicity-of-go/">Go 의 단순함(simplicity) 더 들여다보기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-08-07</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/review/">review</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Go 언어의 철학을 관통하는 가장 중요한 단어는 바로 <strong>&lsquo;단순함(Simplicity)&rsquo;</strong> 입니다. 이는 단순히 기능이 적다는 의미가 아니라, 복잡한 문제를 명료하고 예측 가능하게 해결하기 위한 의도적인 설계 철학입니다. Go의 창시자 중 한 명인 롭 파이크(Rob Pike)는 &ldquo;단순함은 복잡하다(Simplicity is Complicated)&ldquo;고 말했습니다. 최고의 단순함을 성취하기 위해 수많은 고민과 트레이드오프가 있었음을 암시하는 말이죠.</p>
+<p>이 글에서는 Go의 핵심 철학인 &lsquo;단순함&rsquo;이 코드 수준에서 어떻게 드러나는지, 그리고 이 철학이 왜 어떤 개발자에게는 최고의 장점이 되고 다른 개발자에게는 답답한 단점으로 여겨지는지 가감 없이 살펴보겠습니다.</p>
+<p><em>(이 글은 Gemini 2.5 Pro 모델에 의해 작성되었으며, 커버하고 있는 세부 항목들과 글의 톤/매너에 대한 요구사항들은 제가 정리해서 Gemini 에 요청했습니다. 따라서 내용에 잘못된 부분이 있을 수 있는데, 그런 경우 잘못된 정보에 대한 댓글을 남겨주시면 감사하겠습니다.)</em></p>
+<hr>
+<h2 id="단순함은-기능의-부재가-아닌-의도된-설계">단순함은 기능의 부재가 아닌, 의도된 설계<a href="#단순함은-기능의-부재가-아닌-의도된-설계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>현대의 많은 프로그래밍 언어들은 점점 더 많은 기능을 흡수하며 서로 닮아가는 &lsquo;기능 경쟁&rsquo;을 벌이고 있습니다. 하지만 Go는 정반대의 길을 선택했습니다. 언어의 사양(specification)을 작게 유지하고, 한 가지 일을 하는 방법은 한두 가지로 제한하며, &lsquo;마법&rsquo;처럼 보이는 기능을 의도적으로 배제했습니다.</p>
+<p>그 목표는 명확합니다.</p>
+<ul>
+<li><strong>가독성과 유지보수성:</strong> 코드는 쓰는 시간보다 읽는 시간이 훨씬 깁니다. Go는 누가 작성했든 쉽게 읽고 이해할 수 있는 코드를 지향합니다. 이는 여러 개발자가 협업하는 대규모 프로젝트에서 빛을 발합니다.</li>
+<li><strong>낮은 인지 부하:</strong> 언어가 제공하는 기능이 적으면 개발자는 &ldquo;어떤 기능을 사용해야 할까?&ldquo;를 고민하는 대신 문제 해결 자체에 집중할 수 있습니다.</li>
+<li><strong>강력한 툴링:</strong> 언어가 단순하면 컴파일러, 포맷터(<code>gofmt</code>), 정적 분석기 등 주변 도구를 더 빠르고 강력하게 만들 수 있습니다.</li>
+</ul>
+<h2 id="코드로-직접-비교하는-go의-단순성">코드로 직접 비교하는 Go의 단순성<a href="#코드로-직접-비교하는-go의-단순성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>백문이 불여일견입니다. 다른 언어와 코드를 직접 비교하며 Go의 단순함이 실제로 어떻게 나타나는지 살펴보겠습니다. 비교 대상 언어들을 비판하려는 의도는 전혀 없으며, 각 언어의 접근 방식과 철학의 차이를 이해하는 데 목적이 있습니다.</p>
+<h3 id="1-루프loop-단-하나의-for">1. 루프(Loop): 단 하나의, <code>for</code><a href="#1-루프loop-단-하나의-for" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>프로그래밍의 가장 기본인 반복문부터 시작해 봅시다.</p>
+<p><strong>JavaScript / Kotlin</strong>
+JavaScript나 Kotlin 같은 현대 언어들은 데이터 컬렉션을 다루기 위한 매우 표현력 좋고 우아한 도구들을 제공합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// JavaScript: 다양한 방식의 루프
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 1. 고전적인 for 루프
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 2. for...of (iterable 순회)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">item</span> <span class="k">of</span> <span class="nx">items</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 3. forEach (함수형 스타일)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">items</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">item</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 4. map (변환 후 새 배열 반환)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">doubled</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">item</span> <span class="p">=&gt;</span> <span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span>
+</span></span></code></pre></div><p>이러한 접근법은 매우 강력합니다. 특히 <code>map</code>, <code>filter</code>, <code>reduce</code> 같은 함수형 메서드는 코드를 간결하고 선언적으로 만듭니다. 하지만 동시에 &ldquo;지금 상황에선 어떤 루프를 쓰는 게 가장 좋을까?&ldquo;라는 행복한 고민을 안겨주기도 합니다.</p>
+<p><strong>Go</strong>
+Go는 단 하나의 반복문, <code>for</code> 키워드만 제공합니다. 이 하나로 모든 종류의 반복을 표현합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">items</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 1. C 스타일의 고전적 for 루프</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">items</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 2. while 문처럼 사용 (조건식만 사용)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">i</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 3. for...range (컬렉션 순회)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">items</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;인덱스: %d, 값: %d\n&#34;</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4. 무한 루프</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ...</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Go의 선택은 명확합니다. 개발자에게 선택지를 줄이는 대신, <strong>언제나 동일한 패턴으로 코드를 작성하게 하여 일관성과 가독성을 높이는 것</strong>입니다.</p>
+<h3 id="2-오류-처리-명시적인-if-err--nil">2. 오류 처리: 명시적인 <code>if err != nil</code><a href="#2-오류-처리-명시적인-if-err--nil" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오류 처리는 언어의 철학이 가장 극명하게 드러나는 부분 중 하나입니다.</p>
+<p><strong>Java / Kotlin (try-catch)</strong>
+Java를 비롯한 많은 언어는 예외(Exception)를 통해 오류를 처리합니다. <code>try-catch</code> 구문은 정상적인 코드 흐름과 오류 처리 로직을 분리해 가독성을 높일 수 있는 강력한 메커니즘입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Java: try-catch-finally</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">readFile</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">FileReader</span><span class="w"> </span><span class="n">reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FileReader</span><span class="p">(</span><span class="s">&#34;file.txt&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 파일 읽기 로직...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">FileNotFoundException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">err</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;파일을 찾을 수 없습니다: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">getMessage</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reader</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">reader</span><span class="p">.</span><span class="na">close</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">IOException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>장점은 오류 처리 코드를 한곳에 모을 수 있다는 것이지만, 단점은 <code>try</code> 블록 안의 메서드가 어떤 예외를 던지는지, 그리고 그 예외가 어디서 처리되는지 코드 흐름을 따라가기 어려울 수 있다는 점입니다.</p>
+<p><strong>Go</strong>
+Go는 <code>try-catch</code>가 없습니다. 대신, 오류가 발생할 수 있는 함수는 결괏값과 함께 <code>error</code> 타입을 명시적으로 반환합니다. 함수를 호출한 쪽은 즉시 오류를 확인하고 처리해야 합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go: 명시적인 오류 값 반환 및 처리</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">readFile</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">data</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">ReadFile</span><span class="p">(</span><span class="s">&#34;file.txt&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 오류 발생 시 즉시 처리</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;파일 읽기 실패: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="c1">// 실제론 Fatalf가 프로그램을 종료하므로 필요 없지만, 명시성을 위해</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 성공 시 로직 계속 진행</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>이 <code>if err != nil</code> 패턴은 Go를 처음 접하는 개발자들이 가장 많이 비판하는 부분입니다. 코드가 길어지고 지루해 보이기 때문입니다. 하지만 Go의 설계자들은 이것이 <strong>의도된 장점</strong>이라고 말합니다.</p>
+<ul>
+<li>오류는 예외적인 상황이 아니라, 함수의 또 다른 반환 값일 뿐입니다.</li>
+<li>오류를 무시하고 넘어갈 수 없도록 강제합니다.</li>
+<li>코드의 제어 흐름이 눈에 보이는 그대로입니다. 갑자기 다른 곳으로 점프하는 &lsquo;마법&rsquo;이 없습니다.</li>
+</ul>
+<p><strong>Rust</strong>
+참고로 Rust는 Go와 <code>try-catch</code>의 중간 형태인 <code>Result</code> 열거형과 <code>?</code> 연산자를 통해 명시적이면서도 간결한 오류 처리를 제공하여 많은 사랑을 받고 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// Rust: Result 타입과 `?` 연산자
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">fs</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">read_file</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">std</span>::<span class="n">io</span>::<span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fs</span>::<span class="n">read_to_string</span><span class="p">(</span><span class="s">&#34;file.txt&#34;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// 오류 발생 시 자동으로 리턴
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">content</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="단순성이-가져다주는-명확한-장점-">단순성이 가져다주는 명확한 장점 ✨<a href="#단순성이-가져다주는-명확한-장점-" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><strong>압도적인 가독성:</strong> Go 프로젝트는 어떤 것을 열어봐도 코드 스타일과 구조가 거의 비슷합니다. 새로운 프로젝트에 적응하는 시간이 매우 짧습니다.</li>
+<li><strong>빠른 컴파일 속도와 강력한 툴링:</strong> 언어 사양이 작고 의존성 관리 모델이 단순해 컴파일 속도가 매우 빠릅니다. 코드를 저장하는 즉시 <code>gofmt</code>가 자동으로 코드를 포맷팅해주므로, 팀 내에서 코드 스타일로 논쟁할 일이 사라집니다.</li>
+<li><strong>배우기 쉬운 언어:</strong> 키워드가 25개뿐이고(C++이나 Java의 수백 개와 비교), 기능이 적어 언어의 모든 것을 익히는 데 걸리는 시간이 짧습니다.</li>
+<li><strong>간결한 동시성 모델:</strong> <code>go</code> 키워드 하나로 함수를 비동기적으로 실행(고루틴)하고, 채널(<code>chan</code>)을 통해 안전하게 데이터를 주고받는 모델은 복잡한 동시성 코드를 놀라울 만큼 쉽게 작성하도록 돕습니다.</li>
+</ul>
+<h2 id="단순함의-이면-트레이드오프와-비판-">단순함의 이면: 트레이드오프와 비판 🤔<a href="#단순함의-이면-트레이드오프와-비판-" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>물론, Go의 단순함이 항상 장점인 것은 아닙니다. 이는 명백한 트레이드오프이며, 많은 개발자들이 단점으로 지적하는 부분이기도 합니다.</p>
+<ul>
+<li><strong>때로는 장황하게 느껴지는 코드:</strong> 위에서 본 <code>if err != nil</code> 패턴이 대표적입니다. 제네릭(Generics)이 도입되기 전까지는 간단한 데이터 구조에 대해서도 타입별로 중복 코드를 작성해야 했습니다.</li>
+<li><strong>표현력의 한계:</strong> Python이나 Kotlin처럼 간결하고 우아한 한 줄짜리 코드를 작성하기 어렵습니다. 삼항 연산자(<code>condition ? a : b</code>)조차 없습니다. 모든 것은 명시적이고, 때로는 직설적으로 보입니다.</li>
+<li><strong>느리게 추가된 &lsquo;현대적&rsquo; 기능들:</strong> 제네릭은 Go 커뮤니티의 오랜 요구사항이었지만, Go 1.18에서야 매우 신중하게 추가되었습니다. Go 팀은 새로운 기능을 추가할 때 그것이 Go의 단순함이라는 핵심 철학을 해치지 않는지 극도로 보수적으로 접근합니다. 이로 인해 다른 언어에서는 당연하게 여겨지는 기능들이 없어서 불편함을 느낄 수 있습니다.</li>
+</ul>
+<h2 id="결론-목적이-있는-도구">결론: 목적이 있는 도구<a href="#결론-목적이-있는-도구" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go의 단순함은 &lsquo;미완성&rsquo;이거나 &lsquo;기능 부족&rsquo;이 아닌, <strong>&lsquo;대규모 소프트웨어를 안정적으로 개발하고 유지보수하기&rsquo;</strong> 라는 명확한 목적을 위해 고도로 다듬어진 설계 철학의 결과물입니다.</p>
+<p>Java나 Kotlin의 풍부한 기능과 표현력, Rust의 강력한 타입 시스템과 메모리 안정성, JavaScript의 유연함과 거대한 생태계는 각자의 영역에서 매우 훌륭한 장점입니다. Go는 그들과 경쟁하는 대신, <strong>&lsquo;명료함&rsquo;과 &lsquo;예측 가능성&rsquo;</strong> 이라는 다른 가치를 최우선으로 둡니다.</p>
+<p>Go의 철학이 당신에게 매력적으로 다가올지, 혹은 답답한 제약으로 느껴질지는 당신이 해결하려는 문제와 당신의 개발 가치관에 달려 있습니다. Go는 모든 문제에 대한 최고의 해결책은 아니지만, 자신이 목표하는 영역에서는 그 어떤 언어보다 강력한 생산성과 안정성을 보여주는, 목적이 뚜렷한 훌륭한 도구임이 틀림없습니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250807-book-vibe-coding-preface/" class="button inline next">
+         [<span class="button__text">책 소개: VIBE CODING by Gene Kim and Steve Yegge</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
