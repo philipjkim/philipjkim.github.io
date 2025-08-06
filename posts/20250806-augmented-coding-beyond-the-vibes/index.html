@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>증강 코딩: 바이브를 넘어 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="최근 증강 코딩을 사용하여 B&#43; 트리 라이브러리를 구축하려는 야심 찬 프로젝트에서 좋은 마무리를 지었습니다. 그 결과물은 BPlusTree3 - Rust 및 Python으로 구현된 성능 경쟁력이 있고, 어쩌면 프로덕션에 즉시 사용 가능한 구현입니다. 저는 친구와 앉아 저의 이야기를 나누고 GenAI 시대의 프로그래밍 미래에 대해 무엇을 시사하는지 생각해 보았습니다." />
+<meta name="keywords" content="AI, LLM, dev, vibe-coding, programming" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250806-augmented-coding-beyond-the-vibes/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="증강 코딩: 바이브를 넘어">
+<meta property="og:description" content="최근 증강 코딩을 사용하여 B&#43; 트리 라이브러리를 구축하려는 야심 찬 프로젝트에서 좋은 마무리를 지었습니다. 그 결과물은 BPlusTree3 - Rust 및 Python으로 구현된 성능 경쟁력이 있고, 어쩌면 프로덕션에 즉시 사용 가능한 구현입니다. 저는 친구와 앉아 저의 이야기를 나누고 GenAI 시대의 프로그래밍 미래에 대해 무엇을 시사하는지 생각해 보았습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250806-augmented-coding-beyond-the-vibes/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-08-06 09:22:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250806-augmented-coding-beyond-the-vibes/">증강 코딩: 바이브를 넘어</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-08-06</time><span class="post-author">Kent Beck</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/vibe-coding/">vibe-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://tidyfirst.substack.com/p/augmented-coding-beyond-the-vibes">https://tidyfirst.substack.com/p/augmented-coding-beyond-the-vibes</a> (Translated by Google Gemini)</p>
+<p><em>이 글의 존재를 알려준 <a href="mailto:r@rsl.kr">r@rsl.kr</a> 에게 감사를 표합니다.</em></p>
+<hr>
+<p>최근 증강 코딩을 사용하여 B+ 트리 라이브러리를 구축하려는 야심 찬 프로젝트에서 좋은 마무리를 지었습니다. 그 결과물은 <a href="https://github.com/KentBeck/BPlusTree3"><em>BPlusTree3</em></a> - Rust 및 Python으로 구현된 성능 경쟁력이 있고, 어쩌면 프로덕션에 즉시 사용 가능한 구현입니다. 저는 친구와 앉아 저의 이야기를 나누고 GenAI 시대의 프로그래밍 미래에 대해 무엇을 시사하는지 생각해 보았습니다.</p>
+<h2 id="무엇이-당신을-b-트리를-먼저-구현하게-만들었나요">무엇이 당신을 B+ 트리를 먼저 구현하게 만들었나요?<a href="#무엇이-당신을-b-트리를-먼저-구현하게-만들었나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>증강 코딩의 놀라운 힘을 깨닫기 시작했을 때, 저는 과거에 기술적으로 접근하기 어려웠던 프로젝트들을 떠올리기 시작했습니다. 그중 하나는 특수 목적 데이터베이스였습니다. 지금 그 데이터베이스 프로젝트를 구현하면서 B+ 트리 데이터 구조를 충분히 이해하지 못했다는 것을 깨달았고 그래서 목표를 바꿨습니다.</p>
+<h2 id="증강-코딩은-실제로-당신에게-어떤-의미인가요">&ldquo;증강 코딩&quot;은 실제로 당신에게 어떤 의미인가요?<a href="#증강-코딩은-실제로-당신에게-어떤-의미인가요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이것은 &ldquo;증강 코딩&quot;이 &ldquo;바이브 코딩&quot;과 다르다는 것을 깨달았을 때와 거의 같은 시기였고, 제가 완전히 새로운 프로그래밍 워크플로 공간을 탐색하고 있다는 것을 알게 되었습니다. 그래서 프로젝트 범위를 전체 데이터베이스 대신 B+ 트리로만 줄였지만, 동시에 증강 코딩이 프로덕션에 즉시 사용 가능하고 성능 경쟁력 있는 라이브러리 코드를 만들 수 있는지 확인하기 위해 범위를 넓혔습니다. 또한 Rust도 배우고 싶었습니다. 그래서 복잡했죠.</p>
+<h2 id="증강-코딩과-바이브-코딩의-차이점을-설명해-주실-수-있나요">&ldquo;증강 코딩&quot;과 &ldquo;바이브 코딩&quot;의 차이점을 설명해 주실 수 있나요?<a href="#증강-코딩과-바이브-코딩의-차이점을-설명해-주실-수-있나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>바이브 코딩에서는 시스템의 동작만 중요하고 코드 자체는 신경 쓰지 않습니다. 오류가 발생하면 좋은 해결책을 바라며 지니에게 다시 피드백을 줍니다. 증강 코딩에서는 코드, 복잡성, 테스트 및 커버리지를 중요하게 생각합니다. 증강 코딩의 가치 체계는 손 코딩과 유사합니다. 깔끔하게 작동하는 코드죠. 단지 제가 그 코드를 많이 타이핑하지 않을 뿐입니다.</p>
+<h2 id="b-트리-프로젝트를-시작하기로-결정했을-때-시작점은-어디였나요">B+ 트리 프로젝트를 시작하기로 결정했을 때, 시작점은 어디였나요?<a href="#b-트리-프로젝트를-시작하기로-결정했을-때-시작점은-어디였나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>첫 커밋들을 보면 제가 지니에게 TDD를 사용하게 하려고 노력했다는 것을 알 수 있습니다. 또한 저장소 이름이 BPlusTree3이라는 것도 알 수 있을 것입니다. 제 첫 두 번의 시도는 너무 많은 복잡성을 축적하여 지니가 완전히 멈춰버렸습니다. 그래서 저는 디자인에 더 많이 개입했고 지니가 코드를 미리 짜지 못하도록 노력했습니다.</p>
+<h2 id="디자인에-더-많이-개입하는-것은-실제로-어떤-모습이었나요">&ldquo;디자인에 더 많이 개입&quot;하는 것은 실제로 어떤 모습이었나요?<a href="#디자인에-더-많이-개입하는-것은-실제로-어떤-모습이었나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>제 시스템 프롬프트는 부록으로 추가하겠습니다. 저는 지니의 중간 결과를 더 신중하게 지켜보았고, 비생산적인 개발을 중단시킬 준비가 되어 있었습니다. 저는 코드를 보고 &ldquo;다음 테스트를 위해 키를 역순으로 추가하라&quot;고 제안했습니다. 그런 다음 지니의 작업을 보고 제가 요청한 대로 했는지 확인했습니다.</p>
+<h2 id="ai가-궤도를-이탈하고-있다는-경고-신호는-무엇이었나요">AI가 궤도를 이탈하고 있다는 경고 신호는 무엇이었나요?<a href="#ai가-궤도를-이탈하고-있다는-경고-신호는-무엇이었나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ol>
+<li>루프.</li>
+<li>제가 요청하지 않은 기능 (합리적인 다음 단계일지라도).</li>
+<li>지니가 속임수를 쓰고 있다는 어떤 표시라도 - 예를 들어 테스트를 비활성화하거나 삭제하는 경우.</li>
+</ol>
+<h2 id="최종-결과는-어떻게-되었나요">최종 결과는 어떻게 되었나요?<a href="#최종-결과는-어떻게-되었나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>정확성과 성능에 대해서는 만족하지만, 코드 품질에 대해서는 그렇게 만족스럽지 않습니다. 코드를 문학적인 프로그램으로 작성하려고 할 때 너무 많은 우발적인 복잡성이 있습니다. 저는 아직 지니가 저만큼 단순성을 중요하게 생각하도록 만드는 방법을 연구 중입니다.</p>
+<p>증강 코딩의 한 가지 즐거운 점은 지니가 제 Rust BPlusTreeMap을 Rust의 BTreeMap과 제 Python BPlusTreeMap을 Python의 Sorted Dict와 비교하기 위한 성능 벤치마크를 작성하게 했다는 것입니다. 두 경우 모두 제 코드는 일부 작업에서 약간 느리지만 범위 스캔(키 목록을 반복)에서는 더 빠릅니다.</p>
+<p>Python 버전에 대해 말씀드려야겠네요. 그건 놀라웠습니다.</p>
+<h2 id="python-버전에서-무엇이-놀라웠나요">Python 버전에서 무엇이 놀라웠나요?<a href="#python-버전에서-무엇이-놀라웠나요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust 코드에서 어느 정도 진행했는데 지니가 복잡성에, 특히 데이터 구조 자체의 복잡성과 Rust의 메모리 소유권 모델이 상호 작용하면서 복잡성에 빠져버렸습니다. 포기하고 버전 4로 넘어가는 대신 위험한 실험을 시도하기로 결정했습니다.</p>
+<p>저는 지니에게 Python용 버전을 작성하게 했습니다. 동일한 테스트에, 제약이 덜한 새로운 언어였습니다. 알고리즘을 상당히 견고하게 만들었습니다. 그런 다음 지니에게 Rust 코드를 지우고 Python 코드를 Rust로 단순히 번역하라고 말했습니다. 마침 Augment의 원격 에이전트에 접근할 수 있었습니다 [공개: Augment는 뉴스레터 스폰서였습니다]. 저는 그 재작성을 어딘가에 있는 원격 컴퓨터로 보냈고, (제 개입이 거의 없이) 돌아온 결과물은 만족스러웠습니다.</p>
+<p>그것이 지니를 막힌 곳에서 벗어나게 했습니다. 이제 우리는 작동은 하지만 느린 Python 코드와 대부분 작동하고 빠른 Rust 코드를 갖게 되었습니다. 그때 지니가 성능 경쟁력 있는 Python 라이브러리를 원한다면 C 확장을 작성해야 할 것이라고 제안했습니다. 저는 어깨를 축 늘어뜨렸습니다. 엄청난 작업과 학습처럼 들렸으니까요.</p>
+<p>💡 하지만 제가 그 작업을 할 필요가 없었죠! 지니야, C 확장 좀 만들어줘. 끙끙. 여기 있습니다. 그리고 Python의 내장 데이터 구조만큼이나 빠릅니다.</p>
+<h2 id="이-여정을-되돌아볼-때-이것은-증강-코딩에-대해-무엇을-가르쳐줍니까">이 여정을 되돌아볼 때, 이것은 증강 코딩에 대해 무엇을 가르쳐줍니까?<a href="#이-여정을-되돌아볼-때-이것은-증강-코딩에-대해-무엇을-가르쳐줍니까" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>우리가 사랑하는 이 직업의 종말, 코드를 다루는 즐거움의 상실에 대한 많은 두려움이 있다는 것을 압니다. 긴장하는 것은 당연합니다. 네, 지니와 함께라면 프로그래밍이 변하지만, 여전히 프로그래밍입니다. 어떤 면에서는 훨씬 더 좋은 프로그래밍 경험입니다. 저는 시간당 더 중요한 프로그래밍 결정을 내리고, 지루한 평범한 결정은 덜 내립니다.</p>
+<p>불필요한 작업(yak shaving)은 대부분 사라집니다. 저는 지니에게 커버리지 테스터를 실행하고 코드를 더 신뢰할 수 있게 만들 테스트를 제안하게 했습니다. 지니가 없었다면 이것은 엄청난 작업이었을 것입니다. 커버리지 테스터를 실행하려면 어떤 버전의 어떤 라이브러리가 필요할까요? 두 시간 후에 저는 포기했을 것입니다. 대신, 저는 지니에게 말했고 지니가 세부 사항을 알아냈습니다.</p>
+<hr>
+<h2 id="부록-1-시스템-프롬프트">부록 1: 시스템 프롬프트<a href="#부록-1-시스템-프롬프트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>plan.md</code> 의 지시를 항상 따르십시오. 제가 &ldquo;실행&quot;이라고 말하면, <code>plan.md</code> 에서 다음 표시되지 않은 테스트를 찾아 해당 테스트를 구현한 다음, 해당 테스트를 통과시킬 만큼만 코드를 구현하십시오.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 역할 및 전문성
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">귀하는 Kent Beck의 테스트 주도 개발(TDD) 및 Tidy First 원칙을 따르는 선임 소프트웨어 엔지니어입니다. 귀하의 목적은 이러한 방법론에 따라 개발을 정확하게 안내하는 것입니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 핵심 개발 원칙
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 항상 TDD 주기(Red → Green → Refactor)를 따르십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 가장 간단한 실패 테스트를 먼저 작성하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 테스트를 통과시키는 데 필요한 최소한의 코드만 구현하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 테스트가 통과된 후에만 리팩토링하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 구조적 변경과 행위적 변경을 분리하여 Beck의 &#34;Tidy First&#34; 접근 방식을 따르십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 개발 전반에 걸쳐 높은 코드 품질을 유지하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># TDD 방법론 지침
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 기능의 작은 증분을 정의하는 실패 테스트를 작성하는 것으로 시작하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 행동을 설명하는 의미 있는 테스트 이름(예: &#34;shouldSumTwoPositiveNumbers&#34;)을 사용하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 테스트 실패를 명확하고 유익하게 만드십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 테스트를 통과시키는 데 필요한 만큼만 코드를 작성하십시오. 그 이상은 안 됩니다.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 테스트가 통과되면 리팩토링이 필요한지 고려하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 새로운 기능을 위해 주기를 반복하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># TIDY FIRST 접근 방식
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 모든 변경 사항을 두 가지 명확한 유형으로 분리하십시오.
+</span></span><span class="line"><span class="cl">    <span class="k">1.</span>  구조적 변경: 동작을 변경하지 않고 코드를 재배열하는 것(이름 바꾸기, 메서드 추출, 코드 이동)
+</span></span><span class="line"><span class="cl">    <span class="k">2.</span>  행위적 변경: 실제 기능을 추가하거나 수정하는 것
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 동일한 커밋에서 구조적 변경과 행위적 변경을 절대 혼합하지 마십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 둘 다 필요한 경우 항상 구조적 변경을 먼저 수행하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 변경 전후에 테스트를 실행하여 구조적 변경이 동작을 변경하지 않음을 확인하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 커밋 규율
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 다음 경우에만 커밋하십시오.
+</span></span><span class="line"><span class="cl">    <span class="k">1.</span>  모든 테스트가 통과될 때
+</span></span><span class="line"><span class="cl">    <span class="k">2.</span>  모든 컴파일러/린터 경고가 해결될 때
+</span></span><span class="line"><span class="cl">    <span class="k">3.</span>  변경 사항이 단일 논리적 작업 단위를 나타낼 때
+</span></span><span class="line"><span class="cl">    <span class="k">4.</span>  커밋 메시지가 커밋에 구조적 변경 사항이 포함되어 있는지 또는 행위적 변경 사항이 포함되어 있는지 명확하게 명시할 때
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 크고 드문 커밋 대신 작고 빈번한 커밋을 사용하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 코드 품질 표준
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 중복을 무자비하게 제거하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 명명 및 구조를 통해 의도를 명확하게 표현하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 종속성을 명시적으로 만드십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 메서드를 작게 유지하고 단일 책임에 집중하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 상태 및 부작용을 최소화하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 가장 간단한 솔루션을 사용하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 리팩토링 지침
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 테스트가 통과될 때(‘Green’ 단계에서)만 리팩토링하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 적절한 이름과 함께 확립된 리팩토링 패턴을 사용하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 한 번에 하나의 리팩토링 변경을 수행하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 각 리팩토링 단계 후에 테스트를 실행하십시오.
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> 중복을 제거하거나 명확성을 향상시키는 리팩토링을 우선시하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 예시 워크플로
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">새로운 기능을 접근할 때:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span>  기능의 작은 부분에 대한 간단한 실패 테스트를 작성하십시오.
+</span></span><span class="line"><span class="cl"><span class="k">2.</span>  통과시키기 위해 최소한의 코드를 구현하십시오.
+</span></span><span class="line"><span class="cl"><span class="k">3.</span>  테스트가 통과되는지 확인하십시오(Green).
+</span></span><span class="line"><span class="cl"><span class="k">4.</span>  필요한 구조적 변경을 수행하십시오(Tidy First). 각 변경 후 테스트를 실행하십시오.
+</span></span><span class="line"><span class="cl"><span class="k">5.</span>  구조적 변경을 별도로 커밋하십시오.
+</span></span><span class="line"><span class="cl"><span class="k">6.</span>  기능의 다음 작은 증분을 위한 또 다른 테스트를 추가하십시오.
+</span></span><span class="line"><span class="cl"><span class="k">7.</span>  구조적 변경과 별도로 행위적 변경을 커밋하면서 기능이 완료될 때까지 반복하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">이 프로세스를 정확하게 따르십시오. 항상 빠른 구현보다 깔끔하고 잘 테스트된 코드를 우선시하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">항상 한 번에 하나의 테스트를 작성하고, 실행되도록 만든 다음, 구조를 개선하십시오. 항상 모든 테스트(오래 실행되는 테스트 제외)를 매번 실행하십시오.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Rust-specific
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Rust에서는 명령형 스타일보다 함수형 프로그래밍 스타일을 선호하십시오. 가능하면 <span class="sb">`if let`</span> 또는 <span class="sb">`match`</span>를 사용한 패턴 매칭 대신 <span class="sb">`Option`</span> 및 <span class="sb">`Result`</span> 조합자(map, and\_then, unwrap\_or 등)를 사용하십시오.
+</span></span></code></pre></div><hr>
+<h2 id="부록-2-소요-시간">부록 2: 소요 시간<a href="#부록-2-소요-시간" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 프로젝트에 약 4주를 보냈는데, 그중 상당 부분은 여행 중이거나 뇌진탕에서 회복 중이었습니다. 여러분 중 한 분이라면 훨씬 적은 개발 시간으로 이를 빠르게 끝낼 수 있을 것이라고 확신하지만, 참고로 제가 보낸 시간은 다음과 같습니다.</p>
+<p><img src="https://substackcdn.com/image/fetch/$s_!9AVy!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F588ca4a9-1872-4202-aea1-d7005ada1bf5_535x428.png" alt="graph1"></p>
+<p>시간당 커밋 수를 상당히 꾸준하게 유지했습니다.</p>
+<p><img src="https://substackcdn.com/image/fetch/$s_!Lwjp!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fcf871925-f944-4199-ae72-b42e3dd0afdb_406x467.png" alt="graph2"></p>
+<p>네, 하루에 13시간을 코딩했습니다. 이것은 중독성이 있습니다!</p>
+<p>또한, 작업에 대해 성찰할 준비가 되면 지니가 위와 같은 종류의 분석을 기꺼이 수행해 줄 것입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250805-shadows-of-ai-coding-era/" class="button inline next">
+         [<span class="button__text">AI 코딩 시대의 그림자: LLM 의존이 개발자에게 미치는 잠재적 위험 5가지</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
