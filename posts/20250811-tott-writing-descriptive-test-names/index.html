@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 서술적인 테스트 이름 작성하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="테스트 이름에 시나리오와 예상 결과를 모두 넣는 것은 여러 가지 이점을 가집니다." />
+<meta name="keywords" content="programming, testing, dev, TotT" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250811-tott-writing-descriptive-test-names/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 서술적인 테스트 이름 작성하기">
+<meta property="og:description" content="테스트 이름에 시나리오와 예상 결과를 모두 넣는 것은 여러 가지 이점을 가집니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250811-tott-writing-descriptive-test-names/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-08-11 12:05:33 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250811-tott-writing-descriptive-test-names/">TotT: 서술적인 테스트 이름 작성하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-08-11</time><span class="post-author">Andrew Trenk</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: <a href="https://testing.googleblog.com/2014/10/testing-on-toilet-writing-descriptive.html">https://testing.googleblog.com/2014/10/testing-on-toilet-writing-descriptive.html</a> (Translated by Google Gemini)</p>
+<hr>
+<p>여러분은 테스트 이름을 어떻게 짓나요? 아래 코드 샘플을 한번 보세요. 이 테스트가 무엇을 하는지, 어떤 동작을 검증하는지 즉시 파악할 수 있나요?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testLogin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 테스트는 사용자가 성공적으로 로그인하는 시나리오를 테스트할 수도 있고, 잘못된 비밀번호를 입력했을 때의 시나리오를 테스트할 수도 있습니다. 테스트가 무엇을 하는지 이해하려면 테스트의 본문을 읽어야만 합니다. 이제 아래의 다른 테스트 이름을 보세요.</p>
+<p><code>isUserLockedOut_lockOutUserAfterThreeInvalidLoginAttempts</code></p>
+<p>이제 여러분은 테스트 본문을 읽지 않고도, 단지 테스트 이름만 읽는 것만으로 어떤 동작이 테스트되고 있는지 이해할 수 있어야 합니다.</p>
+<p>위의 코드 샘플에 있는 테스트 이름은 테스트되는 시나리오(&ldquo;invalidLogin&rdquo;)에 대한 힌트를 주지만, 예상되는 결과가 무엇인지는 실제로 말해주지 않으므로, 그것을 알아내기 위해 코드를 읽어야 했습니다.</p>
+<p><strong>테스트 이름에 시나리오와 예상 결과를 모두 넣는 것</strong>은 여러 가지 다른 이점을 가집니다:</p>
+<ul>
+<li>
+<p>클래스가 가진 모든 가능한 동작을 알고 싶다면, 테스트 코드를 파고들거나 심지어 클래스 자체를 파고들어 그 동작을 알아내려고 몇 분 또는 몇 시간을 소비하는 대신, 그 테스트 클래스의 테스트 이름들만 읽으면 됩니다. 그렇지 않으면 서로 다른 동작에 대한 단언문(assertion)들을 하나의 테스트에 쏟아부으려는 유혹에 빠질 수 있으며, 이는 시간이 지남에 따라 계속 커져서 이해하고 유지하기 어려운 테스트로 이어질 수 있습니다.</p>
+</li>
+<li>
+<p>테스트 코드만으로는 테스트되는 정확한 동작이 항상 명확하지 않을 수 있습니다. 만약 테스트 이름이 이에 대해 명시적이지 않다면, 때로는 테스트가 실제로 무엇을 테스트하는지 추측해야 할 수도 있습니다.</p>
+</li>
+<li>
+<p>어떤 기능이 테스트되고 있지 않은지 쉽게 알 수 있습니다. 만약 여러분이 찾고 있는 동작을 설명하는 테스트 이름을 볼 수 없다면, 그 테스트가 존재하지 않는다는 것을 알 수 있습니다.</p>
+</li>
+<li>
+<p>테스트가 실패했을 때, 테스트의 소스 코드를 보지 않고도 어떤 기능이 고장 났는지 즉시 알 수 있습니다.</p>
+</li>
+</ul>
+<p>테스트의 이름을 구조화하는 데는 몇 가지 일반적인 패턴이 있습니다 (한 가지 예는 &ldquo;should&quot;를 이름에 넣어 영어 문장처럼 이름을 짓는 것입니다. 예: <code>shouldLockOutUserAfterThreeInvalidLoginAttempts</code>). 어떤 패턴을 사용하든, 동일한 조언이 적용됩니다: <strong>테스트 이름에 테스트되는 시나리오와 예상되는 결과를 모두 포함하도록 하세요.</strong></p>
+<p>때로는 테스트 대상 메서드의 이름만 명시하는 것으로 충분할 수 있습니다. 특히 메서드가 간단하고 그 이름에서 동작이 명백한 단일 동작만을 가지고 있는 경우입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20250811-breaking-down-the-3-bet/" class="button inline prev">
+        &lt; [<span class="button__text">3-벳(3-Bet) 완벽 해부</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250811-garmin-primary-benefit/" class="button inline next">
+         [<span class="button__text">Garmin Connect 의 주요 훈련 효과 (Primary Benefit)</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
