@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Go 언어의 풍부한 표준 라이브러리 (Batteries Included) :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Go 언어의 특징을 소개하는 시리즈의 세 번째 글입니다. 이전 글에서는 Go의 단순성과 동시성에 대해 다루었습니다. 이번에는 Go가 &#39;건전지 포함(Batteries Included)&#39; 철학을 어떻게 구현하고 있는지, 즉 강력하고 풍부한 표준 라이브러리에 대해 이야기하고자 합니다." />
+<meta name="keywords" content="golang, programming, dev, review" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250819-go-batteries-included/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go 언어의 풍부한 표준 라이브러리 (Batteries Included)">
+<meta property="og:description" content="Go 언어의 특징을 소개하는 시리즈의 세 번째 글입니다. 이전 글에서는 Go의 단순성과 동시성에 대해 다루었습니다. 이번에는 Go가 &#39;건전지 포함(Batteries Included)&#39; 철학을 어떻게 구현하고 있는지, 즉 강력하고 풍부한 표준 라이브러리에 대해 이야기하고자 합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250819-go-batteries-included/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-08-19 12:55:41 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250819-go-batteries-included/">Go 언어의 풍부한 표준 라이브러리 (Batteries Included)</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-08-19</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/review/">review</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Go 언어의 특징을 소개하는 시리즈의 세 번째 글입니다. 이전 글에서는 Go의 <strong>단순성</strong>과 <strong>동시성</strong>에 대해 다루었습니다. 이번에는 Go가 &lsquo;건전지 포함(Batteries Included)&rsquo; 철학을 어떻게 구현하고 있는지, 즉 강력하고 풍부한 표준 라이브러리에 대해 이야기하고자 합니다.</p>
+<p><em>(이 글은 Gemini 2.5 Pro 모델에 의해 작성되었으며, 커버하고 있는 세부 항목들과 글의 톤/매너에 대한 요구사항들은 제가 정리해서 Gemini 에 요청했습니다. 내용에 잘못된 부분이 있을 수 있는데, 그런 경우 잘못된 정보에 대한 댓글을 남겨주시면 감사하겠습니다.)</em></p>
+<hr>
+<h2 id="go-창시자들의-철학-실용성과-안정성">Go 창시자들의 철학: 실용성과 안정성<a href="#go-창시자들의-철학-실용성과-안정성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go 언어의 설계 철학은 구글의 대규모 프로덕션 환경에서 마주친 문제들을 해결하는 데서 출발했습니다. 언어의 창시자들인 <strong>로버트 그리즈머(Robert Griesemer)</strong>, <strong>롭 파이크(Rob Pike)</strong>, <strong>켄  Thompson(Ken Thompson)</strong> 은 복잡한 외부 의존성 없이도 당장 현장에서 필요한 대부분의 기능을 수행할 수 있는 언어를 원했습니다.</p>
+<p>롭 파이크는 Go의 표준 라이브러리가 단순한 유틸리티 모음을 넘어, <strong>언어의 사용 방식을 보여주는 모범 사례</strong>로 설계되었다고 강조했습니다. 특히 네트워킹과 웹 서버(<code>net/http</code>)와 같은 패키지는 Go가 등장 초기부터 서버 프로그래밍 언어로서 강력한 입지를 다지는 데 결정적인 역할을 했습니다. Go 팀은 &ldquo;잘 설계된 표준 라이브러리는 언어의 성공에 필수적&quot;이라는 믿음을 가지고 있었으며, 안정적이고, 문서화가 잘 되어 있으며, 서로 잘 동작하는 패키지들을 제공하는 데 집중했습니다.</p>
+<p>이러한 철학 덕분에 Go 개발자는 웹 서버 구축, JSON 파싱, 암호화, 테스팅과 같은 필수적인 작업을 위해 수많은 외부 라이브러리를 탐색하고 검증하는 시간을 절약하고 핵심 비즈니스 로직에 집중할 수 있습니다.</p>
+<hr>
+<h2 id="다른-언어와의-비교-표준-라이브러리-활용">다른 언어와의 비교: 표준 라이브러리 활용<a href="#다른-언어와의-비교-표준-라이브러리-활용" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>각 언어는 표준 라이브러리에 대해 서로 다른 철학을 가지고 있습니다. 각 언어의 장단점을 간단한 코드 예제와 함께 공평하게 비교해 보겠습니다.</p>
+<h3 id="예제-1-json-다루기-serializationdeserialization">예제 1: JSON 다루기 (Serialization/Deserialization)<a href="#예제-1-json-다루기-serializationdeserialization" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>JSON 처리는 현대 애플리케이션의 필수 기능입니다. 각 언어가 이 작업을 어떻게 처리하는지 살펴보겠습니다.</p>
+<ul>
+<li>
+<p><strong>Go (<code>encoding/json</code>)</strong></p>
+<p>Go는 정적 타입 언어의 특성을 살려 <code>struct</code>와 <code>tag</code>를 사용하여 타입 안정성을 확보하면서 JSON을 다룹니다. 명시적이고 안정적이지만, 구조체를 미리 정의해야 하는 번거로움이 있을 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;encoding/json&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Name</span> <span class="kt">string</span> <span class="s">`json:&#34;name&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Age</span>  <span class="kt">int</span>    <span class="s">`json:&#34;age&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Serialization</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">user</span> <span class="o">:=</span> <span class="nx">User</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;Alice&#34;</span><span class="p">,</span> <span class="nx">Age</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">jsonData</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">))</span> <span class="c1">// {&#34;name&#34;:&#34;Alice&#34;,&#34;age&#34;:30}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Deserialization</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">decodedUser</span> <span class="nx">User</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">decodedUser</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">decodedUser</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span> <span class="c1">// Alice</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>Python (<code>json</code>)</strong></p>
+<p>Python은 &lsquo;Batteries Included&rsquo; 철학의 원조 격으로, 표준 <code>json</code> 라이브러리가 매우 직관적입니다. 동적 타입 언어의 특성상 주로 딕셔너리(dictionary)를 사용하여 유연하게 데이터를 처리합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Serialization</span>
+</span></span><span class="line"><span class="cl"><span class="n">user</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="s2">&#34;age&#34;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>  <span class="c1"># {&#34;name&#34;: &#34;Alice&#34;, &#34;age&#34;: 30}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Deserialization</span>
+</span></span><span class="line"><span class="cl"><span class="n">decoded_user</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">decoded_user</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>  <span class="c1"># Alice</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>Node.js (Built-in)</strong></p>
+<p>Node.js 환경의 JavaScript는 JSON이 곧 JavaScript 객체 표기법(JavaScript Object Notation)이므로, 별도의 라이브러리 없이 언어 자체적으로 가장 자연스럽게 JSON을 처리합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// Serialization
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">30</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">jsonData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">);</span> <span class="c1">// {&#34;name&#34;:&#34;Alice&#34;,&#34;age&#34;:30}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Deserialization
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">decodedUser</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">decodedUser</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span> <span class="c1">// Alice
+</span></span></span></code></pre></div></li>
+</ul>
+<h3 id="예제-2-간단한-http-웹-서버-실행">예제 2: 간단한 HTTP 웹 서버 실행<a href="#예제-2-간단한-http-웹-서버-실행" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>웹 서버는 Go 표준 라이브러리의 강력함을 가장 잘 보여주는 예입니다.</p>
+<ul>
+<li>
+<p><strong>Go (<code>net/http</code>)</strong></p>
+<p><code>net/http</code> 패키지는 단 몇 줄의 코드로 프로덕션 수준의 웹 서버를 구동할 수 있을 만큼 강력하고 효율적입니다. Go의 동시성 모델과 결합되어 높은 성능을 자랑합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;Hello, World!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>Python (<code>http.server</code>)</strong></p>
+<p>Python 역시 간단한 웹 서버를 표준 라이브러리로 제공하지만, 주로 개발이나 테스트 목적의 간단한 파일 서버로 사용되며, 프로덕션 환경에서는 Flask, Django 같은 프레임워크를 사용하는 것이 일반적입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">http.server</span> <span class="kn">import</span> <span class="n">BaseHTTPRequestHandler</span><span class="p">,</span> <span class="n">HTTPServer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">SimpleHandler</span><span class="p">(</span><span class="n">BaseHTTPRequestHandler</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;Hello, World!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">httpd</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8080</span><span class="p">),</span> <span class="n">SimpleHandler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">httpd</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>Node.js (<code>http</code>)</strong></p>
+<p>Node.js는 핵심 <code>http</code> 모듈을 제공하여 웹 서버를 만들 수 있습니다. 매우 유연하지만, 실제 애플리케이션 개발 시에는 Express.js, Fastify와 같은 프레임워크를 추가하여 라우팅, 미들웨어 등을 처리하는 것이 일반적입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;text/plain&#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">8080</span><span class="p">);</span>
+</span></span></code></pre></div></li>
+</ul>
+<hr>
+<h2 id="아직은-없는-것들">아직은 없는 것들<a href="#아직은-없는-것들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go의 표준 라이브러리는 강력하지만, 의도적으로 포함하지 않은 기능들도 있습니다. 이는 언어의 핵심을 작고 안정적으로 유지하려는 설계 철학 때문입니다.</p>
+<ol>
+<li><strong>다양한 자료구조:</strong> Go 표준 라이브러리는 기본적인 슬라이스(slice)와 맵(map) 외에 셋(set), 트리(tree), 큐(queue)와 같은 복잡한 자료구조를 제공하지 않습니다. 이러한 기능들은 필요에 따라 외부 라이브러리를 사용하거나 직접 구현해야 합니다.</li>
+<li><strong>설정(Configuration) 관리:</strong> YAML, TOML 형식의 설정 파일을 읽고 파싱하거나, 환경 변수를 구조체에 바인딩하는 기능은 표준 라이브러리에 없습니다. 대부분의 프로젝트에서 <code>Viper</code>, <code>godotenv</code>와 같은 외부 라이브러리를 사용합니다.</li>
+<li><strong>ORM (Object-Relational Mapping):</strong> <code>database/sql</code> 패키지가 표준 SQL 인터페이스를 제공하지만, 객체와 관계형 데이터베이스를 매핑해주는 ORM은 포함되어 있지 않습니다. 이는 Go가 SQL을 직접 제어하는 명시적인 방식을 선호하기 때문이며, ORM이 필요할 경우 <code>GORM</code>, <code>sqlx</code> 등을 선택적으로 사용할 수 있습니다.</li>
+<li><strong>UI 툴킷:</strong> Go는 서버 및 시스템 프로그래밍에 집중하기 때문에, GUI 애플리케이션을 위한 표준 UI 툴킷을 제공하지 않습니다.</li>
+</ol>
+<p>이러한 &lsquo;부재&rsquo;는 단점이라기보다는 Go의 철학을 보여주는 선택에 가깝습니다. 언어의 핵심은 안정적으로 유지하되, 생태계가 다양한 선택지를 제공하도록 유도하는 방식입니다.</p>
+<hr>
+<h3 id="-references"><strong>## References</strong><a href="#-references" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li>The Go Programming Language. (n.d.). <em>The Go Programming Language Official Website</em>. Retrieved August 19, 2025.</li>
+<li>Pike, R. (2012, February 24). <em>Go at Google: Language Design in the Service of Software Engineering</em>. Google Cloud Blog.</li>
+<li>Griesemer, R. (2015, April 10). <em>Go: a simple programming environment</em>. YouTube.</li>
+<li>Python Software Foundation. (n.d.). <em>The Python Standard Library</em>. Python Documentation.</li>
+<li>Node.js Foundation. (n.d.). <em>Node.js Documentation</em>. Node.js Official Website.</li>
+</ol>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250819-kurt-rosenwinkel-the-chopin-project/" class="button inline next">
+         [<span class="button__text">음반 소개: 커트 로젠윙클, 쇼팽을 만나다: &#39;The Chopin Project&#39; 리뷰</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
