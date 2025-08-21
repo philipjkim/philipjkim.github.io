@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 변경 감지 테스트는 악몽입니다 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="변경 감지 테스트는 부정적인 가치(- value)를 제공합니다. 테스트가 어떤 결함도 잡아내지 못하면서, 추가적인 유지보수 비용이 개발 속도를 늦추기 때문입니다. 이러한 테스트는 다시 작성되거나 삭제되어야 합니다." />
+<meta name="keywords" content="programming, testing, dev, TotT" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250821-tott-change-detector-tests-are-nightmare/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 변경 감지 테스트는 악몽입니다">
+<meta property="og:description" content="변경 감지 테스트는 부정적인 가치(- value)를 제공합니다. 테스트가 어떤 결함도 잡아내지 못하면서, 추가적인 유지보수 비용이 개발 속도를 늦추기 때문입니다. 이러한 테스트는 다시 작성되거나 삭제되어야 합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250821-tott-change-detector-tests-are-nightmare/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-08-21 15:09:05 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250821-tott-change-detector-tests-are-nightmare/">TotT: 변경 감지 테스트는 악몽입니다</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-08-21</time><span class="post-author">Alex Eagle</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>원문: <a href="https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html">https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html</a> (Translated by Google Gemini)</em></p>
+<hr>
+<p>당신은 방금 코드의 동작을 수정하지 않고 리팩토링을 마쳤습니다. 그리고 커밋하기 전에 테스트를 실행했는데&hellip; 수많은 단위 테스트가 실패합니다. 실패한 테스트들을 고치면서, 당신은 여러 테스트에 동일한 변환 작업을 기계적으로 적용하며 시간을 낭비하고 있다는 느낌을 받습니다. 아마도 당신은 어떤 메서드에 파라미터를 하나 추가했고, 이제 테스트 코드에 있는 100개의 해당 메서드 호출부에 빈 문자열을 전달하도록 업데이트해야 하는 상황일 겁니다.</p>
+<p>테스트를 기계적으로 작성한다는 것은 어떤 모습일까요? 여기 터무니없지만 명확한 예시가 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">//</span> <span class="n">프로덕션</span> <span class="n">코드</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="err">?</span> <span class="n">i</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="n">i</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="n">테스트</span> <span class="n">코드</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="n">String</span> <span class="ow">in</span> <span class="n">File</span><span class="p">(</span><span class="n">prod_source</span><span class="p">)</span><span class="o">.</span><span class="n">read_lines</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">  <span class="n">switch</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">1</span><span class="p">:</span> <span class="k">assert</span> <span class="n">line</span><span class="o">.</span><span class="n">content</span> <span class="n">equals</span> <span class="s2">&#34;def abs(i: Int)&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">2</span><span class="p">:</span> <span class="k">assert</span> <span class="n">line</span><span class="o">.</span><span class="n">content</span> <span class="n">equals</span> <span class="s2">&#34; return (i &lt; 0) ? i * -1 : i&#34;</span>
+</span></span></code></pre></div><p>이 테스트는 명백히 유용하지 않습니다. 이 테스트는 테스트 대상 코드의 정확한 복사본을 포함하고 있으며 체크섬(checksum)처럼 동작합니다. 테스트 자체가 테스트 대상 코드의 파생물이라면, 올바른 프로그램이든 잘못된 프로그램이든 테스트를 통과할 확률은 동일합니다.</p>
+<p>실제로 아무도 저런 식으로 테스트를 작성하지는 않겠지만, 다음 예시와는 얼마나 다를까요?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">//</span> <span class="n">프로덕션</span> <span class="n">코드</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">w</span><span class="p">:</span> <span class="n">Work</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">firstPart</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">secondPart</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="n">테스트</span> <span class="n">코드</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">part1</span> <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="n">FirstPart</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">part2</span> <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="n">SecondPart</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">w</span> <span class="o">=</span> <span class="n">Work</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">Processor</span><span class="p">(</span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span><span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">verify_in_order</span>
+</span></span><span class="line"><span class="cl">  <span class="n">was_called</span> <span class="n">part1</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">was_called</span> <span class="n">part2</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+</span></span></code></pre></div><p>이런 테스트는 별다른 생각 없이 작성할 수 있고 빠르게 실행되기 때문에 작성하고 싶은 유혹이 듭니다. 이것이 바로 <strong>변경 감지 테스트(change-detector test)</strong> 입니다. 이 테스트는 테스트 대상 코드에 있는 동일한 정보의 변형일 뿐이며, 원본이나 수정된 프로덕션 코드의 올바른 동작을 검증하지 않은 채 프로덕션 코드에 어떤 변경이라도 가해지면 깨집니다.</p>
+<p><strong>변경 감지 테스트는 부정적인 가치(- value)를 제공합니다.</strong> 테스트가 어떤 결함도 잡아내지 못하면서, 추가적인 유지보수 비용이 개발 속도를 늦추기 때문입니다. 이러한 테스트는 다시 작성되거나 삭제되어야 합니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250821-introduction-to-balzac/" class="button inline next">
+         [<span class="button__text">작가 소개: 사실주의의 거장, 오노레 드 발자크의 문학 세계</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
