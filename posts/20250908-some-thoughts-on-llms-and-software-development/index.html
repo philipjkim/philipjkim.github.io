@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>번역글: LLM과 소프트웨어 개발에 대한 몇 가지 생각 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Martin Fowler 의 &#39;LLM과 소프트웨어 개발에 대한 몇 가지 생각&#39; 글을 번역했습니다." />
+<meta name="keywords" content="AI, LLM, dev, programming" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250908-some-thoughts-on-llms-and-software-development/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="번역글: LLM과 소프트웨어 개발에 대한 몇 가지 생각">
+<meta property="og:description" content="Martin Fowler 의 &#39;LLM과 소프트웨어 개발에 대한 몇 가지 생각&#39; 글을 번역했습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250908-some-thoughts-on-llms-and-software-development/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-09-08 14:10:40 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250908-some-thoughts-on-llms-and-software-development/">번역글: LLM과 소프트웨어 개발에 대한 몇 가지 생각</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-09-08</time><span class="post-author">Martin Fowler</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>원문: <a href="https://martinfowler.com/articles/202508-ai-thoughts.html">https://martinfowler.com/articles/202508-ai-thoughts.html</a> (translated by Gemini)</em></p>
+<hr>
+<p>저는 몇 주간 이 사이트 관리를 잠시 떠나려 합니다 (일부 휴가, 일부 업무). 일상적인 루틴에서 벗어나 몇 주를 보낼 생각을 하니, LLM과 AI의 현재 상태에 대한 산발적인 생각들을 나누고 싶은 충동을 느낍니다.</p>
+<hr>
+<p>AI가 소프트웨어 개발에 어떤 영향을 미치는지에 대한 초기 설문조사들을 몇 가지 봤습니다. 과연 개발 속도를 높여주고 있는지, 코드 품질을 향상시키는지 아니면 망치고 있는지에 대한 내용들이죠. 이런 설문조사들의 큰 문제점 중 하나는 사람들이 LLM을 <strong>어떻게</strong> 사용하고 있는지 고려하지 않는다는 점입니다. 제가 아는 바로는 LLM 사용의 대다수가 코파일럿(Co-pilot)을 이용하는 것과 같은 단순한 자동 완성에 그치고 있습니다. 하지만 LLM으로부터 가장 큰 가치를 얻는다고 말하는 사람들은 자동 완성이 그다지 유용하지 않다고 생각하며, LLM이 소스 코드 파일을 직접 읽고 편집하여 작업을 수행하는 방식을 선호합니다. LLM을 사용하는 다양한 워크플로우를 무시하는 설문조사는 사람들을 잘못된 길로 이끌 수 있는 데이터를 만들어낼까 봐 걱정됩니다.
+(또 다른 복잡한 문제는 모델마다 기능이 다르다는 점입니다.)</p>
+<hr>
+<p>저는 종종 &ldquo;프로그래밍의 미래는 어떻게 될까요?&ldquo;라는 질문을 받습니다. 지금 소프트웨어 개발 분야에 진입하는 것을 고려해야 할까요? LLM이 주니어 엔지니어의 필요성을 없앨까요? 시니어 엔지니어는 너무 늦기 전에 이 직업에서 벗어나야 할까요? 이 모든 질문에 대한 제 답은 &ldquo;전혀 모르겠습니다&quot;입니다. 게다가, 저는 이 미래가 어떻게 될지 안다고 말하는 사람은 부적절한 곳에서 이야기하고 있다고 생각합니다. 우리는 아직 LLM을 어떻게 사용해야 할지 알아내는 중이며, 특히 LLM이 상당한 개선을 이룬다면, 이들을 제대로 활용하는 방법을 파악하는 데는 시간이 좀 걸릴 것입니다.
+제가 제안하는 것은 사람들이 직접 LLM을 실험해 보는 것입니다. 최소한 다른 사람들이 무엇을 하는지 읽어보되, 그들의 워크플로우 세부 사항에 주의를 기울이세요. 가능하다면 직접 실험해 보고, 여러분의 경험을 공유해 주시길 바랍니다.</p>
+<hr>
+<p>또 이런 질문도 받습니다: &ldquo;AI는 거품인가요?&rdquo; 제 대답은 &ldquo;당연히 거품입니다&quot;입니다. 운하와 철도부터 인터넷에 이르기까지 모든 주요 기술 발전은 경제적 거품을 동반했습니다. 이 거품이 꺼져 수많은 투자가 공중분해될 것이라는 점은 거의 100% 확실하게 알고 있습니다. 그러나 우리가 모르는 것은 <strong>언제</strong> 거품이 터질지, 그리고 터지기 전에 얼마나 거품이 커져서 그 과정에서 진정한 가치를 창출할지입니다. 다음 달에 터질 수도 있고, 몇 년 후일 수도 있습니다.
+우리는 또한 거품이 터지면 많은 회사가 망할 것이라는 점도 알고 있지만, 전부는 아닙니다. 닷컴 버블이 터졌을 때 pets.com과 Webvan은 망했지만, Amazon은 망하지 않았습니다.</p>
+<hr>
+<p>저는 몇 년 전에 공개 연설을 은퇴했습니다. 강연의 스트레스는 그립지 않지만, 업계 친구들과 어울리던 시간은 그립습니다. 그래서 <strong>GOTO Copenhagen</strong>에서 많은 친구들을 만날 날이 기대됩니다. 저는 1990년대부터 GOTO 컨퍼런스 시리즈(당시 이름은 JAOO)에 참여해 왔으며, 그들이 어떻게 매혹적인 프로그램을 구성하는지 늘 감명받습니다.</p>
+<hr>
+<p>제 전 동료인 Rebecca Parsons는 오랫동안 환각(hallucinations)은 LLM의 버그가 아니라 기능이라고 말해왔습니다. 사실 그것이야말로 <strong>핵심 기능</strong>입니다. LLM이 하는 일은 오로지 환각을 만들어내는 것이며, 단지 그 환각 중 일부가 우리에게 유용할 뿐입니다.
+이것이 의미하는 바 중 하나는, 우리는 항상 LLM에게 같은 질문을 한 번 이상, 어쩌면 단어에 약간의 변화를 주어 물어봐야 한다는 것입니다. 그런 다음 답변들을 비교하거나, 심지어 LLM에게 답변들을 직접 비교해달라고 요청할 수도 있습니다. 답변들의 차이점은 답변 자체만큼이나 유용할 수 있습니다.
+확실히, 우리가 환각 엔진에게 수치적인 답을 요청할 때는 적어도 세 번은 물어봐서 그 변동성을 파악해야 합니다. 또한, 우리가 확정적으로 계산할 수 있는 답을 LLM에게 계산해달라고 요청해서는 안 됩니다 (네, 실제로 이런 경우를 본 적이 있습니다). 답을 계산하는 코드를 생성해달라고 요청하는 것은 괜찮습니다 (그래도 한 번 이상 요청해야 합니다).</p>
+<hr>
+<p>다른 형태의 공학은 세상의 가변성을 고려해야 합니다. 구조 엔지니어는 측정할 수 없는 모든 요소에 대한 허용 오차를 내장시킵니다. (저는 경력 초기에 디지털 전자공학의 독특한 특성은 허용 오차 개념이 없다는 말을 들었던 것을 기억합니다.) 프로세스 엔지니어들은 인간이 작업을 수행하며, 때로는 건망증이 있거나 부주의할 수 있다는 점을 고려합니다. 소프트웨어 공학은 확정적인 기계로 작업한다는 점에서 이례적입니다. 아마도 LLM은 우리가 비확정성의 세계에서 다른 공학 분야의 동료들과 합류하는 시점을 알리는 것일지도 모릅니다.</p>
+<hr>
+<p>저는 종종 LLM을 주니어 동료에 비유하는 말을 들었는데, 꽤 합당한 이유가 있습니다. 하지만 저는 LLM이 &ldquo;모든 테스트 통과(all tests green)&ldquo;라고 말하고도, 제가 직접 실행하면 실패하는 경우를 자주 봅니다. 만약 주니어 엔지니어가 그런 행동을 했다면, 인사팀이 개입하는 데 얼마나 걸릴까요?</p>
+<hr>
+<p>LLM은 소프트웨어 시스템의 공격 범위를 엄청나게 넓힙니다. Simon Willison은 AI 에이전트를 위한 **&lsquo;치명적인 삼중주(The Lethal Trifecta)&rsquo;**를 설명했습니다: 개인 데이터 접근 권한, 신뢰할 수 없는 콘텐츠에 대한 노출, 그리고 외부 통신(정보 유출) 수단을 결합한 에이전트죠. &lsquo;신뢰할 수 없는 콘텐츠&rsquo;는 다양한 방식으로 들어올 수 있습니다. LLM에게 웹 페이지를 읽으라고 요청하면, 공격자는 1pt 크기의 흰색 글씨를 웹사이트에 넣어 순진한 LLM을 속여 개인 데이터를 얻어낼 수 있습니다.
+이것은 브라우저에서 작동하는 에이전트의 경우 특히 심각합니다. 공격자의 웹 페이지를 읽은 에이전트는 다른 탭에서 당신의 은행 계좌로 이동하도록 속아 넘어가, 친절한 공격자에게 당신의 잔액을 이체하여 &ldquo;선물을 사주는&rdquo; 행동을 할 수도 있습니다. Willison의 견해는 &ldquo;에이전트 브라우저 확장 프로그램이라는 <strong>개념 자체가 치명적인 결함을 안고 있으며</strong> 안전하게 만들 수 없다&quot;는 것입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250908-14-bikepacking-mistakes/" class="button inline next">
+         [<span class="button__text">팁: 모두가 저지르는 14가지 바이크패킹 실수 (그리고 피하는 방법)</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
