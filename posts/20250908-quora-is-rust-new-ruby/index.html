@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>번역글: Rust 의 목적성에 대한 질문과 답변 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="이 글은 [Quora 에 올라온 Rust 관련 질문과 답변](https://www.quora.com/Rust-is-not-so-much-about-memory-safety-as-it-is-about-being-able-to-hire-cheap-juniors-in-hope-they-can-now-do-the-job-of-experienced-seniors-by-using-Rust-Am-I-wrong-Is-Rust-the-new-Ruby)을 Gemini 를 통해 번역한 것입니다." />
+<meta name="keywords" content="dev, programming, rust, quora" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250908-quora-is-rust-new-ruby/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="번역글: Rust 의 목적성에 대한 질문과 답변">
+<meta property="og:description" content="이 글은 [Quora 에 올라온 Rust 관련 질문과 답변](https://www.quora.com/Rust-is-not-so-much-about-memory-safety-as-it-is-about-being-able-to-hire-cheap-juniors-in-hope-they-can-now-do-the-job-of-experienced-seniors-by-using-Rust-Am-I-wrong-Is-Rust-the-new-Ruby)을 Gemini 를 통해 번역한 것입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250908-quora-is-rust-new-ruby/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-09-08 11:28:08 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250908-quora-is-rust-new-ruby/">번역글: Rust 의 목적성에 대한 질문과 답변</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-09-08</time><span class="post-author">quora</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/rust/">rust</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/quora/">quora</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 <a href="https://www.quora.com/Rust-is-not-so-much-about-memory-safety-as-it-is-about-being-able-to-hire-cheap-juniors-in-hope-they-can-now-do-the-job-of-experienced-seniors-by-using-Rust-Am-I-wrong-Is-Rust-the-new-Ruby">Quora 에 Rust 관련 올라온 질문과 답변</a>을 Gemini 를 통해 번역한 것입니다.</em></p>
+<hr>
+<h3 id="q-rust는-메모리-안전성보다는-rust를-사용해-경력-있는-시니어-개발자들의-일을-값싼-주니어들이-해낼-수-있을-거라는-희망을-품고-그들을-고용하는-것과-더-관련이-있는-것-아닌가요-제가-틀렸나요-rust가-새로운-ruby인가요">Q: Rust는 &lsquo;메모리 안전성&rsquo;보다는 Rust를 사용해 경력 있는 시니어 개발자들의 일을 값싼 주니어들이 해낼 수 있을 거라는 희망을 품고 그들을 고용하는 것과 더 관련이 있는 것 아닌가요? 제가 틀렸나요? Rust가 새로운 Ruby인가요?<a href="#q-rust는-메모리-안전성보다는-rust를-사용해-경력-있는-시니어-개발자들의-일을-값싼-주니어들이-해낼-수-있을-거라는-희망을-품고-그들을-고용하는-것과-더-관련이-있는-것-아닌가요-제가-틀렸나요-rust가-새로운-ruby인가요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<hr>
+<h3 id="a1-matt-laine의-답변">A1 (Matt Laine의 답변):<a href="#a1-matt-laine의-답변" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>어떤 프로그래밍 언어의 기능이든 홍보되는 데는 이유가 있습니다. 어떤 기능들은 언어 설계자가 멋지다고 생각해서 홍보되죠. 또 다른 기능들은 개발 속도를 높여준다거나, 특정 관리자들이 골치 아프다고 여기는 종류의 오류들을 제거해준다거나, 비즈니스에 도움이 되는 어떤 지표를 향상시켜 준다는 약속을 하는 것으로 해석될 수 있기 때문에 홍보됩니다. 또 어떤 기능들은 그저 과대광고를 철석같이 믿고 다른 사람들도 그렇게 해주기를 바라는 &lsquo;언어 전도사들&rsquo;에 의해 홍보되기도 합니다.</p>
+<p>더 적은 인풋으로 더 많은 아웃풋을 얻으려는 경향은 항상 존재해 왔습니다. 이것이 공식적으로 프로세스 효율성을 높이려는 시도이든, 아니면 사람들을 한 차원적인 &lsquo;인적 자원&rsquo;이나 기계의 톱니바퀴로 여기며 비인간화하는 시도이든, 혹은 다른 어떤 방식이든 간에, 그런 압박은 항상 존재합니다. 우리는 명목상 경제적 번영의 시대에 살고 있지만, 저는 2년 전과 비교할 때 컴퓨팅 분야에서 전반적인 긴축 분위기를 감지하고 있습니다. 자원이 파편화되고 있으며, 수많은 거품이 동시에 팽창하고 붕괴하고 있죠. 이런 상황적 요소들은 거의 항상 하스켈(Haskell), 리스프(Lisps), ML 방언(ML dialects) 등의 초급 개발자들이 그저 재미있는 일을 할 수 있는 프로젝트에 참여하는 것에 만족하거나 안주할 거라는 기대를 가지고 가능한 한 가장 적은 임금을 받는 결과를 낳았습니다. Rust 역시 이러한 틈새시장에 들어맞습니다. 이는 새로운 현상이 아니지만, 10년 전에 비해 이 분야의 규모가 훨씬 커졌기 때문에 이런 현상이 더 눈에 띄는 겁니다.</p>
+<p>그럼에도 불구하고 저는 여전히 아웃풋 측면에서 시니어급 경력을 기대하고 그에 상응하는 급여를 지불하려는 Rust 관련 구인 공고들을 많이 봅니다.</p>
+<p>결론적으로 저는 Rust가 새로운 Ruby라고 생각하지 않습니다. 하지만 능력 있는 소프트웨어 엔지니어 시장 진입자들의 수는 인구에 비례하여 선형적으로 증가하는 반면, 소프트웨어 개발자에 대한 수요는 사람들이 기꺼이 문제 해결에 투자하려는 돈의 공급량에 따라 기하급수적으로 증가했고, 어떤 경우에는 그 금전적 공급량을 초과했습니다(따라서 긴축이 발생했죠). 그래서 기업과 경영진들은 소프트웨어 개발과 무관한 평범한 사람들을 비즈니스에 도움이 될 만한 결과물을 내놓을 만큼 생산적으로 만들려는 모든 시도에 뛰어들 것입니다. 저임금의 Rust 관련 구인 공고들은 바로 그러한 시도일 뿐입니다.</p>
+<hr>
+<h3 id="a2-joshua-gross의-답변">A2 (Joshua Gross의 답변):<a href="#a2-joshua-gross의-답변" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>네, 당신이 틀렸습니다. 그리고 Rust는 새로운 Ruby가 아닙니다. 시스템 소프트웨어를 작성하는 데 주니어 개발자를 고용하고, Rust가 내장된 상당한 메모리 보호 기능을 가지고 있다는 이유만으로 모든 일이 잘 풀릴 것이라고 기대하며 그들을 제대로 감독하지 않는 것(예: 코드 리뷰, 교육, 훈련, 멘토링)은… 솔직히 어리석은 짓입니다. 그리고 다행스럽게도 많은 사람들이 그렇게 하고 있다고 생각하지 않습니다.</p>
+<p>저는 Rust가 C 언어를 대규모로 대체할 것이라고 확신하지는 않지만, 만약 그렇게 된다고 해도 이는 Rust가 그 직무의 기술 수준을 낮추기 때문은 아닐 겁니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250908-album-review-human/" class="button inline next">
+         [<span class="button__text">음반 소개: 이승환 - Human (1995): 90년대 대중음악의 정점을 찍은 블록버스터 앨범</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
