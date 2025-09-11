@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 무엇이 좋은 End-to-End 테스트를 만드는가? :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="End-to-end(E2E) 테스트는 시스템의 한쪽 끝에서 다른 쪽 끝까지, 그 사이의 모든 것을 블랙박스로 취급하며 전체 시스템을 테스트합니다. E2E 테스트는 시스템 전반에 걸쳐 나타나는 버그를 잡아낼 수 있습니다. 단위 테스트, 통합 테스트와 더불어 E2E 테스트는 균형 잡힌 테스트 식단의 핵심적인 부분이며, 운영 환경과 거의 유사한 상태에서 시스템의 건전성에 대한 확신을 줍니다." />
+<meta name="keywords" content="programming, testing, dev, TotT" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250911-tott-good-e2e-test/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 무엇이 좋은 End-to-End 테스트를 만드는가?">
+<meta property="og:description" content="End-to-end(E2E) 테스트는 시스템의 한쪽 끝에서 다른 쪽 끝까지, 그 사이의 모든 것을 블랙박스로 취급하며 전체 시스템을 테스트합니다. E2E 테스트는 시스템 전반에 걸쳐 나타나는 버그를 잡아낼 수 있습니다. 단위 테스트, 통합 테스트와 더불어 E2E 테스트는 균형 잡힌 테스트 식단의 핵심적인 부분이며, 운영 환경과 거의 유사한 상태에서 시스템의 건전성에 대한 확신을 줍니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250911-tott-good-e2e-test/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-09-11 10:33:09 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250911-tott-good-e2e-test/">TotT: 무엇이 좋은 End-to-End 테스트를 만드는가?</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-09-11</time><span class="post-author">Alex Eagle</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>원문: <a href="https://testing.googleblog.com/2016/09/testing-on-toilet-what-makes-good-end.html">https://testing.googleblog.com/2016/09/testing-on-toilet-what-makes-good-end.html</a> (Translated by Google Gemini)</em></p>
+<hr>
+<p>End-to-end(E2E) 테스트는 시스템의 한쪽 끝에서 다른 쪽 끝까지, 그 사이의 모든 것을 블랙박스로 취급하며 전체 시스템을 테스트합니다. E2E 테스트는 시스템 전반에 걸쳐 나타나는 버그를 잡아낼 수 있습니다. 단위 테스트, 통합 테스트와 더불어 E2E 테스트는 균형 잡힌 테스트 식단의 핵심적인 부분이며, 운영 환경과 거의 유사한 상태에서 시스템의 건전성에 대한 확신을 줍니다.</p>
+<p>하지만 안타깝게도, E2E 테스트는 단위 테스트나 통합 테스트보다 느리고, 불안정하며(flaky), 유지보수 비용이 더 비쌉니다. E2E 테스트가 필요한지, 만약 그렇다면 어떻게 작성하는 것이 최선일지 신중하게 고려해야 합니다.</p>
+<p>다음과 같은 &ldquo;로그인 플로우&quot;에 대한 E2E 테스트가 어떻게 작동할지 생각해 봅시다:</p>
+<p><img src="/img/20250911-login-flow.png" alt="login_flow"></p>
+<p>비용 효율성을 높이려면, E2E 테스트는 더 작은 단위의 테스트로는 안정적으로 평가할 수 없는 시스템의 측면에 집중해야 합니다. 예를 들어 <strong>자원 할당, 동시성 문제, API 호환성</strong> 등이 그렇습니다.</p>
+<p>더 구체적으로 살펴보겠습니다.</p>
+<ul>
+<li><strong>각각의 중요한 유스케이스마다, 그에 상응하는 E2E 테스트가 하나씩 있어야 합니다.</strong> 여기에는 중요한 종류의 오류 각각에 대한 테스트가 하나씩 포함되어야 합니다. 목표는 전체 E2E 테스트의 개수를 낮게 유지하는 것입니다.</li>
+<li>느리고 불안정한 의존성이나 사소한 UI 변경과 같은 문제에 직면했을 때 E2E 테스트를 안정적으로 유지하기 위해, <strong>테스트당 분기에 최소 일주일의 시간을 할애할 준비를 해야 합니다.</strong></li>
+<li>구체적인 구현 세부사항보다는 <strong>전체적인 시스템 동작을 검증하는 데 노력을 집중하세요.</strong> 예를 들어, 로그인 동작을 테스트할 때는 정확한 메시지나 시각적 레이아웃(이것들은 자주 바뀔 수 있습니다)과는 독립적으로 프로세스가 성공하는지를 검증해야 합니다.</li>
+<li><strong>E2E 테스트를 디버깅하기 쉽게 만드세요.</strong> 개요 수준의 로그 파일을 제공하고, 일반적인 테스트 실패 모드를 문서화하며, 모든 관련 시스템 상태 정보(예: 스크린샷, 데이터베이스 스냅샷 등)를 보존하는 것이 좋습니다.</li>
+</ul>
+<p>E2E 테스트에는 몇 가지 중요한 주의사항도 따릅니다.</p>
+<ul>
+<li>다른 팀이 소유한 시스템 컴포넌트가 예기치 않게 변경되어 여러분의 테스트를 깨뜨릴 수 있습니다. 이는 전체적인 유지보수 비용을 증가시키지만, <strong>호환되지 않는 변경 사항을 발견하는 계기</strong>가 될 수도 있습니다.</li>
+<li>E2E 테스트는 종종 기반 의존성에 대한 여러 테스트 더블(페이크나 스텁)을 필요로 합니다. 하지만 시간이 지남에 따라 실제 구현과 달라지면서 <strong>높은 유지보수 부담</strong>을 가질 수 있습니다.</li>
+<li>가능한 한 <strong>테스트 데이터는 일시적(ephemeral)으로 유지</strong>하세요. 영구적인 테스트 데이터는 다른 테스트나 시스템 사용자와 충돌할 수 있으며, 테스트를 다시 실행하기 전에 시스템을 알려진 상태로 재설정하는 것이 어려울 수 있습니다.</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250911-album-review-the-joshua-tree/" class="button inline next">
+         [<span class="button__text">음반 소개: U2 - The Joshua Tree (1987): 미국의 신화와 현실을 관통한 록의 서사시</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
