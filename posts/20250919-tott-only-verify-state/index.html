@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>TotT: 상태를 변경하는 메서드 호출만 검증하세요 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="일반적으로 상태를 변경하지 않는 메서드가 호출되었는지 검증하는 것은 피해야 합니다." />
+<meta name="keywords" content="programming, testing, dev, TotT" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250919-tott-only-verify-state/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="TotT: 상태를 변경하는 메서드 호출만 검증하세요">
+<meta property="og:description" content="일반적으로 상태를 변경하지 않는 메서드가 호출되었는지 검증하는 것은 피해야 합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250919-tott-only-verify-state/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-09-19 15:26:56 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250919-tott-only-verify-state/">TotT: 상태를 변경하는 메서드 호출만 검증하세요</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-09-19</time><span class="post-author">Dillon Bly, Andrew Trenk*</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tott/">TotT</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>원문: <a href="https://testing.googleblog.com/2017/01/testing-on-toilet-keep-cause-and-effect.html">https://testing.googleblog.com/2017/01/testing-on-toilet-keep-cause-and-effect.html</a> (Translated by Google Gemini)</em></p>
+<hr>
+<p>이 테스트에서 어떤 라인을 안전하게 제거할 수 있을까요?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addPermissionToDatabase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">UserAuthorizer</span><span class="p">(</span><span class="n">mockUserService</span><span class="p">,</span><span class="w"> </span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">grantPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 이 메서드 중 하나라도 호출되지 않으면 테스트는 실패합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockUserService</span><span class="p">).</span><span class="na">isUserActive</span><span class="p">(</span><span class="n">USER</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">getPermissions</span><span class="p">(</span><span class="n">USER</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">isValidPermission</span><span class="p">(</span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">addPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>정답은 <strong>상태를 변경하지 않는 메서드</strong>를 검증하는 호출들을 제거할 수 있다는 것입니다.</p>
+<p>다른 객체에 대한 메서드 호출은 다음 두 가지 범주 중 하나에 속합니다.</p>
+<ul>
+<li><strong>상태 변경(State-changing):</strong> 부작용(side effects)이 있고 테스트 대상 코드 외부의 세상을 바꾸는 메서드. 예: <code>sendEmail()</code>, <code>saveRecord()</code>, <code>logAccess()</code>.</li>
+<li><strong>비-상태 변경(Non-state-changing):</strong> 테스트 대상 코드 외부 세상에 대한 정보를 반환하고 아무것도 수정하지 않는 메서드. 예: <code>getUser()</code>, <code>findResults()</code>, <code>readFile()</code>.</li>
+</ul>
+<p>일반적으로 <strong>상태를 변경하지 않는 메서드가 호출되었는지 검증하는 것은 피해야 합니다.</strong></p>
+<ul>
+<li><strong>종종 중복적입니다:</strong> 세상의 상태를 바꾸지 않는 메서드 호출은 그 자체로는 의미가 없습니다. 테스트 대상 코드는 그 메서드 호출의 반환 값을 사용하여 다른 작업을 수행할 것이고, 바로 그 작업을 검증(assert)하면 됩니다.</li>
+<li><strong>테스트를 불안정하게 만듭니다:</strong> 메서드 호출 방식이 바뀔 때마다 테스트를 업데이트해야 합니다. 예를 들어, 테스트가 <code>mockUserService.isUserActive(USER)</code>가 호출되기를 기대하고 있다면, 테스트 대상 코드가 <code>user.isActive()</code>를 호출하도록 수정될 경우 테스트는 실패할 것입니다.</li>
+<li><strong>테스트 가독성을 떨어뜨립니다:</strong> 테스트에 추가적인 검증 구문이 많아지면, 어떤 메서드 호출이 실제로 세상의 상태에 영향을 미치는지 파악하기 더 어려워집니다.</li>
+<li><strong>잘못된 안정감을 줍니다:</strong> 테스트 대상 코드가 어떤 메서드를 호출했다는 사실만으로는, 그 코드가 메서드의 반환 값을 가지고 올바른 일을 했다는 것을 의미하지 않습니다.</li>
+</ul>
+<p>이런 메서드들이 호출되었는지 검증하는 대신, <code>when(mockUserService.isUserActive(USER)).thenReturn(false)</code>와 같이 테스트에서 <strong>다양한 조건을 시뮬레이션</strong>하는 데 사용하세요. 그리고 나서 테스트 대상 코드의 반환 값을 검증하거나, 상태를 변경하는 메서드 호출을 검증하세요.</p>
+<p>상태를 변경하지 않는 메서드 호출을 검증하는 것은 검증할 다른 출력이 없을 때 유용할 수 있습니다. 예를 들어, 코드가 RPC 결과를 캐싱해야 한다면, RPC를 호출하는 메서드가 한 번만 호출되었는지 검증할 수 있습니다.</p>
+<p>불필요한 검증을 제거하면 테스트는 이렇게 보입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addPermissionToDatabase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">UserAuthorizer</span><span class="p">(</span><span class="n">mockUserService</span><span class="p">,</span><span class="w"> </span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">grantPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 상태를 변경하는 메서드만 검증합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">addPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>훨씬 간단해졌죠! 하지만 기억하세요. 메서드가 호출되었는지 검증하기 위해 목(mock)을 사용하는 대신, <strong>실제 객체나 페이크(fake) 객체를 사용하여 메서드를 실제로 실행하고 그것이 제대로 작동하는지 확인하는 것이 훨씬 더 좋습니다.</strong> 예를 들어, 위 테스트는 <code>addPermission()</code>이 호출되었는지 검증하는 대신, 페이크 데이터베이스를 사용하여 데이터베이스에 권한이 존재하는지 확인할 수 있습니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20250919-album-review-always/" class="button inline prev">
+        &lt; [<span class="button__text">음반 소개: 이승환 - Always (1991): 소포모어 징크스를 넘어선 100만 장의 신화</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250918-album-review-bc603/" class="button inline next">
+         [<span class="button__text">음반 소개: 이승환 - B.C 603 (1989): 록과 신스팝의 조우, &#39;어린 왕자&#39;의 화려한 등장</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
