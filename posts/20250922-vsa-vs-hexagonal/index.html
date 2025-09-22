@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>아키텍처 비교: VSA vs. Hexagonal Architecture :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="이 포스트는 Vertical Slicing Architecture와 Hexagonal Architecture의 개념과 특징을 단순히 나열하는 것을 넘어, 두 아키텍처의 근본적인 설계 철학, 해결하고자 하는 핵심 문제, 그리고 실제 프로젝트에 적용했을 때 발생하는 트레이드오프를 심층적으로 분석하는 것을 목표로 합니다. 각 아키텍처의 태동 배경, 장단점, 이상적인 적용 시나리오를 비교 분석하고, 실제 적용 사례를 통해 이론이 현실에서 어떻게 구현되는지 살펴볼 것입니다. 최종적으로는 독자들이 자신의 프로젝트 맥락과 당면 과제에 가장 적합한 아키텍처를 정보에 입각하여 선택할 수 있도록 실질적인 통찰과 가이드를 제공하고자 합니다." />
+<meta name="keywords" content="programming, dev, architecture, software-design, review, research" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250922-vsa-vs-hexagonal/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="아키텍처 비교: VSA vs. Hexagonal Architecture">
+<meta property="og:description" content="이 포스트는 Vertical Slicing Architecture와 Hexagonal Architecture의 개념과 특징을 단순히 나열하는 것을 넘어, 두 아키텍처의 근본적인 설계 철학, 해결하고자 하는 핵심 문제, 그리고 실제 프로젝트에 적용했을 때 발생하는 트레이드오프를 심층적으로 분석하는 것을 목표로 합니다. 각 아키텍처의 태동 배경, 장단점, 이상적인 적용 시나리오를 비교 분석하고, 실제 적용 사례를 통해 이론이 현실에서 어떻게 구현되는지 살펴볼 것입니다. 최종적으로는 독자들이 자신의 프로젝트 맥락과 당면 과제에 가장 적합한 아키텍처를 정보에 입각하여 선택할 수 있도록 실질적인 통찰과 가이드를 제공하고자 합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250922-vsa-vs-hexagonal/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-09-22 14:14:05 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250922-vsa-vs-hexagonal/">아키텍처 비교: VSA vs. Hexagonal Architecture</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-09-22</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/architecture/">architecture</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/software-design/">software-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/review/">review</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/research/">research</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>이 포스트는 Vertical Slicing Architecture와 Hexagonal Architecture의 개념과 특징을 단순히 나열하는 것을 넘어, 두 아키텍처의 근본적인 설계 철학, 해결하고자 하는 핵심 문제, 그리고 실제 프로젝트에 적용했을 때 발생하는 트레이드오프를 심층적으로 분석하는 것을 목표로 합니다. 각 아키텍처의 태동 배경, 장단점, 이상적인 적용 시나리오를 비교 분석하고, 실제 적용 사례를 통해 이론이 현실에서 어떻게 구현되는지 살펴볼 것입니다. 최종적으로는 독자들이 자신의 프로젝트 맥락과 당면 과제에 가장 적합한 아키텍처를 정보에 입각하여 선택할 수 있도록 실질적인 통찰과 가이드를 제공하고자 합니다.</p>
+<p><em>VSA 와 Hexagonal architecture 에 대한 여러 의견과 관점들에 대해 gemini 2.5 pro 에게 요청한 연구 결과입니다.</em></p>
+<hr>
+<h2 id="1-서론">1. 서론<a href="#1-서론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-현대-소프트웨어-아키텍처의-도전-과제">1.1. 현대 소프트웨어 아키텍처의 도전 과제<a href="#11-현대-소프트웨어-아키텍처의-도전-과제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>전통적인 N-Tier 계층형 아키텍처는 오랫동안 소프트웨어 설계의 표준으로 자리 잡아왔습니다. 이 모델은 프레젠테이션, 비즈니스 로직, 데이터 접근 등 기술적 책임에 따라 코드를 수평적으로 분리하는 구조를 가집니다.[1] 그러나 애플리케이션의 복잡성이 증가하고 비즈니스 요구사항이 빠르게 변화함에 따라, 이러한 구조의 근본적인 한계가 드러나기 시작했습니다. 단일 기능을 추가하거나 수정하기 위해 여러 계층에 분산된 다수의 파일을 변경해야 하는 경우가 빈번하게 발생하며, 이는 낮은 응집도(low cohesion)를 야기합니다.[2, 3] 동시에, 관련 없는 여러 기능이 하나의 거대한 서비스 계층이나 리포지토리 계층을 공유하게 되면서 계층 간 강한 결합(tight coupling)이 발생하여, 하나의 변경이 예기치 않은 부작용을 일으킬 위험을 높입니다.[4] 이러한 구조적 문제는 결국 유지보수 비용을 증가시키고 변화에 대한 대응 속도를 현저히 저하시키는 결과로 이어집니다.</p>
+<h3 id="12-새로운-패러다임의-등장">1.2. 새로운 패러다임의 등장<a href="#12-새로운-패러다임의-등장" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이러한 전통적 계층형 아키텍처의 한계를 극복하기 위해 새로운 아키텍처 패러다임이 등장했습니다. 그중 Vertical Slicing Architecture(VSA)와 Hexagonal Architecture는 가장 주목받는 대안적 접근법입니다. 두 아키텍처는 문제에 대한 접근 방식은 다르지만, 시스템의 유연성과 유지보수성을 높인다는 공통된 목표를 공유합니다. Vertical Slicing Architecture는 코드 구성의 단위를 기술적 계층이 아닌 &lsquo;비즈니스 기능&rsquo;으로 재정의하며, Hexagonal Architecture는 애플리케이션의 핵심 &lsquo;비즈니스 로직&rsquo;을 외부 세계의 기술적 구현으로부터 철저히 격리하고 보호하는 데 초점을 맞춥니다.[5, 6] 이들의 등장은 단순히 새로운 기술 트렌드를 넘어, 기술 중심의 코드 구성이 비즈니스 가치 전달 중심의 개발 흐름과 불일치한다는 문제 인식에서 비롯된 필연적인 진화 과정으로 볼 수 있습니다.</p>
+<h3 id="13-보고서의-목적과-범위">1.3. 보고서의 목적과 범위<a href="#13-보고서의-목적과-범위" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>본 보고서는 Vertical Slicing Architecture와 Hexagonal Architecture의 개념과 특징을 단순히 나열하는 것을 넘어, 두 아키텍처의 근본적인 설계 철학, 해결하고자 하는 핵심 문제, 그리고 실제 프로젝트에 적용했을 때 발생하는 트레이드오프를 심층적으로 분석하는 것을 목표로 합니다. 각 아키텍처의 태동 배경, 장단점, 이상적인 적용 시나리오를 비교 분석하고, 실제 적용 사례를 통해 이론이 현실에서 어떻게 구현되는지 살펴볼 것입니다. 최종적으로는 독자들이 자신의 프로젝트 맥락과 당면 과제에 가장 적합한 아키텍처를 정보에 입각하여 선택할 수 있도록 실질적인 통찰과 가이드를 제공하고자 합니다.</p>
+<hr>
+<h2 id="2-vertical-slicing-architecture-vsa-심층-분석">2. Vertical Slicing Architecture (VSA) 심층 분석<a href="#2-vertical-slicing-architecture-vsa-심층-분석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><img src="https://blog.ndepend.com/wp-content/uploads/net-vertical-slice-architecture.png" alt="vsa"></p>
+<h3 id="21-개념-및-정의">2.1. 개념 및 정의<a href="#21-개념-및-정의" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Vertical Slicing Architecture(VSA)는 소프트웨어를 기술적 관심사에 따른 수평적 계층(horizontal layers)으로 구성하는 대신, 비즈니스 기능 또는 사용 사례(features or use cases)를 중심으로 수직적으로 구성하는 아키텍처 스타일입니다..[5, 7]NET 커뮤니티에서 Jimmy Bogard에 의해 널리 알려진 이 접근법은 각 &lsquo;슬라이스(slice)&lsquo;를 하나의 독립적인 미니 애플리케이션처럼 취급합니다.[4, 8] 각 슬라이스는 특정 요청(request)을 처음부터 끝까지 처리하는 데 필요한 모든 코드(예: API 엔드포인트, 비즈니스 로직, 데이터 접근 코드, 모델 등)를 포함합니다.[5]</p>
+<p>VSA의 핵심 원칙은 &ldquo;슬라이스 내 결합은 극대화하고(maximize coupling in a slice), 슬라이스 간 결합은 최소화한다(minimize coupling between slices)&ldquo;는 것입니다.[4, 9] 이는 소프트웨어의 변경이 발생할 때, 수정 범위가 해당 기능 슬라이스 내부로 국한되도록 유도합니다. 결과적으로 하나의 기능을 수정하기 위해 여러 계층을 넘나들 필요가 없어지며, 다른 기능에 미치는 영향을 최소화할 수 있습니다.</p>
+<h3 id="22-태동-배경-및-해결-과제">2.2. 태동 배경 및 해결 과제<a href="#22-태동-배경-및-해결-과제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>VSA는 N-Tier, Onion, Clean Architecture와 같은 전통적인 계층형 아키텍처를 실제 프로젝트에 적용하면서 겪게 되는 여러 문제점에 대한 실용적인 대안으로 등장했습니다.[4, 5]</p>
+<p>첫째, <strong>낮은 응집도와 높은 분산도 문제</strong>를 해결하고자 합니다. 계층형 아키텍처에서는 &lsquo;사용자 등록&rsquo;과 같은 단일 기능을 구현하기 위해 Presentation 계층의 컨트롤러, Business 계층의 서비스, Data Access 계층의 리포지토리 등 여러 프로젝트와 폴더에 분산된 파일을 동시에 수정해야 합니다.[2, 10] VSA는 이와 관련된 모든 코드를 하나의 기능 폴더 안에 배치(colocation)함으로써 코드의 응집도를 극적으로 높입니다.[11] 이는 개발자가 특정 기능을 이해하고 수정할 때 필요한 인지 부하를 줄여주고, 생산성을 향상시킵니다.[12]</p>
+<p>둘째, <strong>불필요하고 잘못된 추상화 문제</strong>를 해결합니다. 계층형 아키텍처는 종종 <code>IRepository&lt;T&gt;</code>나 <code>IService</code>와 같은 일반적인(generic) 추상화를 강요하는 경향이 있습니다. 그러나 이러한 추상화는 모든 유스케이스에 최적화되지 않을 수 있으며, 때로는 단순한 CRUD 작업에 과도한 복잡성을 추가하는 원인이 되기도 합니다.[4, 11] VSA는 각 슬라이스가 자신에게 가장 적합한 데이터 접근 방식이나 로직 처리 패턴을 독립적으로 선택할 수 있는 유연성을 부여합니다.[13] 예를 들어, 어떤 슬라이스는 Entity Framework를 사용하고, 다른 슬라이스는 성능을 위해 Dapper와 순수 SQL을 사용할 수 있습니다. 이는 &ldquo;지금 당장 필요하지 않은 기능은 만들지 말라&quot;는 YAGNI(You Ain&rsquo;t Gonna Need It) 원칙을 자연스럽게 실천하도록 돕습니다.[4, 11]</p>
+<p>VSA의 근본 철학은 소프트웨어의 &lsquo;변경의 축(Axis of Change)&lsquo;에 맞춰 코드 구조를 정렬하는 것입니다. 소프트웨어는 기술 계층 단위가 아니라 비즈니스 기능 단위로 변경되는 경향이 뚜렷합니다. VSA는 이러한 현실을 반영하여 코드 구성의 축을 기술에서 기능으로 전환함으로써, 기능 추가가 주로 새로운 코드를 추가하는 작업이 되도록 만듭니다.[4, 9] 이는 기존의 공유 코드를 변경할 때 발생하는 예기치 않은 부작용의 위험을 크게 감소시키는 효과를 가져옵니다.</p>
+<hr>
+<h2 id="3-hexagonal-architecture-심층-분석">3. Hexagonal Architecture 심층 분석<a href="#3-hexagonal-architecture-심층-분석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><img src="https://reflectoring.io/images/posts/spring-hexagonal/hexagonal-architecture_hu6764515d7030d45af6f7f498c79e292b_50897_956x0_resize_box_3.png" alt="hexagonal"></p>
+<h3 id="31-개념-및-정의-ports-and-adapters">3.1. 개념 및 정의 (Ports and Adapters)<a href="#31-개념-및-정의-ports-and-adapters" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Hexagonal Architecture는 Alistair Cockburn이 2005년에 제안한 아키텍처 패턴으로, &lsquo;Ports and Adapters&rsquo;라는 이름으로도 널리 알려져 있습니다.[6, 14, 15] 이 아키텍처의 핵심 목표는 애플리케이션의 가장 중요하고 안정적인 자산인 핵심 비즈니스 로직(Application Core)을 변화하기 쉬운 외부 세계(UI, 데이터베이스, 외부 API, 테스트 스크립트 등)로부터 분리하고 보호하는 것입니다.[6, 16]</p>
+<p>이 아키텍처는 세 가지 주요 구성 요소로 이루어집니다.</p>
+<ul>
+<li><strong>Core (또는 Domain / Hexagon):</strong> 시스템의 순수한 비즈니스 규칙과 도메인 모델을 포함하는 영역입니다. 이 영역은 외부의 특정 기술이나 프레임워크에 대한 어떠한 의존성도 갖지 않아야 합니다.[17, 18]</li>
+<li><strong>Ports:</strong> Core가 외부와 상호작용하기 위한 명세, 즉 인터페이스(Interface)입니다. 포트는 Core가 외부 세계에 제공하는 기능(Inbound Port)과 Core가 외부 세계에 요구하는 기능(Outbound Port)으로 나뉩니다.[18, 19] Inbound Port는 주로 유스케이스 인터페이스에 해당하며, Outbound Port는 리포지토리 인터페이스나 외부 서비스 클라이언트 인터페이스 등이 해당됩니다.</li>
+<li><strong>Adapters:</strong> Port 인터페이스에 대한 구체적인 구현체입니다. 어댑터는 특정 기술(예: REST API 컨트롤러, SQL 데이터베이스 리포지토리, 메시지 큐 리스너)과 Core의 비즈니스 로직 사이에서 번역기 역할을 수행합니다.[6, 20]</li>
+</ul>
+<p>Hexagonal Architecture의 가장 중요한 규칙은 모든 의존성이 반드시 외부(Adapters)에서 내부(Core)를 향해야 한다는 &lsquo;의존성 역전 원칙(Dependency Inversion Principle)&lsquo;입니다.[14, 21] Core는 구체적인 구현 기술을 알지 못하며, 오직 자신이 정의한 Port(인터페이스)에만 의존합니다.</p>
+<h3 id="32-태동-배경-및-해결-과제">3.2. 태동 배경 및 해결 과제<a href="#32-태동-배경-및-해결-과제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Hexagonal Architecture는 전통적인 계층형 아키텍처에서 비즈니스 로직이 UI 코드나 데이터베이스 관련 코드와 같은 인프라스트럭처 코드에 쉽게 오염되는 문제를 해결하기 위해 고안되었습니다.[6, 17, 22]</p>
+<p>첫째, <strong>기술 종속성 문제</strong>를 해결합니다. 비즈니스 로직이 특정 프레임워크나 데이터베이스 기술에 강하게 결합되어 있으면, 나중에 기술 스택을 변경하거나 업그레이드하는 작업이 매우 어렵고 비용이 많이 듭니다.[16, 17] Hexagonal Architecture에서는 데이터베이스를 바꾸고 싶다면 해당 데이터베이스 기술을 구현한 새로운 어댑터를 만들어 기존 어댑터와 교체하기만 하면 됩니다. 이 과정에서 핵심 비즈니스 로직은 전혀 수정할 필요가 없습니다.[23, 24]</p>
+<p>둘째, <strong>테스트의 어려움 문제</strong>를 해결합니다. 비즈니스 로직을 테스트하기 위해 실제 데이터베이스를 연결하거나 웹 서버를 구동해야 한다면, 테스트는 느리고 불안정해집니다.[14, 23] Hexagonal Architecture에서는 Port를 통해 외부 의존성을 쉽게 모의 객체(Mock)나 스텁(Stub)으로 대체할 수 있습니다. 이를 통해 외부 환경과 완전히 분리된 상태에서 핵심 비즈니스 로직만을 빠르고 안정적으로 테스트하는 것이 가능해집니다.[19, 25]</p>
+<p>이 아키텍처의 본질은 &lsquo;경계(Boundary)&lsquo;를 명확히 정의하고 관리하는 것입니다. 육각형(Hexagon)이라는 시각적 메타포는 전통적인 계층 구조의 상/하/좌/우 개념에서 벗어나, 시스템을 오직 &lsquo;내부(Inside)&lsquo;와 &lsquo;외부(Outside)&lsquo;라는 대칭적 관계로 바라보게 하기 위한 장치입니다.[6, 26, 27] 이를 통해 개발자는 시스템에서 가장 변화가 적은 부분(비즈니스 규칙)과 가장 변화가 잦은 부분(기술 구현)을 명확히 분리하여, 시스템의 장기적인 생존성과 진화 가능성을 확보하는 방어적 설계를 수행할 수 있습니다.</p>
+<hr>
+<h2 id="4-두-아키텍처의-비교-분석">4. 두 아키텍처의 비교 분석<a href="#4-두-아키텍처의-비교-분석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-공통-목표와-철학적-차이">4.1. 공통 목표와 철학적 차이<a href="#41-공통-목표와-철학적-차이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Vertical Slicing Architecture와 Hexagonal Architecture는 모두 전통적인 계층형 아키텍처의 경직성을 극복하고, 유지보수하기 쉽고 유연한 시스템을 구축하려는 공통된 목표를 가지고 있습니다.[7, 18] 두 아키텍처 모두 &lsquo;관심사의 분리(Separation of Concerns)&lsquo;라는 중요한 설계 원칙을 각자의 방식으로 추구합니다.</p>
+<p>그러나 두 아키텍처가 집중하는 관심사의 차원은 근본적으로 다릅니다.</p>
+<ul>
+<li><strong>Vertical Slicing Architecture</strong>는 <strong>&lsquo;어떻게 코드를 구성하고 그룹화할 것인가(Cohesion)&rsquo;</strong> 에 대한 해답을 제시합니다. 주요 관심사는 &lsquo;기능&rsquo;이며, 기능적으로 관련된 모든 코드를 한곳에 모아 응집도를 높이는 데 집중합니다.[13]</li>
+<li><strong>Hexagonal Architecture</strong>는 <strong>&lsquo;모듈 간의 의존성은 어떤 방향을 가져야 하는가(Coupling)&rsquo;</strong> 에 대한 규칙을 제시합니다. 주요 관심사는 &lsquo;비즈니스 로직과 외부 기술의 분리&rsquo;이며, 의존성 역전 원칙을 통해 의존성의 방향을 엄격하게 제어하는 데 집중합니다.[13]</li>
+</ul>
+<h3 id="42-직교적-관계-orthogonal-relationship">4.2. 직교적 관계 (Orthogonal Relationship)<a href="#42-직교적-관계-orthogonal-relationship" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이처럼 두 아키텍처는 서로 다른 설계 차원을 다루기 때문에, 상호 배타적인 관계가 아니라 오히려 상호 보완적인 &lsquo;직교적(Orthogonal)&rsquo; 관계에 있습니다.[13] 하나를 선택하면 다른 하나를 포기해야 하는 문제가 아니라, 두 아키텍처의 원칙을 함께 적용하여 시너지를 창출할 수 있습니다.</p>
+<p>가장 일반적인 결합 시나리오는 거시적인 관점에서 VSA를 적용하여 전체 시스템을 기능 단위의 독립적인 슬라이스로 나눈 뒤, 각 슬라이스 내부의 미시적인 관점에서 Hexagonal Architecture의 원칙을 적용하는 것입니다.[28, 29] 예를 들어, &lsquo;주문 처리&rsquo;라는 버티컬 슬라이스를 개발할 때, 그 내부 구조를 Hexagonal Architecture에 따라 구성할 수 있습니다. 즉, 순수한 &lsquo;주문 도메인 로직(Core)&rsquo;, 외부 요청을 받는 &lsquo;주문 API 컨트롤러(Inbound Adapter)&rsquo;, 그리고 데이터베이스와 통신하는 &lsquo;주문 리포지토리(Outbound Adapter)&lsquo;로 구조화하는 방식입니다. 이를 통해 기능 개발의 생산성(VSA의 장점)과 핵심 로직의 안정성 및 테스트 용이성(Hexagonal의 장점)을 동시에 확보할 수 있습니다.</p>
+<p>이러한 관계는 &lsquo;전술&rsquo;과 &lsquo;전략&rsquo;에 비유할 수 있습니다. VSA는 기능 개발의 생산성을 높이는 효율적인 코드 구성법이라는 &lsquo;전술&rsquo;에 가깝고, Hexagonal Architecture는 시스템의 장기적인 안정성과 기술적 유연성을 확보하는 &lsquo;전략&rsquo;적 의존성 관리 원칙에 가깝습니다.</p>
+<h3 id="43-비교-분석표">4.3. 비교 분석표<a href="#43-비교-분석표" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>두 아키텍처의 주요 특징을 요약하면 다음과 같습니다.</p>
+<p><strong>Table 1: Vertical Slicing Architecture vs. Hexagonal Architecture 비교 분석표</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">구분 항목</th>
+          <th style="text-align: left">Vertical Slicing Architecture</th>
+          <th style="text-align: left">Hexagonal Architecture</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>핵심 철학</strong></td>
+          <td style="text-align: left">기능/요청 단위로 코드 구성 (높은 응집도)</td>
+          <td style="text-align: left">비즈니스 로직과 외부 기술 분리 (느슨한 결합)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>주요 관심사</strong></td>
+          <td style="text-align: left">변경의 축 (Axis of Change)</td>
+          <td style="text-align: left">의존성 방향 및 관리 (Dependency Management)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>구조화 단위</strong></td>
+          <td style="text-align: left">기능 슬라이스 (Feature Slice)</td>
+          <td style="text-align: left">내부(Core)와 외부(Adapters)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>결합도</strong></td>
+          <td style="text-align: left">슬라이스 내 강한 결합, 슬라이스 간 약한 결합</td>
+          <td style="text-align: left">Core와 Adapter 간 약한 결합 (Port를 통해)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>코드 구성 방식</strong></td>
+          <td style="text-align: left">기능별 폴더 구조 (Colocation by Feature)</td>
+          <td style="text-align: left">계층별 패키지 구조 (Packaging by Layer)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>주요 해결 문제</strong></td>
+          <td style="text-align: left">계층형 아키텍처의 낮은 응집도, 불필요한 추상화</td>
+          <td style="text-align: left">기술 종속성, 테스트의 어려움</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>제안자</strong></td>
+          <td style="text-align: left">Jimmy Bogard</td>
+          <td style="text-align: left">Alistair Cockburn</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="5-장단점-및-적용-시나리오">5. 장단점 및 적용 시나리오<a href="#5-장단점-및-적용-시나리오" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-vertical-slicing-architecture">5.1. Vertical Slicing Architecture<a href="#51-vertical-slicing-architecture" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="장점">장점<a href="#장점" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li><strong>빠른 개발 속도:</strong> 새로운 기능을 추가할 때 기존의 공유 코드를 수정하기보다 새로운 코드를 작성하는 경우가 많아, 사이드 이펙트에 대한 걱정 없이 빠르게 개발을 진행할 수 있습니다.[4, 30]</li>
+<li><strong>높은 응집도와 유지보수성:</strong> 특정 기능과 관련된 모든 코드가 하나의 폴더에 모여 있어 코드의 가독성이 높고, 기능을 이해하거나 수정하기가 용이합니다.[11, 31]</li>
+<li><strong>팀 확장성:</strong> 여러 개발팀이 서로 다른 기능 슬라이스를 독립적으로 개발할 수 있어 병렬 작업에 유리하며, 대규모 팀에서의 협업 효율을 높일 수 있습니다.[9, 30]</li>
+</ul>
+<h4 id="단점">단점<a href="#단점" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li><strong>코드 중복 가능성:</strong> 슬라이스 간의 공유를 의도적으로 최소화하기 때문에, 여러 슬라이스에 걸쳐 공통적으로 사용되는 로직이 중복될 수 있습니다. 이는 &ldquo;잘못된 추상화보다 약간의 중복이 낫다&quot;는 철학에 기반하지만, 중복이 과도해지면 관리 포인트가 늘어날 수 있습니다.[5, 32]</li>
+<li><strong>일관성 유지의 어려움:</strong> 각 슬라이스가 독립적으로 데이터 접근 방식이나 라이브러리를 선택할 수 있어, 전체 시스템의 기술적 일관성이 떨어질 수 있습니다. 이는 개발자가 다른 슬라이스를 작업할 때 새로운 방식을 익혀야 하는 인지 부하를 유발할 수 있습니다.[4, 30]</li>
+<li><strong>팀의 높은 숙련도 요구:</strong> 언제 공통 로직을 추상화하여 공유하고, 언제 중복을 허용할지 결정하는 것은 고도의 설계 역량을 필요로 합니다. 팀의 경험이 부족할 경우 구조가 혼란스러워질 수 있습니다.[4]</li>
+</ul>
+<h3 id="52-hexagonal-architecture">5.2. Hexagonal Architecture<a href="#52-hexagonal-architecture" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="장점-1">장점<a href="#장점-1" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li><strong>탁월한 테스트 용이성:</strong> 핵심 비즈니스 로직이 외부 기술과 완전히 분리되어 있어, 의존성을 쉽게 Mocking하여 빠르고 안정적인 단위 테스트를 작성할 수 있습니다.[23, 25, 33]</li>
+<li><strong>기술 유연성 및 교체 용이성:</strong> 데이터베이스, 메시징 시스템, 외부 API 등 인프라 기술을 변경해야 할 때, 해당 기술을 구현한 어댑터만 교체하면 되므로 변화에 유연하게 대응할 수 있습니다.[22, 24]</li>
+<li><strong>비즈니스 로직 보호:</strong> 시스템의 가장 중요한 자산인 비즈니스 로직이 외부의 잦은 기술적 변화로부터 안전하게 보호되어 장기적인 안정성을 확보할 수 있습니다.[14, 17]</li>
+</ul>
+<h4 id="단점-1">단점<a href="#단점-1" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li><strong>초기 구현 복잡성:</strong> Port(인터페이스)와 Adapter(구현체)를 추가로 정의해야 하므로, 초기 설정이 복잡하고 간단한 기능을 구현하는 데에도 더 많은 코드가 필요할 수 있습니다.[16, 23]</li>
+<li><strong>과도한 간접 계층(Indirection):</strong> 모든 상호작용이 인터페이스를 통해 이루어지기 때문에 코드의 흐름을 한눈에 파악하기 어렵고, 디버깅 시 여러 계층을 거쳐야 하는 번거로움이 있을 수 있습니다.[25, 33]</li>
+<li><strong>학습 곡선:</strong> 개발팀이 Ports and Adapters 개념과 의존성 역전 원칙을 명확하게 이해하고 준수해야만 아키텍처의 이점을 온전히 누릴 수 있습니다. 그렇지 않으면 오히려 복잡성만 가중될 수 있습니다.[22, 25]</li>
+</ul>
+<h3 id="53-아키텍처-선택-가이드">5.3. 아키텍처 선택 가이드<a href="#53-아키텍처-선택-가이드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="vertical-slicing-architecture-추천-상황">Vertical Slicing Architecture 추천 상황<a href="#vertical-slicing-architecture-추천-상황" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li>빠른 기능 출시와 반복적인 개선이 중요한 애자일 개발 환경.[1, 5]</li>
+<li>각 기능이 비즈니스적으로 독립성이 높은 애플리케이션 (예: 각 기능이 독립적으로 배포될 수 있는 마이크로서비스 환경).[4, 5]</li>
+<li>개발팀이 특정 기능이나 도메인을 전담하는 기능 팀(Feature Team)으로 구성된 경우.[30]</li>
+</ul>
+<h4 id="hexagonal-architecture-추천-상황">Hexagonal Architecture 추천 상황<a href="#hexagonal-architecture-추천-상황" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li>비즈니스 로직이 복잡하고, 장기간에 걸쳐 안정적으로 유지 및 발전시켜야 하는 핵심 시스템.[14]</li>
+<li>다양한 종류의 UI(웹, 모바일, CLI)나 데이터 저장소, 외부 시스템과 연동해야 하는 경우.[23]</li>
+<li>향후 데이터베이스나 프레임워크 등 주요 기술 스택의 변경 가능성이 높은 프로젝트.[24]</li>
+<li>높은 수준의 자동화된 테스트 커버리지가 비즈니스적으로 필수적인 프로젝트.[25, 33]</li>
+</ul>
+<h4 id="두-아키텍처-모두-적용하지-않는-것이-좋은-상황">두 아키텍처 모두 적용하지 않는 것이 좋은 상황<a href="#두-아키텍처-모두-적용하지-않는-것이-좋은-상황" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ul>
+<li>애플리케이션의 대부분 기능이 데이터베이스 테이블과 일대일로 매핑되는 단순한 CRUD(Create, Read, Update, Delete) 작업 위주일 때, VSA나 Hexagonal Architecture가 제공하는 유연성과 추상화는 과도한 복잡성(over-engineering)이 될 수 있습니다.[13, 34]</li>
+<li>빠르게 개발하여 시장성을 검증하고 폐기될 가능성이 높은 프로토타입이나 단기 프로젝트의 경우, 단순한 N-Tier 아키텍처가 더 높은 생산성을 제공할 수 있습니다.[1]</li>
+</ul>
+<p>결론적으로 &lsquo;최고의 아키텍처&rsquo;는 존재하지 않으며, &lsquo;현재 프로젝트의 단계와 복잡성에 가장 적합한 아키텍처&rsquo;가 존재할 뿐입니다. 프로젝트 초기에는 속도를 중시하는 VSA가 유리할 수 있고, 프로젝트가 성숙하고 비즈니스 로직이 복잡해지면 안정성을 중시하는 Hexagonal Architecture의 원칙을 도입하는 등, 프로젝트의 생애주기에 따라 아키텍처를 점진적으로 진화시키는 지혜가 필요합니다.</p>
+<hr>
+<h2 id="6-실제-적용-사례-연구">6. 실제 적용 사례 연구<a href="#6-실제-적용-사례-연구" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-vertical-slicing-architecture-적용-사례">6.1. Vertical Slicing Architecture 적용 사례<a href="#61-vertical-slicing-architecture-적용-사례" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>VSA는 기능의 독립성이 높은 시나리오에서 그 가치를 발휘합니다.</p>
+<ul>
+<li><strong>전자상거래 카탈로그 마이크로서비스:</strong> 전자상거래 시스템의 상품 카탈로그를 관리하는 마이크로서비스는 VSA를 적용하기에 이상적인 예시입니다. &lsquo;신규 상품 추가&rsquo;, &lsquo;재고 수량 업데이트&rsquo;, &lsquo;카테고리 변경&rsquo;, &lsquo;상품 정보 조회&rsquo;와 같은 각 기능은 명확하게 분리된 비즈니스 요청입니다. 각 요청을 독립적인 슬라이스로 구현하면, 한 기능의 변경이 다른 기능에 영향을 주지 않으므로 안전하고 빠른 개발이 가능합니다.[5] 예를 들어, &lsquo;재고 업데이트&rsquo; 슬라이스는 트랜잭션 처리에 특화된 데이터 접근 방식을 사용하고, &lsquo;상품 정보 조회&rsquo; 슬라이스는 읽기 성능을 극대화하기 위해 캐싱 전략이나 다른 데이터 모델을 사용할 수 있습니다.</li>
+<li><strong>.NET 기반의 CQRS 애플리케이션:</strong> VSA는 Command Query Responsibility Segregation(CQRS) 패턴과 자연스럽게 결합됩니다. MediatR과 같은 라이브러리를 사용하면, 시스템에 대한 모든 요청을 고유한 Command(상태 변경) 또는 Query(데이터 조회) 객체로 모델링하고, 각 요청을 처리하는 독립적인 핸들러를 구현할 수 있습니다. 이 핸들러 하나하나가 바로 버티컬 슬라이스에 해당합니다.[3, 35] Microsoft의 공식 샘플 프로젝트였던 <code>eShopOnWeb</code>을 VSA 스타일로 리팩토링한 여러 커뮤니티 프로젝트들은 이러한 접근법의 실제 구현을 잘 보여주는 사례입니다.[36]</li>
+</ul>
+<h3 id="62-hexagonal-architecture-적용-사례">6.2. Hexagonal Architecture 적용 사례<a href="#62-hexagonal-architecture-적용-사례" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Hexagonal Architecture는 외부 기술로부터 비즈니스 로직을 보호해야 할 필요성이 클 때 강력한 효과를 보입니다.</p>
+<ul>
+<li><strong>Netflix의 데이터 소스 교체 사례:</strong> Netflix 기술 블로그에 소개된 사례는 Hexagonal Architecture의 핵심 가치를 명확하게 보여줍니다.[24, 37] Netflix의 한 팀은 기존에 JSON API를 통해 데이터를 가져오던 시스템을 새로운 GraphQL 기반의 데이터 소스로 마이그레이션해야 하는 과제에 직면했습니다. 시스템이 Hexagonal Architecture로 설계되었기 때문에, 핵심 비즈니스 로직(Interactor)은 데이터 소스의 구체적인 기술을 알지 못하고 오직 추상화된 리포지토리 포트(Port)에만 의존하고 있었습니다. 개발팀은 새로운 GraphQL 기술을 구현하는 어댑터(Adapter)를 새로 작성하고, 설정 파일에서 기존 JSON API 어댑터를 새로운 GraphQL 어댑터로 교체하는 단 한 줄의 코드 변경만으로 마이그레이션을 완료할 수 있었습니다.[24] 이 사례는 비즈니스 로직의 수정 없이 기술 스택을 유연하게 교체할 수 있다는 Hexagonal Architecture의 강력한 장점을 입증합니다.</li>
+<li><strong>다양한 입력을 받는 금융 시스템:</strong> 은행의 거래 처리 시스템과 같은 경우, REST API를 통한 온라인 거래, 특정 시간에 실행되는 배치 파일, 메시지 큐를 통한 비동기 거래 등 다양한 채널로부터 입력을 받습니다. Hexagonal Architecture를 적용하면, 각 입력 채널을 고유한 &lsquo;Inbound Adapter&rsquo;로 구현할 수 있습니다. 이 어댑터들은 각기 다른 프로토콜과 데이터 형식을 파싱하여 표준화된 명령 객체로 변환한 뒤, 동일한 &lsquo;Inbound Port&rsquo;를 통해 핵심 비즈니스 로직을 호출합니다. 덕분에 핵심 로직은 입력 소스가 무엇인지 전혀 신경 쓸 필요 없이 일관된 방식으로 거래를 처리할 수 있습니다.[23]</li>
+</ul>
+<p>이러한 성공 사례들은 아키텍처를 맹목적으로 추종하는 것이 아니라, 해결해야 할 문제의 본질을 정확히 파악하고 그에 가장 적합한 아키텍처 도구를 선택하는 것이 얼마나 중요한지를 보여줍니다. Netflix는 &lsquo;기술 변화에 대한 유연성&rsquo;이라는 명확한 문제가 있었고, Hexagonal Architecture는 그에 대한 완벽한 해답이었습니다.</p>
+<hr>
+<h2 id="7-결론-및-제언">7. 결론 및 제언<a href="#7-결론-및-제언" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="71-핵심-가치-요약">7.1. 핵심 가치 요약<a href="#71-핵심-가치-요약" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>본 보고서를 통해 두 아키텍처의 핵심적인 가치와 철학을 분석했습니다.</p>
+<ul>
+<li><strong>Vertical Slicing Architecture</strong>는 코드 구성 방식을 비즈니스 기능 중심으로 전환하여 <strong>응집도</strong>를 극대화합니다. 이를 통해 개발 팀의 <strong>생산성과 개발 속도</strong>를 높이는 데 중점을 두는 실용적이고 전술적인 접근법입니다.</li>
+<li><strong>Hexagonal Architecture</strong>는 핵심 비즈니스 로직과 외부 기술 구현 간의 <strong>의존성을 엄격하게 관리</strong>합니다. 이를 통해 시스템의 <strong>장기적인 안정성, 테스트 용이성, 기술적 유연성</strong>을 확보하는 데 중점을 두는 방어적이고 전략적인 접근법입니다.</li>
+</ul>
+<h3 id="72-최고의-아키텍처는-없다-원칙-재확인">7.2. &lsquo;최고의 아키텍처는 없다&rsquo; 원칙 재확인<a href="#72-최고의-아키텍처는-없다-원칙-재확인" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>분석 결과, 어떤 아키텍처가 다른 아키텍처보다 절대적으로 우월하다고 결론 내릴 수 없습니다. 아키텍처의 적합성은 프로젝트의 목표, 비즈니스 도메인의 복잡성, 팀의 규모와 기술적 성숙도, 그리고 조직의 개발 문화 등 주어진 &lsquo;맥락(Context)&lsquo;에 따라 결정됩니다. &ldquo;우리 조직에 맞는 최고의 아키텍처는 무엇인가?&ldquo;라는 질문은 &ldquo;망치가 톱보다 더 좋은 도구인가?&ldquo;라는 질문과 같습니다. 중요한 것은 해결해야 할 문제가 무엇인지를 명확히 정의하고, 그 문제에 가장 적합한 도구를 선택하는 것입니다.</p>
+<h3 id="73-최종-제언">7.3. 최종 제언<a href="#73-최종-제언" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>소프트웨어 아키텍처를 선택하고 적용할 때 다음의 사항을 고려할 것을 제언합니다.</p>
+<ol>
+<li><strong>점진적 진화:</strong> 처음부터 완벽하고 복잡한 아키텍처를 구축하려 하기보다, 프로젝트의 초기 단계에서는 단순한 아키텍처로 시작하고 비즈니스와 시스템의 복잡성이 증가함에 따라 점진적으로 아키텍처를 진화시키는 접근법이 효과적입니다.[1]</li>
+<li><strong>유연한 조합:</strong> Vertical Slicing Architecture와 Hexagonal Architecture를 상호 배타적인 선택지로 간주하지 말아야 합니다. 두 아키텍처는 서로 다른 차원의 문제를 해결하므로, 프로젝트의 필요에 따라 두 아키텍처의 원칙을 유연하게 조합하여 우리 팀만의 &lsquo;하이브리드&rsquo; 아키텍처를 구축하는 것을 적극적으로 고려해야 합니다.[29, 38]</li>
+<li><strong>원칙 중심의 사고:</strong> 특정 아키텍처의 구조나 코드 예제를 맹목적으로 따르기보다, 그 아키텍처가 추구하는 근본적인 &lsquo;원칙&rsquo;을 이해하는 것이 중요합니다. 아키텍처는 엄격한 규칙의 집합이 아니라, 복잡한 문제를 해결하기 위한 사고의 틀이자 가이드라인이라는 점을 기억해야 합니다.</li>
+</ol>
+<p>궁극적으로 성공적인 아키텍처는 시스템의 지속 가능한 성장을 지원하고, 비즈니스 가치를 빠르고 안정적으로 전달하는 데 기여하는 아키텍처입니다.</p>
+<hr>
+<h2 id="8-참고-문헌">8. 참고 문헌<a href="#8-참고-문헌" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ol>
+<li><a href="https://antondevtips.com/blog/n-layered-vs-clean-vs-vertical-slice-architecture">https://antondevtips.com/blog/n-layered-vs-clean-vs-vertical-slice-architecture</a></li>
+<li><a href="https://medium.com/@andrew.macconnell/exploring-software-architecture-vertical-slice-789fa0a09be6">https://medium.com/@andrew.macconnell/exploring-software-architecture-vertical-slice-789fa0a09be6</a></li>
+<li><a href="https://amit-naik.medium.com/building-scalable-apis-with-vertical-slice-architecture-in-net-23f9d8c8a84e">https://amit-naik.medium.com/building-scalable-apis-with-vertical-slice-architecture-in-net-23f9d8c8a84e</a></li>
+<li><a href="https://www.jimmybogard.com/vertical-slice-architecture/">https://www.jimmybogard.com/vertical-slice-architecture/</a></li>
+<li><a href="https://mehmetozkaya.medium.com/vertical-slice-architecture-and-comparison-with-clean-architecture-76f813e3dab6">https://mehmetozkaya.medium.com/vertical-slice-architecture-and-comparison-with-clean-architecture-76f813e3dab6</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hexagonal_architecture_%28software%29">https://en.wikipedia.org/wiki/Hexagonal_architecture_(software</a></li>
+<li><a href="https://verticalslicearchitecture.com/">https://verticalslicearchitecture.com/</a></li>
+<li><a href="https://www.youtube.com/watch?v=L2Wnq0ChAIA">https://www.youtube.com/watch?v=L2Wnq0ChAIA</a></li>
+<li><a href="https://www.milanjovanovic.tech/blog/vertical-slice-architecture">https://www.milanjovanovic.tech/blog/vertical-slice-architecture</a></li>
+<li><a href="https://medium.com/design-microservices-architecture-with-patterns/the-problem-with-clean-architecture-vertical-slices-111537c0ffcb">https://medium.com/design-microservices-architecture-with-patterns/the-problem-with-clean-architecture-vertical-slices-111537c0ffcb</a></li>
+<li><a href="https://www.reddit.com/r/dotnet/comments/lw13r2/choosing_between_using_cleanonion_or_vertical/">https://www.reddit.com/r/dotnet/comments/lw13r2/choosing_between_using_cleanonion_or_vertical/</a></li>
+<li><a href="https://www.reddit.com/r/reactjs/comments/1afywy4/codebase_examples_of_featuredriven_or_vertical/">https://www.reddit.com/r/reactjs/comments/1afywy4/codebase_examples_of_featuredriven_or_vertical/</a></li>
+<li><a href="https://codeopinion.com/vertical-slice-architecture-myths-you-need-to-know/">https://codeopinion.com/vertical-slice-architecture-myths-you-need-to-know/</a></li>
+<li><a href="https://scalastic.io/en/hexagonal-architecture/">https://scalastic.io/en/hexagonal-architecture/</a></li>
+<li><a href="https://jmgarridopaz.github.io/content/interviewalistair.html">https://jmgarridopaz.github.io/content/interviewalistair.html</a></li>
+<li><a href="https://medium.com/@erickzanetti/understanding-hexagonal-architecture-ports-and-adapters-8945fc3e3dc0">https://medium.com/@erickzanetti/understanding-hexagonal-architecture-ports-and-adapters-8945fc3e3dc0</a></li>
+<li><a href="https://medium.com/@well-araujo/hexagonal-architecture-the-genesis-of-a-disruptive-idea-94cdbe99a9da">https://medium.com/@well-araujo/hexagonal-architecture-the-genesis-of-a-disruptive-idea-94cdbe99a9da</a></li>
+<li><a href="https://softengbook.org/articles/hexagonal-architecture">https://softengbook.org/articles/hexagonal-architecture</a></li>
+<li><a href="https://dev.to/dyarleniber/hexagonal-architecture-and-clean-architecture-with-examples-48oi">https://dev.to/dyarleniber/hexagonal-architecture-and-clean-architecture-with-examples-48oi</a></li>
+<li><a href="https://angular.love/ports-and-adapters-vs-hexagonal-architecture-is-it-the-same-pattern/">https://angular.love/ports-and-adapters-vs-hexagonal-architecture-is-it-the-same-pattern/</a></li>
+<li><a href="https://blog.phuaxueyong.com/post/2020-05-25-what-architecture-is-netflix-using/">https://blog.phuaxueyong.com/post/2020-05-25-what-architecture-is-netflix-using/</a></li>
+<li><a href="https://www.thepowermba.com/en/blog/hexagonal-architecture">https://www.thepowermba.com/en/blog/hexagonal-architecture</a></li>
+<li><a href="https://www.geeksforgeeks.org/system-design/hexagonal-architecture-system-design/">https://www.geeksforgeeks.org/system-design/hexagonal-architecture-system-design/</a></li>
+<li><a href="https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749">https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749</a></li>
+<li><a href="https://medium.com/@pedrolisboa_10855/hexagonal-architecture-benefits-and-drawbacks-70c79f8c2c40">https://medium.com/@pedrolisboa_10855/hexagonal-architecture-benefits-and-drawbacks-70c79f8c2c40</a></li>
+<li><a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/hexagonal-architecture.html">https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/hexagonal-architecture.html</a></li>
+<li><a href="https://alistair.cockburn.us/hexagonal-architecture/">https://alistair.cockburn.us/hexagonal-architecture/</a></li>
+<li><a href="https://mufridk.medium.com/q-what-are-your-experience-doing-vertical-slice-architecture-vs-clean-architecture-hexagonal-6fd74b252563">https://mufridk.medium.com/q-what-are-your-experience-doing-vertical-slice-architecture-vs-clean-architecture-hexagonal-6fd74b252563</a></li>
+<li><a href="https://stackoverflow.com/questions/74074293/is-there-a-good-way-to-merge-vertical-slice-and-clean-architecture">https://stackoverflow.com/questions/74074293/is-there-a-good-way-to-merge-vertical-slice-and-clean-architecture</a></li>
+<li><a href="https://www.reddit.com/r/ExperiencedDevs/comments/1m1v5pv/vertical_slice_architecture_pros_and_cons/">https://www.reddit.com/r/ExperiencedDevs/comments/1m1v5pv/vertical_slice_architecture_pros_and_cons/</a></li>
+<li><a href="https://medium.com/@anujguptaninja/vertical-slice-architecture-structuring-vertical-slices-in-your-application-674825367c3d">https://medium.com/@anujguptaninja/vertical-slice-architecture-structuring-vertical-slices-in-your-application-674825367c3d</a></li>
+<li><a href="https://www.reddit.com/r/softwarearchitecture/comments/1bg12nr/sharing_logic_in_vertical_slice_style_architecture/">https://www.reddit.com/r/softwarearchitecture/comments/1bg12nr/sharing_logic_in_vertical_slice_style_architecture/</a></li>
+<li><a href="https://cardoai.com/hexagonal-architecture-what-is-it-and-why-should-you-use-it/">https://cardoai.com/hexagonal-architecture-what-is-it-and-why-should-you-use-it/</a></li>
+<li><a href="https://medium.com/fastned/when-and-when-not-to-use-hexagonal-architecture-c0850d643b3b">https://medium.com/fastned/when-and-when-not-to-use-hexagonal-architecture-c0850d643b3b</a></li>
+<li><a href="https://dotdev.com.tr/vertical-slice-architecture-how-does-it-compare-to-clean-architecture">https://dotdev.com.tr/vertical-slice-architecture-how-does-it-compare-to-clean-architecture</a></li>
+<li><a href="https://github.com/topics/vertical-slice-architecture?l=c%23&amp;o=asc&amp;s=updated">https://github.com/topics/vertical-slice-architecture?l=c%23&amp;o=asc&amp;s=updated</a></li>
+<li><a href="https://www.reddit.com/r/programming/comments/fgkllr/ready_for_changes_with_hexagonal_architecture/">https://www.reddit.com/r/programming/comments/fgkllr/ready_for_changes_with_hexagonal_architecture/</a></li>
+<li><a href="https://sayyedulawwab.com/blog/leveraging-vertical-slice-architecture-with-clean-architecture-for-scalable-maintainable-systems/">https://sayyedulawwab.com/blog/leveraging-vertical-slice-architecture-with-clean-architecture-for-scalable-maintainable-systems/</a></li>
+</ol>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20250922-online-poker-strategy/" class="button inline prev">
+        &lt; [<span class="button__text">온라인 포커 승률 극대화를 위한 전략</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250922-album-review-my-story/" class="button inline next">
+         [<span class="button__text">음반 소개: 이승환 - My Story (1993): 슬픔을 딛고 거장으로 발돋움한 음악적 서사</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
