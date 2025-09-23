@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>심오한 수읽기의 세계: 바둑(Go)에 대한 소개 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="본 포스트는 바둑이라는 게임의 기원과 역사, 기본 규칙과 전략을 상세히 소개하고, 이 게임이 단순한 오락을 넘어 동아시아 문화권에서 사고의 도구이자 철학적 성찰의 매개체로 기능해 온 이유를 다각적으로 분석하고자 합니다. 이를 통해 바둑을 모르는 이들에게 이 게임이 왜 배울 만한 가치가 있는지를 종합적으로 제시하는 것을 목적으로 합니다." />
+<meta name="keywords" content="game, go, review, research" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20250923-introduction-to-go-game/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="심오한 수읽기의 세계: 바둑(Go)에 대한 소개">
+<meta property="og:description" content="본 포스트는 바둑이라는 게임의 기원과 역사, 기본 규칙과 전략을 상세히 소개하고, 이 게임이 단순한 오락을 넘어 동아시아 문화권에서 사고의 도구이자 철학적 성찰의 매개체로 기능해 온 이유를 다각적으로 분석하고자 합니다. 이를 통해 바둑을 모르는 이들에게 이 게임이 왜 배울 만한 가치가 있는지를 종합적으로 제시하는 것을 목적으로 합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20250923-introduction-to-go-game/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-09-23 09:50:25 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20250923-introduction-to-go-game/">심오한 수읽기의 세계: 바둑(Go)에 대한 소개</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-09-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/go/">go</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/review/">review</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/research/">research</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>바둑에 대한 연구 요청에 대한 gemini-2.5-pro 의 결과물입니다.</em></p>
+<hr>
+<h2 id="서론-흑과-백-무한을-담은-우주">서론: 흑과 백, 무한을 담은 우주<a href="#서론-흑과-백-무한을-담은-우주" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><img src="https://i.namu.wiki/i/cnqjsHRUl-CPSacgByZEL_ljv0IfP2nqKyI4cOGOe_enO-MfEQA0fRsfPCJFhnIZ9k9QB4_6gjeR7E9tdRjehg.webp" alt="img"></p>
+<p>바둑은 흑과 백의 돌을 가로세로 19줄의 판 위에 번갈아 놓아 더 많은 공간, 즉 &lsquo;집&rsquo;을 차지하는 쪽이 이기는 단순한 규칙의 게임입니다.[1] 그러나 이 간결한 규칙의 이면에는 우주의 원자 수보다 많은 경우의 수가 잠재되어 있으며, 수천 년에 걸쳐 동아시아의 지성사를 관통해 온 깊이 있는 철학이 담겨 있습니다.[2, 3] 바둑판 위에서 펼쳐지는 국면의 추이는 풍운의 변화와 같고, 돌의 흥망성쇠는 인간사의 도리와 다르지 않다고 평가되기도 합니다.[2] 본 포스트는 바둑이라는 게임의 기원과 역사, 기본 규칙과 전략을 상세히 소개하고, 이 게임이 단순한 오락을 넘어 동아시아 문화권에서 사고의 도구이자 철학적 성찰의 매개체로 기능해 온 이유를 다각적으로 분석하고자 합니다. 이를 통해 바둑을 모르는 이들에게 이 게임이 왜 배울 만한 가치가 있는지를 종합적으로 제시하는 것을 목적으로 합니다.</p>
+<h2 id="i-바둑의-기원과-역사-수천-년을-이어온-지혜의-খল">I. 바둑의 기원과 역사: 수천 년을 이어온 지혜의 খেলা<a href="#i-바둑의-기원과-역사-수천-년을-이어온-지혜의-খল" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-신화와-역사-사이-바둑의-탄생">1.1. 신화와 역사 사이: 바둑의 탄생<a href="#11-신화와-역사-사이-바둑의-탄생" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑의 기원은 명확한 사료보다는 고대의 전설에 크게 의존하고 있습니다. 가장 널리 알려진 설은 고대 중국의 요(堯) 임금과 순(舜) 임금이 어리석은 아들 단주(丹朱)와 상균(商均)을 깨우치기 위해 바둑을 만들었다는 &lsquo;요순 창시설&rsquo;입니다.[1, 4, 5] 여러 고문헌에 간략히 언급되어 있으나, 내용 자체가 전설적이고 구체적인 근거가 부족하여 역사적 사실로 보기는 어렵습니다.[5]</p>
+<p>보다 과학적 설득력을 얻고 있는 가설은 &lsquo;천체 관측설&rsquo;입니다.[5] 고대 농경 사회였던 황하 유역에서는 천체의 움직임을 관측하는 일이 매우 중요했습니다. 이러한 필요에 따라 하늘의 별자리를 표시하고 우주의 움직임을 연구하던 도구가 점차 발전하여 오늘날의 바둑이 되었다는 주장입니다.[5, 6] 실제로 바둑판은 우주를, 흑백의 돌은 밤낮 또는 음양을, 361개의 교차점은 1년의 날수를 상징한다는 해석이 존재하며, 바둑이 역학(易學)이나 제례(祭禮)와 같은 동양 철학의 한 방편으로 이해되기도 했습니다.[5, 6]</p>
+<h3 id="12-동아시아로의-전파와-발전">1.2. 동아시아로의 전파와 발전<a href="#12-동아시아로의-전파와-발전" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>중국에서 발원한 바둑은 한국을 거쳐 일본으로 전파되었다는 것이 학계의 정설입니다.[7, 8] 한국에서는 삼국시대 고구려의 승려 도림(道林)이 백제의 개로왕과 바둑을 두었다는 기록이 《삼국유사》에 전해지며, 이후 백제 문화를 통해 일본에 바둑이 전파된 것으로 추정됩니다.[5, 9] 특히 조선시대에 바둑은 거문고, 글, 그림과 함께 선비가 갖춰야 할 네 가지 기예, 즉 &lsquo;사예(四藝)&rsquo; 중 하나로 불리며 상류층의 중요한 교양으로 자리 잡았습니다.[10]</p>
+<p>근대 바둑의 체계적인 기틀을 마련한 것은 일본입니다. 일본 막부(幕府) 시대에 바둑은 국기(國技)로 장려되며 르네상스를 맞았습니다. 이 시기에 바둑을 직업으로 삼는 기사(棋士) 제도와 혼인보(本因坊)와 같은 세습 가문이 등장했으며, 이들에 의해 체계적인 규칙, 이론, 정석이 비약적으로 발전했습니다.[5] 20세기에 들어서는 가문 세습제 대신 현대적인 협회인 일본기원(日本棋院)이 설립되고 프로 제도가 탄생하여 현대 바둑의 기반을 완성했습니다.[5, 11, 12]</p>
+<h3 id="13-한국-현대바둑의-여명과-황금기">1.3. 한국 현대바둑의 여명과 황금기<a href="#13-한국-현대바둑의-여명과-황금기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>20세기 초반까지 한국에서는 17개의 돌을 미리 배치하고 두는 고유의 &lsquo;순장바둑&rsquo;이 성행했습니다.[10] 오늘날과 같은 현대바둑이 보급된 것은 해방 이후 일본에서 바둑 유학을 마치고 돌아온 조남철 9단의 헌신적인 노력 덕분입니다.[5, 10] 그는 1945년 11월, 한국기원의 모태가 된 한성기원(漢城棋院)을 설립하며 한국 현대바둑의 역사를 열었습니다.[13, 14, 15]</p>
+<p>이후 한국 바둑은 세계적인 강국으로 급부상했습니다. 1970년대 &lsquo;잡초&rsquo; 서봉수 9단의 등장은 국내 바둑계에 새로운 바람을 일으켰고, 1989년 조훈현 9단이 제1회 응씨배 세계프로바둑선수권대회에서 우승하며 세계를 제패한 사건은 한국 바둑이 세계 중심으로 도약하는 결정적 계기가 되었습니다.[13, 16, 17, 18] 그 뒤를 이어 조훈현 9단의 제자인 이창호 9단이 특유의 계산력과 평정심으로 세계 바둑계를 평정하며, 1990년대는 명실상부한 한국 바둑의 황금기로 기록되었습니다.[13, 15, 17]</p>
+<p>이러한 바둑의 발전사는 동아시아 3국의 문화적 주도권 이동을 반영하는 축소판과 같습니다. 중국에서 탄생하여 지적인 유희의 기원을 마련했고, 일본에서 근대적인 프로 제도와 이론을 체계화했으며, 한국에서 그 경쟁력의 꽃을 피워 세계로 확산시키는 주도적 역할을 수행했습니다. 이는 단순한 게임의 전파를 넘어, 20세기 후반 동아시아의 경제 및 문화적 역동성과 궤를 같이하는 거시적 흐름의 지표로 해석될 수 있습니다.[19]</p>
+<h2 id="ii-바둑의-기본-규칙과-메커니즘-361개의-교차점-위에서-펼쳐지는-논리">II. 바둑의 기본 규칙과 메커니즘: 361개의 교차점 위에서 펼쳐지는 논리<a href="#ii-바둑의-기본-규칙과-메커니즘-361개의-교차점-위에서-펼쳐지는-논리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-바둑판과-바둑돌-게임의-기본-구성-요소">2.1. 바둑판과 바둑돌: 게임의 기본 구성 요소<a href="#21-바둑판과-바둑돌-게임의-기본-구성-요소" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑은 가로와 세로 각각 19줄이 그어진 바둑판과 흑, 백 두 종류의 바둑돌로 구성됩니다. 대국은 총 361개의 선과 선이 만나는 교차점 위에서 이루어지며, 돌은 반드시 이 교차점에 놓아야 합니다.[1, 20] 모든 돌은 색깔만 다를 뿐 크기와 형태, 가치가 모두 동일하며, 이는 기물마다 역할과 행마법이 정해진 체스나 장기와 근본적으로 다른 특징입니다.</p>
+<h3 id="22-핵심-규칙-착수-활로-따냄-그리고-집">2.2. 핵심 규칙: 착수, 활로, 따냄, 그리고 집<a href="#22-핵심-규칙-착수-활로-따냄-그리고-집" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑의 대국은 흑을 쥔 사람이 먼저 두기 시작하여 한 번에 한 수씩(1회1수) 번갈아 가며 진행됩니다. 한번 착점한 돌은 절대로 무르거나 위치를 옮길 수 없다는 &lsquo;일수불퇴(一手不退)&lsquo;의 원칙이 적용됩니다.[20]</p>
+<p>바둑돌의 생사는 &lsquo;활로(活路)&lsquo;라는 개념에 의해 결정됩니다. 활로란 돌에 인접한 비어있는 교차점을 의미하며, 상대방의 돌에 의해 이 활로가 모두 막힌 돌은 죽은 돌이 되어 바둑판에서 들어내게 됩니다. 이를 &lsquo;따냄&rsquo;이라고 합니다.[20]</p>
+<p>바둑의 최종 목표는 상대방보다 더 많은 &lsquo;집&rsquo;을 확보하는 것입니다. 집이란 자신의 돌로 완전히 둘러싼 빈 교차점의 공간을 의미하며, 게임이 종료된 후 이 집의 개수를 세어 승패를 결정합니다.[1, 21, 22]</p>
+<h3 id="23-특수-규칙-패劫-빅빅-그리고-덤">2.3. 특수 규칙: 패(劫), 빅(빅), 그리고 덤<a href="#23-특수-규칙-패劫-빅빅-그리고-덤" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑에는 몇 가지 특수한 규칙이 존재합니다. &lsquo;패(劫)&lsquo;는 특정 지점에서 서로 한 점씩을 번갈아 따내는 무한 반복의 형태가 발생하는 것을 방지하기 위한 규칙입니다. 한쪽이 패를 따냈을 경우, 상대방은 즉시 그 자리를 되따낼 수 없으며, 반드시 다른 곳에 한 수를 둔 이후에야 비로소 되따낼 수 있습니다. 이 과정에서 벌어지는 수읽기 싸움을 &lsquo;패싸움&rsquo;이라고 합니다.[20, 23, 24]</p>
+<p>&lsquo;빅(빅)&lsquo;은 흑과 백 양쪽이 서로의 돌을 잡기 위해 수를 두면 오히려 자신의 돌이 잡히게 되는 특수한 상황을 말합니다. 이 경우 양측 모두 수를 둘 수 없게 되며, 빅이 발생한 공간의 돌들은 모두 살아있는 것으로 간주하고 집으로 계산하지 않습니다.[22, 25]</p>
+<p>&lsquo;덤&rsquo;은 바둑을 먼저 두는 흑이 유리한 점을 보정하기 위한 제도입니다. 대국이 끝난 후 집을 계산할 때, 백에게 일정한 수의 집(보통 6.5집)을 보너스로 주어 형평성을 맞춥니다.[1]</p>
+<h3 id="24-대국의-흐름과-종료-포석-중반-끝내기-그리고-계가">2.4. 대국의 흐름과 종료: 포석, 중반, 끝내기, 그리고 계가<a href="#24-대국의-흐름과-종료-포석-중반-끝내기-그리고-계가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑 한 판은 크게 세 단계로 나뉩니다. 초반은 집과 세력의 기반을 다지는 &lsquo;포석&rsquo;, 중반은 돌들이 얽히며 치열한 싸움이 벌어지는 &lsquo;전투&rsquo;, 후반은 서로의 경계를 확정하며 집을 계산하는 &lsquo;끝내기&rsquo; 순으로 진행됩니다.[26]</p>
+<p>양측이 더 이상 둘 곳이 없다고 판단하여 자신의 차례에 두지 않고 순서를 넘기면(pass) 대국은 종료됩니다. 이후 서로의 집을 계산하고 따낸 돌을 상대의 집에 메워 최종적인 집 차이를 확인하는 &lsquo;계가&rsquo;를 통해 승패를 확정합니다.[26, 27] 만약 계가 이전에 형세가 크게 기울어 역전이 불가능하다고 판단될 경우, 한쪽이 패배를 인정하는 &lsquo;불계패(不計敗)&lsquo;를 선언하고 대국을 끝낼 수도 있습니다.[1, 20]</p>
+<p>바둑 규칙의 핵심은 &lsquo;단순성&rsquo;과 &lsquo;보편성&rsquo;에 있습니다. 모든 돌의 가치가 동등하고[28, 29] 행마에 제약이 없다는[20] 최소한의 규칙들이 상호작용하며 예측 불가능한 복잡성을 만들어내는 &lsquo;창발(emergence)&rsquo; 현상이야말로 바둑의 본질입니다. 특히 &lsquo;패&rsquo; 규칙은, 이 단순한 규칙들이 충돌할 때 발생하는 무한 반복이라는 논리적 모순을 해결하기 위해 고안된 정교한 장치로, 최소한의 제약으로 최대한의 자유도를 보장하는 바둑 규칙 체계의 우수성을 보여줍니다.</p>
+<h2 id="iii-바둑의-전략적-깊이와-사고방식-단순함을-넘어선-복잡성의-미학">III. 바둑의 전략적 깊이와 사고방식: 단순함을 넘어선 복잡성의 미학<a href="#iii-바둑의-전략적-깊이와-사고방식-단순함을-넘어선-복잡성의-미학" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-바둑과-타-보드게임의-비교-왜-바둑은-독보적인가">3.1. 바둑과 타 보드게임의 비교: 왜 바둑은 독보적인가?<a href="#31-바둑과-타-보드게임의-비교-왜-바둑은-독보적인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑이 다른 보드게임과 구별되는 가장 큰 특징은 그 압도적인 복잡성에 있습니다. 바둑판 위 361개의 교차점에서 벌어지는 경우의 수는 통상적으로 우주에 존재하는 모든 원자의 개수(약 $10^{80}$)보다 훨씬 많은 것으로 알려져 있습니다.[3, 30] 단순히 모든 자리에 돌을 순서대로 놓는 경우만 계산해도 $361!$ 이라는 상상조차 어려운 수치에 도달하며, 돌을 따내고 그 자리에 다시 두는 규칙이나 기권 등을 포함하면 사실상 무한에 가깝습니다.[1, 31, 32]</p>
+<p>체스와 비교하면 바둑의 전략적 특성은 더욱 명확해집니다. 체스가 상대 왕을 잡는 &lsquo;체크메이트&rsquo;라는 명확한 목표를 가진 &lsquo;전쟁 게임&rsquo;이라면, 바둑은 더 넓은 영토를 확보하는 &lsquo;건설 게임&rsquo;에 가깝습니다. 체스는 기물이 줄어들수록 국면이 단순해지는 반면, 바둑은 돌이 놓일수록 관계가 복잡해집니다. 따라서 체스가 정밀하고 오차 없는 &lsquo;계산&rsquo; 능력에 크게 의존한다면, 바둑은 부분적인 수읽기를 넘어 전체 국면의 유불리를 파악하는 &lsquo;직관&rsquo;과 &lsquo;형세판단&rsquo; 능력이 매우 중요하게 작용합니다.[33]</p>
+<h3 id="32-바둑이-요구하는-다층적-사고">3.2. 바둑이 요구하는 다층적 사고<a href="#32-바둑이-요구하는-다층적-사고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑 고수들의 사고 과정은 크게 세 가지 층위로 나뉩니다. 첫째는 특정 부분에서의 변화를 예측하는 &lsquo;수읽기&rsquo;입니다. 둘째는 현재 판 전체의 유불리를 종합적으로 판단하는 &lsquo;형세판단&rsquo;입니다. 셋째는 판 전체를 조망하며 나아가야 할 방향을 설정하는 &lsquo;대세관&rsquo; 또는 전략적 사고입니다.[34, 35] 진정한 고수는 이 세 가지 사고를 조화롭게 사용하여 최선의 한 수를 찾아냅니다.</p>
+<p>이러한 전략적 지혜는 여러 바둑 격언에 함축되어 있습니다.</p>
+<ul>
+<li><strong>사소취대(捨小取大):</strong> &lsquo;작은 것을 버리고 큰 것을 취하라&rsquo;는 의미로, 눈앞의 작은 이익에 연연하지 않고 더 큰 가치를 위해 일부를 포기할 줄 아는 선택과 집중의 원리를 말합니다.[28]</li>
+<li><strong>공피고아(攻彼顧我):</strong> &lsquo;상대를 공격하기에 앞서 나를 돌아보라&rsquo;는 뜻으로, 공격을 감행하기 전에 자신의 약점은 없는지 먼저 살피는 리스크 관리의 중요성을 강조합니다.[28]</li>
+<li><strong>부득탐승(不得貪勝):</strong> &lsquo;승리를 탐하면 이길 수 없다&rsquo;는 역설적인 격언으로, 이기고 싶은 마음에 조급해져 무리수를 두는 것을 경계하고 평정심을 유지하는 자기 통제의 가치를 일깨웁니다.[28]</li>
+</ul>
+<p>이처럼 바둑은 제로섬 게임의 외형을 가지고 있지만, 실제로는 &lsquo;포지티브섬&rsquo;적인 사고를 요구합니다. 최종 목표는 상대의 완전한 파괴가 아니라, 나의 효율적인 건설입니다.[1] 상대의 집을 모두 빼앗지 않고도 내 집이 더 크면 이길 수 있다는 사실은, 바둑의 승리가 파괴적 경쟁이 아닌 효율적 가치 창출에 있음을 보여줍니다. 대국 과정은 상대에게 일부를 내주더라도 더 큰 이익을 얻기 위한 전략적 양보와 가치 교환의 연속이며, 이는 비즈니스 협상이나 외교 관계와 같은 현실 세계의 복잡한 상호작용과 유사한 사고 모델을 제공합니다.[35]</p>
+<h2 id="iv-바둑의-긍정적-영향-개인과-사회를-성장시키는-힘">IV. 바둑의 긍정적 영향: 개인과 사회를 성장시키는 힘<a href="#iv-바둑의-긍정적-영향-개인과-사회를-성장시키는-힘" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-개인적-이점-두뇌를-단련하는-정신-스포츠">4.1. 개인적 이점: 두뇌를 단련하는 정신 스포츠<a href="#41-개인적-이점-두뇌를-단련하는-정신-스포츠" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>장기간의 바둑 훈련이 두뇌 발달에 긍정적인 영향을 미친다는 사실은 여러 과학적 연구를 통해 입증되었습니다. 서울대학교병원 정신건강의학과 권준수 교수팀의 뇌 영상 연구에 따르면, 10년 이상 바둑을 훈련한 전문가는 일반인에 비해 집중력, 작업 기억, 실행 조절 능력 및 문제 해결 능력에 관여하는 대뇌 전두엽과 변연계, 시상 등 다양한 영역 간의 상호 연결성이 고도로 발달해 있음이 확인되었습니다.[36, 37]</p>
+<p>또한, 바둑 전문가는 정서적 자극을 처리하고 직관적 판단을 내리는 데 중요한 역할을 하는 편도체와 안와전두엽 부위의 기능적 연결성이 현저히 증가한 것으로 나타났습니다.[37, 38, 39] 이는 높은 압박감이 따르는 승부의 세계에서 침착함을 유지하고 감정을 조절하는 능력이 뛰어남을 의미하며, 스트레스 관리 능력 향상에도 기여합니다.[34, 40]</p>
+<p>이러한 두뇌 훈련 효과는 아동의 성장 과정에서도 긍정적으로 작용합니다. 바둑 교육은 스스로 작전을 구상하고 실행하는 과정에서 창의적 사고 능력을, 치밀한 수읽기와 집 계산을 통해 수학적·논리적 사고 능력을, 그리고 국면 전체를 파악하고 계획을 세우는 과정에서 전략적 사고 능력을 자연스럽게 배양시켜 궁극적으로 학습 능력 향상에 도움을 줍니다.[34, 41, 42]</p>
+<p>흥미로운 점은 바둑 훈련이 &lsquo;일반 지능(IQ)&lsquo;의 향상보다는 &lsquo;특화된 고차원적 인지 기능&rsquo;의 발달에 집중된다는 것입니다. 한 연구에서는 바둑 전문가들의 평균 IQ가 일반인 평균치와 유의미한 차이를 보이지 않았다고 보고했습니다.[43] 이는 바둑이 단순히 머리를 좋게 만드는 활동이 아니라, 패턴 인식, 직관적 판단, 정서 제어와 같은 특정 문제 해결 방식에 최적화된 &lsquo;전문가의 뇌&rsquo;를 만드는 과정임을 시사합니다. 즉, 바둑은 보편적 지능을 높이기보다 특정 인지 능력을 전문화시키는 방향으로 뇌를 재구성하는 효과적인 두뇌 훈련 도구인 것입니다.</p>
+<h3 id="42-사회적-이점-소통과-화합의-도구">4.2. 사회적 이점: 소통과 화합의 도구<a href="#42-사회적-이점-소통과-화합의-도구" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑은 예도(禮道)를 중시하는 게임입니다. 대국을 시작하고 마칠 때의 정중한 인사, 단정한 자세, 바둑돌을 놓는 올바른 손 모양 등은 상대방에 대한 존중과 예의를 배우게 하는 중요한 교육적 요소입니다.[34, 44]</p>
+<p>역사적으로 바둑은 국가적 위기 상황에서 국민에게 자부심을 심어주고 역경을 극복할 의지를 불어넣는 역할을 하기도 했습니다. 조훈현 9단의 응씨배 우승과 같은 사건들은 단순한 스포츠 승리를 넘어 국민적 단합과 희망의 상징이 되었습니다.[45] 또한 바둑은 세대와 국경, 언어의 장벽을 넘어 사람들을 연결하는 훌륭한 문화 교류의 매개체로 기능합니다.[14, 46]</p>
+<p>바둑 문화의 가장 독특하고 가치 있는 측면 중 하나는 &lsquo;복기(復棋)&lsquo;입니다. 대국이 끝난 후, 승자와 패자가 함께 처음부터 수를 다시 놓아보며 서로의 생각과 의도를 분석하고 토론하는 과정입니다. 이는 승패를 떠나 서로에게서 배우고 함께 성장하는 성찰과 소통, 화합의 정신을 담고 있으며, 다른 경쟁 스포츠에서는 찾아보기 힘든 바둑만의 아름다운 문화입니다.[45]</p>
+<h2 id="v-현대-사회-속-바둑의-위상-ai-시대의-새로운-지평">V. 현대 사회 속 바둑의 위상: AI 시대의 새로운 지평<a href="#v-현대-사회-속-바둑의-위상-ai-시대의-새로운-지평" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-디지털-시대의-바둑-온라인-대국과-학습-환경의-변화">5.1. 디지털 시대의 바둑: 온라인 대국과 학습 환경의 변화<a href="#51-디지털-시대의-바둑-온라인-대국과-학습-환경의-변화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>디지털 기술의 발전은 바둑을 즐기는 방식을 근본적으로 바꾸었습니다. 타이젬바둑, 사이버오로와 같은 인터넷 바둑 사이트와 모바일 애플리케이션의 등장은 시간과 공간의 제약 없이 전 세계의 사람들과 대국할 수 있는 환경을 제공했습니다.[47, 48] 이를 통해 바둑 인구의 저변이 확대되었을 뿐만 아니라, 프로기사들 역시 이전과는 비교할 수 없을 정도로 많은 실전 대국을 통해 기량을 연마할 수 있게 되었습니다.</p>
+<h3 id="52-인공지능과-바둑-알파고-쇼크와-그-이후">5.2. 인공지능과 바둑: 알파고 쇼크와 그 이후<a href="#52-인공지능과-바둑-알파고-쇼크와-그-이후" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2016년, 구글 딥마인드가 개발한 인공지능 프로그램 &lsquo;알파고(AlphaGo)&lsquo;와 당시 세계 최정상급 기사였던 이세돌 9단의 대국은 전 세계에 엄청난 충격을 안겨주었습니다.[13, 17] 인간 고유의 창의성과 직관의 영역으로 여겨졌던 바둑에서 인공지능이 4승 1패로 인간 최고수를 압도한 이 사건은 인공지능 시대의 서막을 알리는 상징적인 순간이었습니다.[49]</p>
+<p>알파고는 프로기사들의 기보 3,000만 개를 학습한 &lsquo;정책망&rsquo;과 스스로의 대국을 통해 승률을 예측하는 &lsquo;가치망&rsquo;이라는 딥러닝 기술을 기존의 몬테카를로 트리 탐색(MCTS) 방식에 결합하여 인간의 직관과 유사한 판단 능력을 구현했습니다.[49, 50] 알파고의 등장 이후 바둑 인공지능은 비약적으로 발전하여, 현재 최상위 AI는 프로기사를 여러 점 접어주고도 이길 수 있는 수준에 도달했습니다.[50, 51]</p>
+<p>인공지능의 등장은 수천 년간 이어져 온 인간의 바둑 패러다임을 송두리째 바꾸었습니다. 과거에는 좋지 않은 수로 평가받던 초반 삼삼(三三) 침입과 같은 전략이 AI에 의해 재평가되었고, 프로기사들은 이제 AI를 최고의 스승이자 스파링 파트너로 삼아 기존의 고정관념을 깨고 새로운 수와 전략을 배우고 있습니다.[26, 52]</p>
+<p>알파고의 충격은 바둑의 가치를 하락시킨 것이 아니라, 오히려 바둑을 &lsquo;인간 지성의 한계를 탐구하는 실험장&rsquo;으로 재정의했습니다. AI는 더 이상 인간의 경쟁 상대가 아니라, 인간이 미처 발견하지 못했던 새로운 가능성을 열어주는 파트너의 역할을 하게 된 것입니다. 바둑은 이제 인간과 인공지능이 함께 그 심오한 깊이를 탐험하는 새로운 차원의 지적 유희로 진화하고 있습니다.</p>
+<h2 id="vi-바둑-학습-및-향유-방법-첫-수를-놓기-위한-안내서">VI. 바둑 학습 및 향유 방법: 첫 수를 놓기 위한 안내서<a href="#vi-바둑-학습-및-향유-방법-첫-수를-놓기-위한-안내서" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-초보자를-위한-학습-자료-및-커뮤니티">6.1. 초보자를 위한 학습 자료 및 커뮤니티<a href="#61-초보자를-위한-학습-자료-및-커뮤니티" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>과거와 달리 현대에는 바둑을 배울 수 있는 방법이 매우 다양해졌습니다. 유튜브와 같은 동영상 플랫폼에는 바둑의 기초 규칙을 단 10분 만에 알려주는 입문 강좌부터, 프로기사들이 직접 운영하며 깊이 있는 해설을 제공하는 채널까지 풍부한 학습 콘텐츠가 존재합니다. &lsquo;강남바둑TV&rsquo;, &lsquo;프로연우&rsquo;, &lsquo;쉬운 바둑&rsquo; 등은 초보자부터 중급자까지 폭넓게 참고할 수 있는 대표적인 채널들입니다.[53, 54]</p>
+<p>오프라인에서는 한국기원이나 각 지역의 기원, 바둑 학원을 통해 전문 강사에게 체계적인 교육을 받거나, 다양한 연령대의 동호인들과 교류하며 바둑을 배울 수 있습니다.[55]</p>
+<h3 id="62-온라인과-오프라인에서-바둑-즐기기">6.2. 온라인과 오프라인에서 바둑 즐기기<a href="#62-온라인과-오프라인에서-바둑-즐기기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>바둑 규칙을 익혔다면 실전을 통해 경험을 쌓는 것이 중요합니다. &lsquo;타이젬바둑&rsquo;과 &lsquo;사이버오로&rsquo;는 국내외 수많은 이용자들이 활동하는 대표적인 온라인 대국 플랫폼으로, 자신의 실력에 맞는 상대를 쉽게 찾아 대국을 즐길 수 있습니다.[47, 48] 대부분 스마트폰 앱을 지원하여 언제 어디서든 편리하게 접속이 가능합니다.</p>
+<p>또한, &lsquo;카타고(Katago)&lsquo;와 같이 무료로 제공되는 강력한 인공지능 바둑 프로그램을 활용하면 부담 없이 자신의 기력에 맞춰 연습 대국을 하거나, 자신의 대국을 분석하며 복습하는 데 큰 도움을 받을 수 있습니다.[56]</p>
+<p>이처럼 현대의 바둑 학습 환경은 과거의 도제식 교육에서 벗어나, 학습자 스스로가 자신의 수준과 목표에 맞춰 온라인 콘텐츠, 글로벌 대국 플랫폼, AI 트레이너 등 다양한 도구를 조합하여 개인화된 학습 경로를 설계할 수 있는 &lsquo;개방형 생태계&rsquo;로 진화했습니다.</p>
+<h2 id="vii-바둑사史를-빛낸-대국과-기사들">VII. 바둑사(史)를 빛낸 대국과 기사들<a href="#vii-바둑사史를-빛낸-대국과-기사들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="71-역사를-바꾼-명국名局들">7.1. 역사를 바꾼 명국(名局)들<a href="#71-역사를-바꾼-명국名局들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>
+<p><strong>제1회 응씨배 결승 (1989년, 조훈현 vs 녜웨이핑):</strong> 당시 &lsquo;철의 수문장&rsquo;이라 불리며 세계 최강으로 군림하던 중국의 녜웨이핑 9단을 상대로 조훈현 9단이 1승 2패의 불리한 상황에서 극적인 2연승을 거두며 우승한 대국입니다. 이 승리는 한국 바둑이 변방에서 세계 중심으로 도약하는 신호탄이었으며, 온 국민에게 희망과 자부심을 안겨준 역사적 사건으로 기록되었습니다.[13, 17, 18, 57]</p>
+</li>
+<li>
+<p><strong>조훈현-이창호 사제대결 (1989년 이후):</strong> 스승 조훈현 9단의 시대를 내제자 이창호 9단이 물려받는 과정에서 펼쳐진 수많은 타이틀전은 한국 바둑 최전성기를 상징하는 드라마였습니다. 스승의 화려하고 빠른 창과 제자의 둔탁하지만 빈틈없는 방패의 대결은 바둑 팬들에게 깊은 감동과 흥미를 선사했습니다.[15, 17, 58]</p>
+</li>
+<li>
+<p><strong>이세돌 vs 알파고 제4국 (2016년):</strong> 3연패로 인류의 패배가 확실시되던 상황에서, 이세돌 9단이 백 78번째에 둔 기적적인 한 수가 알파고의 계산에 없던 허점을 찔러 승리를 이끌어낸 대국입니다. 이 한 수는 &lsquo;신의 한 수&rsquo;라 불리며, 인공지능 시대에 인간 지성의 가치와 불굴의 도전 정신을 보여준 상징적인 순간으로 전 세계에 깊은 인상을 남겼습니다.[49]</p>
+</li>
+</ul>
+<h3 id="72-시대를-풍미한-전설과-현대의-영웅들">7.2. 시대를 풍미한 전설과 현대의 영웅들<a href="#72-시대를-풍미한-전설과-현대의-영웅들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한국 바둑은 수많은 스타 기사들을 배출하며 세계 바둑계를 이끌어왔습니다. 조훈현(바둑황제), 이창호(돌부처), 이세돌(센돌) 등은 각기 다른 개성과 기풍으로 한 시대를 풍미하며 바둑의 대중화에 크게 기여한 전설들입니다.[13, 17, 59]</p>
+<p>현재 세계 바둑계는 신진서 9단이 장기간 압도적인 세계 랭킹 1위 자리를 지키며 &lsquo;신진서 시대&rsquo;를 열고 있습니다. 박정환 9단 등 정상급 기사들이 그 뒤를 잇고 있으며, 이들의 치열한 경쟁은 세계 바둑의 수준을 한 단계 끌어올리고 있습니다.[60, 61, 62, 63]</p>
+<p>여자 바둑계에서는 오랫동안 &lsquo;여제&rsquo;로 군림해온 최정 9단과, 무서운 속도로 성장하며 그 아성에 도전하는 &lsquo;천재 소녀&rsquo; 김은지 9단의 라이벌 구도가 큰 주목을 받고 있습니다. 이들의 경쟁은 여자 바둑의 인기를 견인하는 중요한 동력이 되고 있습니다.[64, 65, 66, 67, 68]</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">이름</th>
+          <th style="text-align: left">국적</th>
+          <th style="text-align: left">출생연도</th>
+          <th style="text-align: left">주요 업적 및 특징</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">조남철</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">1923</td>
+          <td style="text-align: left">한국 현대바둑의 개척자, 한성기원(한국기원 전신) 설립</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">조훈현</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">1953</td>
+          <td style="text-align: left">&lsquo;바둑황제&rsquo;, 세계 최초 전관왕, 제1회 응씨배 우승</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">이창호</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">1975</td>
+          <td style="text-align: left">&lsquo;돌부처&rsquo;, 신산(神算)이라 불리는 압도적인 끝내기 능력</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">이세돌</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">1983</td>
+          <td style="text-align: left">&lsquo;센돌&rsquo;, 창의적이고 전투적인 기풍, 알파고 상대 유일한 1승</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">신진서</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">2000</td>
+          <td style="text-align: left">현(現) 세계 랭킹 1위, AI 시대를 선도하는 압도적 기량</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">박정환</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">1993</td>
+          <td style="text-align: left">신진서의 라이벌, 꾸준히 세계 최상위권을 유지하는 강자</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">최정</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">1996</td>
+          <td style="text-align: left">&lsquo;여제&rsquo;, 세계 여자바둑계 장기 집권, 통합 세계대회 준우승</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">김은지</td>
+          <td style="text-align: left">한국</td>
+          <td style="text-align: left">2007</td>
+          <td style="text-align: left">&lsquo;천재소녀&rsquo;, 최연소 입신(九단) 기록, 차세대 여자바둑 주자</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="결론-인생의-축소판-바둑을-배워야-하는-이유">결론: 인생의 축소판, 바둑을 배워야 하는 이유<a href="#결론-인생의-축소판-바둑을-배워야-하는-이유" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>본 포스트를 통해 살펴본 바와 같이, 바둑은 흑과 백의 돌로 집을 짓는 단순한 게임을 넘어 다층적인 가치를 지닌 지적 활동입니다.</p>
+<p>첫째, 바둑은 수천 년의 역사를 통해 축적된 동아시아의 지혜가 담긴 <strong>문화유산</strong>입니다. 바둑을 배우는 것은 그 역사와 철학을 함께 배우는 과정입니다.</p>
+<p>둘째, 바둑은 과학적으로 입증된 효과적인 <strong>두뇌 훈련 도구</strong>입니다. 바둑은 집중력, 문제 해결 능력, 전략적 사고뿐만 아니라 감정 조절 능력과 직관력을 길러주며, 이는 모든 연령대의 정신 건강과 인지 능력 향상에 기여할 수 있습니다.</p>
+<p>셋째, 바둑은 AI 시대에 인간과 기술의 관계를 고찰하게 하는 <strong>철학적 매개체</strong>입니다. 인공지능과의 공존을 통해 인간 지성의 새로운 가능성을 탐구하고, 고정관념을 넘어 사고의 지평을 넓히는 경험을 제공합니다.</p>
+<p>인생의 축소판이라 불리는 바둑판 위에서 한 수 한 수를 놓는 과정은 끊임없는 선택과 책임, 그리고 성찰의 연속입니다. 따라서 바둑을 배우는 것은 단순히 새로운 취미를 갖는 것을 넘어, 복잡한 문제에 대한 해결 능력을 기르고 삶의 지혜를 얻으며 자신을 돌아보는 가치 있는 여정이 될 것입니다.</p>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ol>
+<li><a href="https://ko.wikipedia.org/wiki/%EB%B0%94%EB%91%91">https://ko.wikipedia.org/wiki/%EB%B0%94%EB%91%91</a></li>
+<li><a href="https://cafe.daum.net/incbaduk/z4J/11">https://cafe.daum.net/incbaduk/z4J/11</a></li>
+<li><a href="https://www.sciencetimes.co.kr/?p=223073">https://www.sciencetimes.co.kr/?p=223073</a></li>
+<li><a href="https://www.baduk.or.kr/story/bHistory.asp">https://www.baduk.or.kr/story/bHistory.asp</a></li>
+<li><a href="https://m.baduk.or.kr/story/G02.asp">https://m.baduk.or.kr/story/G02.asp</a></li>
+<li><a href="https://www.joongang.co.kr/article/2311701">https://www.joongang.co.kr/article/2311701</a></li>
+<li><a href="http://newsteacher.chosun.com/site/data/html_dir/2022/05/03/2022050300034.html">http://newsteacher.chosun.com/site/data/html_dir/2022/05/03/2022050300034.html</a></li>
+<li><a href="https://m.cafe.daum.net/21ceta/L8Jz/1068?listURI=%2F21ceta%2FL8Jz">https://m.cafe.daum.net/21ceta/L8Jz/1068?listURI=%2F21ceta%2FL8Jz</a></li>
+<li><a href="https://contents.history.go.kr/front/tt/view.do?levelId=tt_b38">https://contents.history.go.kr/front/tt/view.do?levelId=tt_b38</a></li>
+<li><a href="https://namu.wiki/w/%EC%9D%BC%EB%B3%B8%EA%B8%B0%EC%9B%90">https://namu.wiki/w/%EC%9D%BC%EB%B3%B8%EA%B8%B0%EC%9B%90</a></li>
+<li><a href="https://namu.wiki/w/%EC%9D%BC%EB%B3%B8%EA%B8%B0%EC%9B%90?uuid=9826137d-bd17-493f-ac43-70f0b29b05ad">https://namu.wiki/w/%EC%9D%BC%EB%B3%B8%EA%B8%B0%EC%9B%90?uuid=9826137d-bd17-493f-ac43-70f0b29b05ad</a></li>
+<li><a href="https://m.baduk.or.kr/about/A01.asp">https://m.baduk.or.kr/about/A01.asp</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%ED%95%9C%EA%B5%AD%EA%B8%B0%EC%9B%90">https://ko.wikipedia.org/wiki/%ED%95%9C%EA%B5%AD%EA%B8%B0%EC%9B%90</a></li>
+<li><a href="https://kyoposhinmun.de/serie/2024/06/24/21327/">https://kyoposhinmun.de/serie/2024/06/24/21327/</a></li>
+<li><a href="https://m.cyberoro.com/news/news_view.oro?num=522436">https://m.cyberoro.com/news/news_view.oro?num=522436</a></li>
+<li><a href="https://www.youtube.com/watch?v=-Z2SG5zZZnI">https://www.youtube.com/watch?v=-Z2SG5zZZnI</a></li>
+<li><a href="https://namu.wiki/w/%EB%B0%94%EB%91%91/%ED%95%9C%EA%B5%AD%EC%9D%98%20%EC%97%AD%EC%82%AC">https://namu.wiki/w/%EB%B0%94%EB%91%91/%ED%95%9C%EA%B5%AD%EC%9D%98%20%EC%97%AD%EC%82%AC</a></li>
+<li><a href="https://www.yna.co.kr/view/AKR20230822053200007">https://www.yna.co.kr/view/AKR20230822053200007</a></li>
+<li><a href="https://www.joongang.co.kr/article/7256049">https://www.joongang.co.kr/article/7256049</a></li>
+<li><a href="http://www.badukworld.co.kr/biz/lesson1/bonanza.html">http://www.badukworld.co.kr/biz/lesson1/bonanza.html</a></li>
+<li><a href="https://dooole.tistory.com/374">https://dooole.tistory.com/374</a></li>
+<li><a href="http://www.badukworld.co.kr/biz/rules/baduk-rule.html">http://www.badukworld.co.kr/biz/rules/baduk-rule.html</a></li>
+<li><a href="https://www.google.com/search?q=https://namu.wiki/w/%25EC%25A7%2591%5c%28%25EB%25B0%2594%25EB%2591%2591%5c%29%23:~:text%3D%25EC%25A7%2591%25EC%259D%2584%2520%25EC%2584%25B8%25EB%258A%2594%2520%25EB%25B0%25A9%25EB%25B2%2595%25EC%259D%2580%2520%25EB%25B0%2594%25EB%2591%2591%25EB%258F%258C,%25EA%25B5%25AD%25EA%25B0%2580%25EB%25A7%2588%25EB%258B%25A4%2520%25EC%25B0%25A8%25EC%259D%25B4%25EA%25B0%2580%2520%25EC%259E%2588%25EB%258B%25A4">https://namu.wiki/w/%EC%A7%91(%EB%B0%94%EB%91%91)#:~:text=%EC%A7%91%EC%9D%84%20%EC%84%B8%EB%8A%94%20%EB%B0%A9%EB%B2%95%EC%9D%80%20%EB%B0%94%EB%91%91%EB%8F%8C,%EA%B5%AD%EA%B0%80%EB%A7%88%EB%8B%A4%20%EC%B0%A8%EC%9D%B4%EA%B0%80%20%EC%9E%88%EB%8B%A4</a>.</li>
+<li><a href="https://ko.wikipedia.org/wiki/%EC%A7%91_%5C%28%EB%B0%94%EB%91%91%5C%29">https://ko.wikipedia.org/wiki/%EC%A7%91_(%EB%B0%94%EB%91%91</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%ED%8C%A8_%5C%28%EB%B0%94%EB%91%91%5C%29">https://ko.wikipedia.org/wiki/%ED%8C%A8_(%EB%B0%94%EB%91%91</a></li>
+<li><a href="https://namu.wiki/w/%ED%8C%A8%5C%28%EB%B0%94%EB%91%91%5C%29">https://namu.wiki/w/%ED%8C%A8(%EB%B0%94%EB%91%91</a></li>
+<li><a href="https://namu.wiki/w/%EB%B9%84%EA%B9%80%EC%88%98?uuid=a94acfee-9f26-4eb9-9e87-ebf154002e6d">https://namu.wiki/w/%EB%B9%84%EA%B9%80%EC%88%98?uuid=a94acfee-9f26-4eb9-9e87-ebf154002e6d</a></li>
+<li><a href="https://namu.wiki/w/%EB%B0%94%EB%91%91/%ED%8A%B9%EC%A7%95">https://namu.wiki/w/%EB%B0%94%EB%91%91/%ED%8A%B9%EC%A7%95</a></li>
+<li><a href="https://www.lgbr.co.kr/uploadFiles/ko/pdf/man/ceo798_20040917102041.pdf">https://www.lgbr.co.kr/uploadFiles/ko/pdf/man/ceo798_20040917102041.pdf</a></li>
+<li><a href="https://www.iksanopennews.com/news/articleView.html?idxno=498738">https://www.iksanopennews.com/news/articleView.html?idxno=498738</a></li>
+<li><a href="https://steemit.com/kr/@simtole/1">https://steemit.com/kr/@simtole/1</a></li>
+<li><a href="https://www.google.com/search?q=https://namu.wiki/w/%25EB%25B0%2594%25EB%2591%2591/%25ED%258A%25B9%25EC%25A7%2595%23:~:text%3D%25EA%25B0%2580%25EB%258A%25A5%25ED%2595%259C%2520%25EA%25B2%25BD%25EC%259A%25B0%25EC%259D%2598%2520%25EC%2588%2598%25EB%258A%2594,%25EC%2582%25AC%25EC%258B%25A4%25EC%2583%2581%2520%25EA%25B0%2580%25EB%258A%25A5%25ED%2595%259C%2520%25EA%25B2%25BD%25EC%259A%25B0%25EC%259D%2598">https://namu.wiki/w/%EB%B0%94%EB%91%91/%ED%8A%B9%EC%A7%95#:~:text=%EA%B0%80%EB%8A%A5%ED%95%9C%20%EA%B2%BD%EC%9A%B0%EC%9D%98%20%EC%88%98%EB%8A%94,%EC%82%AC%EC%8B%A4%EC%83%81%20%EA%B0%80%EB%8A%A5%ED%95%9C%20%EA%B2%BD%EC%9A%B0%EC%9D%98</a></li>
+<li><a href="https://news.tygem.com/news/tnews/viewpage.asp?seq=17790">news.tygem.com/news/tnews/viewpage.asp?seq=17790</a></li>
+<li><a href="https://ssbaduk.com/theme/ss/html/company/baduk.php">https://ssbaduk.com/theme/ss/html/company/baduk.php</a></li>
+<li><a href="https://www.book21.com/book/book_view.html?bookSID=1926">https://www.book21.com/book/book_view.html?bookSID=1926</a></li>
+<li><a href="https://www.baduk.or.kr/news/report_view.asp?news_no=5141">https://www.baduk.or.kr/news/report_view.asp?news_no=5141</a></li>
+<li><a href="http://www.docdocdoc.co.kr/news/articleView.html?idxno=145902">http://www.docdocdoc.co.kr/news/articleView.html?idxno=145902</a></li>
+<li><a href="http://www.snuh.org/m/board/B003/view.do?bbs_no=2237&amp;searchKey=&amp;searchWord=%EC%8B%AC%EB%B0%A9%EC%84%B8%EB%8F%99%20%ED%99%98%EC%9E%90&amp;pageIndex=1">http://www.snuh.org/m/board/B003/view.do?bbs_no=2237&amp;searchKey=&amp;searchWord=%EC%8B%AC%EB%B0%A9%EC%84%B8%EB%8F%99%20%ED%99%98%EC%9E%90&amp;pageIndex=1</a></li>
+<li><a href="https://www.youtube.com/watch?v=AdLqNuSXwZA">https://www.youtube.com/watch?v=AdLqNuSXwZA</a></li>
+<li><a href="https://koreascience.kr/article/JAKO201026359283816.pdf">https://koreascience.kr/article/JAKO201026359283816.pdf</a></li>
+<li><a href="https://duambaduk.kr/synergy">https://duambaduk.kr/synergy</a></li>
+<li><a href="https://www.joongang.co.kr/article/4313410">https://www.joongang.co.kr/article/4313410</a></li>
+<li><a href="https://www.baduk.or.kr/story/manner.asp">https://www.baduk.or.kr/story/manner.asp</a></li>
+<li><a href="https://www.joongang.co.kr/article/21384812">https://www.joongang.co.kr/article/21384812</a></li>
+<li><a href="https://www.career.go.kr/cloud/w/interview/jobView?seq=109057">https://www.career.go.kr/cloud/w/interview/jobView?seq=109057</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%ED%83%80%EC%9D%B4%EC%A0%AC%EB%B0%94%EB%91%91">https://ko.wikipedia.org/wiki/%ED%83%80%EC%9D%B4%EC%A0%AC%EB%B0%94%EB%91%91</a></li>
+<li><a href="https://namu.wiki/w/%EC%82%AC%EC%9D%B4%EB%B2%84%EC%98%A4%EB%A1%9C">https://namu.wiki/w/%EC%82%AC%EC%9D%B4%EB%B2%84%EC%98%A4%EB%A1%9C</a></li>
+<li><a href="https://spri.kr/posts/view/15226?code=data_all&amp;study_type=&amp;board_type=column">https://spri.kr/posts/view/15226?code=data_all&amp;study_type=&amp;board_type=column</a></li>
+<li><a href="https://namu.wiki/w/%EB%B0%94%EB%91%91/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5">https://namu.wiki/w/%EB%B0%94%EB%91%91/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5</a></li>
+<li><a href="https://namu.wiki/w/%EB%B0%94%EB%91%91/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5?uuid=87bdc479-3f35-41d6-9d2e-12daf8a9d6e0">https://namu.wiki/w/%EB%B0%94%EB%91%91/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5?uuid=87bdc479-3f35-41d6-9d2e-12daf8a9d6e0</a></li>
+<li><a href="https://shanghaicrab.tistory.com/16158568">https://shanghaicrab.tistory.com/16158568</a></li>
+<li><a href="https://www.youtube.com/watch?v=TEp_hxTHbV0">https://www.youtube.com/watch?v=TEp_hxTHbV0</a></li>
+<li><a href="https://m.baduk.or.kr/news/B03_view.asp?news_no=85">https://m.baduk.or.kr/news/B03_view.asp?news_no=85</a></li>
+<li><a href="https://www.baduk.or.kr/">https://www.baduk.or.kr/</a></li>
+<li><a href="https://www.badukworld.co.kr/biz/comba.html">https://www.badukworld.co.kr/biz/comba.html</a></li>
+<li><a href="https://namu.wiki/w/%EC%9D%91%EC%94%A8%EB%B0%B0%20%EC%84%B8%EA%B3%84%20%ED%94%84%EB%A1%9C%20%EB%B0%94%EB%91%91%20%EC%84%A0%EC%88%98%EA%B6%8C%20%EB%8C%80%ED%9A%8C">https://namu.wiki/w/%EC%9D%91%EC%94%A8%EB%B0%B0%20%EC%84%B8%EA%B3%84%20%ED%94%84%EB%A1%9C%20%EB%B0%94%EB%91%91%20%EC%84%A0%EC%88%98%EA%B6%8C%20%EB%8C%80%ED%9A%8C</a></li>
+<li><a href="https://www.youtube.com/watch?v=ryQCPHinwFU">https://www.youtube.com/watch?v=ryQCPHinwFU</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%EC%9D%B4%EC%A0%81%EC%88%98">https://ko.wikipedia.org/wiki/%EC%9D%B4%EC%A0%81%EC%88%98</a></li>
+<li><a href="https://www.chosun.com/culture-life/2025/03/16/FJBTHVXWMNCTVHLH3EPUF7QP7U/">https://www.chosun.com/culture-life/2025/03/16/FJBTHVXWMNCTVHLH3EPUF7QP7U/</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%EC%8B%A0%EC%A7%84%EC%84%9C">https://ko.wikipedia.org/wiki/%EC%8B%A0%EC%A7%84%EC%84%9C</a></li>
+<li><a href="https://www.goratings.org/ko/">https://www.goratings.org/ko/</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%EB%B0%95%EC%A0%95%ED%99%98_%5C%28%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC%5C%29">https://ko.wikipedia.org/wiki/%EB%B0%95%EC%A0%95%ED%99%98_(%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%EC%B5%9C%EC%A0%95_%5C%28%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC%5C%29">https://ko.wikipedia.org/wiki/%EC%B5%9C%EC%A0%95_(%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC</a></li>
+<li><a href="https://www.chosun.com/sports/sports_general/2025/05/15/CO2U2CNIJ5BI3JRBUT5DH5ZTTE/">https://www.chosun.com/sports/sports_general/2025/05/15/CO2U2CNIJ5BI3JRBUT5DH5ZTTE/</a></li>
+<li><a href="https://store.kyobobook.co.kr/person/detail/1001480206">https://store.kyobobook.co.kr/person/detail/1001480206</a></li>
+<li><a href="https://namu.wiki/w/%EC%B5%9C%EC%A0%95%5C%28%EB%B0%94%EB%91%91%20%EA%B8%B0%EC%82%AC%5C%29">https://namu.wiki/w/%EC%B5%9C%EC%A0%95(%EB%B0%94%EB%91%91%20%EA%B8%B0%EC%82%AC</a></li>
+<li><a href="https://m.cyberoro.com/news/news_view.oro?num=531356">https://m.cyberoro.com/news/news_view.oro?num=531356</a></li>
+<li><a href="https://www.incheonilbo.com/news/articleView.html?idxno=1275696">https://www.incheonilbo.com/news/articleView.html?idxno=1275696</a></li>
+<li><a href="https://namu.wiki/w/%EA%B9%80%EC%9D%80%EC%A7%80%5C%282007%5C%29">https://namu.wiki/w/%EA%B9%80%EC%9D%80%EC%A7%80(2007</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%EA%B9%80%EC%9D%80%EC%A7%80_%5C%28%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC%5C%29">https://ko.wikipedia.org/wiki/%EA%B9%80%EC%9D%80%EC%A7%80_(%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC</a></li>
+<li><a href="https://m.baduk.or.kr/record/gisa_info.asp?PRPL_CODE=10001117">https://m.baduk.or.kr/record/gisa_info.asp?PRPL_CODE=10001117</a></li>
+<li><a href="https://wiki.onul.works/w/%EA%B9%80%EC%9D%80%EC%A7%80_%5C%28%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC%5C%29">https://wiki.onul.works/w/%EA%B9%80%EC%9D%80%EC%A7%80_(%EB%B0%94%EB%91%91_%EA%B8%B0%EC%82%AC</a></li>
+<li><a href="https://namu.wiki/w/%EA%B9%80%EC%9D%80%EC%A7%80%5C%282007%5C%29?uuid=61bd5258-4698-4dd1-806c-ee40eb241124">https://namu.wiki/w/%EA%B9%80%EC%9D%80%EC%A7%80(2007)?uuid=61bd5258-4698-4dd1-806c-ee40eb241124</a></li>
+<li><a href="https://www.youtube.com/watch?v=Z2CJiRnzpFE">https://www.youtube.com/watch?v=Z2CJiRnzpFE</a></li>
+<li><a href="https://www.youtube.com/watch?v=YeJKilW-AJk">https://www.youtube.com/watch?v=YeJKilW-AJk</a></li>
+<li><a href="https://namu.wiki/w/%EC%8B%A0%EC%9D%98%20%ED%95%9C%20%EC%88%98:%20%EA%B7%80%EC%88%98%ED%8E%B8">https://namu.wiki/w/%EC%8B%A0%EC%9D%98%20%ED%95%9C%20%EC%88%98:%20%EA%B7%80%EC%88%98%ED%8E%B8</a></li>
+<li><a href="https://www.youtube.com/playlist?list=PL93h4qHLPhR1fF-vlQE0iOdAwSjAdzeuE">https://www.youtube.com/playlist?list=PL93h4qHLPhR1fF-vlQE0iOdAwSjAdzeuE</a></li>
+<li><a href="https://www.youtube.com/watch?v=jI5X2iyyjJY">https://www.youtube.com/watch?v=jI5X2iyyjJY</a></li>
+<li><a href="https://www.youtube.com/watch?v=5k3B6Zbsceo">https://www.youtube.com/watch?v=5k3B6Zbsceo</a></li>
+<li><a href="https://www.youtube.com/watch?v=NBgSSZ_MZwE">https://www.youtube.com/watch?v=NBgSSZ_MZwE</a></li>
+<li><a href="https://namu.wiki/w/%EC%A0%95%EC%84%9D%5C%28%EB%B0%94%EB%91%91%5C%29">https://namu.wiki/w/%EC%A0%95%EC%84%9D(%EB%B0%94%EB%91%91</a></li>
+<li><a href="https://www.youtube.com/watch?v=wj5zOv2boO4">https://www.youtube.com/watch?v=wj5zOv2boO4</a></li>
+<li><a href="https://namu.wiki/w/%ED%96%89%EB%A7%88">https://namu.wiki/w/%ED%96%89%EB%A7%88</a></li>
+<li><a href="https://www.baduk.or.kr/record/diary.asp">https://www.baduk.or.kr/record/diary.asp</a></li>
+<li><a href="https://goldengibo.baduk.or.kr/highlight/highlight.asp">https://goldengibo.baduk.or.kr/highlight/highlight.asp</a></li>
+<li><a href="https://www.yna.co.kr/view/AKR20250311154800007">https://www.yna.co.kr/view/AKR20250311154800007</a></li>
+<li><a href="https://www.google.com/search?q=https://m.cyberoro.com/news/news_view.oro%3Fnum%3D531637">https://m.cyberoro.com/news/news_view.oro?num=531637</a></li>
+<li><a href="https://www.snuh.org/board/B003/view.do?bbs_no=2237">https://www.snuh.org/board/B003/view.do?bbs_no=2237</a></li>
+<li><a href="https://www.koreaboardgames.com/attachment/download?orgFileName=%EC%9C%84%EC%A6%88%EC%8A%A4%ED%86%A4_%EA%B7%B8%EB%A0%88%EC%9D%B4%ED%8A%B8%20%ED%82%B9%EB%8D%A4_%EA%B7%9C%EC%B9%99%EC%84%9C.pdf&amp;filePath=upload/2024-07-15/X6wjVSVyOoNk1Q057uM6.pdf">https://www.koreaboardgames.com/attachment/download?orgFileName=%EC%9C%84%EC%A6%88%EC%8A%A4%ED%86%A4_%EA%B7%B8%EB%A0%88%EC%9D%B4%ED%8A%B8%20%ED%82%B9%EB%8D%A4_%EA%B7%9C%EC%B9%99%EC%84%9C.pdf&amp;filePath=upload/2024-07-15/X6wjVSVyOoNk1Q057uM6.pdf</a></li>
+<li><a href="http://weekly.chosun.com/news/articleView.html?idxno=8418">http://weekly.chosun.com/news/articleView.html?idxno=8418</a></li>
+<li><a href="http://korean.cri.cn/learnchinese/lesson09/6.html">http://korean.cri.cn/learnchinese/lesson09/6.html</a></li>
+<li><a href="https://steemit.com/kr/@mooyeobpark/2iq57x">https://steemit.com/kr/@mooyeobpark/2iq57x</a></li>
+<li><a href="http://news.tygem.com/news/tnews/viewpage.asp?seq=37107">http://news.tygem.com/news/tnews/viewpage.asp?seq=37107</a></li>
+<li><a href="https://namu.wiki/w/%EC%A1%B0%ED%9B%88%ED%98%84">https://namu.wiki/w/%EC%A1%B0%ED%9B%88%ED%98%84</a></li>
+</ol>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250922-starcraft-1-vs-2/" class="button inline next">
+         [<span class="button__text">게임 소개: 스타크래프트와 스타크래프트 II: RTS 신화의 계승과 변주</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
