@@ -286,10 +286,11 @@ X X X .  &lt;-- 백돌이 사라졌습니다.
 <ul>
 <li><strong>예시: 흑집과 백집</strong>
 왼쪽은 흑집 9집, 오른쪽은 백집 9집입니다.
-<pre tabindex="0"><code>X X X . O O O
-X . X . O . O
-X . X . O . O
-X X X . O O O
+<pre tabindex="0"><code>X X X X X  .  O O O O O
+X . . . X  .  O . . . O
+X . . . X  .  O . . . O
+X . . . X  .  O . . . O
+X X X X X  .  O O O O O
 </code></pre></li>
 </ul>
 <hr>
@@ -308,38 +309,43 @@ X X X . O O O
 <ul>
 <li>
 <p><strong>예시 1: 단수 만들기</strong>
-아래 모양에서 흑이 &lsquo;A&rsquo; 자리에 두면 백돌(O)은 단수가 됩니다. 백이 응수하지 않으면 흑은 &lsquo;B&rsquo;에 두어 백을 따낼 수 있습니다.</p>
+아래 모양에서 백돌(O)의 활로는 &lsquo;A&rsquo;와 &lsquo;B&rsquo;, 두 곳입니다. 여기서 흑이 &lsquo;A&rsquo; 자리에 두면 백돌(O)의 활로는 &lsquo;B&rsquo; 하나만 남게 되어 단수가 됩니다. 백이 응수하지 않으면 다음 차례에 흑은 &lsquo;B&rsquo;에 두어 백돌을 따낼 수 있습니다.</p>
 <ul>
 <li><strong>[단수 전]</strong>
 <pre tabindex="0"><code>. X . . .
-. O B . .
+A O B . .  &lt;-- 백(O)의 활로는 A와 B, 두 곳
 . X . . .
-. . A . .
+. . . . .
 . . . . .
 </code></pre></li>
 <li><strong>[흑이 A에 둔 후: 백 단수!]</strong>
 <pre tabindex="0"><code>. X . . .
-. O B . .  &lt;-- 백의 유일한 활로
+X O B . .  &lt;-- 백(O)의 유일한 활로. 단수 상태!
 . X . . .
-. X . . .  (A)
+. . . . .
 . . . . .
 </code></pre></li>
 </ul>
 </li>
 <li>
 <p><strong>예시 2: 단수에서 벗어나기 (연결)</strong>
-백(O)이 단수에 걸렸을 때, &lsquo;A&rsquo;자리에 두어 활로를 늘려 살아갈 수 있습니다.</p>
+예제 1에서 백돌(O)은 흑에게 단수를 당해 활로가 &lsquo;B&rsquo; 하나뿐인 상황이 되었습니다. 이 위기 상황에서 백은 자신의 유일한 활로인 &lsquo;B&rsquo;에 돌을 놓아 기존의 돌과 <strong>연결</strong>함으로써 위기에서 벗어날 수 있습니다.</p>
 <ul>
-<li><strong>[현재 상황: 백(O)이 단수]</strong>
+<li>
+<p><strong>[현재 상황: 백(O)이 단수]</strong></p>
 <pre tabindex="0"><code>. X . . .
-X O A . .  &lt;-- 백의 유일한 활로
+X O B . .  &lt;-- 백(O)의 유일한 활로. 잡히기 직전!
+. X . . .
 . . . . .
 . . . . .
 </code></pre></li>
-<li><strong>[백이 A에 두어 탈출]</strong>
-<pre tabindex="0"><code>. X . . . .
-X O O . . .  &lt;-- 백돌 그룹의 활로가 3개로 늘어남
-. ↑ ↑ . .
+<li>
+<p><strong>[백이 B에 두어 탈출]</strong>
+백이 &lsquo;B&rsquo;에 두자, 외롭던 백돌 한 개가 두 개의 연결된 돌 그룹으로 변했습니다. 이 백돌 그룹의 전체 활로는 <strong>세 곳</strong>으로 늘어나 더 이상 단수가 아니며, 성공적으로 탈출한 모습입니다.</p>
+<pre tabindex="0"><code>. X ↑ . .
+X O O → .
+. X ↓ . .
+. . . . .
 . . . . .
 </code></pre></li>
 </ul>
@@ -352,23 +358,44 @@ X O O . . .  &lt;-- 백돌 그룹의 활로가 3개로 늘어남
 <p><strong>예시 1: 축으로 잡기</strong>
 흑1로 백돌(O)을 단수치자, 백2가 도망갑니다. 흑은 3, 5, 7로 계속 단수를 쳐서 백돌을 계단 모양으로 몰아가 결국 잡아냅니다.</p>
 <pre tabindex="0"><code>. . . . . . .
-. . 6 4 2 . .  (백의 도주 경로)
-. 7 5 O . . .  (O는 최초의 백돌)
-. . 3 . . . .
-. . 1 . . . .  (흑의 공격 시작)
+. . . . 5 . .
+. . . 1 4 6 7
+. . X O 2 3 .
+. . X O X . .
+. . . X . . .
 . . . . . . .
-. . . . . . .
-</code></pre></li>
+</code></pre><ul>
+<li>번호가 없는 돌들을 보면, 중앙의 백돌 두 점(<code>O</code>)은 주변의 흑돌(<code>X</code>) 네 점에 의해 포위되어 있습니다.</li>
+<li>이 백돌 그룹의 활로(숨구멍)는 정확히 <strong>두 곳</strong>입니다. 바로 흑 <code>1</code>이 놓일 자리와 백 <code>2</code>가 놓일 자리입니다. 축 또는 몰아가기를 시작하기 위한 완벽한 초기 조건입니다.</li>
+<li><strong>흑 1 (첫 번째 단수):</strong> 흑은 백의 두 활로 중 하나인 <code>1</code>의 자리를 막습니다. 이 수로 인해 백돌 그룹은 활로가 <code>2</code>의 자리 하나만 남게 되어 <strong>단수</strong>에 걸립니다.</li>
+<li><strong>백 2 (탈출):</strong> 백은 잡히지 않기 위해 유일한 활로인 <code>2</code>의 자리로 도망갑니다. 이로써 백돌은 세 점으로 늘어납니다.</li>
+<li><strong>흑 3 (두 번째 단수):</strong> 백이 <code>2</code>로 도망치자, 새로운 백돌 그룹의 활로는 <code>3</code>의 자리와 <code>4</code>의 자리, 다시 <strong>두 곳</strong>이 되었습니다. 흑은 그중 하나인 <code>3</code>의 자리를 막아 또다시 백 전체를 단수로 만듭니다.</li>
+<li><strong>백 4 (탈출):</strong> 백은 다시 유일한 활로인 <code>4</code>의 자리로 도망갑니다.</li>
+<li><strong>흑 5, 백 6, 흑 7&hellip; (반복):</strong> 이 과정이 계속 반복됩니다. 백이 도망치면 활로가 두 개 생기고, 흑은 그중 하나를 막아 계속 단수를 외치는 형태입니다. 이처럼 연속적인 단수를 통해 상대방 돌을 계속 몰아가는 기술이 바로 <strong>축</strong>의 핵심 원리입니다.</li>
+</ul>
+</li>
 <li>
 <p><strong>예시 2: 축머리가 있어 축이 실패하는 경우</strong>
 축이 진행되는 경로에 백을 도와주는 돌(☆)이 있으면 축이 성립하지 않습니다.</p>
-<pre tabindex="0"><code>. . . ☆ . . .  &lt;-- 백을 도와주는 &#39;축머리&#39;
+<pre tabindex="0"><code>. . . . . . .
+. . . . 5 ☆ .
+. . . 1 4 6 .
+. . X O 2 3 .
+. . X O X . .
+. . . X . . .
 . . . . . . .
-. . 4 2 . . .
-. 5 3 O . . .
-. . 1 . . . .
-. . . . . . .
-</code></pre><p>흑5까지는 동일하게 진행되지만, 백6이 도망가면 축머리(☆)와 연결되어 활로가 늘어납니다. 이제 백은 잡히지 않으며, 오히려 축을 몰던 흑돌들이 위험해집니다.</p>
+</code></pre><ul>
+<li>이전의 성공적인 축 예시와 마찬가지로, 흑 <code>1</code>은 백 그룹을 정확하게 <strong>단수</strong>로 만듭니다.</li>
+<li>백은 유일한 활로인 <code>2</code>의 자리로 <strong>탈출</strong>합니다.</li>
+<li>흑은 다시 <code>3</code>의 자리로 백 그룹 전체를 <strong>단수</strong>로 만듭니다. 여기까지는 축이 성공적으로 진행되고 있습니다.</li>
+<li>백이 <code>3</code>의 단수에서 탈출하기 위한 <strong>유일한 수</strong>는 <code>1</code>의 오른쪽 대각선 위 자리 <code>4</code>로 도망가는 것입니다.</li>
+<li>흑은 이어서 <code>4</code>의 위쪽으로 <code>5</code>를 두어 계속 단수를 몰아갈 것입니다.</li>
+<li>그러면 백이 살기 위한 <strong>다음 탈출구</strong>는 바로 <code>☆</code>의 아래 자리(<code>6</code>의 위치)가 됩니다.</li>
+<li><strong>결정적인 순간:</strong> 백이 <code>6</code>의 위치로 두어 탈출하는 순간, 미리 그곳에 있던 아군 돌 <code>☆</code>과 연결됩니다.</li>
+<li><strong>연결의 힘:</strong> 도망치던 약한 백돌 그룹이 강력한 지원군(<code>☆</code>)을 만나 하나의 큰 그룹으로 합쳐집니다.</li>
+<li><strong>활로 증가:</strong> 이 거대한 백돌 그룹은 <code>☆</code>의 위쪽, 오른쪽 등 새로운 활로를 즉시 확보하게 됩니다. 더 이상 단수가 아니며, 여러 개의 활로를 가진 안전한 돌이 됩니다.</li>
+<li><strong>공수 전환:</strong> 축을 몰던 흑돌(<code>1</code>, <code>3</code> 등)은 오히려 고립되어 약한 돌이 되고, 이제는 반대로 백의 공격을 걱정해야 할 수도 있습니다.</li>
+</ul>
 </li>
 </ul>
 <h2 id="결론">결론<a href="#결론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
