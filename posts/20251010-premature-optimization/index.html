@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>번역글: 부른 최적화, 아니면... 내가 한 말은 나부터 지켜야 했는데 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="오늘날, 기본적인 코딩 기술은 더 많은 AI 토큰을 구매함으로써 채용될 수 있다. 당신은 그것을 기반으로 고용해서는 안 된다." />
+<meta name="keywords" content="dev, programming, optimization, complexity" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20251010-premature-optimization/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="번역글: 부른 최적화, 아니면... 내가 한 말은 나부터 지켜야 했는데">
+<meta property="og:description" content="오늘날, 기본적인 코딩 기술은 더 많은 AI 토큰을 구매함으로써 채용될 수 있다. 당신은 그것을 기반으로 고용해서는 안 된다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20251010-premature-optimization/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-10-10 11:09:21 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20251010-premature-optimization/">번역글: 부른 최적화, 아니면&hellip; 내가 한 말은 나부터 지켜야 했는데</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-10-10</time><span class="post-author">Dave Thomas</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/optimization/">optimization</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/complexity/">complexity</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>원문: Pragmatic Programmers Newsletter (Translated by Google Gemini)</p>
+<blockquote>
+<p>저는 제 자신의 조언을 무시했고, 하루를 꼬박 날렸으며, 제가 저 자신의 최악의 고객임을 다시 한번 증명하고 말았습니다. (하지만 절망하지 마세요. 글 마지막에 쿠폰 코드가 있습니다.)</p></blockquote>
+<p>저희의 새로운 유통사는 요금을 청구할 항목들을 만들어내는 데 특별한 재능이 있습니다. 그런 항목이 수십 가지나 되죠. 저희는 순수익에 대해 로열티를 지급하기 때문에, 모든 청구 항목을 하나하나 맞춰봐야 합니다. 간단하죠, 안 그런가요?</p>
+<p>문제는 &ldquo;권당&rdquo; 발생하는 비용은 한 정산서에 나오고, &ldquo;총액 공제&rdquo; 항목은 다른 정산서에 나온다는 겁니다. 게다가 각 총액 항목 안에는 어떤 이름표도 없이 뒤죽박죽 섞인 비용들이 숨어있곤 합니다. 저희가 받는 것이라고는 날짜 두어 개와 무작위로 보이는 총액 하나가 전부입니다. 그러면 저희는 그 총액을 특정 비용들의 어떤 조합과 맞춰봐야 하는 것이죠.</p>
+<p>코딩 인터뷰에 단골로 등장하는 이야기로 치자면, 이건 바로 **부분 집합 합 문제(Subset Sum problem)**입니다. 숫자 더미를 받아서, 어떤 조합이 주어진 합계와 일치하는지 알아내는 문제 말입니다.</p>
+<p>이건 <strong>NP 문제</strong>입니다. 크고, 무시무시한 실행 시간을 자랑하죠.</p>
+<p>저는 그걸 알고 있었습니다. 그리고 그것이 바로 함정이었습니다.</p>
+<p>그 위험한 사실 하나로 무장한 채, 저는 최적화에 착수했습니다. 가지치기(Pruning) 전략. 가능성 높은 쌍으로 묶기. 심지어 각 숫자의 마지막 자릿수만 사용하는 정말 정신 나간 아이디어까지 동원했습니다. 아무래도 제가 제 자신을 미워하나 봅니다.</p>
+<p>몇 시간이 증발했고 점심은 차갑게 식었습니다. 저는 &lsquo;다음번 묘수(trick)는 이걸 해결해 줄 거야&rsquo;라며 스스로를 계속 설득했습니다.</p>
+<p>마침내 그럴싸해 보이는 무언가를 만들었지만, 모든 부분 집합을 다 잡아내는지 확신할 필요가 있었습니다. 그래서 비교 테스트를 위해 무차별 대입(brute-force) 버전을 작성했습니다.</p>
+<p><img src="/img/20251010_premature_optimization.png" alt="img"></p>
+<p>저는 그 코드를 실행시키고 의자를 뒤로 밀었습니다. 녀석이 몇 시간 동안 낑낑대며 돌아가는 동안 강아지 산책이나 할 생각이었죠. 하지만 제가 채 일어서기도 전에, 프롬프트가 깜빡이며 돌아왔습니다.</p>
+<p>이럴 리가 없는데. 분명 버그일 겁니다. 하지만 출력 결과는 멀쩡해 보였습니다.</p>
+<p>저는 속성 기반 테스트(property-based tests)로 마구 돌려봤습니다. 전부 초록불(통과)이었습니다. 실행은 밀리초 단위로 끝났습니다.</p>
+<p>저는 수많은 무대에 서서 도널드 크누스(Knuth)의 불멸의 명언을 인용해왔습니다. <strong>&ldquo;섣부른 최적화는 모든 악의 근원이다.&rdquo;</strong> 그래놓고는, 바로 그 제단 위에 하루를 통째로 제물로 바치고 만 것입니다.</p>
+<p><strong>의사여, 너 자신부터 고쳐라.</strong></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20250925-go-beginners-guide-pt-1/" class="button inline next">
+         [<span class="button__text">바둑 가이드: Pt.1. 바둑의 규칙과 예절, 돌 잡는 기술</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
