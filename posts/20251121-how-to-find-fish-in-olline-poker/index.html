@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>온라인 포커의 먹이사슬: NLH vs PLO 피시(Fish) 공략 가이드 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="온라인 포커에서 수익을 내는 가장 확실한 방법은 무엇일까요? GTO(Game Theory Optimal)를 마스터하는 것도 중요하지만, 가장 빠른 길은 &#39;나보다 못하는 플레이어(Fish)&#39;를 찾아내어 그들의 실수를 내 수익으로 치환하는 것입니다." />
+<meta name="keywords" content="poker, NLH, PLO, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20251121-how-to-find-fish-in-olline-poker/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="온라인 포커의 먹이사슬: NLH vs PLO 피시(Fish) 공략 가이드">
+<meta property="og:description" content="온라인 포커에서 수익을 내는 가장 확실한 방법은 무엇일까요? GTO(Game Theory Optimal)를 마스터하는 것도 중요하지만, 가장 빠른 길은 &#39;나보다 못하는 플레이어(Fish)&#39;를 찾아내어 그들의 실수를 내 수익으로 치환하는 것입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20251121-how-to-find-fish-in-olline-poker/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-11-21 13:02:46 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20251121-how-to-find-fish-in-olline-poker/">온라인 포커의 먹이사슬: NLH vs PLO 피시(Fish) 공략 가이드</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-11-21</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/nlh/">NLH</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/plo/">PLO</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>온라인 포커에서 수익을 내는 가장 확실한 방법은 무엇일까요? GTO(Game Theory Optimal)를 마스터하는 것도 중요하지만, 가장 빠른 길은 <strong>&lsquo;나보다 못하는 플레이어(Fish)&lsquo;를 찾아내어 그들의 실수를 내 수익으로 치환하는 것</strong>입니다.</p>
+<p>하지만 홀덤(NLH)과 오마하(PLO)는 게임의 성격이 다른 만큼, 서식하는 피시의 유형과 공략법도 다릅니다. 오늘은 이 두 게임에서 피시를 감별하는 방법과 유형별 &ldquo;자금 수거(Stacking)&rdquo; 전략을 심층 분석해 보겠습니다.</p>
+<p><em>gemini 2.5 pro 에게 요청한 연구 결과입니다.</em></p>
+<hr>
+<h3 id="-1-피시-감별법-게임-시작-전부터-알-수-있다">🌡️ 1. 피시 감별법: 게임 시작 전부터 알 수 있다<a href="#-1-피시-감별법-게임-시작-전부터-알-수-있다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>NLH와 PLO 공통적으로, 피시들은 게임을 시작하기도 전에 냄새를 풍깁니다. 로비와 HUD(Head-Up Display) 수치를 통해 그들을 찾아내세요.</p>
+<p><strong>1) 로비 및 테이블 관찰 (Visual Cues)</strong></p>
+<ul>
+<li><strong>비표준 스택 사이즈:</strong> $100 바이인 방에서 $40, $72 같은 애매한 금액으로 앉아 있거나, 100BB 미만(숏스택)으로 플레이하면서 자동 리바이(Auto-Rebuy)를 안 하는 경우. (가장 강력한 신호)</li>
+<li><strong>림프(Limp)의 빈도:</strong> 프리플랍에서 레이즈하지 않고 콜(림프)만 하고 들어오는 플레이어가 있다면 바로 메모해두세요. 90% 확률로 피시입니다.</li>
+<li><strong>멀티테이블링 여부:</strong> 한 테이블에서만 플레이하며, 액션 속도가 느리거나 불규칙한 경우 레크리에이션 플레이어일 확률이 높습니다.</li>
+</ul>
+<p><strong>2) HUD 스탯 활용 (Statistical Cues)</strong></p>
+<ul>
+<li><strong>VPIP (팟 참여율) / PFR (프리플랍 레이즈율):</strong>
+<ul>
+<li><strong>NLH:</strong> VPIP가 40% 이상이면서 PFR이 10% 미만인 경우 (40/10). 전형적인 &lsquo;콜링 스테이션&rsquo;입니다.</li>
+<li><strong>PLO:</strong> VPIP가 60%~80% 이상인 경우. (PLO는 원래 참여율이 높지만, 60% 이상은 핸드 선별 능력이 없다는 뜻입니다.)</li>
+</ul>
+</li>
+<li><strong>3-Bet 수치:</strong> 3-Bet이 1~2%대로 극단적으로 낮으면 넛(KK, AA)만 가지고 레이즈하는 &lsquo;니트(Nit)&lsquo;형 피시입니다.</li>
+</ul>
+<hr>
+<h3 id="-2-nlh-노리밋-홀덤-피시-유형-및-공략-전략">🃏 2. NLH (노리밋 홀덤) 피시 유형 및 공략 전략<a href="#-2-nlh-노리밋-홀덤-피시-유형-및-공략-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>홀덤에서의 피시는 주로 <strong>&ldquo;자신의 핸드 파워를 제대로 평가하지 못하거나, 폴드 버튼을 찾지 못하는&rdquo;</strong> 경우가 많습니다.</p>
+<h4 id="유형-a-콜링-스테이션-the-calling-station">유형 A: 콜링 스테이션 (The Calling Station)<a href="#유형-a-콜링-스테이션-the-calling-station" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>가장 흔하고 수익성이 좋은 유형입니다. 아무리 약한 페어라도 보드에 맞기만 하면 끝까지 따라옵니다. 절대 블러핑하지 않습니다.</p>
+<ul>
+<li><strong>식별:</strong> 림프를 자주 하고, 리버까지 체크-콜만 합니다. 쇼다운에서 바텀 페어나 4번째 키커 등을 오픈합니다.</li>
+<li><strong>공략 전략:</strong>
+<ol>
+<li><strong>블러프 금지:</strong> 절대, 네버! 그들을 블러핑으로 폴드시키려 하지 마세요. 돈을 버리는 행위입니다.</li>
+<li><strong>오버벳 밸류(Value):</strong> 탑 페어 이상을 맞췄다면, 평소보다 더 크게 베팅하세요. (팟의 80%~120%). 그들은 벳 사이즈에 둔감합니다.</li>
+<li><strong>씬 밸류(Thin Value):</strong> 리버에서 미들 페어 굿 키커 정도로도 밸류 벳을 하세요. 그들은 A-하이, 바텀 페어로도 콜을 줍니다.</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p><strong>📝 실전 사례 (NLH):</strong></p>
+<ul>
+<li><strong>Hero (CO):</strong> <code>A♣️ J♥️</code> / <strong>Fish (BB):</strong> <code>A♦️ 4♦️</code></li>
+<li><strong>보드:</strong> <code>A♠️ 9♣️ 5♥️</code> - <code>2♣️</code> - <code>7♥️</code></li>
+<li><strong>전략:</strong> Hero는 탑 페어입니다. 피시는 약한 키커(4)의 탑 페어를 가졌습니다.
+<ul>
+<li>보통의 레귤러 상대로는 팟 컨트롤이 필요하지만, <strong>피시 상대로는 플랍, 턴, 리버 3번 모두 강하게 베팅</strong>해야 합니다. 그는 &ldquo;Ace가 있으니까&rdquo; 절대 죽지 않고 스택을 다 헌납할 것입니다.</li>
+</ul>
+</li>
+</ul></blockquote>
+<h4 id="유형-b-마니악-the-maniac">유형 B: 마니악 (The Maniac)<a href="#유형-b-마니악-the-maniac" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>공격성이 지나쳐서 아무 핸드로나 레이즈하고 올인합니다.</p>
+<ul>
+<li><strong>공략 전략:</strong>
+<ol>
+<li><strong>덫 놓기 (Trapping):</strong> 강한 핸드를 잡았을 때 베팅하지 말고 체크하여 그가 블러프하게 만드세요.</li>
+<li><strong>레인지 넓히기:</strong> 평소보다 약간 낮은 등급의 핸드(세컨 페어 등)로도 그의 올인을 콜할 준비를 하세요 (블러프 캐칭).</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="-3-plo-팟리밋-오마하-피시-유형-및-공략-전략">🥗 3. PLO (팟리밋 오마하) 피시 유형 및 공략 전략<a href="#-3-plo-팟리밋-오마하-피시-유형-및-공략-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>PLO의 피시는 홀덤과 다릅니다. 이들은 <strong>&ldquo;오마하를 홀덤처럼 치거나&rdquo;</strong>, <strong>&ldquo;너트(Nut) 개념이 없는&rdquo;</strong> 경우가 대부분입니다.</p>
+<h4 id="유형-a-넌-넛-체이서-the-non-nut-chaser">유형 A: 넌-넛 체이서 (The Non-Nut Chaser)<a href="#유형-a-넌-넛-체이서-the-non-nut-chaser" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>오마하는 &lsquo;너트&rsquo; 게임인데, 낮은 플러시나 낮은 스트레이트를 들고 팟을 키우는 유형입니다.</p>
+<ul>
+<li><strong>식별:</strong> 쇼다운에서 J-하이 플러시, 바텀 스트레이트 등을 보여주며 팟을 잃습니다.</li>
+<li><strong>공략 전략:</strong>
+<ol>
+<li><strong>프리롤(Freeroll) 상황 만들기:</strong> 내가 너트 플러시/스트레이트 드로우를 가졌을 때 공격적으로 팟을 키우세요. 상대가 낮은 드로우로 따라오면, 드로우가 떴을 때 상대의 모든 스택을 가져올 수 있습니다.</li>
+<li><strong>절대 슬로우 플레이 금지:</strong> 넛을 가졌다면 무조건 팟 사이즈 벳을 하세요. 그들은 자신의 &lsquo;세컨 넛&rsquo;이 좋다고 착각하고 콜을 줄 것입니다.</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p><strong>📝 실전 사례 (PLO):</strong></p>
+<ul>
+<li><strong>Hero:</strong> <code>A♠️ K♠️ J♦️ T♦️</code> (넛 플러시 드로우)</li>
+<li><strong>Fish:</strong> <code>Q♠️ 9♠️ 8♣️ 7♣️</code> (K, Q 하이 플러시 드로우)</li>
+<li><strong>보드:</strong> <code>5♠️ 2♠️ 9♥️</code></li>
+<li><strong>전략:</strong> 둘 다 플러시가 메이드 되었습니다. Hero는 <code>A</code> 플러시(넛), Fish는 <code>Q</code> 플러시입니다.
+<ul>
+<li>Fish는 자신의 플러시가 강력하다고 믿고 <strong>리버에서도 팟 사이즈 레이즈</strong>를 할 것입니다. Hero는 그저 팟 벳만 누르면 Fish가 알아서 스택을 밀어 넣습니다.</li>
+</ul>
+</li>
+</ul></blockquote>
+<h4 id="유형-b-오버-발류어-over-valuer-aa-성애자">유형 B: 오버 발류어 (Over-Valuer, AA 성애자)<a href="#유형-b-오버-발류어-over-valuer-aa-성애자" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>오마하에서 <code>A-A-x-x</code> 핸드를 홀덤의 에이스처럼 생각하는 유형입니다.</p>
+<ul>
+<li><strong>식별:</strong> 프리플랍 3-bet, 4-bet 빈도가 높지만, 포스트플랍 운영이 단순합니다.</li>
+<li><strong>공략 전략:</strong>
+<ul>
+<li>보드에 <code>9-8-7</code> 처럼 연결된 카드가 깔렸을 때, 상대가 벳을 해도 두려워하지 말고 투 페어 이상이나 강력한 드로우로 레이즈하세요. 그들은 <code>A-A</code> 하나만 들고도 벳을 콜하거나 올인을 박아버립니다.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="-4-핵심-요약-nlh-vs-plo-피시-공략의-차이점">⚖️ 4. 핵심 요약: NLH vs PLO 피시 공략의 차이점<a href="#-4-핵심-요약-nlh-vs-plo-피시-공략의-차이점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">구분</th>
+          <th style="text-align: left">NLH (홀덤) 피시 공략</th>
+          <th style="text-align: left">PLO (오마하) 피시 공략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>핵심 마인드</strong></td>
+          <td style="text-align: left"><strong>&ldquo;블러프 하지 말고 밸류만 뽑자&rdquo;</strong></td>
+          <td style="text-align: left"><strong>&ldquo;너트를 들고 징벌하자&rdquo;</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>주의할 점</strong></td>
+          <td style="text-align: left">탑 페어의 가치가 높으므로, 키커 싸움 유도</td>
+          <td style="text-align: left">탑 페어, 오버 페어는 쓰레기다. 드로우 싸움 유도</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>베팅 사이즈</strong></td>
+          <td style="text-align: left">오버벳이 매우 효과적 (탄력성 낮음)</td>
+          <td style="text-align: left">팟 리밋이므로 매 스트릿 꽉 채워서 벳 (맥스 밸류)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>블러프 캐칭</strong></td>
+          <td style="text-align: left">마니악 상대로는 미들 페어로도 콜 가능</td>
+          <td style="text-align: left"><strong>절대 금지.</strong> 피시가 강하게 나오면 십중팔구 넛이다.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>마지막 팁:</strong>
+피시를 발견했다면, 가능하다면 <strong>그 피시의 왼쪽 자리</strong>를 차지하세요. 포지션이 있으면 피시가 림프할 때 아이솔레이션(Isolation) 레이즈를 하기도 쉽고, 벳 사이즈를 조절하여 팟을 통제하기가 훨씬 수월해집니다.</p>
+<p>피시는 당신의 가장 큰 고객입니다. 그들을 존중하되(채팅으로 비난 금지), 전략적으로는 뼈까지 발라내십시오! 🦈</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20251121-how-to-catch-bluffs-in-nlh/" class="button inline next">
+         [<span class="button__text">블러프 캐치 전략: 당신은 언제 콜하고 언제 폴드해야 하는가?</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
