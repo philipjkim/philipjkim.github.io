@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>블러프 캐치 전략: 당신은 언제 콜하고 언제 폴드해야 하는가? :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="텍사스 홀덤에서 가장 짜릿하면서도 어려운 결정은 바로 &#39;히어로 콜(Hero Call)&#39;입니다. 상대방의 마지막 베팅이 강한 핸드인지, 아니면 노골적인 블러프인지 판단하고 콜을 할 때, 당신의 포커 실력은 수익과 직결됩니다." />
+<meta name="keywords" content="poker, NLH, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20251121-how-to-catch-bluffs-in-nlh/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="블러프 캐치 전략: 당신은 언제 콜하고 언제 폴드해야 하는가?">
+<meta property="og:description" content="텍사스 홀덤에서 가장 짜릿하면서도 어려운 결정은 바로 &#39;히어로 콜(Hero Call)&#39;입니다. 상대방의 마지막 베팅이 강한 핸드인지, 아니면 노골적인 블러프인지 판단하고 콜을 할 때, 당신의 포커 실력은 수익과 직결됩니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20251121-how-to-catch-bluffs-in-nlh/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-11-21 11:25:03 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20251121-how-to-catch-bluffs-in-nlh/">블러프 캐치 전략: 당신은 언제 콜하고 언제 폴드해야 하는가?</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-11-21</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/nlh/">NLH</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>텍사스 홀덤에서 가장 짜릿하면서도 어려운 결정은 바로 &lsquo;히어로 콜(Hero Call)&lsquo;입니다. 상대방의 마지막 베팅이 강한 핸드인지, 아니면 노골적인 블러프인지 판단하고 콜을 할 때, 당신의 포커 실력은 수익과 직결됩니다.</p>
+<p>블러프 캐칭(Bluff Catching)은 단순히 &lsquo;감&rsquo;이 아니라, <strong>팟 오즈, 상대방의 레인지, 그리고 베팅 스토리의 논리성</strong>을 종합적으로 분석하는 전략입니다. 이 글에서는 각 스트리트별 블러프 캐치 전략과 함께, 당신의 플레이 성향(TAG vs. LAG)에 따른 대응 방식의 차이를 심층적으로 다뤄보겠습니다.</p>
+<p><em>gemini 2.5 pro 에게 요청한 연구 결과입니다.</em></p>
+<hr>
+<h2 id="1-핵심-이론-콜의-기준과-성향별-접근법">1. 핵심 이론: 콜의 기준과 성향별 접근법<a href="#1-핵심-이론-콜의-기준과-성향별-접근법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="콜의-수학적-기준-팟-오즈">콜의 수학적 기준 (팟 오즈)<a href="#콜의-수학적-기준-팟-오즈" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>블러프 캐칭은 <strong>팟 오즈</strong>에 의해 결정됩니다.</p>
+<ul>
+<li><strong>예시:</strong> 상대방이 팟 $100에 $50를 베팅했습니다. 내가 $50를 콜하면 총 $200를 얻게 됩니다. (팟 100 + 상대 50 + 내 콜 50 = 200)
+<ul>
+<li>팟 오즈: 200:50, 즉 4:1입니다.</li>
+<li><strong>결론:</strong> 상대방이 4번 중 1번(25%)만 블러프하더라도, 나는 수학적으로 손해를 보지 않습니다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="tag-vs-lag-블러프-캐칭-철학">TAG vs. LAG 블러프 캐칭 철학<a href="#tag-vs-lag-블러프-캐칭-철학" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">구분</th>
+          <th style="text-align: left">TAG (Tight-Aggressive)</th>
+          <th style="text-align: left">LAG (Loose-Aggressive)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>목표</strong></td>
+          <td style="text-align: left">분산(Variance) 최소화, 명백한 밸류 확보.</td>
+          <td style="text-align: left">이미지 구축, 상대의 착취(Exploitation) 방지.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>콜의 기준</strong></td>
+          <td style="text-align: left"><strong>매우 좁음.</strong> 팟 오즈가 압도적으로 좋거나, 상대의 블러프 빈도(Frequency)가 극히 높을 때만 콜.</td>
+          <td style="text-align: left"><strong>상대적으로 넓음.</strong> 팟 오즈가 약간 불리해도, 블락커나 포지션 우위를 활용하여 자주 콜.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>이미지</strong></td>
+          <td style="text-align: left">&ldquo;이 사람이 콜하면 100% 맞았다&quot;는 이미지를 활용.</td>
+          <td style="text-align: left">&ldquo;이 사람은 블러프하면 무조건 콜한다&quot;는 이미지를 심어 상대의 블러프 빈도를 낮춤.</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="2-스트리트별-블러프-캐칭-전략과-예시">2. 스트리트별 블러프 캐칭 전략과 예시<a href="#2-스트리트별-블러프-캐칭-전략과-예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>프리플랍은 블러프 캐칭의 영역이 아니므로 (주로 4-벳 블러프), 플랍부터 리버까지의 상황을 분석합니다.</p>
+<h3 id="a-플랍-flop-c-벳을-낚아채는-순간">A. 플랍 (Flop): C-벳을 낚아채는 순간<a href="#a-플랍-flop-c-벳을-낚아채는-순간" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>플랍에서의 블러프 캐칭은 상대방의 C-벳(Continuation Bet)에 대한 대응입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">TAG 전략</th>
+          <th style="text-align: left">LAG 전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>예시:</strong> Hero (BB)가 BTN의 레이즈에 콜. <strong>플랍:</strong> <code>A-7-2</code> (레인보우)</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Villain의 벳:</strong> 팟의 1/3 (작은 C-벳)</td>
+          <td style="text-align: left"><strong>콜 (Call):</strong> 탑 페어(A-x), 미들 페어(7x), 심지어 백도어 스트레이트/플러시 드로우를 가진 핸드(예: 89s)로 콜하여 한 번은 방어해야 함.</td>
+          <td style="text-align: left"><strong>레이즈 (Raise) 또는 콜:</strong> 콜하는 빈도는 TAG보다 높음. 특히 턴에서 벳을 멈추게 할 목적으로 레이즈(Semi-bluff)를 섞어 공격적으로 방어함.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Villain의 벳:</strong> 팟 사이즈 (100%) C-벳</td>
+          <td style="text-align: left"><strong>폴드 (Fold):</strong> A-x 탑 페어 이상이 아니라면 폴드. 큰 벳은 A-A, 7-7, A-K, A-Q 같은 강력한 핸드를 주장함.</td>
+          <td style="text-align: left"><strong>콜:</strong> A-x 탑 페어라면 콜. 상대의 벳 사이즈가 밸런스가 맞지 않다고 판단되면(너무 자주 크게 벳하면) 약한 핸드로도 콜하며 상대의 착취를 막음.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>블러프 캐치 포기 시점:</strong> 핸드가 보드와 전혀 무관하고 (예: 6-5s on A-K-Q), 상대가 높은 C-벳 빈도(80% 이상)를 가진 경우가 아니라면 폴드.</td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="b-턴-turn-팟이-커질-때의-신중함">B. 턴 (Turn): 팟이 커질 때의 신중함<a href="#b-턴-turn-팟이-커질-때의-신중함" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>턴은 팟이 커지기 시작하고, 블러프가 더 비싸지는 분기점입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">TAG 전략</th>
+          <th style="text-align: left">LAG 전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>예시:</strong> Hero (BB)가 플랍 C-벳을 콜. <strong>턴:</strong> <code>K-8-3-2</code> (브릭)</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Hero의 핸드:</strong> 8-7 (미들 페어)</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Villain의 액션:</strong> 더블 배럴 (팟의 75%)</td>
+          <td style="text-align: left"><strong>폴드 (Fold):</strong> TAG는 이 시점에서 8-7로 팟의 75% 베팅을 콜하기 어려움. 상대는 Kx 탑 페어나 셋(88, 33, 22)을 가졌을 확률이 높다고 판단. <strong>분산을 피함.</strong></td>
+          <td style="text-align: left"><strong>콜 (Call):</strong> Villain이 이 브릭 턴에서도 강한 척 더블 배럴하는 것은 블러프일 수 있다고 판단. 특히 Hero가 <strong>A-K</strong> (넛 스트레이트/플러시 블락커)를 가지고 있다면 콜의 빈도를 높임. <strong>히어로 콜 가능성 높음.</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>블러프 캐치 포기 시점:</strong> 턴 카드에 플러시나 스트레이트가 완성되었고, 상대가 팟 사이즈로 베팅할 때, 당신의 핸드가 투 페어 이하라면 포기.</td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="c-리버-river-히어로-콜의-순간">C. 리버 (River): 히어로 콜의 순간<a href="#c-리버-river-히어로-콜의-순간" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>리버는 모든 드로우가 완성되거나 실패하는 최종전입니다. 블러프 캐칭의 가치는 <strong>상대방의 레인지가 얼마나 논리적인가</strong>에 달려 있습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">TAG 전략</th>
+          <th style="text-align: left">LAG 전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>예시:</strong> <strong>보드:</strong> <code>K-9-4-2-7</code> (레인보우, 드로우 실패)</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Hero의 핸드:</strong> A-9 (미들 페어)</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Villain의 액션:</strong> 팟의 3/4 베팅 (강한 밸류 주장)</td>
+          <td style="text-align: left"><strong>폴드 (Fold):</strong> TAG는 상대가 이 보드에서 Kx, 99, 44, 22, 77 등의 밸류 핸드를 가졌다고 판단. 상대의 밸류 빈도가 블러프 빈도보다 높다고 보고 분산을 피함.</td>
+          <td style="text-align: left"><strong>콜 (Call):</strong> 리버 블러프를 시도하는 상대의 빈도가 높다고 판단되면 콜. 특히 <strong>블락커</strong>를 가지고 있다면 콜을 결정적으로 만듦. <strong>(예시: Hero가 A-K을 가지고 있다면, 상대가 K-X로 밸류 벳할 가능성을 낮춤.)</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>블러프 캐치 포기 시점:</strong> 턴/리버에서 스트레이트나 플러시가 완성되었는데, 당신이 투 페어 이하의 핸드로 넛에 대한 방어막이 없을 때.</td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="3-블락커blocker를-활용한-고급-전략-lag의-무기">3. 블락커(Blocker)를 활용한 고급 전략 (LAG의 무기)<a href="#3-블락커blocker를-활용한-고급-전략-lag의-무기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>블러프 캐칭을 성공시키는 고급 전략은 <strong>블락커</strong>를 활용하는 것입니다.</p>
+<p><strong>블락커란?</strong> 당신의 손패에 상대방이 밸류 벳을 할 수 있는 <strong>가장 강력한 핸드</strong>의 키 카드가 포함되어 있어서, 상대방이 그 밸류 핸드를 가질 확률을 낮추는 것입니다.</p>
+<ul>
+<li>
+<p><strong>예시 (River Blocker):</strong></p>
+<ul>
+<li><strong>보드:</strong> <code>Q-J-8-3-T</code> (K-9 스트레이트가 너트)</li>
+<li><strong>Hero의 핸드:</strong> <code>A-A-9-7</code> (단순한 AA 오버페어)</li>
+<li><strong>Villain의 팟 벳:</strong> Villain은 K-9 스트레이트(넛)나 K-T 투 페어로 밸류 벳을 하고 있습니다.</li>
+<li><strong>Hero의 블락커:</strong> Hero는 <strong>9</strong>를 들고 있습니다. 이 9는 상대방이 넛 스트레이트(K-9)를 가질 수 있는 <strong>아웃츠 중 하나</strong>를 막고 있습니다. (9를 들고 있는 플레이어가 넛 스트레이트를 가질 확률이 낮아짐.)</li>
+</ul>
+</li>
+<li>
+<p><strong>TAG vs. LAG 적용:</strong></p>
+<ul>
+<li><strong>TAG:</strong> 블락커가 있어도 콜하기보다는 분산을 피합니다. (콜을 하더라도 팟 오즈가 확실할 때만.)</li>
+<li><strong>LAG:</strong> 블락커는 블러프 캐칭의 <strong>정당성</strong>을 부여합니다. 블락커를 통해 상대의 밸류 레인지가 좁혀졌다고 판단되면, 팟 오즈가 약간 불리해도 콜하여 <strong>상대에게 &lsquo;블러프는 통하지 않는다&rsquo;는 이미지</strong>를 심어줍니다. LAG에게 블락커는 &lsquo;콜 버튼&rsquo;을 누르는 강력한 근거가 됩니다.</li>
+</ul>
+</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20251119-holdem-bad-flop-action-plans/" class="button inline next">
+         [<span class="button__text">NLH: 프리미엄 핸드와 &#39;지옥의 플랍&#39; 대응 전략</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
