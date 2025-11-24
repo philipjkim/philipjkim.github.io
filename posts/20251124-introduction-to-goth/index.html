@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Go 웹 개발의 새로운 파도: GOTH 스택 (Go, Templ, HTMX) 시작하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="복잡한 리액트(React) 상태 관리, 비대해진 `node_modules`, 그리고 끝없는 JSON 직렬화/역직렬화에 지치셨나요? 백엔드 개발자에게 가장 편안한 언어인 Go 를 사용하면서도, 현대적인 SPA(Single Page Application) 같은 사용자 경험을 제공하는 GOTH 스택을 소개합니다." />
+<meta name="keywords" content="golang, programming, dev" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20251124-introduction-to-goth/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go 웹 개발의 새로운 파도: GOTH 스택 (Go, Templ, HTMX) 시작하기">
+<meta property="og:description" content="복잡한 리액트(React) 상태 관리, 비대해진 `node_modules`, 그리고 끝없는 JSON 직렬화/역직렬화에 지치셨나요? 백엔드 개발자에게 가장 편안한 언어인 Go 를 사용하면서도, 현대적인 SPA(Single Page Application) 같은 사용자 경험을 제공하는 GOTH 스택을 소개합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20251124-introduction-to-goth/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-11-24 18:12:06 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20251124-introduction-to-goth/">Go 웹 개발의 새로운 파도: GOTH 스택 (Go, Templ, HTMX) 시작하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-11-24</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>복잡한 리액트(React) 상태 관리, 비대해진 <code>node_modules</code>, 그리고 끝없는 JSON 직렬화/역직렬화에 지치셨나요? 백엔드 개발자에게 가장 편안한 언어인 <strong>Go</strong>를 사용하면서도, 현대적인 SPA(Single Page Application) 같은 사용자 경험을 제공하는 <strong>GOTH 스택</strong>을 소개합니다. GOTH(Go + Templ + HTMX) 스택은 최근 Go 커뮤니티에서 <strong>&ldquo;다시 재미있게 웹 개발을 하자(Make Web Dev Fun Again)&rdquo;</strong> 는 흐름과 함께 큰 주목을 받고 있습니다. 복잡한 JS 프레임워크 없이 Go의 강점인 단순함과 성능을 그대로 살릴 수 있는 것이 특징입니다.</p>
+<p><em>이 글은 요청에 대한 Gemini 3 Pro 의 답변입니다.</em></p>
+<hr>
+<h2 id="goth-스택이란">GOTH 스택이란?<a href="#goth-스택이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><strong>Go</strong>: 강력하고 단순한 백엔드 서버 (Go 1.22+ <code>net/http</code> 사용)</li>
+<li><strong>Templ</strong>: Go 언어로 작성하는 <strong>타입 안전(Type-safe)</strong> 한 HTML 템플릿 언어</li>
+<li><strong>HTMX</strong>: JavaScript 작성 없이 HTML 속성만으로 AJAX 요청과 DOM 갱신을 처리하는 라이브러리</li>
+</ul>
+<p>이 셋의 조합은 <strong>&ldquo;HTML을 서버에서 만들어(Templ), 와이어로 전송하고(Go), 클라이언트가 갈아 끼운다(HTMX)&rdquo;</strong> 는 아주 단순한 철학으로 돌아갑니다.</p>
+<hr>
+<h2 id="1-프로젝트-부트스트랩-bootstrap">1. 프로젝트 부트스트랩 (Bootstrap)<a href="#1-프로젝트-부트스트랩-bootstrap" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가장 먼저 프로젝트 폴더를 만들고 Go 모듈을 초기화합니다. 그리고 핵심 도구인 <code>templ</code>을 설치합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 1. 프로젝트 폴더 생성 및 이동</span>
+</span></span><span class="line"><span class="cl">mkdir goth-todo
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> goth-todo
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. Go 모듈 초기화</span>
+</span></span><span class="line"><span class="cl">go mod init goth-todo
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. Templ CLI 도구 설치 (아직 없다면)</span>
+</span></span><span class="line"><span class="cl">go install github.com/a-h/templ/cmd/templ@latest
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 프로젝트에 Templ 라이브러리 추가</span>
+</span></span><span class="line"><span class="cl">go get github.com/a-h/templ
+</span></span></code></pre></div><p><strong>폴더 구조</strong>는 아주 심플하게 가져갑니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">goth-todo/
+</span></span><span class="line"><span class="cl">├── go.mod
+</span></span><span class="line"><span class="cl">├── go.sum
+</span></span><span class="line"><span class="cl">├── main.go      (서버 및 로직)
+</span></span><span class="line"><span class="cl">└── view.templ   (UI 컴포넌트)
+</span></span></code></pre></div><hr>
+<h2 id="2-ui-만들기-viewtempl">2. UI 만들기: <code>view.templ</code><a href="#2-ui-만들기-viewtempl" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Templ은 HTML을 Go 코드처럼 작성하게 해줍니다. <code>view.templ</code> 파일을 만들고 아래 코드를 작성합니다. 여기서 우리는 두 가지 컴포넌트를 정의합니다.</p>
+<ol>
+<li><code>Page</code>: 전체 HTML 뼈대</li>
+<li><code>TodoItem</code>: 할 일 아이템 하나 (리스트에 추가될 조각)</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// view.templ</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 전체 페이지 레이아웃</span>
+</span></span><span class="line"><span class="cl"><span class="nx">templ</span> <span class="nf">Page</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;!</span><span class="nx">DOCTYPE</span> <span class="nx">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">title</span><span class="p">&gt;</span><span class="nx">GOTH</span> <span class="nx">Todo</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="p">=</span><span class="s">&#34;https://unpkg.com/htmx.org@1.9.10&#34;</span><span class="p">&gt;&lt;</span><span class="o">/</span><span class="nx">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">body</span> <span class="p">{</span> <span class="nx">font</span><span class="o">-</span><span class="nx">family</span><span class="p">:</span> <span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="p">;</span> <span class="nx">padding</span><span class="p">:</span> <span class="mi">20</span><span class="nx">px</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="p">.</span><span class="nx">todo</span> <span class="p">{</span> <span class="nx">margin</span><span class="p">:</span> <span class="mi">5</span><span class="nx">px</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">padding</span><span class="p">:</span> <span class="mi">5</span><span class="nx">px</span><span class="p">;</span> <span class="nx">border</span><span class="o">-</span><span class="nx">bottom</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span> <span class="nx">solid</span> <span class="err">#</span><span class="nx">eee</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="o">/</span><span class="nx">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">h1</span><span class="p">&gt;</span><span class="nx">GOTH</span> <span class="nx">Todo</span> <span class="nx">List</span> <span class="err">✅</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">h1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">form</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">post</span><span class="p">=</span><span class="s">&#34;/add&#34;</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">target</span><span class="p">=</span><span class="s">&#34;#todo-list&#34;</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">swap</span><span class="p">=</span><span class="s">&#34;beforeend&#34;</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">on</span><span class="p">::</span><span class="nx">after</span><span class="o">-</span><span class="nx">request</span><span class="p">=</span><span class="s">&#34;this.reset()&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="p">&lt;</span><span class="nx">input</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;text&#34;</span> <span class="nx">name</span><span class="p">=</span><span class="s">&#34;content&#34;</span> <span class="nx">placeholder</span><span class="p">=</span><span class="s">&#34;할 일을 입력하세요...&#34;</span> <span class="nx">required</span> <span class="o">/</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="p">&lt;</span><span class="nx">button</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span><span class="nx">추가</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="o">/</span><span class="nx">form</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="p">=</span><span class="s">&#34;todo-list&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">			<span class="p">&lt;</span><span class="o">/</span><span class="nx">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 할 일 아이템 하나 (서버가 응답할 HTML 조각)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">templ</span> <span class="nf">TodoItem</span><span class="p">(</span><span class="nx">content</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">div</span> <span class="nx">class</span><span class="p">=</span><span class="s">&#34;todo&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span> <span class="nx">content</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>💡 포인트:</strong> HTML 속성(<code>hx-...</code>) 몇 개만으로 &ldquo;폼을 제출하면, 서버에 데이터를 보내고, 돌아온 HTML 조각을 리스트 끝에 붙인다&quot;는 로직이 완성되었습니다.</p>
+<p>이제 터미널에서 <code>templ</code> 명령어로 이 파일을 Go 코드로 변환합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">templ generate
+</span></span></code></pre></div><p>이 명령을 실행하면 <code>view_templ.go</code> 파일이 자동으로 생성됩니다. (이 파일은 직접 수정하지 않습니다.)</p>
+<hr>
+<h2 id="3-서버-구현하기-maingo">3. 서버 구현하기: <code>main.go</code><a href="#3-서버-구현하기-maingo" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이제 Go 서버를 만듭니다. Go 1.22부터 강력해진 표준 라이브러리 <code>net/http</code>를 사용합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/a-h/templ&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 1. 메인 페이지 핸들러 (GET /)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;GET /&#34;</span><span class="p">,</span> <span class="nx">templ</span><span class="p">.</span><span class="nf">Handler</span><span class="p">(</span><span class="nf">Page</span><span class="p">()))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 2. 할 일 추가 핸들러 (POST /add)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;POST /add&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 폼 데이터 파싱</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">content</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">FormValue</span><span class="p">(</span><span class="s">&#34;content&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// DB에 저장하는 로직이 들어갈 자리 (여기선 생략)</span>
+</span></span><span class="line"><span class="cl">		
+</span></span><span class="line"><span class="cl">		<span class="c1">// 핵심: 전체 페이지가 아니라 &#34;새로 추가된 아이템 HTML 조각&#34;만 응답함</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">component</span> <span class="o">:=</span> <span class="nf">TodoItem</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">component</span><span class="p">.</span><span class="nf">Render</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nf">Context</span><span class="p">(),</span> <span class="nx">w</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 서버 시작</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">println</span><span class="p">(</span><span class="s">&#34;Listening on http://localhost:8080&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>💡 포인트:</strong></p>
+<ul>
+<li><code>templ.Handler(Page())</code>: Templ 컴포넌트는 그 자체로 <code>http.Handler</code>가 될 수 있습니다.</li>
+<li><code>POST /add</code>: JSON을 리턴하지 않습니다. <code>TodoItem</code>이라는 <strong>HTML 조각(Fragment)</strong> 을 렌더링해서 클라이언트로 보냅니다. HTMX는 이 조각을 받아서 DOM에 끼워 넣습니다.</li>
+</ul>
+<hr>
+<h2 id="4-실행-및-결과-확인">4. 실행 및 결과 확인<a href="#4-실행-및-결과-확인" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이제 모든 준비가 끝났습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">go run .
+</span></span></code></pre></div><p>브라우저에서 <code>http://localhost:8080</code>을 열어보세요.
+입력창에 할 일을 적고 엔터를 치면, <strong>페이지 새로고침 없이</strong> 리스트에 아이템이 착착 추가되는 것을 볼 수 있습니다.</p>
+<p>개발자 도구(F12)의 Network 탭을 확인해보세요.</p>
+<ol>
+<li><code>/add</code>로 Form Data를 보냅니다.</li>
+<li>서버는 <code>&lt;div class=&quot;todo&quot;&gt;할일&lt;/div&gt;</code> 라는 HTML 문자열만 응답합니다.</li>
+<li>브라우저는 이 HTML을 받아 화면에 그립니다.</li>
+</ol>
+<hr>
+<h2 id="왜-goth-스택인가">왜 GOTH 스택인가?<a href="#왜-goth-스택인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ol>
+<li><strong>단순함 (Simplicity)</strong>: 프론트엔드 빌드 파이프라인(Webpack, Vite 등)이 필요 없습니다. Go 바이너리 하나면 배포 끝입니다.</li>
+<li><strong>타입 안전성 (Type Safety)</strong>: <code>view.templ</code>에서 오타를 내거나 잘못된 타입을 사용하면 Go 컴파일러가 빌드 시점에 잡아냅니다. &ldquo;런타임 에러&quot;와 작별하세요.</li>
+<li><strong>생산성 (Productivity)</strong>: 백엔드 개발자가 컨텍스트 스위칭 없이(Go만 생각하며) 풀스택 기능을 구현할 수 있습니다.</li>
+</ol>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 예제는 시작일 뿐입니다. <code>hx-delete</code>로 삭제 기능을, <code>hx-trigger</code>로 실시간 업데이트를 구현해보세요. 복잡한 로직은 Go가 다 처리하고, 브라우저는 그저 보여주기만 하면 됩니다.</p>
+<p>Go의 단순함과 현대적인 웹의 편리함을 동시에 잡고 싶다면, 지금 바로 <strong>GOTH</strong> 해보세요! 🦇</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20251124-go-net-http-vs-chi/" class="button inline next">
+         [<span class="button__text">Go: `net/http` vs. `chi`</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
