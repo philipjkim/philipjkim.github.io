@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>20251124 Go Net Http vs Chi :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Go 언어의 웹 생태계에서 net/http 와 chi 는 가장 &#39;Go스러운(Idiomatic)&#39;&#39; 선택지로 꼽힙니다. Gin이나 Echo 같은 &#39;웹 프레임워크&#39;와 달리, chi는 표준 라이브러리의 인터페이스를 그대로 따르면서 부족한 라우팅 기능을 보강해주는 &#39;라우터&#39;이기 때문입니다. 특히 Go 1.22 버전부터 net/http 의 라우팅 기능이 대폭 강화되었기 때문에, 이 둘의 차이를 명확히 이해하는 것이 중요합니다." />
+<meta name="keywords" content="golang, programming, dev" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20251124-go-net-http-vs-chi/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="20251124 Go Net Http vs Chi">
+<meta property="og:description" content="Go 언어의 웹 생태계에서 net/http 와 chi 는 가장 &#39;Go스러운(Idiomatic)&#39;&#39; 선택지로 꼽힙니다. Gin이나 Echo 같은 &#39;웹 프레임워크&#39;와 달리, chi는 표준 라이브러리의 인터페이스를 그대로 따르면서 부족한 라우팅 기능을 보강해주는 &#39;라우터&#39;이기 때문입니다. 특히 Go 1.22 버전부터 net/http 의 라우팅 기능이 대폭 강화되었기 때문에, 이 둘의 차이를 명확히 이해하는 것이 중요합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20251124-go-net-http-vs-chi/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-11-24 17:49:44 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20251124-go-net-http-vs-chi/">20251124 Go Net Http vs Chi</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-11-24</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Go 언어의 웹 생태계에서 <strong><code>net/http</code> (표준 라이브러리)</strong> 와 <strong><code>chi</code></strong> 는 가장 &ldquo;Go스러운(Idiomatic)&rdquo; 선택지로 꼽힙니다. Gin이나 Echo 같은 &ldquo;웹 프레임워크&quot;와 달리, chi는 표준 라이브러리의 인터페이스를 그대로 따르면서 부족한 라우팅 기능을 보강해주는 &ldquo;라우터&quot;이기 때문입니다.</p>
+<p>특히 <strong>Go 1.22 버전</strong>부터 <code>net/http</code>의 라우팅 기능이 대폭 강화되었기 때문에, 이 둘의 차이를 명확히 이해하는 것이 중요합니다.</p>
+<p><em>이 글은 요청에 대한 Gemini 3 Pro 의 답변입니다.</em></p>
+<hr>
+<h2 id="1-nethttp-vs-chi-요약-비교">1. <code>net/http</code> vs <code>chi</code> 요약 비교<a href="#1-nethttp-vs-chi-요약-비교" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">특징</th>
+          <th style="text-align: left"><code>net/http</code> (Go 1.22+)</th>
+          <th style="text-align: left"><code>chi</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>외부 의존성</strong></td>
+          <td style="text-align: left">없음 (Zero dependency)</td>
+          <td style="text-align: left">있음 (But 매우 가벼움)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>인터페이스</strong></td>
+          <td style="text-align: left"><code>http.Handler</code></td>
+          <td style="text-align: left"><code>http.Handler</code> (100% 호환)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>라우팅 (Path)</strong></td>
+          <td style="text-align: left">지원 (<code>/items/{id}</code>)</td>
+          <td style="text-align: left">강력하게 지원 (Regex 등 포함)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>메서드 매칭</strong></td>
+          <td style="text-align: left">지원 (<code>POST /items</code>)</td>
+          <td style="text-align: left">지원 (<code>r.Post(&quot;/items&quot;, ...)</code>)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>미들웨어 관리</strong></td>
+          <td style="text-align: left"><strong>직접 구현 필요 (복잡함)</strong></td>
+          <td style="text-align: left"><strong>매우 강력하고 간편함 (<code>Use</code>)</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>라우팅 그룹</strong></td>
+          <td style="text-align: left">직접 구현 필요</td>
+          <td style="text-align: left"><strong>기본 지원 (<code>Group</code>)</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>속도</strong></td>
+          <td style="text-align: left">빠름</td>
+          <td style="text-align: left">매우 빠름 (Radix Tree 기반)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="2-왜-앱이-커질수록-chi가-유리한가">2. 왜 앱이 커질수록 <code>chi</code>가 유리한가?<a href="#2-왜-앱이-커질수록-chi가-유리한가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>앱이 복잡해진다는 것은 <strong>엔드포인트가 많아지고</strong>, <strong>공통 로직(인증, 로깅, CORS 등)이 복잡해진다</strong>는 뜻입니다. 이 지점에서 chi가 <code>net/http</code>보다 압도적인 강점을 가집니다.</p>
+<h3 id="핵심-차이-1-미들웨어-middleware-체이닝">핵심 차이 1: 미들웨어 (Middleware) 체이닝<a href="#핵심-차이-1-미들웨어-middleware-체이닝" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>복잡한 앱은 모든 요청에 대해 로깅을 남기고, 특정 경로(예: <code>/admin</code>)에는 인증을 요구해야 합니다.</p>
+<ul>
+<li><strong><code>chi</code>:</strong> <code>.Use()</code> 메서드 하나로 깔끔하게 파이프라인을 구축합니다.</li>
+<li><strong><code>net/http</code>:</strong> 미들웨어를 적용하려면 핸들러를 함수로 감싸고 또 감싸야 해서 코드가 깊어지고(nesting) 읽기 어려워집니다.</li>
+</ul>
+<h3 id="핵심-차이-2-라우팅-그룹-routing-groups-및-서브-라우팅">핵심 차이 2: 라우팅 그룹 (Routing Groups) 및 서브 라우팅<a href="#핵심-차이-2-라우팅-그룹-routing-groups-및-서브-라우팅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>API 버전 관리(v1, v2)나 도메인별 분리(users, posts)가 필요할 때 구조화가 필수적입니다.</p>
+<ul>
+<li><strong><code>chi</code>:</strong> <code>r.Route</code>나 <code>r.Group</code>을 사용해 코드를 블록 단위로 격리할 수 있습니다.</li>
+<li><strong><code>net/http</code>:</strong> <code>ServeMux</code>를 여러 개 만들어 서로 연결해야 하는데, 직관적이지 않고 관리가 번거롭습니다.</li>
+</ul>
+<h2 id="3-코드-비교-관리자-전용-api-만들기">3. 코드 비교: &ldquo;관리자 전용 API 만들기&rdquo;<a href="#3-코드-비교-관리자-전용-api-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>상황: <code>/admin</code> 하위 경로는 모두 <strong>인증 미들웨어</strong>가 필요하고, 일반 경로는 필요 없습니다.</p>
+<h3 id="a-chi-사용-시-구조적이고-명확함">A. <code>chi</code> 사용 시 (구조적이고 명확함)<a href="#a-chi-사용-시-구조적이고-명확함" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span> <span class="o">:=</span> <span class="nx">chi</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. 모든 요청에 적용되는 전역 미들웨어</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">Recoverer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. 일반 공개 API</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Welcome&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. 관리자 전용 그룹 (여기에만 인증 미들웨어 적용)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Route</span><span class="p">(</span><span class="s">&#34;/admin&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">r</span> <span class="nx">chi</span><span class="p">.</span><span class="nx">Router</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">AuthMiddleware</span><span class="p">)</span> <span class="c1">// 이 블록 내부에만 적용됨 ✨</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/users&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">             <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Admin: User List&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">r</span><span class="p">.</span><span class="nf">Delete</span><span class="p">(</span><span class="s">&#34;/users/{id}&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">             <span class="c1">// chi는 URL 파라미터를 아주 쉽게 가져옴</span>
+</span></span><span class="line"><span class="cl">             <span class="nx">userID</span> <span class="o">:=</span> <span class="nx">chi</span><span class="p">.</span><span class="nf">URLParam</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="s">&#34;id&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">             <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Deleting user &#34;</span> <span class="o">+</span> <span class="nx">userID</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:3000&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>장점:</strong> 미들웨어의 적용 범위가 눈에 확 들어옵니다. 코드가 들여쓰기(indentation)를 통해 논리적으로 그룹화됩니다.</p>
+<h3 id="b-nethttp-go-122-사용-시-다소-평면적이고-수동적">B. <code>net/http</code> (Go 1.22+) 사용 시 (다소 평면적이고 수동적)<a href="#b-nethttp-go-122-사용-시-다소-평면적이고-수동적" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mux</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">NewServeMux</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 핸들러 정의</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">publicHandler</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Welcome&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nx">adminUserList</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Admin: User List&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 라우팅 등록</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mux</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;GET /&#34;</span><span class="p">,</span> <span class="nf">LogMiddleware</span><span class="p">(</span><span class="nx">publicHandler</span><span class="p">))</span> <span class="c1">// 전역 미들웨어를 일일이 감싸야 함</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 관리자 그룹을 흉내내려면?</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 경로마다 미들웨어를 체이닝해야 하거나, 별도의 mux를 만들어 마운트해야 함</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 여기서는 AuthMiddleware(LogMiddleware(...)) 처럼 감싸야 함. 가독성이 떨어짐.</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mux</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;GET /admin/users&#34;</span><span class="p">,</span> <span class="nf">LogMiddleware</span><span class="p">(</span><span class="nf">AuthMiddleware</span><span class="p">(</span><span class="nx">adminUserList</span><span class="p">)))</span> 
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Path parameter (Go 1.22 기능)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mux</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;DELETE /admin/users/{id}&#34;</span><span class="p">,</span> <span class="nf">LogMiddleware</span><span class="p">(</span><span class="nf">AuthMiddleware</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">id</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">PathValue</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Deleting user &#34;</span> <span class="o">+</span> <span class="nx">id</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}))))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:3000&#34;</span><span class="p">,</span> <span class="nx">mux</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>단점:</strong> 미들웨어가 많아질수록 <code>Middleware1(Middleware2(Handler))</code> 형태가 되어 코드가 지저분해집니다. 그룹화된 로직을 한눈에 파악하기 어렵습니다.</p>
+<h2 id="4-언제-chi를-선택해야-할까">4. 언제 <code>chi</code>를 선택해야 할까?<a href="#4-언제-chi를-선택해야-할까" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>다음 중 <strong>하나라도 해당된다면</strong> <code>net/http</code> 대신 <code>chi</code>를 사용하는 것을 강력히 추천합니다.</p>
+<ol>
+<li><strong>미들웨어 관리가 필요할 때:</strong> 인증(JWT, OAuth), CORS, 로깅, 압축(Gzip), 타임아웃 등 여러 미들웨어를 체계적으로 적용해야 하는 경우.</li>
+<li><strong>API 엔드포인트가 많고 구조화가 필요할 때:</strong> API v1/v2 버전 분리, <code>/users</code>, <code>/posts</code> 등 도메인별로 라우터를 쪼개서 파일/패키지 단위로 관리하고 싶을 때.</li>
+<li><strong>Context 관리가 중요할 때:</strong> chi는 URL 파라미터 등을 <code>context</code>에 담아 핸들러로 넘겨주는 패턴이 매우 잘 정립되어 있습니다.</li>
+<li><strong>표준 호환성을 지키고 싶을 때:</strong> Gin이나 Fiber 같은 프레임워크는 자체 <code>Context</code> 객체를 사용해 표준 라이브러리와 100% 호환되지 않습니다. 반면 chi는 표준 <code>http.Handler</code>를 그대로 쓰므로, 나중에 다른 라이브러리로 갈아타거나 표준 라이브러리와 섞어 쓰기에 부담이 없습니다.</li>
+</ol>
+<h2 id="결론">결론<a href="#결론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>작고 단순한 마이크로서비스</strong>나 토이 프로젝트라면 Go 1.22의 향상된 <strong><code>net/http</code></strong> 로도 충분합니다.</p>
+<p>하지만 <strong>실무 레벨의 백엔드 서버</strong>를 구축한다면 <strong><code>chi</code></strong> 가 사실상의 표준(De facto standard)에 가깝습니다. Go의 단순함(Simplicity)을 해치지 않으면서도, 대규모 애플리케이션에 필요한 구조화 도구(Router Group, Middleware Stack)를 완벽하게 제공하기 때문입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20251124-tott-abstraction-for-better-readability/" class="button inline next">
+         [<span class="button__text">TotT: 함수 가독성 향상을 위해 추상화를 활용하세요</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
