@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Go 웹 애플리케이션에서 static contents를 서빙하는 표준 패턴 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="복잡한 nginx 설정 파일, CDN 연동, 그리고 정적 파일 경로 문제로 골머리를 앓으신 적 있으신가요? Go 표준 라이브러리만으로도 정적 파일(CSS, JavaScript, 이미지 등)을 우아하게 서빙할 수 있습니다. 이번 글에서는 Go 웹 애플리케이션에서 static contents를 서빙하는 표준 패턴을 알아보겠습니다. `http.FileServer`, `http.Dir`, 그리고 `http.StripPrefix`의 조합만으로 프로덕션 레벨의 static file serving을 구현할 수 있습니다." />
+<meta name="keywords" content="golang, programming, dev" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20251126-go-static-contents-serving-pattern/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go 웹 애플리케이션에서 static contents를 서빙하는 표준 패턴">
+<meta property="og:description" content="복잡한 nginx 설정 파일, CDN 연동, 그리고 정적 파일 경로 문제로 골머리를 앓으신 적 있으신가요? Go 표준 라이브러리만으로도 정적 파일(CSS, JavaScript, 이미지 등)을 우아하게 서빙할 수 있습니다. 이번 글에서는 Go 웹 애플리케이션에서 static contents를 서빙하는 표준 패턴을 알아보겠습니다. `http.FileServer`, `http.Dir`, 그리고 `http.StripPrefix`의 조합만으로 프로덕션 레벨의 static file serving을 구현할 수 있습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20251126-go-static-contents-serving-pattern/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-11-26 08:07:14 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20251126-go-static-contents-serving-pattern/">Go 웹 애플리케이션에서 static contents를 서빙하는 표준 패턴</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-11-26</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>복잡한 nginx 설정 파일, CDN 연동, 그리고 정적 파일 경로 문제로 골머리를 앓으신 적 있으신가요? Go 표준 라이브러리만으로도 정적 파일(CSS, JavaScript, 이미지 등)을 우아하게 서빙할 수 있습니다. 이번 글에서는 <strong>Go 웹 애플리케이션에서 static contents를 서빙하는 표준 패턴</strong>을 알아보겠습니다. <code>http.FileServer</code>, <code>http.Dir</code>, 그리고 <code>http.StripPrefix</code>의 조합만으로 프로덕션 레벨의 static file serving을 구현할 수 있습니다.</p>
+<p><em>이 글은 GOTH Stack 웹 애플리케이션 개발 과정에서 발견한 패턴을 Claude Sonnet 을 이용해 정리한 것입니다.</em></p>
+<hr>
+<h2 id="문제-상황-url과-파일-시스템-경로의-불일치">문제 상황: URL과 파일 시스템 경로의 불일치<a href="#문제-상황-url과-파일-시스템-경로의-불일치" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>웹 애플리케이션을 개발하다 보면 다음과 같은 구조를 자주 마주치게 됩니다:</p>
+<pre tabindex="0"><code>프로젝트/
+└── web/
+    └── static/
+        ├── css/
+        │   └── style.css
+        ├── js/
+        │   └── app.js
+        └── images/
+            └── logo.png
+</code></pre><p><strong>파일 시스템 경로</strong>: <code>web/static/css/style.css</code>
+<strong>원하는 URL</strong>: <code>/static/css/style.css</code></p>
+<p>여기서 핵심 질문이 나옵니다:</p>
+<blockquote>
+<p>&ldquo;왜 <code>web/static/css/style.css</code> 파일을 <code>/static/css/style.css</code> URL로 접근할 수 있을까?&rdquo;</p></blockquote>
+<hr>
+<h2 id="해답-httpstripprefix와-httpfileserver">해답: <code>http.StripPrefix</code>와 <code>http.FileServer</code><a href="#해답-httpstripprefix와-httpfileserver" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go 표준 라이브러리는 이 문제를 해결하는 우아한 패턴을 제공합니다. 코드부터 보겠습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;github.com/go-chi/chi/v5&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span> <span class="o">:=</span> <span class="nx">chi</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Static file serving 설정</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fileServer</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;./web/static&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/static/*&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nf">StripPrefix</span><span class="p">(</span><span class="s">&#34;/static/&#34;</span><span class="p">,</span> <span class="nx">fileServer</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>단 3줄의 코드로 정적 파일 서빙이 완성됩니다. 각 부분을 자세히 살펴보겠습니다.</p>
+<hr>
+<h2 id="핵심-구성-요소">핵심 구성 요소<a href="#핵심-구성-요소" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-httpdir---파일-시스템-루트-지정">1. <code>http.Dir</code> - 파일 시스템 루트 지정<a href="#1-httpdir---파일-시스템-루트-지정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">fileServer</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;./web/static&#34;</span><span class="p">))</span>
+</span></span></code></pre></div><p><strong>역할</strong>: 파일 서버의 &ldquo;루트 디렉토리&quot;를 지정합니다.</p>
+<ul>
+<li><code>http.Dir(&quot;./web/static&quot;)</code>: 현재 디렉토리 기준으로 <code>web/static/</code> 폴더를 루트로 설정</li>
+<li>이 폴더 <strong>외부</strong>의 파일에는 접근할 수 없습니다 (보안)</li>
+</ul>
+<h3 id="2-httpstripprefix---url-경로-변환">2. <code>http.StripPrefix</code> - URL 경로 변환<a href="#2-httpstripprefix---url-경로-변환" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/static/*&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nf">StripPrefix</span><span class="p">(</span><span class="s">&#34;/static/&#34;</span><span class="p">,</span> <span class="nx">fileServer</span><span class="p">))</span>
+</span></span></code></pre></div><p><strong>역할</strong>: URL에서 prefix를 제거한 후 파일 서버로 전달합니다.</p>
+<ul>
+<li>브라우저 요청: <code>GET /static/css/style.css</code></li>
+<li><code>StripPrefix</code> 처리 후: <code>css/style.css</code></li>
+<li>FileServer가 찾는 파일: <code>./web/static</code> + <code>css/style.css</code> = <code>./web/static/css/style.css</code> ✅</li>
+</ul>
+<hr>
+<h2 id="동작-흐름-상세-분석">동작 흐름 상세 분석<a href="#동작-흐름-상세-분석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>브라우저에서 CSS 파일을 요청하는 전체 과정을 단계별로 살펴보겠습니다:</p>
+<pre tabindex="0"><code>1. 브라우저 요청
+   GET /static/css/style.css
+
+2. Chi Router 매칭
+   패턴 &#34;/static/*&#34; 매치 ✓
+
+3. http.StripPrefix 처리
+   &#34;/static/css/style.css&#34; → &#34;css/style.css&#34;
+   (앞의 &#34;/static/&#34; 제거)
+
+4. http.FileServer 처리
+   루트: &#34;./web/static&#34;
+   요청: &#34;css/style.css&#34;
+   파일: &#34;./web/static/css/style.css&#34;
+
+5. 파일 전송
+   Content-Type: text/css
+   Status: 200 OK
+</code></pre><p><strong>💡 포인트</strong>: <code>StripPrefix</code>가 없다면 FileServer는 <code>./web/static/static/css/style.css</code>를 찾게 되어 404 에러가 발생합니다!</p>
+<hr>
+<h2 id="실전-예제-tailwind-css-서빙">실전 예제: Tailwind CSS 서빙<a href="#실전-예제-tailwind-css-서빙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>실제 프로젝트에서 Tailwind CSS를 서빙하는 전체 코드를 보겠습니다:</p>
+<h3 id="디렉토리-구조">디렉토리 구조<a href="#디렉토리-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>프로젝트/
+├── cmd/
+│   └── server/
+│       └── main.go
+├── web/
+│   └── static/
+│       ├── css/
+│       │   ├── input.css      (소스)
+│       │   └── output.css     (빌드 결과)
+│       ├── js/
+│       └── images/
+└── internal/
+    └── view/
+        └── layout/
+            └── base.templ
+</code></pre><h3 id="서버-코드-cmdservermaingo">서버 코드 (<code>cmd/server/main.go</code>)<a href="#서버-코드-cmdservermaingo" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;github.com/go-chi/chi/v5&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;github.com/go-chi/chi/v5/middleware&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span> <span class="o">:=</span> <span class="nx">chi</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nf">Compress</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="c1">// GZIP 압축</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Static files serving</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fileServer</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;./web/static&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/static/*&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nf">StripPrefix</span><span class="p">(</span><span class="s">&#34;/static/&#34;</span><span class="p">,</span> <span class="nx">fileServer</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// HTML 페이지</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">`
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;!DOCTYPE html&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;html&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;head&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">                &lt;link rel=&#34;stylesheet&#34; href=&#34;/static/css/output.css&#34;&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;/head&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;body&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">                &lt;h1 class=&#34;text-3xl font-bold&#34;&gt;Hello GOTH!&lt;/h1&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;/body&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            &lt;/html&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">        `</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="html-템플릿-internalviewlayoutbasetempl">HTML 템플릿 (<code>internal/view/layout/base.templ</code>)<a href="#html-템플릿-internalviewlayoutbasetempl" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>My App<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!-- Tailwind CSS --&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;/static/css/output.css&#34;</span><span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!-- Custom JavaScript --&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;/static/js/app.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p><strong>💡 포인트</strong>: HTML에서는 <code>/static/</code>으로 시작하는 URL을 사용하지만, 실제 파일은 <code>web/static/</code>에 있습니다. 매핑은 서버가 자동으로 처리합니다!</p>
+<hr>
+<h2 id="보안-고려사항">보안 고려사항<a href="#보안-고려사항" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="-안전한-패턴">✅ 안전한 패턴<a href="#-안전한-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// ✅ GOOD: web/static 폴더만 서빙</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fileServer</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;./web/static&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/static/*&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nf">StripPrefix</span><span class="p">(</span><span class="s">&#34;/static/&#34;</span><span class="p">,</span> <span class="nx">fileServer</span><span class="p">))</span>
+</span></span></code></pre></div><p>이 설정에서는:</p>
+<ul>
+<li><code>web/static/</code> 폴더 <strong>내부</strong>의 파일만 접근 가능</li>
+<li><code>../../../etc/passwd</code> 같은 경로 탐색 공격 차단</li>
+<li>소스 코드(<code>.go</code> 파일) 접근 불가</li>
+</ul>
+<h3 id="-위험한-패턴">❌ 위험한 패턴<a href="#-위험한-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// ❌ BAD: 프로젝트 루트 전체를 노출</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fileServer</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/static/*&#34;</span><span class="p">,</span> <span class="nx">http</span><span class="p">.</span><span class="nf">StripPrefix</span><span class="p">(</span><span class="s">&#34;/static/&#34;</span><span class="p">,</span> <span class="nx">fileServer</span><span class="p">))</span>
+</span></span></code></pre></div><p>이렇게 하면 <code>/static/../cmd/server/main.go</code> 같은 요청으로 소스 코드가 노출될 수 있습니다!</p>
+<hr>
+<h2 id="고급-패턴-cache-control-헤더-추가">고급 패턴: Cache-Control 헤더 추가<a href="#고급-패턴-cache-control-헤더-추가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>프로덕션 환경에서는 브라우저 캐싱을 위해 <code>Cache-Control</code> 헤더를 추가하는 것이 좋습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">cacheControlMiddleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nf">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// CSS, JS, 이미지는 1년간 캐싱</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">w</span><span class="p">.</span><span class="nf">Header</span><span class="p">().</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Cache-Control&#34;</span><span class="p">,</span> <span class="s">&#34;public, max-age=31536000&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">next</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 사용</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fileServer</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;./web/static&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/static/*&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">cacheControlMiddleware</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">http</span><span class="p">.</span><span class="nf">StripPrefix</span><span class="p">(</span><span class="s">&#34;/static/&#34;</span><span class="p">,</span> <span class="nx">fileServer</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><hr>
+<h2 id="표준-라이브러리-vs-외부-패키지">표준 라이브러리 vs 외부 패키지<a href="#표준-라이브러리-vs-외부-패키지" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>방식</th>
+          <th>장점</th>
+          <th>단점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>표준 라이브러리</strong></td>
+          <td>의존성 없음, 단순함, 검증됨</td>
+          <td>고급 기능 직접 구현 필요</td>
+      </tr>
+      <tr>
+          <td><strong>nginx</strong></td>
+          <td>강력한 성능, 풍부한 기능</td>
+          <td>추가 서버 필요, 설정 복잡</td>
+      </tr>
+      <tr>
+          <td><strong>CDN</strong></td>
+          <td>전 세계 캐싱, 빠른 속도</td>
+          <td>비용, 외부 의존성</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>💡 추천</strong>: 개발/스테이징 환경에서는 Go 표준 라이브러리로 충분합니다. 프로덕션에서 트래픽이 많다면 CDN을 앞단에 추가하세요.</p>
+<hr>
+<h2 id="실제-프로젝트-체크리스트">실제 프로젝트 체크리스트<a href="#실제-프로젝트-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>GOTH 스택 프로젝트에서 static file serving을 설정할 때 확인할 사항:</p>
+<ul>
+<li><input disabled="" type="checkbox"> <code>web/static/</code> 디렉토리 생성</li>
+<li><input disabled="" type="checkbox"> <code>.gitignore</code>에 빌드 결과물 추가 (<code>output.css</code> 등)</li>
+<li><input disabled="" type="checkbox"> <code>http.StripPrefix</code> 정확히 설정</li>
+<li><input disabled="" type="checkbox"> Templ 템플릿에서 <code>/static/</code> 경로로 참조</li>
+<li><input disabled="" type="checkbox"> 브라우저 개발자 도구로 200 OK 응답 확인</li>
+<li><input disabled="" type="checkbox"> GZIP 압축 미들웨어 추가 (선택)</li>
+<li><input disabled="" type="checkbox"> Cache-Control 헤더 설정 (프로덕션)</li>
+</ul>
+<hr>
+<h2 id="디버깅-팁">디버깅 팁<a href="#디버깅-팁" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>문제가 생겼을 때 확인할 사항:</p>
+<h3 id="1-404-not-found가-나올-때">1. 404 Not Found가 나올 때<a href="#1-404-not-found가-나올-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 파일이 실제로 존재하는지 확인</span>
+</span></span><span class="line"><span class="cl">ls -la web/static/css/output.css
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 서버 로그 확인 (Chi의 Logger 미들웨어 사용 시)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># GET /static/css/output.css - 404 Not Found</span>
+</span></span></code></pre></div><p><strong>원인</strong>: 경로 불일치 또는 <code>StripPrefix</code> 오류</p>
+<h3 id="2-파일이-업데이트되지-않을-때">2. 파일이 업데이트되지 않을 때<a href="#2-파일이-업데이트되지-않을-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>브라우저 캐시가 원인일 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 강제 새로고침</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># macOS: Cmd + Shift + R</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Windows/Linux: Ctrl + Shift + R</span>
+</span></span></code></pre></div><p><strong>해결</strong>: 개발 중에는 <code>Cache-Control: no-cache</code> 설정</p>
+<h3 id="3-경로-확인-도구">3. 경로 확인 도구<a href="#3-경로-확인-도구" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># HTTP 요청 테스트</span>
+</span></span><span class="line"><span class="cl">curl -I http://localhost:8080/static/css/output.css
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 응답 예시:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># HTTP/1.1 200 OK</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Content-Type: text/css</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Content-Length: 17234</span>
+</span></span></code></pre></div><hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go 표준 라이브러리의 <code>http.FileServer</code>와 <code>http.StripPrefix</code>는 단순하지만 강력합니다. 복잡한 설정 없이 3줄의 코드로 정적 파일 서빙을 구현할 수 있습니다.</p>
+<p><strong>핵심 개념</strong>:</p>
+<ul>
+<li><code>http.Dir()</code>: 파일 시스템 루트 지정</li>
+<li><code>http.StripPrefix()</code>: URL에서 prefix 제거</li>
+<li>두 가지를 조합하여 URL과 파일 경로 매핑</li>
+</ul>
+<p>GOTH 스택의 철학처럼, &ldquo;복잡한 도구 대신 표준 라이브러리를 먼저 고려하라&quot;는 원칙이 여기서도 빛을 발합니다.</p>
+<p>다음 프로젝트에서 정적 파일을 서빙할 일이 있다면, nginx 설정 파일을 열기 전에 Go 표준 라이브러리를 먼저 시도해보세요! 🚀</p>
+<hr>
+<h2 id="참고-자료">참고 자료<a href="#참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://pkg.go.dev/net/http">Go net/http 공식 문서</a></li>
+<li><a href="https://pkg.go.dev/net/http#FileServer">http.FileServer 예제</a></li>
+<li><a href="https://github.com/go-chi/chi">Chi Router 문서</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20251124-introduction-to-goth/" class="button inline next">
+         [<span class="button__text">Go 웹 개발의 새로운 파도: GOTH 스택 (Go, Templ, HTMX) 시작하기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2025 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
