@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>PLO 가이드: #6 플랍 플레이 (上) - 보드 텍스처 읽기와 핸드 강도 평가 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="이번 편에서는 플랍 플레이의 기초를 다룹니다. 보드 텍스처 분류법, 메이드 핸드와 드로우의 관계, 그리고 각 상황에서 핸드 강도를 어떻게 평가해야 하는지 배웁니다." />
+<meta name="keywords" content="poker, omaha, strategy, PLO" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260109-plo-guide-06/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="PLO 가이드: #6 플랍 플레이 (上) - 보드 텍스처 읽기와 핸드 강도 평가">
+<meta property="og:description" content="이번 편에서는 플랍 플레이의 기초를 다룹니다. 보드 텍스처 분류법, 메이드 핸드와 드로우의 관계, 그리고 각 상황에서 핸드 강도를 어떻게 평가해야 하는지 배웁니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260109-plo-guide-06/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-09 10:10:59 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260109-plo-guide-06/">PLO 가이드: #6 플랍 플레이 (上) - 보드 텍스처 읽기와 핸드 강도 평가</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-09</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/omaha/">omaha</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/plo/">PLO</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>프리플랍에서 좋은 핸드를 선택하는 것은 시작일 뿐입니다. 오마하에서 <strong>진짜 게임은 플랍부터</strong> 시작됩니다. 프리플랍 에퀴티 차이가 홀덤보다 작기 때문에, 플랍 이후의 플레이가 수익의 대부분을 결정합니다.</p>
+<p>플랍을 제대로 플레이하려면 두 가지 능력이 필요합니다. 첫째, <strong>보드 텍스처를 정확히 읽는 것</strong>. 둘째, <strong>그 보드에서 내 핸드의 진짜 강도를 평가하는 것</strong>. 홀덤에서는 직관적으로 할 수 있는 이 작업이, 오마하에서는 훨씬 복잡해집니다.</p>
+<p>이번 편에서는 플랍 플레이의 기초를 다룹니다. 보드 텍스처 분류법, 메이드 핸드와 드로우의 관계, 그리고 각 상황에서 핸드 강도를 어떻게 평가해야 하는지 배웁니다.</p>
+<p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="오마하-플랍-텍스처-분류-드라이-웻-페어드-모노톤">오마하 플랍 텍스처 분류: 드라이, 웻, 페어드, 모노톤<a href="#오마하-플랍-텍스처-분류-드라이-웻-페어드-모노톤" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>플랍을 보자마자 가장 먼저 해야 할 일은 <strong>보드 텍스처를 파악</strong>하는 것입니다. 보드 텍스처는 어떤 핸드가 강하고, 어떤 드로우가 가능하며, 얼마나 많은 액션이 예상되는지를 결정합니다.</p>
+<h3 id="드라이-보드-dry-board">드라이 보드 (Dry Board)<a href="#드라이-보드-dry-board" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>정의</strong>: 스트레이트나 플러시 드로우가 거의 없는 보드</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li><code>K♠7♣2♦</code> (레인보우, 갭 큼)</li>
+<li><code>A♥8♣3♦</code> (연결 없음)</li>
+<li><code>Q♠Q♣4♥</code> (페어드 + 드라이)</li>
+</ul>
+<p><strong>특징</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">특징</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">드로우 가능성</td>
+          <td style="text-align: left">낮음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛의 변화 가능성</td>
+          <td style="text-align: left">낮음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">현재 메이드 핸드 가치</td>
+          <td style="text-align: left">상대적으로 높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">블러프 효과</td>
+          <td style="text-align: left">높음 (상대도 미스했을 확률 높음)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">액션 예상</td>
+          <td style="text-align: left">적음</td>
+      </tr>
+  </tbody>
+</table>
+<p>드라이 보드에서는 <strong>메이드 핸드의 가치가 상대적으로 유지</strong>됩니다. 투 페어나 세트가 턴과 리버에서 역전당할 확률이 낮습니다. 하지만 오마하에서는 아무리 드라이한 보드라도 백도어 가능성이 항상 존재한다는 점을 기억하세요.</p>
+<h3 id="웻-보드-wet-board">웻 보드 (Wet Board)<a href="#웻-보드-wet-board" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>정의</strong>: 스트레이트와 플러시 드로우가 풍부한 보드</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li><code>J♠T♥9♣</code> (스트레이트 드로우 다수)</li>
+<li><code>8♠7♠4♣</code> (플러시 드로우 + 스트레이트 드로우)</li>
+<li><code>Q♥J♥7♠</code> (투 톤<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> + 연결)</li>
+</ul>
+<p><strong>특징</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">특징</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">드로우 가능성</td>
+          <td style="text-align: left">매우 높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛의 변화 가능성</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">현재 메이드 핸드 가치</td>
+          <td style="text-align: left">상대적으로 낮음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">블러프 효과</td>
+          <td style="text-align: left">낮음 (상대도 무언가 있을 확률 높음)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">액션 예상</td>
+          <td style="text-align: left">많음</td>
+      </tr>
+  </tbody>
+</table>
+<p>웻 보드는 <strong>오마하의 본질</strong>이 드러나는 곳입니다. 거의 모든 플레이어가 무언가를 가지고 있고, 턴과 리버에서 상황이 급변할 수 있습니다. 현재 넛이라도 안심할 수 없습니다.</p>
+<h3 id="페어드-보드-paired-board">페어드 보드 (Paired Board)<a href="#페어드-보드-paired-board" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>정의</strong>: 보드에 페어가 있는 경우</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li><code>K♠K♣7♦</code></li>
+<li><code>9♥9♠4♣</code></li>
+<li><code>5♦5♣5♠</code> (트리플 보드)</li>
+</ul>
+<p><strong>특징</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">특징</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">풀하우스 가능성</td>
+          <td style="text-align: left">있음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">쿼드 가능성</td>
+          <td style="text-align: left">있음 (드묾)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플러시/스트레이트 가치</td>
+          <td style="text-align: left">하락 (풀하우스에 질 수 있음)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">블러프 기회</td>
+          <td style="text-align: left">증가 (상대가 히트하기 어려움)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">액션 패턴</td>
+          <td style="text-align: left">극단적 (폴드 많거나, 또는 거대한 팟)</td>
+      </tr>
+  </tbody>
+</table>
+<p>페어드 보드에서는 <strong>풀하우스 이상의 핸드</strong>가 넛이 됩니다. 플러시나 스트레이트를 완성해도 풀하우스에 질 수 있으므로 주의가 필요합니다.</p>
+<h3 id="모노톤-보드-monotone-board">모노톤 보드 (Monotone Board)<a href="#모노톤-보드-monotone-board" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>정의</strong>: 세 장 모두 같은 수트인 보드</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li><code>K♠9♠4♠</code></li>
+<li><code>Q♥7♥2♥</code></li>
+<li><code>J♣T♣5♣</code></li>
+</ul>
+<p><strong>특징</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">특징</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">플러시 완성</td>
+          <td style="text-align: left">즉시 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플러시 드로우</td>
+          <td style="text-align: left">불가능 (이미 완성되거나 아님)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛의 명확성</td>
+          <td style="text-align: left">매우 높음 (넛 플러시가 넛)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">포지션 없는 핸드</td>
+          <td style="text-align: left">매우 어려움</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">액션 패턴</td>
+          <td style="text-align: left">넛이면 공격, 아니면 수비적</td>
+      </tr>
+  </tbody>
+</table>
+<p>모노톤 보드는 <strong>가장 극단적인 상황</strong>을 만듭니다. 해당 수트에 <code>Ax</code>를 가지고 있으면 넛, 없으면 매우 방어적으로 플레이해야 합니다. &ldquo;세컨드 넛 플러시의 함정&quot;이 가장 자주 발생하는 보드입니다.</p>
+<h3 id="복합-텍스처">복합 텍스처<a href="#복합-텍스처" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>실제 게임에서는 여러 특징이 혼합된 보드가 나옵니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">보드</th>
+          <th style="text-align: left">텍스처 조합</th>
+          <th style="text-align: left">특징</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>J♠T♠7♠</code></td>
+          <td style="text-align: left">모노톤 + 웻</td>
+          <td style="text-align: left">플러시 + 스트레이트 드로우</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>9♠9♥5♣</code></td>
+          <td style="text-align: left">페어드 + 드라이</td>
+          <td style="text-align: left">풀하우스 가능, 드로우 적음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>Q♥J♥9♣</code></td>
+          <td style="text-align: left">웻 + 투 톤</td>
+          <td style="text-align: left">스트레이트 + 플러시 드로우 다수</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>K♣K♠8♥</code></td>
+          <td style="text-align: left">페어드 + 투 톤</td>
+          <td style="text-align: left">풀하우스 + 백도어 플러시</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="텍스처별-전략-요약">텍스처별 전략 요약<a href="#텍스처별-전략-요약" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">텍스처</th>
+          <th style="text-align: left">C-벳 빈도</th>
+          <th style="text-align: left">밸류 핸드 기준</th>
+          <th style="text-align: left">블러프 효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">드라이</td>
+          <td style="text-align: left">높음</td>
+          <td style="text-align: left">탑 페어+</td>
+          <td style="text-align: left">좋음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">웻</td>
+          <td style="text-align: left">선택적</td>
+          <td style="text-align: left">넛 또는 강한 드로우</td>
+          <td style="text-align: left">낮음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">페어드</td>
+          <td style="text-align: left">상황에 따라</td>
+          <td style="text-align: left">트립스+ 또는 풀하우스</td>
+          <td style="text-align: left">좋음 (대표하기 쉬움)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">모노톤</td>
+          <td style="text-align: left">넛 있으면</td>
+          <td style="text-align: left">넛 플러시 (거의 필수)</td>
+          <td style="text-align: left">블로커 필요</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="메이드-핸드-vs-드로우---누가-페이버릿인가">메이드 핸드 vs 드로우 - 누가 페이버릿인가<a href="#메이드-핸드-vs-드로우---누가-페이버릿인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>오마하의 가장 독특한 특징 중 하나는 <strong>강력한 드로우가 메이드 핸드보다 유리한 경우가 많다</strong>는 것입니다. 홀덤에서 드로우는 대부분 언더독<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>입니다. 하지만 오마하에서는 다릅니다.</p>
+<h3 id="오마하-드로우의-힘">오마하 드로우의 힘<a href="#오마하-드로우의-힘" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>홀덤 드로우 vs 오마하 드로우:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">드로우 타입</th>
+          <th style="text-align: left">홀덤 아웃 수</th>
+          <th style="text-align: left">오마하 아웃 수 (일반적)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">오픈 엔디드 스트레이트</td>
+          <td style="text-align: left">8아웃</td>
+          <td style="text-align: left">8-20아웃 (랩 드로우)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플러시 드로우</td>
+          <td style="text-align: left">9아웃</td>
+          <td style="text-align: left">9아웃 (동일)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">콤보 드로우</td>
+          <td style="text-align: left">최대 15아웃</td>
+          <td style="text-align: left">최대 25아웃+</td>
+      </tr>
+  </tbody>
+</table>
+<p>오마하에서는 <strong>13아웃 랩</strong>, <strong>20아웃 콤보 드로우</strong> 같은 몬스터 드로우가 흔합니다. 이런 드로우는 현재 탑 세트를 가진 상대보다 에퀴티가 높을 수 있습니다.</p>
+<h3 id="랩-드로우의-위력">랩 드로우의 위력<a href="#랩-드로우의-위력" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>랩(Wrap)</strong> 은 오마하 특유의 스트레이트 드로우입니다. 스트레이트를 완성시키는 카드가 8장 이상인 드로우를 말합니다.</p>
+<p><strong>예시 상황</strong>:</p>
+<p>보드: <code>9♠8♣2♦</code>
+내 핸드: <code>J♥T♥7♣6♣</code></p>
+<p>스트레이트를 완성시키는 카드:</p>
+<ul>
+<li>Q: QJJT9 → 안 됨, 다시 계산</li>
+<li>J: JT987 → J가 오면 <code>JT</code>로 J하이 스트레이트 ✓ (3아웃)</li>
+<li>T: T9876 → T가 오면 <code>T7</code>로 T하이 스트레이트 ✓ (3아웃)</li>
+<li>7: 98765 → 7이 오면 <code>76</code>으로 9하이 스트레이트 ✓ (3아웃)</li>
+<li>6: 98765 → 6이 오면 <code>76</code>으로 9하이 스트레이트 ✓ (3아웃)</li>
+<li>5: 98765 → 5가 오면 <code>76</code>으로 9하이 스트레이트 ✓ (4아웃)</li>
+</ul>
+<p>총 <strong>16아웃</strong>의 랩 드로우입니다!</p>
+<h3 id="메이드-핸드-vs-드로우-에퀴티-비교">메이드 핸드 vs 드로우 에퀴티 비교<a href="#메이드-핸드-vs-드로우-에퀴티-비교" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>대표적인 상황들의 에퀴티를 살펴봅시다:</p>
+<p><strong>상황 1: 탑 세트 vs 랩 드로우</strong></p>
+<p>보드: <code>T♠8♣5♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>T♥T♣Kx</code></td>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">약 58%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>J♠9♥7♣6♦</code></td>
+          <td style="text-align: left">13아웃 랩</td>
+          <td style="text-align: left">약 42%</td>
+      </tr>
+  </tbody>
+</table>
+<p>탑 세트가 유리하지만, <strong>42%로 콜하기에 충분한</strong> 에퀴티입니다.</p>
+<p><strong>상황 2: 탑 세트 vs 콤보 드로우</strong></p>
+<p>보드: <code>T♠8♠5♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>T♥T♣Kx</code></td>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">약 47%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>A♠J♠9♥7♣</code></td>
+          <td style="text-align: left">넛 플러시 드로우 + 랩</td>
+          <td style="text-align: left">약 53%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>콤보 드로우가 페이버릿</strong>입니다! 현재 아무것도 완성하지 못한 핸드가 탑 세트를 이기고 있습니다.</p>
+<p><strong>상황 3: 오버페어 vs 드로우</strong></p>
+<p>보드: <code>9♠7♣4♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>A♠A♥Kx</code></td>
+          <td style="text-align: left">오버페어</td>
+          <td style="text-align: left">약 35%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>J♥T♥8♣6♣</code></td>
+          <td style="text-align: left">랩 드로우</td>
+          <td style="text-align: left">약 65%</td>
+      </tr>
+  </tbody>
+</table>
+<p>오버페어는 <strong>심각한 언더독</strong>입니다. 이것이 오마하에서 원 페어가 약한 이유입니다.</p>
+<h3 id="드로우가-페이버릿인-조건">드로우가 페이버릿인 조건<a href="#드로우가-페이버릿인-조건" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>다음 조건이 많이 충족될수록 드로우가 강력합니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">아웃 수 13개 이상</td>
+          <td style="text-align: left">메이드 핸드와 동등 또는 유리</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛 드로우</td>
+          <td style="text-align: left">완성되면 확실히 이김</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플러시 드로우 추가</td>
+          <td style="text-align: left">추가 아웃으로 에퀴티 상승</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">페어 추가</td>
+          <td style="text-align: left">풀하우스 가능성으로 추가 에퀴티</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">라이브 카드<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></td>
+          <td style="text-align: left">아웃이 차단되지 않음</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="메이드-핸드로-드로우를-상대하는-법">메이드 핸드로 드로우를 상대하는 법<a href="#메이드-핸드로-드로우를-상대하는-법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>강한 드로우 상대로 메이드 핸드를 가지고 있다면:</p>
+<p><strong>1. 팟을 키워서 오즈를 낮추기</strong></p>
+<ul>
+<li>작은 베팅은 드로우에게 좋은 오즈를 줌</li>
+<li>팟 사이즈 베팅으로 드로우 에퀴티 실현을 어렵게</li>
+</ul>
+<p><strong>2. 무료 카드 주지 않기</strong></p>
+<ul>
+<li>체크하면 드로우가 무료로 아웃을 볼 수 있음</li>
+<li>밸류/프로텍션 겸용 베팅 필요</li>
+</ul>
+<p><strong>3. 리드로우 있는지 확인하기</strong></p>
+<ul>
+<li>드로우가 완성되어도 이길 수 있는 가능성</li>
+<li>풀하우스 리드로우, 더 높은 스트레이트 리드로우 등</li>
+</ul>
+<h2 id="셋의-가치-재평가-풀하우스-리드로우의-중요성">셋의 가치 재평가: 풀하우스 리드로우의 중요성<a href="#셋의-가치-재평가-풀하우스-리드로우의-중요성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>홀덤에서 세트(트리플)는 최강급 핸드입니다. 대부분의 상황에서 올인해도 됩니다. 오마하에서 세트는 여전히 강한 핸드지만, <strong>조건부로 강합니다.</strong></p>
+<h3 id="세트의-취약점">세트의 취약점<a href="#세트의-취약점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오마하에서 세트가 질 수 있는 상황:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">패배 상황</th>
+          <th style="text-align: left">발생 빈도</th>
+          <th style="text-align: left">위험도</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">이미 완성된 스트레이트</td>
+          <td style="text-align: left">흔함</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">이미 완성된 플러시</td>
+          <td style="text-align: left">흔함</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">더 높은 세트</td>
+          <td style="text-align: left">가끔</td>
+          <td style="text-align: left">매우 높음 (쿨러)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">턴/리버에서 완성되는 드로우</td>
+          <td style="text-align: left">매우 흔함</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+  </tbody>
+</table>
+<p>웻 보드에서 세트를 맞았다면, <strong>현재 이기고 있더라도 에퀴티가 생각보다 낮을 수 있습니다.</strong></p>
+<h3 id="풀하우스-리드로우의-중요성">풀하우스 리드로우의 중요성<a href="#풀하우스-리드로우의-중요성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>풀하우스 리드로우</strong>는 세트를 가지고 있을 때, 보드가 페어되면 풀하우스가 되는 가능성입니다.</p>
+<p><strong>예시 1: 리드로우 있는 세트</strong></p>
+<p>내 핸드: <code>T♠T♥9♠8♥</code>
+보드: <code>T♣7♠6♦</code></p>
+<ul>
+<li>현재: 탑 세트</li>
+<li>리드로우: 7이나 6이 페어되면 풀하우스</li>
+<li>추가: <code>98</code>로 스트레이트 드로우도 있음 (하지만 넛 아님 주의)</li>
+</ul>
+<p>이 세트는 <strong>매우 강합니다</strong>. 스트레이트가 완성되어도 풀하우스로 역전할 가능성이 있습니다.</p>
+<p><strong>예시 2: 리드로우 없는 세트</strong></p>
+<p>내 핸드: <code>T♠T♥A♣K♦</code>
+보드: <code>T♣7♠6♦</code></p>
+<ul>
+<li>현재: 탑 세트</li>
+<li>리드로우: 없음 (A, K는 보드와 연결 안 됨)</li>
+<li>드로우: 없음</li>
+</ul>
+<p>이 세트는 <strong>취약합니다</strong>. 상대가 <code>98</code>, <code>54</code>, <code>89J</code> 등을 가지고 있으면 스트레이트에 질 수 있고, 역전할 방법이 없습니다.</p>
+<h3 id="보드-텍스처별-세트의-가치">보드 텍스처별 세트의 가치<a href="#보드-텍스처별-세트의-가치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">보드 텍스처</th>
+          <th style="text-align: left">세트의 가치</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">드라이 레인보우</td>
+          <td style="text-align: left">높음</td>
+          <td style="text-align: left">드로우 적음, 역전 어려움</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">웻 + 투 톤</td>
+          <td style="text-align: left">중간</td>
+          <td style="text-align: left">드로우 많음, 리드로우 필요</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">모노톤</td>
+          <td style="text-align: left">낮음</td>
+          <td style="text-align: left">플러시 완성되면 패배 가능성</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">페어드 보드</td>
+          <td style="text-align: left">쿼드 아니면 주의</td>
+          <td style="text-align: left">풀하우스 싸움 가능</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="세트로-플레이하는-방법">세트로 플레이하는 방법<a href="#세트로-플레이하는-방법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 드라이 보드에서 탑 세트</strong></p>
+<p>빠르게 팟을 키우세요. 상대가 따라올 핸드(투 페어, 약한 세트, 드로우)가 제한적이므로, 밸류를 최대한 추출해야 합니다.</p>
+<p><strong>2. 웻 보드에서 탑 세트 (리드로우 있음)</strong></p>
+<p>공격적으로 플레이하세요. 팟을 키워서 드로우의 오즈를 낮추고, 드로우가 완성되어도 풀하우스로 역전할 가능성이 있습니다.</p>
+<p><strong>3. 웻 보드에서 탑 세트 (리드로우 없음)</strong></p>
+<p>주의가 필요합니다. 팟을 키우되, 상대의 강한 저항(레이즈)에는 경계하세요. 올인은 피하는 것이 좋을 수 있습니다.</p>
+<p><strong>4. 바텀/미들 세트</strong></p>
+<p>매우 주의하세요. 더 높은 세트에 이미 지고 있을 수 있습니다. 팟 컨트롤을 우선하고, 상대의 강한 액션에는 폴드도 고려하세요.</p>
+<h3 id="세트-오버-세트-상황">세트 오버 세트 상황<a href="#세트-오버-세트-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>홀덤에서 세트 오버 세트는 드물고 쿨러입니다. 오마하에서는 <strong>훨씬 자주 발생</strong>합니다. 각 플레이어가 4장을 가지고 있으므로, 두 명이 같은 보드 카드로 세트를 맞을 확률이 높습니다.</p>
+<p>보드: <code>K♠9♣4♦</code></p>
+<ul>
+<li>플레이어 A: <code>K♥K♣xx</code> → 탑 세트</li>
+<li>플레이어 B: <code>9♠9♥xx</code> → 미들 세트</li>
+</ul>
+<p>이 상황은 오마하에서 흔합니다. <strong>바텀/미들 세트로 큰 팟을 플레이하는 것은 위험</strong>합니다.</p>
+<h2 id="플러시스트레이트-완성-보드에서의-판단">플러시/스트레이트 완성 보드에서의 판단<a href="#플러시스트레이트-완성-보드에서의-판단" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>플랍에서 이미 플러시나 스트레이트가 완성 가능한 보드는 특별한 주의가 필요합니다.</p>
+<h3 id="모노톤-보드-플러시-완성-가능">모노톤 보드 (플러시 완성 가능)<a href="#모노톤-보드-플러시-완성-가능" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>보드: <code>K♠9♠4♠</code></p>
+<p><strong>당신이 플러시를 가지고 있다면</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">내 플러시</th>
+          <th style="text-align: left">전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">넛 (<code>A♠Xs</code>)</td>
+          <td style="text-align: left">공격적으로 밸류, 슬로우플레이 주의</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세컨드 넛 (<code>K♠Xs</code>)</td>
+          <td style="text-align: left">주의, 상대 액션에 따라 판단</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">미들 이하</td>
+          <td style="text-align: left">매우 방어적, 작은 팟 유지</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>당신이 플러시를 가지고 있지 않다면</strong>:</p>
+<ul>
+<li>세트/투 페어: 매우 방어적, 체크-폴드 고려</li>
+<li>드로우: 플러시 드로우 없으면 가치 낮음</li>
+<li>에어<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>: 블러프는 <code>A♠</code> 블로커 있을 때만 고려</li>
+</ul>
+<p><strong>핵심 원칙</strong>: 모노톤 보드에서 넛 플러시가 아니면, 큰 팟은 피하세요.</p>
+<h3 id="스트레이트-완성-보드">스트레이트 완성 보드<a href="#스트레이트-완성-보드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>보드: <code>J♠T♥9♣</code></p>
+<p>이 보드에서 가능한 스트레이트:</p>
+<ul>
+<li><code>KQ</code>: K-하이 스트레이트 (넛)</li>
+<li><code>Q8</code>: Q-하이 스트레이트</li>
+<li><code>87</code>: J-하이 스트레이트 (바텀)</li>
+</ul>
+<p><strong>당신이 스트레이트를 가지고 있다면</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">내 스트레이트</th>
+          <th style="text-align: left">전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">넛 (<code>KQ</code>)</td>
+          <td style="text-align: left">공격적으로 밸류</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세컨드 넛 (<code>Q8</code>)</td>
+          <td style="text-align: left">주의, 상대 액션 고려</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">바텀 (<code>87</code>)</td>
+          <td style="text-align: left">방어적, 개선 가능성 확인</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>당신이 스트레이트가 없다면</strong>:</p>
+<p>세트나 투 페어를 가지고 있어도 <strong>이미 지고 있을 확률이 높습니다.</strong> 이 보드에서 액션이 있다면, 상대는 높은 확률로 스트레이트를 가지고 있습니다.</p>
+<h3 id="메이드-보드에서의-일반-원칙">&ldquo;메이드 보드&quot;에서의 일반 원칙<a href="#메이드-보드에서의-일반-원칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">원칙</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">넛이 아니면 경계</td>
+          <td style="text-align: left">세컨드 베스트는 오마하에서 비용이 큼</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">액션 = 강함</td>
+          <td style="text-align: left">상대가 베팅/레이즈하면 넛 가능성 높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">리드로우 확인</td>
+          <td style="text-align: left">현재 넛이 아니어도 개선 가능성 있으면 플레이 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">팟 컨트롤 우선</td>
+          <td style="text-align: left">확신 없으면 팟을 작게 유지</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="넛이-아닌-메이드-핸드로-플레이하는-법">넛이 아닌 메이드 핸드로 플레이하는 법<a href="#넛이-아닌-메이드-핸드로-플레이하는-법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>현실적으로 항상 넛을 가지고 플레이할 수는 없습니다. 넛이 아닌 메이드 핸드를 어떻게 플레이해야 하는지 알아봅시다.</p>
+<h3 id="세컨드-넛의-딜레마">세컨드 넛의 딜레마<a href="#세컨드-넛의-딜레마" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오마하에서 가장 비용이 큰 실수 중 하나는 <strong>세컨드 넛으로 큰 팟을 플레이하는 것</strong>입니다.</p>
+<p><strong>예시 상황</strong>:</p>
+<p>보드: <code>Q♠J♠4♣</code>
+내 핸드: <code>K♠T♠9♥8♥</code></p>
+<p>나는 스페이드 <code>K</code>-하이 플러시를 가지고 있습니다. 세컨드 넛 플러시죠.</p>
+<p>상대가 팟 베팅을 합니다. 콜해야 할까요?</p>
+<p><strong>고려 사항</strong>:</p>
+<ol>
+<li>상대 레인지에 <code>A♠Xs</code>가 얼마나 많은가?</li>
+<li>상대가 블러프하거나 약한 핸드로 밸류벳할 확률은?</li>
+<li>내가 레이즈 당하면 어떻게 할 것인가?</li>
+</ol>
+<p>일반적으로, <strong>모노톤 보드에서 세컨드 넛 플러시는 콜은 가능하지만 레이즈는 위험</strong>합니다. 상대가 레이즈한다면, 거의 항상 넛입니다.</p>
+<h3 id="상대-액션에-따른-핸드-강도-재평가">상대 액션에 따른 핸드 강도 재평가<a href="#상대-액션에-따른-핸드-강도-재평가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>핸드의 절대적 강도보다 <strong>상대 액션에 대한 상대적 강도</strong>가 중요합니다.</p>
+<p><strong>액션 없음 (체크-체크)</strong>:</p>
+<ul>
+<li>내 핸드: 탑 투 페어</li>
+<li>평가: 상대적으로 강함, 밸류벳 가능</li>
+</ul>
+<p><strong>작은 베팅</strong>:</p>
+<ul>
+<li>내 핸드: 탑 투 페어</li>
+<li>평가: 여전히 괜찮음, 콜 또는 레이즈 고려</li>
+</ul>
+<p><strong>팟 베팅</strong>:</p>
+<ul>
+<li>내 핸드: 탑 투 페어</li>
+<li>평가: 주의 필요, 상대 레인지에 세트/스트레이트/플러시 많음</li>
+</ul>
+<p><strong>체크-레이즈 (큰 사이즈)</strong>:</p>
+<ul>
+<li>내 핸드: 탑 투 페어</li>
+<li>평가: 거의 항상 지고 있음, 폴드 고려</li>
+</ul>
+<h3 id="넛이-아닐-때의-플레이-전략">넛이 아닐 때의 플레이 전략<a href="#넛이-아닐-때의-플레이-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 팟 컨트롤</strong></p>
+<p>확신이 없으면 팟을 작게 유지하세요. 체크하거나 작게 베팅해서 쇼다운에 저렴하게 도달하는 것이 목표입니다.</p>
+<p><strong>2. 쇼다운 밸류 추구</strong></p>
+<p>넛이 아닌 메이드 핸드의 주요 가치는 <strong>쇼다운에서 이기는 것</strong>입니다. 상대를 폴드시킬 필요가 없고, 상대가 더 나쁜 핸드로 콜하는 것도 필요 없습니다. 그냥 쇼다운해서 이기면 됩니다.</p>
+<p><strong>3. 블러프 인듀스</strong></p>
+<p>약하게 플레이해서 상대가 블러프하도록 유도할 수 있습니다. 체크-콜 라인으로 상대의 블러프를 받아내는 전략입니다.</p>
+<p><strong>4. 위험 신호 인식</strong></p>
+<p>다음 상황에서는 폴드를 심각하게 고려하세요:</p>
+<ul>
+<li>멀티웨이 팟에서 큰 액션</li>
+<li>체크-레이즈를 당함</li>
+<li>여러 스트릿에서 연속 큰 베팅</li>
+<li>보드가 넛에게 유리하게 완성됨</li>
+</ul>
+<h3 id="실전-예시-넛이-아닌-핸드-플레이">실전 예시: 넛이 아닌 핸드 플레이<a href="#실전-예시-넛이-아닌-핸드-플레이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>: 버튼에서 <code>Q♠J♠9♥8♥</code>로 오픈, BB만 콜</p>
+<p><strong>플랍</strong>: <code>Q♥8♣3♦</code> (팟 $20)</p>
+<p>당신은 탑 투 페어 + 백도어 플러시 드로우를 가지고 있습니다.</p>
+<p>BB 체크 → 당신 $15 베팅 → BB 콜</p>
+<p><strong>턴</strong>: <code>5♠</code> (팟 $50)</p>
+<p>BB 체크 → 당신 ?</p>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>보드는 비교적 드라이</li>
+<li>BB의 콜은 드로우, 페어, 또는 약한 투 페어 가능</li>
+<li>당신의 탑 투 페어는 여전히 괜찮음</li>
+<li>하지만 BB가 세트라면 문제</li>
+</ul>
+<p><strong>옵션들</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">옵션</th>
+          <th style="text-align: left">장점</th>
+          <th style="text-align: left">단점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크</td>
+          <td style="text-align: left">팟 컨트롤, 블러프 인듀스</td>
+          <td style="text-align: left">무료 카드 제공</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">작은 베팅 ($20-25)</td>
+          <td style="text-align: left">밸류 + 프로텍션</td>
+          <td style="text-align: left">레이즈 당하면 어려움</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">큰 베팅 ($35-40)</td>
+          <td style="text-align: left">드로우 차단</td>
+          <td style="text-align: left">세트에만 콜/레이즈 받을 위험</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>권장</strong>: 작은 베팅 ($20-25). 밸류와 프로텍션을 겸하면서, 레이즈 당하면 상대 강도를 파악하고 팟 컨트롤로 전환할 수 있습니다.</p>
+<p><strong>리버</strong>: <code>2♦</code> (팟 $90)</p>
+<p>BB 체크 → 당신 ?</p>
+<p>보드: <code>Q♥8♣3♦5♠2♦</code></p>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>보드에 스트레이트/플러시 완성 없음</li>
+<li>당신의 탑 투 페어는 여전히 상당히 강함</li>
+<li>BB가 체크한 것은 대부분 약한 핸드 시그널</li>
+</ul>
+<p><strong>옵션들</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">옵션</th>
+          <th style="text-align: left">장점</th>
+          <th style="text-align: left">단점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크</td>
+          <td style="text-align: left">리스크 없음</td>
+          <td style="text-align: left">밸류 손실 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">작은 베팅 ($30-40)</td>
+          <td style="text-align: left">얇은 밸류<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup></td>
+          <td style="text-align: left">콜하는 핸드가 제한적</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">큰 베팅 ($60+)</td>
+          <td style="text-align: left">폴드 에퀴티</td>
+          <td style="text-align: left">이기고 있으면 폴드시킴</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>권장</strong>: 작은 베팅 ($35-40). 약한 Q, 약한 투 페어, 미스된 드로우가 가끔 콜할 수 있습니다. 체크-레이즈를 당하면 고민이지만, 대부분의 경우 상대는 콜하거나 폴드합니다.</p>
+<h2 id="플랍-플레이-체크리스트">플랍 플레이 체크리스트<a href="#플랍-플레이-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>플랍을 볼 때마다 확인해야 할 사항들:</p>
+<h3 id="1단계-보드-텍스처-파악">1단계: 보드 텍스처 파악<a href="#1단계-보드-텍스처-파악" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 드라이 vs 웻?</li>
+<li><input disabled="" type="checkbox"> 모노톤 vs 투 톤 vs 레인보우?</li>
+<li><input disabled="" type="checkbox"> 페어드 vs 언페어드?</li>
+<li><input disabled="" type="checkbox"> 어떤 드로우가 가능한가?</li>
+</ul>
+<h3 id="2단계-내-핸드-평가">2단계: 내 핸드 평가<a href="#2단계-내-핸드-평가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 메이드 핸드인가 드로우인가?</li>
+<li><input disabled="" type="checkbox"> 넛인가 넛이 아닌가?</li>
+<li><input disabled="" type="checkbox"> 리드로우가 있는가?</li>
+<li><input disabled="" type="checkbox"> 개선 가능성은?</li>
+</ul>
+<h3 id="3단계-상대-레인지-고려">3단계: 상대 레인지 고려<a href="#3단계-상대-레인지-고려" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 상대가 가질 수 있는 핸드는?</li>
+<li><input disabled="" type="checkbox"> 상대 레인지에서 나를 이기는 핸드 비율은?</li>
+<li><input disabled="" type="checkbox"> 상대가 블러프할 수 있는 핸드는?</li>
+</ul>
+<h3 id="4단계-액션-결정">4단계: 액션 결정<a href="#4단계-액션-결정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 포지션은 어디인가?</li>
+<li><input disabled="" type="checkbox"> 팟 사이즈와 스택 깊이는?</li>
+<li><input disabled="" type="checkbox"> 밸류인가 블러프인가 팟 컨트롤인가?</li>
+<li><input disabled="" type="checkbox"> 상대의 예상 반응은?</li>
+</ul>
+<h2 id="다음-편에서는">다음 편에서는<a href="#다음-편에서는" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 편에서 플랍 플레이의 기초를 다졌습니다. 보드 텍스처 읽기, 메이드 핸드와 드로우의 관계, 세트의 조건부 강도, 그리고 넛이 아닌 핸드의 플레이 방법을 배웠습니다.</p>
+<p>7편에서는 <strong>플랍 플레이의 두 번째 파트</strong>를 다룹니다. 오마하 특유의 드로우(랩, 콤보 드로우)에 대해 더 깊이 들어가고, 드로우로 공격적으로 플레이하는 방법, 세미블러프의 조건과 타이밍을 배웁니다. 플랍에서 드로우를 들었을 때 어떻게 최대 가치를 추출하는지 알아보겠습니다.</p>
+<hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><strong>투 톤(Two-Tone)</strong>: 플랍의 세 장 중 두 장이 같은 수트인 보드. 예: <code>Q♥J♥7♠</code>. 플러시 드로우가 가능한 보드입니다. 세 장 모두 다른 수트면 &ldquo;레인보우(Rainbow)&ldquo;라고 합니다.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><strong>언더독(Underdog)</strong>: 이길 확률이 50% 미만인 핸드 또는 플레이어. 반대로 50% 이상이면 &ldquo;페이버릿(Favorite)&ldquo;입니다. 오마하에서는 강력한 드로우가 메이드 핸드 상대로 페이버릿인 경우가 종종 있습니다.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><strong>라이브 카드(Live Cards)</strong>: 덱에 아직 남아있어서 실제로 나올 수 있는 아웃 카드들. 예를 들어, 당신이 플러시 드로우인데 상대도 같은 수트를 2장 가지고 있다면, 당신의 플러시 아웃 중 일부가 &ldquo;데드(Dead)&ldquo;입니다. 라이브 카드가 많을수록 드로우가 강력합니다.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p><strong>에어(Air)</strong>: 아무런 메이드 핸드나 의미 있는 드로우가 없는 상태. 완전한 미스. 블러프 외에는 팟을 이길 방법이 없는 핸드입니다.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5">
+<p><strong>얇은 밸류(Thin Value)</strong>: 상대의 콜 레인지 중 이기는 핸드보다 지는 핸드가 약간 더 적거나 비슷한 상황에서 하는 밸류벳. 리스크가 있지만, 장기적으로 +EV인 베팅입니다. 정확한 핸드 리딩이 필요한 고급 플레이입니다.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260109-plo-guide-07/" class="button inline prev">
+        &lt; [<span class="button__text">PLO 가이드: #7 플랍 플레이 (下) - 드로우와 공격적 플레이</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260108-plo-guide-05/" class="button inline next">
+         [<span class="button__text">PLO 가이드: #5 피해야 할 핸드와 홀덤 플레이어의 함정</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

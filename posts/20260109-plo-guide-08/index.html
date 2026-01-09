@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>PLO 가이드: #8 턴 플레이 - 게임을 결정짓는 스트릿 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="턴에서 팟은 이미 상당히 커져 있고, 한 번의 베팅이 스택의 상당 부분을 차지합니다. 드로우가 완성됐을 때 어떻게 밸류를 극대화하는지, 미스했을 때 포기할지 계속할지, 보드가 페어되면서 상황이 복잡해졌을 때 어떻게 대응하는지. 이번 편에서 턴 플레이의 핵심을 다룹니다." />
+<meta name="keywords" content="poker, omaha, strategy, PLO" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260109-plo-guide-08/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="PLO 가이드: #8 턴 플레이 - 게임을 결정짓는 스트릿">
+<meta property="og:description" content="턴에서 팟은 이미 상당히 커져 있고, 한 번의 베팅이 스택의 상당 부분을 차지합니다. 드로우가 완성됐을 때 어떻게 밸류를 극대화하는지, 미스했을 때 포기할지 계속할지, 보드가 페어되면서 상황이 복잡해졌을 때 어떻게 대응하는지. 이번 편에서 턴 플레이의 핵심을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260109-plo-guide-08/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-09 10:12:48 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260109-plo-guide-08/">PLO 가이드: #8 턴 플레이 - 게임을 결정짓는 스트릿</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-09</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/omaha/">omaha</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/plo/">PLO</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>플랍에서 기초가 다져졌다면, 턴에서 승부가 결정됩니다. 오마하에서 턴은 <strong>가장 중요한 스트릿</strong>이라 해도 과언이 아닙니다. 플랍에서는 아직 두 장의 카드가 남아있어 상황이 크게 바뀔 수 있지만, 턴에서는 한 장만 남습니다. 결정의 무게가 달라집니다.</p>
+<p>턴에서 팟은 이미 상당히 커져 있고, 한 번의 베팅이 스택의 상당 부분을 차지합니다. 드로우가 완성됐을 때 어떻게 밸류를 극대화하는지, 미스했을 때 포기할지 계속할지, 보드가 페어되면서 상황이 복잡해졌을 때 어떻게 대응하는지. 이번 편에서 턴 플레이의 핵심을 다룹니다.</p>
+<p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="턴의-중요성-왜-오마하에서-턴이-특별한가">턴의 중요성: 왜 오마하에서 턴이 특별한가<a href="#턴의-중요성-왜-오마하에서-턴이-특별한가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="수학적-변화">수학적 변화<a href="#수학적-변화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>플랍에서 턴으로 넘어가면, 드로우의 확률이 <strong>급격히 변화</strong>합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">드로우</th>
+          <th style="text-align: left">플랍→리버 (2장)</th>
+          <th style="text-align: left">턴→리버 (1장)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">9아웃 플러시 드로우</td>
+          <td style="text-align: left">약 35%</td>
+          <td style="text-align: left">약 20%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">13아웃 랩</td>
+          <td style="text-align: left">약 48%</td>
+          <td style="text-align: left">약 28%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">20아웃 콤보 드로우</td>
+          <td style="text-align: left">약 68%</td>
+          <td style="text-align: left">약 43%</td>
+      </tr>
+  </tbody>
+</table>
+<p>플랍에서 &ldquo;거의 반반&quot;이던 상황이 턴에서는 <strong>명확한 페이버릿/언더독</strong>으로 나뉩니다. 이것이 턴에서의 결정이 더 중요한 이유입니다.</p>
+<h3 id="팟-사이즈의-변화">팟 사이즈의 변화<a href="#팟-사이즈의-변화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>팟-리밋 구조에서 팟은 기하급수적으로 커집니다.</p>
+<p><strong>예시: 100bb 스택, 프리플랍 3bb 팟</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">스트릿</th>
+          <th style="text-align: left">베팅</th>
+          <th style="text-align: left">팟 사이즈</th>
+          <th style="text-align: left">사용된 스택</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">프리플랍</td>
+          <td style="text-align: left">3bb</td>
+          <td style="text-align: left">6bb</td>
+          <td style="text-align: left">6bb (6%)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플랍</td>
+          <td style="text-align: left">풀 팟 (6bb)</td>
+          <td style="text-align: left">18bb</td>
+          <td style="text-align: left">12bb (12%)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">턴</td>
+          <td style="text-align: left">풀 팟 (18bb)</td>
+          <td style="text-align: left">54bb</td>
+          <td style="text-align: left">30bb (30%)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">리버</td>
+          <td style="text-align: left">풀 팟 (54bb)</td>
+          <td style="text-align: left">162bb</td>
+          <td style="text-align: left">84bb (올인)</td>
+      </tr>
+  </tbody>
+</table>
+<p>턴에서 팟 베팅을 하면, <strong>스택의 30%가 이미 들어간 상태</strong>가 됩니다. 리버에서 팟 베팅을 받으면 거의 자동으로 올인 상황이 됩니다.</p>
+<h3 id="커밋먼트-임계점">커밋먼트 임계점<a href="#커밋먼트-임계점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>턴은 종종 <strong>커밋먼트의 경계</strong>입니다. 턴에서 큰 베팅을 콜하면, 리버에서 폴드하기 어려운 상황이 됩니다.</p>
+<p><strong>SPR 관점에서</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">턴 시작 SPR</th>
+          <th style="text-align: left">의미</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">1 이하</td>
+          <td style="text-align: left">이미 커밋, 대부분 올인 진행</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">1-3</td>
+          <td style="text-align: left">턴 베팅 콜하면 리버에서 커밋</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">3-6</td>
+          <td style="text-align: left">한 번의 큰 결정 여지 있음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">6 이상</td>
+          <td style="text-align: left">아직 유연성 있음</td>
+      </tr>
+  </tbody>
+</table>
+<p>턴에서 베팅/콜 결정을 할 때, <strong>리버까지의 전체 플랜</strong>을 염두에 두어야 합니다.</p>
+<h3 id="정보의-가치">정보의 가치<a href="#정보의-가치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>턴 카드는 <strong>새로운 정보</strong>를 제공합니다:</p>
+<ul>
+<li>드로우가 완성됐는가?</li>
+<li>보드가 페어됐는가?</li>
+<li>새로운 드로우 가능성이 생겼는가?</li>
+<li>상대의 플랍 액션이 이제 어떻게 해석되는가?</li>
+</ul>
+<p>플랍에서 체크-콜한 상대가 턴에서 갑자기 베팅한다면? 무언가 변했다는 신호입니다.</p>
+<h2 id="드로우가-완성됐을-때-밸류-극대화-전략">드로우가 완성됐을 때: 밸류 극대화 전략<a href="#드로우가-완성됐을-때-밸류-극대화-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>플랍에서 드로우를 플레이했고, 턴에서 히트했습니다. 이제 목표는 <strong>최대 밸류를 추출</strong>하는 것입니다.</p>
+<h3 id="히트-유형에-따른-전략">히트 유형에 따른 전략<a href="#히트-유형에-따른-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 넛을 완성한 경우</strong></p>
+<p>가장 좋은 상황입니다. 밸류 극대화에 집중하세요.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">상대가 먼저 베팅</td>
+          <td style="text-align: left">레이즈 (사이즈 고민)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 체크 (포지션 있음)</td>
+          <td style="text-align: left">베팅 (사이즈 조절로 콜 유도)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 체크 (포지션 없음)</td>
+          <td style="text-align: left">베팅 또는 체크 (상대 성향에 따라)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>레이즈/베팅 사이징</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">목표</th>
+          <th style="text-align: left">사이징</th>
+          <th style="text-align: left">적합한 상황</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">콜 유도</td>
+          <td style="text-align: left">1/2 - 2/3 팟</td>
+          <td style="text-align: left">상대가 약한 메이드/드로우 예상</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">팟 빌딩</td>
+          <td style="text-align: left">2/3 - 풀 팟</td>
+          <td style="text-align: left">상대가 강한 핸드 예상</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">올인 유도</td>
+          <td style="text-align: left">오버벳 또는 체크-레이즈</td>
+          <td style="text-align: left">SPR 낮고, 상대 커밋 예상</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2. 넛이지만 보드가 위험한 경우</strong></p>
+<p>스트레이트를 완성했는데 보드가 투 톤이거나, 플러시를 완성했는데 보드가 페어된 경우.</p>
+<p>보드: <code>J♠T♠7♣4♠</code> (플러시 완성, 보드 모노톤)
+내 핸드: <code>A♠K♣9♠8♥</code> (넛 플러시)</p>
+<ul>
+<li>넛이지만 보드가 페어되면 풀하우스에 질 수 있음</li>
+<li>밸류는 받되, 리버에서 주의 필요</li>
+<li>큰 레이즈보다는 콜 또는 중간 레이즈</li>
+</ul>
+<p><strong>3. 세컨드 넛을 완성한 경우</strong></p>
+<p>주의가 필요합니다. 밸류를 받을 수 있지만, 역으로 스택을 잃을 수도 있습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상대 액션</th>
+          <th style="text-align: left">대응</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크</td>
+          <td style="text-align: left">밸류벳 (작게-중간)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">작은 베팅</td>
+          <td style="text-align: left">콜 또는 레이즈 (상대 성향에 따라)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">큰 베팅</td>
+          <td style="text-align: left">콜 (레이즈는 위험)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">체크-레이즈 당함</td>
+          <td style="text-align: left">매우 주의, 폴드 고려</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="슬로우플레이-vs-패스트플레이">슬로우플레이 vs 패스트플레이<a href="#슬로우플레이-vs-패스트플레이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>넛을 완성했을 때, 체크로 상대 블러프를 유도할지(슬로우플레이), 베팅으로 밸류를 받을지(패스트플레이) 결정해야 합니다.</p>
+<p><strong>슬로우플레이가 좋은 경우</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">보드가 매우 드라이</td>
+          <td style="text-align: left">상대가 히트할 카드가 거의 없음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 공격적</td>
+          <td style="text-align: left">베팅을 유도할 수 있음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">내 핸드가 블로킹<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> 안 함</td>
+          <td style="text-align: left">상대가 밸류 핸드 가질 가능성</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>패스트플레이가 좋은 경우</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">보드가 웻/드로우 많음</td>
+          <td style="text-align: left">무료 카드가 위험</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 패시브</td>
+          <td style="text-align: left">체크하면 체크백할 가능성</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">리드로우 없는 넛</td>
+          <td style="text-align: left">보드 변화에 취약</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>오마하에서의 일반 원칙</strong>: 홀덤보다 <strong>패스트플레이 선호</strong>. 드로우가 너무 많아서 무료 카드가 위험합니다.</p>
+<h3 id="턴-밸류벳-실전-예시">턴 밸류벳 실전 예시<a href="#턴-밸류벳-실전-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>버튼에서 <code>A♠J♠9♥7♣</code>로 오픈, BB 콜</li>
+<li>플랍 <code>T♠8♠4♣</code>: BB 체크, 버튼 $15 베팅 (2/3 팟), BB 콜</li>
+<li>턴 <code>6♠</code>: BB 체크, 팟 $45</li>
+</ul>
+<p>당신은 넛 플러시를 완성했습니다.</p>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>넛 플러시 완성</li>
+<li>BB의 레인지: 약한 플러시, 스트레이트, 투 페어, 세트, 드로우</li>
+<li>보드가 스트레이트도 가능 (<code>J9</code>, <code>97</code>, <code>75</code> 등)</li>
+</ul>
+<p><strong>옵션</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">옵션</th>
+          <th style="text-align: left">장점</th>
+          <th style="text-align: left">단점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크</td>
+          <td style="text-align: left">블러프 유도, 팟 컨트롤</td>
+          <td style="text-align: left">무료 카드, 밸류 손실</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">$20-25 (1/2 팟)</td>
+          <td style="text-align: left">약한 핸드도 콜 가능</td>
+          <td style="text-align: left">밸류 덜 받음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">$30-35 (2/3-3/4 팟)</td>
+          <td style="text-align: left">좋은 밸류</td>
+          <td style="text-align: left">약한 핸드 폴드 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">$45 (풀 팟)</td>
+          <td style="text-align: left">최대 밸류</td>
+          <td style="text-align: left">강한 핸드만 콜</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>권장</strong>: $30-35 (2/3-3/4 팟)</p>
+<ul>
+<li>약한 플러시, 스트레이트, 세트에서 콜 받을 수 있음</li>
+<li>리버에서 한 번 더 밸류벳 가능</li>
+<li>상대가 레이즈하면, 대부분 재레이즈 또는 콜</li>
+</ul>
+<h2 id="드로우가-미스됐을-때-포기-vs-더블-배럴">드로우가 미스됐을 때: 포기 vs 더블 배럴<a href="#드로우가-미스됐을-때-포기-vs-더블-배럴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>턴에서 드로우가 미스되면 어려운 결정에 직면합니다. 포기할지, 계속 베팅(더블 배럴)할지.</p>
+<h3 id="더블-배럴의-조건">더블 배럴의 조건<a href="#더블-배럴의-조건" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>더블 배럴(Double Barrel)</strong> 은 플랍에서 베팅한 후, 턴에서도 계속 베팅하는 것입니다. 드로우가 미스됐을 때 더블 배럴이 수익적이려면:</p>
+<p><strong>1. 폴드 에퀴티가 충분해야 합니다</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">폴드 에퀴티 예상</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">상대가 타이트/약함</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 콜링 스테이션</td>
+          <td style="text-align: left">낮음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">턴 카드가 무서움 (스케어 카드)</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">턴 카드가 브릭<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></td>
+          <td style="text-align: left">낮음</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2. 스케어 카드가 떨어졌어야 합니다</strong></p>
+<p>스케어 카드는 상대의 핸드를 위협하는 카드입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">스케어 카드 유형</th>
+          <th style="text-align: left">예시</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">플러시 완성 카드</td>
+          <td style="text-align: left">세 번째 같은 수트</td>
+          <td style="text-align: left">상대의 원 페어/투 페어 폴드 유도</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스트레이트 완성 카드</td>
+          <td style="text-align: left">보드 연결</td>
+          <td style="text-align: left">상대의 세트/투 페어 폴드 유도</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">오버카드</td>
+          <td style="text-align: left">A, K</td>
+          <td style="text-align: left">상대의 미들 페어 폴드 유도</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">페어 카드</td>
+          <td style="text-align: left">보드 페어</td>
+          <td style="text-align: left">상대의 스트레이트/플러시 드로우 폴드 유도</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>3. 블로커가 있어야 합니다</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">블로커</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">넛 플러시 블로커 (A♠)</td>
+          <td style="text-align: left">상대가 넛 플러시 가질 수 없음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛 스트레이트 블로커</td>
+          <td style="text-align: left">상대가 넛 스트레이트 가질 수 없음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세트 블로커 (탑 페어 카드)</td>
+          <td style="text-align: left">상대가 탑 세트 가질 수 없음</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>4. 리버 에퀴티가 남아있어야 합니다</strong></p>
+<p>콜 받아도 리버에서 히트할 가능성이 있으면 더블 배럴의 리스크가 줄어듭니다.</p>
+<h3 id="포기해야-할-때">포기해야 할 때<a href="#포기해야-할-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>다음 상황에서는 포기(체크-폴드 또는 체크-기브업)가 나을 수 있습니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">상대가 플랍 체크-레이즈 후 턴에서도 베팅</td>
+          <td style="text-align: left">매우 강한 핸드</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">턴 카드가 완전한 브릭</td>
+          <td style="text-align: left">폴드 에퀴티 없음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">멀티웨이 팟</td>
+          <td style="text-align: left">누군가는 히트했을 확률 높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">아웃 수가 적음 (6아웃 이하)</td>
+          <td style="text-align: left">리버 에퀴티 부족</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SPR이 낮음</td>
+          <td style="text-align: left">베팅하면 커밋, 블러프 비용 큼</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="더블-배럴-사이징">더블 배럴 사이징<a href="#더블-배럴-사이징" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">목적</th>
+          <th style="text-align: left">사이징</th>
+          <th style="text-align: left">상황</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">폴드 극대화</td>
+          <td style="text-align: left">2/3 - 3/4 팟</td>
+          <td style="text-align: left">스케어 카드, 폴드 에퀴티 있음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">팟 빌딩 (리버 블러프 준비)</td>
+          <td style="text-align: left">1/2 - 2/3 팟</td>
+          <td style="text-align: left">리버에서 큰 베팅 계획</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">저렴한 블러프</td>
+          <td style="text-align: left">1/3 - 1/2 팟</td>
+          <td style="text-align: left">폴드 에퀴티 불확실</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="더블-배럴-실전-예시">더블 배럴 실전 예시<a href="#더블-배럴-실전-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>CO에서 <code>A♠K♠J♥T♣</code>로 오픈, BB 콜</li>
+<li>플랍 <code>9♠7♠2♣</code>: BB 체크, CO $12 베팅 (2/3 팟), BB 콜</li>
+<li>턴 <code>Q♦</code>: BB 체크, 팟 $36</li>
+</ul>
+<p>드로우: 넛 플러시 드로우 + 거터샷 (KQJT9 스트레이트)</p>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>드로우 미스, 하지만 아직 9아웃+ 남음</li>
+<li>턴 Q는 스케어 카드 (QJ, QT 스트레이트 가능성 대표)</li>
+<li><code>A♠</code> 블로커 있음</li>
+</ul>
+<p><strong>옵션</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">옵션</th>
+          <th style="text-align: left">장점</th>
+          <th style="text-align: left">단점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크</td>
+          <td style="text-align: left">무료 카드로 리버 드로우</td>
+          <td style="text-align: left">밸류/블러프 기회 포기</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">$18-24 (1/2-2/3 팟)</td>
+          <td style="text-align: left">폴드 에퀴티, 리버 설정</td>
+          <td style="text-align: left">콜 받으면 리버 어려움</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">$30+ (3/4+ 팟)</td>
+          <td style="text-align: left">강한 폴드 압박</td>
+          <td style="text-align: left">비용 큼, 블러프 캐치에 취약</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>권장</strong>: $20-24 (약 1/2-2/3 팟)</p>
+<ul>
+<li>Q가 스케어 카드로 작용</li>
+<li><code>A♠</code> 블로커로 상대 넛 플러시 드로우 차단</li>
+<li>콜 받아도 리버에서 9아웃 드로우 남음</li>
+<li>리버에서 상황 재평가 가능</li>
+</ul>
+<p><strong>상대가 콜하면</strong>:</p>
+<ul>
+<li>리버 히트: 밸류벳</li>
+<li>리버 미스 + 브릭: 체크-폴드 또는 상황에 따라 블러프</li>
+<li>리버 미스 + 또 다른 스케어 카드: 블러프 고려</li>
+</ul>
+<h2 id="보드가-페어됐을-때의-복잡한-상황들">보드가 페어됐을 때의 복잡한 상황들<a href="#보드가-페어됐을-때의-복잡한-상황들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>턴에서 보드가 페어되면 상황이 급격히 복잡해집니다. 풀하우스가 가능해지면서, 기존의 핸드 강도가 재평가되어야 합니다.</p>
+<h3 id="보드-페어의-영향">보드 페어의 영향<a href="#보드-페어의-영향" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 플러시/스트레이트의 가치 하락</strong></p>
+<p>플랍: <code>J♠T♥7♣</code>
+턴: <code>T♣</code>
+보드: <code>J♠T♥7♣T♣</code></p>
+<ul>
+<li>플랍에서 <code>KQ</code>로 넛 스트레이트였다면, 이제 풀하우스에 질 수 있음</li>
+<li><code>TT</code>, <code>JJ</code>, <code>77</code>, <code>JT</code>, <code>T7</code>이 모두 풀하우스 이상</li>
+<li>스트레이트의 가치가 <strong>급락</strong></li>
+</ul>
+<p><strong>2. 세트의 가치 변화</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">세트 유형</th>
+          <th style="text-align: left">페어된 보드에서</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">페어된 카드와 같은 세트</td>
+          <td style="text-align: left">쿼드</td>
+          <td style="text-align: left">최강 (매우 드묾)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">오버 풀하우스</td>
+          <td style="text-align: left">강함</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">미들/바텀 세트</td>
+          <td style="text-align: left">언더 풀하우스</td>
+          <td style="text-align: left">위험 (더 높은 풀하우스에 질 수 있음)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>3. 새로운 드로우 가능성</strong></p>
+<p>보드가 페어되면 풀하우스 드로우가 생깁니다. 투 페어나 트립스<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>를 가진 플레이어는 풀하우스를 노릴 수 있습니다.</p>
+<h3 id="내가-풀하우스를-만들었을-때">내가 풀하우스를 만들었을 때<a href="#내가-풀하우스를-만들었을-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 탑 풀하우스 (또는 그 이상)</strong></p>
+<p>공격적으로 플레이하세요. 밸류를 최대화할 기회입니다.</p>
+<p>보드: <code>K♠K♣7♥4♦</code>
+내 핸드: <code>K♥K♦xx</code> (쿼드) 또는 <code>K♥7♣7♦x</code> (K풀 7)</p>
+<ul>
+<li>상대의 Kx, 77, 44, 스트레이트/플러시 드로우에서 밸류</li>
+<li>큰 사이징으로 베팅</li>
+</ul>
+<p><strong>2. 언더 풀하우스</strong></p>
+<p>주의가 필요합니다.</p>
+<p>보드: <code>K♠K♣7♥4♦</code>
+내 핸드: <code>7♠7♥xx</code> (K풀 7, 하지만 KK, K7에 짐)</p>
+<ul>
+<li>밸류 있지만 오버 풀하우스에 질 수 있음</li>
+<li>중간 사이즈 베팅, 레이즈에 주의</li>
+<li>상대가 매우 강한 액션을 보이면 경계</li>
+</ul>
+<h3 id="내가-스트레이트플러시를-가지고-있는데-보드가-페어됐을-때">내가 스트레이트/플러시를 가지고 있는데 보드가 페어됐을 때<a href="#내가-스트레이트플러시를-가지고-있는데-보드가-페어됐을-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이것은 오마하에서 <strong>가장 어려운 상황</strong> 중 하나입니다.</p>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>플랍에서 넛 스트레이트/플러시를 완성</li>
+<li>턴에서 보드 페어</li>
+</ul>
+<p><strong>판단 기준</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">고려사항</th>
+          <th style="text-align: left">질문</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">상대 레인지</td>
+          <td style="text-align: left">상대가 풀하우스를 가질 가능성은?</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대 액션</td>
+          <td style="text-align: left">갑자기 공격적으로 변했는가?</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">보드 페어 카드</td>
+          <td style="text-align: left">어떤 카드가 페어됐는가? (하이 vs 로우)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SPR</td>
+          <td style="text-align: left">큰 팟을 플레이할 여력이 있는가?</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>보드 페어 카드별 위험도</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">페어된 카드</th>
+          <th style="text-align: left">위험도</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">하이 카드 (K, Q, J)</td>
+          <td style="text-align: left">높음</td>
+          <td style="text-align: left">상대 레인지에 많은 핸드가 히트</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">미들 카드 (T, 9, 8)</td>
+          <td style="text-align: left">중간</td>
+          <td style="text-align: left">런다운 핸드가 히트 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">로우 카드 (4, 3, 2)</td>
+          <td style="text-align: left">낮음</td>
+          <td style="text-align: left">상대 레인지에 적은 핸드가 히트</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>실전 예시</strong>:</p>
+<p>플랍: <code>J♠T♥7♣</code>
+턴: <code>J♣</code>
+보드: <code>J♠T♥7♣J♣</code></p>
+<p>내 핸드: <code>K♠Q♠9♥8♥</code> (넛 스트레이트)</p>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>플랍에서 넛 스트레이트였음</li>
+<li>턴에서 J 페어 → 상대 <code>Jx</code> 핸드들이 트립스/풀하우스</li>
+<li>특히 <code>JT</code>, <code>JJ</code>, <code>J7</code>이 풀하우스 이상</li>
+<li>상대 레인지에 J가 <strong>많음</strong> (Jx 런다운 핸드들)</li>
+</ul>
+<p><strong>상대 액션별 대응</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상대 액션</th>
+          <th style="text-align: left">분석</th>
+          <th style="text-align: left">대응</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크</td>
+          <td style="text-align: left">약한 핸드 또는 트랩 가능</td>
+          <td style="text-align: left">중간 베팅으로 밸류/정보 수집</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">작은 베팅</td>
+          <td style="text-align: left">블로커 벳 또는 약한 밸류</td>
+          <td style="text-align: left">콜 또는 레이즈 (정보 필요)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">큰 베팅</td>
+          <td style="text-align: left">풀하우스 가능성 높음</td>
+          <td style="text-align: left">콜 또는 폴드 (상대 성향에 따라)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">체크-레이즈</td>
+          <td style="text-align: left">거의 확실히 풀하우스+</td>
+          <td style="text-align: left">폴드 심각하게 고려</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="페어드-보드에서의-블러프">페어드 보드에서의 블러프<a href="#페어드-보드에서의-블러프" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>페어드 보드는 <strong>블러프 기회</strong>가 될 수도 있습니다. 풀하우스를 대표할 수 있기 때문입니다.</p>
+<p><strong>블러프가 효과적인 조건</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">페어된 카드의 블로커 보유</td>
+          <td style="text-align: left">상대 풀하우스 가능성 감소</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 드로우였을 가능성 높음</td>
+          <td style="text-align: left">드로우가 죽었을 수 있음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플랍에서 공격적이었음</td>
+          <td style="text-align: left">풀하우스 대표 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 폴드할 줄 아는 플레이어</td>
+          <td style="text-align: left">콜링 스테이션 상대 X</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>예시</strong>:</p>
+<p>플랍: <code>Q♥8♠5♣</code>
+턴: <code>5♦</code>
+보드: <code>Q♥8♠5♣5♦</code></p>
+<p>내 핸드: <code>5♠K♠T♥9♥</code> (트립스 5, 약한 킥커)</p>
+<p>이 핸드로 <strong>큰 베팅을 하면</strong>:</p>
+<ul>
+<li>상대의 QX, 88, 오버페어를 폴드시킬 수 있음</li>
+<li>상대가 55, Q5, 85를 가지고 있으면 질 수 있지만 드묾</li>
+<li>특히 내가 5를 가지고 있어서 상대 쿼드/상위 트립스 가능성 감소</li>
+</ul>
+<h2 id="턴에서의-팟-컨트롤과-스택-투-팟-비율">턴에서의 팟 컨트롤과 스택-투-팟 비율<a href="#턴에서의-팟-컨트롤과-스택-투-팟-비율" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="spr의-실전-적용">SPR의 실전 적용<a href="#spr의-실전-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>SPR (Stack-to-Pot Ratio)</strong> 은 남은 유효 스택을 현재 팟으로 나눈 값입니다. 턴에서의 SPR은 남은 플레이에 큰 영향을 미칩니다.</p>
+<p><strong>턴 SPR별 전략</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">턴 SPR</th>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">0-1</td>
+          <td style="text-align: left">이미 커밋</td>
+          <td style="text-align: left">강한 핸드로 올인, 약하면 체크-폴드</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">1-2</td>
+          <td style="text-align: left">한 번 베팅하면 커밋</td>
+          <td style="text-align: left">신중한 핸드 선택으로 베팅/콜</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2-4</td>
+          <td style="text-align: left">턴+리버 두 번 베팅 가능</td>
+          <td style="text-align: left">밸류/블러프 두 스트릿 계획</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">4+</td>
+          <td style="text-align: left">유연성 있음</td>
+          <td style="text-align: left">다양한 라인 가능, 팟 컨트롤 쉬움</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="팟-컨트롤이-필요한-상황">팟 컨트롤이 필요한 상황<a href="#팟-컨트롤이-필요한-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>팟 컨트롤</strong>은 핸드 강도가 중간일 때, 팟이 너무 커지지 않도록 관리하는 것입니다.</p>
+<p><strong>팟 컨트롤이 필요한 핸드</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드 유형</th>
+          <th style="text-align: left">예시</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">탑 투 페어</td>
+          <td style="text-align: left"><code>KQ</code>로 <code>K-Q-x-x</code> 보드</td>
+          <td style="text-align: left">세트, 스트레이트에 취약</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">오버페어</td>
+          <td style="text-align: left"><code>AA</code>로 <code>T-8-4-2</code> 보드</td>
+          <td style="text-align: left">거의 모든 메이드 핸드에 취약</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">미들 세트</td>
+          <td style="text-align: left"><code>99</code>로 <code>K-9-4-x</code> 보드</td>
+          <td style="text-align: left">탑 세트, 스트레이트에 취약</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세컨드 넛 플러시</td>
+          <td style="text-align: left"><code>K♠</code> 플러시</td>
+          <td style="text-align: left"><code>A♠</code> 플러시에 취약</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>팟 컨트롤 테크닉</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">테크닉</th>
+          <th style="text-align: left">방법</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크백</td>
+          <td style="text-align: left">포지션에서 체크</td>
+          <td style="text-align: left">무료 카드, 팟 유지</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">작은 베팅</td>
+          <td style="text-align: left">1/4-1/3 팟</td>
+          <td style="text-align: left">약간의 밸류 + 저렴한 쇼다운</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">체크-콜</td>
+          <td style="text-align: left">OOP에서 체크 후 콜</td>
+          <td style="text-align: left">팟 성장 제한</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">콜만 (레이즈 X)</td>
+          <td style="text-align: left">베팅에 콜만</td>
+          <td style="text-align: left">팟 폭발 방지</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="언제-팟을-키울-것인가">언제 팟을 키울 것인가<a href="#언제-팟을-키울-것인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>반대로, 다음 상황에서는 팟을 적극적으로 키워야 합니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">넛 또는 넛에 가까운 핸드</td>
+          <td style="text-align: left">밸류 극대화</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">강한 드로우 + 메이드</td>
+          <td style="text-align: left">폴드 에퀴티 + 히트 에퀴티</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">보드가 위험해지기 전</td>
+          <td style="text-align: left">프로텍션</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 약하지만 커밋된 것 같을 때</td>
+          <td style="text-align: left">실수 유도</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="실전-예시-팟-컨트롤">실전 예시: 팟 컨트롤<a href="#실전-예시-팟-컨트롤" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>BB에서 <code>K♠K♥Q♣J♣</code>로 콜</li>
+<li>플랍 <code>T♠8♣3♦</code>: BB 체크, BTN $15 베팅, BB 콜</li>
+<li>턴 <code>2♥</code>: 팟 $45, 남은 스택 각각 $150</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>오버페어 (KK) + 거터샷 (QJ로 스트레이트)</li>
+<li>보드는 비교적 드라이하지만 연결될 가능성 있음</li>
+<li>현재 이기고 있을 수도 있지만, 상대 <code>Tx</code>, <code>TT</code>, <code>88</code>, <code>33</code>, <code>T8</code> 등에 질 수 있음</li>
+<li>SPR: $150 / $45 = 약 3.3 (중간 SPR)</li>
+</ul>
+<p><strong>옵션</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">옵션</th>
+          <th style="text-align: left">장점</th>
+          <th style="text-align: left">단점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">체크-폴드</td>
+          <td style="text-align: left">리스크 회피</td>
+          <td style="text-align: left">이기고 있을 때 밸류 포기</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">체크-콜</td>
+          <td style="text-align: left">팟 컨트롤, 블러프 캐치</td>
+          <td style="text-align: left">패시브, 정보 부족</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">리드 벳 $15-20</td>
+          <td style="text-align: left">작은 밸류, 정보 수집</td>
+          <td style="text-align: left">레이즈 당하면 어려움</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">체크-레이즈</td>
+          <td style="text-align: left">N/A (너무 공격적)</td>
+          <td style="text-align: left">핸드가 이것을 지지하지 않음</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>권장</strong>: 체크-콜</p>
+<ul>
+<li>오버페어로 큰 팟은 위험</li>
+<li>상대가 베팅하면 콜, 체크하면 리버에서 재평가</li>
+<li>리버에서 개선되면 (K, Q, J, 9) 밸류벳 고려</li>
+</ul>
+<p><strong>상대가 $30 베팅 (2/3 팟)</strong>:</p>
+<ul>
+<li>콜: 팟 $105, 남은 스택 $120</li>
+<li>리버 SPR: 약 1.1 (거의 커밋)</li>
+</ul>
+<p>이 시점에서 콜하면 리버에서 올인 결정에 직면할 수 있습니다. 상대 베팅 사이즈가 크다면, 턴에서 폴드도 고려해야 합니다.</p>
+<p><strong>최종 결정</strong>: 상대 플레이어 성향에 따라</p>
+<ul>
+<li>타이트/수동적 상대: 폴드 경향 (상대가 베팅 = 강함)</li>
+<li>루즈/공격적 상대: 콜 (블러프/세미블러프 가능성)</li>
+</ul>
+<h2 id="턴-플레이-체크리스트">턴 플레이 체크리스트<a href="#턴-플레이-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>턴에서 결정하기 전에 확인할 사항들:</p>
+<h3 id="1단계-상황-파악">1단계: 상황 파악<a href="#1단계-상황-파악" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 턴 카드가 보드에 어떤 영향을 주었나?</li>
+<li><input disabled="" type="checkbox"> 새로운 드로우가 완성됐나/가능해졌나?</li>
+<li><input disabled="" type="checkbox"> 보드가 페어됐나?</li>
+<li><input disabled="" type="checkbox"> SPR은 얼마인가?</li>
+</ul>
+<h3 id="2단계-내-핸드-재평가">2단계: 내 핸드 재평가<a href="#2단계-내-핸드-재평가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 플랍에서의 내 핸드 강도가 변했나?</li>
+<li><input disabled="" type="checkbox"> 드로우가 완성됐나/미스됐나?</li>
+<li><input disabled="" type="checkbox"> 리드로우가 있나?</li>
+<li><input disabled="" type="checkbox"> 블로커가 있나?</li>
+</ul>
+<h3 id="3단계-상대-레인지-업데이트">3단계: 상대 레인지 업데이트<a href="#3단계-상대-레인지-업데이트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 상대의 플랍 액션을 고려한 레인지는?</li>
+<li><input disabled="" type="checkbox"> 턴 카드가 상대 레인지에 어떤 영향을 미쳤나?</li>
+<li><input disabled="" type="checkbox"> 상대의 턴 액션은 무엇을 의미하나?</li>
+</ul>
+<h3 id="4단계-플랜-수립">4단계: 플랜 수립<a href="#4단계-플랜-수립" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 밸류인가, 블러프인가, 팟 컨트롤인가?</li>
+<li><input disabled="" type="checkbox"> 베팅한다면 사이즈는?</li>
+<li><input disabled="" type="checkbox"> 상대 반응에 따른 리버 플랜은?</li>
+<li><input disabled="" type="checkbox"> 최악의 시나리오(올인)에 대비되어 있나?</li>
+</ul>
+<h2 id="다음-편에서는">다음 편에서는<a href="#다음-편에서는" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>턴 플레이의 핵심을 다뤘습니다. 이제 마지막 스트릿인 <strong>리버</strong>로 넘어갑니다.</p>
+<p>9편에서는 <strong>리버 플레이</strong>를 다룹니다. 빅팟에서 최종 결정을 내리는 방법, 리버 밸류벳의 사이징, 오마하에서 블러프가 어려운 이유와 그럼에도 블러프해야 할 때, &ldquo;세컨드 넛&rdquo; 딜레마의 해결법, 그리고 가장 강력한 무기인 리버 체크레이즈를 배웁니다.</p>
+<hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><strong>블로킹(Blocking)</strong>: 특정 카드를 내가 가지고 있어서, 상대가 그 카드를 가질 수 없는 것. 예: 내가 <code>A♠</code>를 가지고 있으면 상대는 스페이드 넛 플러시를 가질 수 없습니다. &ldquo;내 핸드가 블로킹한다&rdquo; 또는 &ldquo;블로커를 가지고 있다&quot;라고 표현합니다.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><strong>브릭(Brick)</strong>: 보드에 아무런 영향을 주지 않는 카드. 드로우를 완성시키지 않고, 새로운 위협을 만들지 않는 카드입니다. 예: 플랍 <code>K♠J♠7♣</code> 이후 턴 <code>2♦</code>는 대부분의 경우 브릭입니다.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><strong>트립스(Trips)</strong>: 홀 카드 1장 + 보드 2장으로 만드는 쓰리 오브 어 카인드. 세트(홀 카드 2장 + 보드 1장)와 구분됩니다. 오마하에서는 보드가 페어되면 모든 플레이어에게 트립스 가능성이 생깁니다.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260109-plo-guide-09/" class="button inline prev">
+        &lt; [<span class="button__text">PLO 가이드: #9 리버 플레이 - 빅팟에서 올바른 결정 내리기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260109-plo-guide-07/" class="button inline next">
+         [<span class="button__text">PLO 가이드: #7 플랍 플레이 (下) - 드로우와 공격적 플레이</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
