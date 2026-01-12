@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>PLO 가이드: #12 - 블로커, 분산, 멘탈 관리 - 오마하의 숨은 변수들 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="오마하는 홀덤보다 분산이 훨씬 큽니다. 프리플랍 에퀴티 차이가 작고, 강한 핸드끼리 충돌하는 경우가 많기 때문입니다. 이 높은 분산은 뱅크롤과 멘탈 모두에 큰 부담을 줍니다. 기술적으로 완벽해도 멘탈이 무너지면 모든 것이 무너집니다." />
+<meta name="keywords" content="poker, omaha, strategy, PLO" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260112-plo-guide-12/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="PLO 가이드: #12 - 블로커, 분산, 멘탈 관리 - 오마하의 숨은 변수들">
+<meta property="og:description" content="오마하는 홀덤보다 분산이 훨씬 큽니다. 프리플랍 에퀴티 차이가 작고, 강한 핸드끼리 충돌하는 경우가 많기 때문입니다. 이 높은 분산은 뱅크롤과 멘탈 모두에 큰 부담을 줍니다. 기술적으로 완벽해도 멘탈이 무너지면 모든 것이 무너집니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260112-plo-guide-12/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-12 10:14:27 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260112-plo-guide-12/">PLO 가이드: #12 - 블로커, 분산, 멘탈 관리 - 오마하의 숨은 변수들</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-12</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/omaha/">omaha</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/plo/">PLO</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>지금까지 오마하의 기술적 측면을 다뤘습니다. 핸드 선택, 포스트플랍 플레이, 수학적 계산. 하지만 포커에서 승리하려면 <strong>기술만으로는 부족</strong>합니다. 고급 개념인 블로커의 활용, PLO 특유의 높은 분산에 대한 이해, 그리고 무엇보다 <strong>멘탈 관리</strong>가 필요합니다.</p>
+<p>오마하는 홀덤보다 분산이 훨씬 큽니다. 프리플랍 에퀴티 차이가 작고, 강한 핸드끼리 충돌하는 경우가 많기 때문입니다. 이 높은 분산은 뱅크롤과 멘탈 모두에 큰 부담을 줍니다. 기술적으로 완벽해도 멘탈이 무너지면 모든 것이 무너집니다.</p>
+<p>이번 편에서는 블로커의 개념과 실전 활용, PLO의 분산 특성과 뱅크롤 관리, 그리고 다운스윙에서 멘탈을 유지하는 방법을 다룹니다.</p>
+<p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="블로커의-개념과-활용">블로커의 개념과 활용<a href="#블로커의-개념과-활용" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="블로커란">블로커란?<a href="#블로커란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>블로커(Blocker)</strong> 는 내가 보유한 카드가 상대의 특정 핸드 가능성을 <strong>차단</strong>하는 개념입니다. 내 손에 있는 카드는 상대의 손에 있을 수 없으므로, 상대 레인지에서 특정 콤보를 제거합니다.</p>
+<p><strong>기본 예시</strong>:</p>
+<ul>
+<li>내가 <code>A♠</code>를 보유 → 상대는 스페이드 넛 플러시를 가질 수 없음</li>
+<li>내가 <code>KK</code>를 보유 → 상대가 <code>KK</code>를 가질 확률 대폭 감소</li>
+<li>내가 <code>QJ</code>를 보유 → 보드 <code>AKT</code>에서 상대 넛 스트레이트 확률 감소</li>
+</ul>
+<h3 id="홀덤-vs-오마하에서의-블로커">홀덤 vs 오마하에서의 블로커<a href="#홀덤-vs-오마하에서의-블로커" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">요소</th>
+          <th style="text-align: left">홀덤</th>
+          <th style="text-align: left">오마하</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">블로커 효과</td>
+          <td style="text-align: left">강함 (2장 중 1-2장 블로킹)</td>
+          <td style="text-align: left">상대적으로 약함 (4장 중 1-2장)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">활용 빈도</td>
+          <td style="text-align: left">제한적</td>
+          <td style="text-align: left">매우 빈번</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">복잡성</td>
+          <td style="text-align: left">낮음</td>
+          <td style="text-align: left">높음 (6개 조합 고려)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">중요도</td>
+          <td style="text-align: left">고급 개념</td>
+          <td style="text-align: left">필수 개념</td>
+      </tr>
+  </tbody>
+</table>
+<p>오마하에서는 상대가 4장을 가지고 있으므로, 1장의 블로커가 홀덤만큼 결정적이지 않습니다. 하지만 <strong>블로커의 누적 효과</strong>는 매우 중요합니다.</p>
+<h3 id="블로커의-유형">블로커의 유형<a href="#블로커의-유형" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 넛 블로커 (Nut Blocker)</strong></p>
+<p>상대의 넛 핸드 가능성을 차단합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">보드</th>
+          <th style="text-align: left">넛</th>
+          <th style="text-align: left">블로커 카드</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>K♠9♠4♠</code> (모노톤)</td>
+          <td style="text-align: left">넛 플러시 <code>A♠x</code></td>
+          <td style="text-align: left"><code>A♠</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>JT9</code></td>
+          <td style="text-align: left">넛 스트레이트 <code>KQ</code></td>
+          <td style="text-align: left"><code>K</code>, <code>Q</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>KK7</code> (페어드)</td>
+          <td style="text-align: left">쿼드/탑 풀하우스</td>
+          <td style="text-align: left"><code>K</code>, <code>7</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>QJT</code></td>
+          <td style="text-align: left">넛 스트레이트 <code>AK</code></td>
+          <td style="text-align: left"><code>A</code>, <code>K</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2. 세컨드 넛 블로커</strong></p>
+<p>상대의 세컨드 베스트 핸드를 차단합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">보드</th>
+          <th style="text-align: left">세컨드 넛</th>
+          <th style="text-align: left">블로커 카드</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>K♠9♠4♠</code></td>
+          <td style="text-align: left">K-하이 플러시 <code>K♠x</code></td>
+          <td style="text-align: left"><code>K♠</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>JT9</code></td>
+          <td style="text-align: left">Q-하이 스트레이트 <code>Q8</code></td>
+          <td style="text-align: left"><code>Q</code>, <code>8</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>3. 콜링 핸드 블로커</strong></p>
+<p>상대가 콜할 만한 핸드를 차단합니다. 블러프 시 유용합니다.</p>
+<p>예: 보드 <code>K♠Q♠7♣4♦2♥</code>에서 내가 <code>KQ</code>를 보유
+→ 상대가 <code>Kx</code> 또는 <code>Qx</code> 탑 페어/투 페어를 가질 확률 감소
+→ 하지만 이것은 블러프에 <strong>나쁜 블로커</strong> (상대의 폴드 레인지를 블로킹)</p>
+<h3 id="블로커-활용-블러프에서">블로커 활용: 블러프에서<a href="#블로커-활용-블러프에서" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>블로커의 가장 중요한 활용은 <strong>블러프 결정</strong>입니다.</p>
+<p><strong>좋은 블러프 블로커</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">좋은 블로커</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">플러시 보드 블러프</td>
+          <td style="text-align: left"><code>A♠</code> (넛 플러시 블로커)</td>
+          <td style="text-align: left">상대 넛 확률 감소</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스트레이트 보드 블러프</td>
+          <td style="text-align: left">넛 스트레이트 카드</td>
+          <td style="text-align: left">상대 넛 확률 감소</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">페어드 보드 블러프</td>
+          <td style="text-align: left">탑 카드</td>
+          <td style="text-align: left">상대 탑 트립스/풀하우스 확률 감소</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>나쁜 블러프 블로커</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">나쁜 블로커</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">드라이 보드 블러프</td>
+          <td style="text-align: left">탑 페어 카드 보유</td>
+          <td style="text-align: left">상대의 폴드 핸드를 블로킹</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플러시 보드 블러프</td>
+          <td style="text-align: left">미들 플러시 카드</td>
+          <td style="text-align: left">상대의 약한 플러시(폴드 레인지) 블로킹</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심 원칙</strong>: 블러프할 때는 <strong>상대의 콜 레인지를 블로킹</strong>해야 합니다. 상대의 폴드 레인지를 블로킹하면 역효과입니다.</p>
+<h3 id="블로커-활용-콜-결정에서">블로커 활용: 콜 결정에서<a href="#블로커-활용-콜-결정에서" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>블러프 캐치<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> 결정에서도 블로커가 중요합니다.</p>
+<p><strong>상대 블러프 가능성을 높이는 내 블로커</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">내 블로커</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">플러시 보드</td>
+          <td style="text-align: left">내가 <code>A♠</code> 보유</td>
+          <td style="text-align: left">상대 넛 플러시 없음 → 블러프 가능성 ↑</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스트레이트 보드</td>
+          <td style="text-align: left">내가 넛 스트레이트 카드 보유</td>
+          <td style="text-align: left">상대 넛 없음 → 블러프 가능성 ↑</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>상대 밸류 가능성을 높이는 내 블로커</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">내 블로커</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">플러시 보드</td>
+          <td style="text-align: left">내가 플러시 카드 없음</td>
+          <td style="text-align: left">상대 플러시 가능성 ↑ → 밸류일 확률 ↑</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">페어드 보드</td>
+          <td style="text-align: left">내가 보드 카드 없음</td>
+          <td style="text-align: left">상대 풀하우스 가능성 ↑</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="블로커-실전-예시">블로커 실전 예시<a href="#블로커-실전-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황 1: 블러프 결정</strong></p>
+<ul>
+<li>보드: <code>K♠Q♠7♥4♣2♠</code></li>
+<li>내 핸드: <code>A♠J♣T♥9♥</code> (미스, 에어)</li>
+<li>상대: 리버에서 체크</li>
+</ul>
+<p><strong>블로커 분석</strong>:</p>
+<ul>
+<li><code>A♠</code> = 넛 플러시 블로커 ✓</li>
+<li>상대가 넛 플러시를 가질 수 없음</li>
+<li>상대 레인지: 세컨드 넛 이하 플러시, 투 페어, 세트, 블러프 캐처</li>
+</ul>
+<p><strong>결정</strong>: 블러프 고려 가능</p>
+<ul>
+<li><code>A♠</code> 블로커로 상대의 콜 레인지에서 가장 강한 핸드 제거</li>
+<li>상대의 세컨드 넛 플러시, 투 페어 등은 큰 베팅에 폴드 가능성</li>
+</ul>
+<p><strong>상황 2: 콜 결정</strong></p>
+<ul>
+<li>보드: <code>J♠T♠9♣4♥2♦</code></li>
+<li>내 핸드: <code>K♠Q♣8♥7♦</code> (K-하이 스트레이트)</li>
+<li>상대: 리버에서 풀 팟 베팅</li>
+</ul>
+<p><strong>블로커 분석</strong>:</p>
+<ul>
+<li><code>KQ</code> = 넛 스트레이트 블로커 ✓</li>
+<li>상대가 <code>KQ</code> 넛 스트레이트를 가질 확률 감소</li>
+<li>하지만 <code>Q8</code>(세컨드 넛)은 가능</li>
+</ul>
+<p><strong>결정</strong>: 콜 경향</p>
+<ul>
+<li>내가 넛 스트레이트 블로커를 가지고 있음</li>
+<li>상대의 밸류 레인지가 좁아짐</li>
+<li>블러프 가능성 상대적으로 높음</li>
+</ul>
+<h3 id="블로커-요약">블로커 요약<a href="#블로커-요약" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">좋은 블로커</th>
+          <th style="text-align: left">나쁜 블로커</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">블러프</td>
+          <td style="text-align: left">상대 콜 레인지 (넛) 블로킹</td>
+          <td style="text-align: left">상대 폴드 레인지 블로킹</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">콜 (블러프 캐치)</td>
+          <td style="text-align: left">상대 밸류 레인지 블로킹</td>
+          <td style="text-align: left">상대 블러프 레인지 블로킹</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">밸류벳</td>
+          <td style="text-align: left">N/A (블로커보다 핸드 강도)</td>
+          <td style="text-align: left">상대 콜 레인지 블로킹</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="plo의-분산variance-이해">PLO의 분산(Variance) 이해<a href="#plo의-분산variance-이해" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="분산이란">분산이란?<a href="#분산이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>분산(Variance)</strong> 은 결과의 변동성을 의미합니다. 같은 EV(기대값)를 가진 플레이어라도, 분산이 높으면 단기 결과가 크게 출렁입니다.</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>플레이어 A: 10bb/100 승률, 낮은 분산 → 꾸준한 수익 곡선</li>
+<li>플레이어 B: 10bb/100 승률, 높은 분산 → 큰 업스윙/다운스윙</li>
+</ul>
+<h3 id="왜-plo가-홀덤보다-분산이-높은가">왜 PLO가 홀덤보다 분산이 높은가<a href="#왜-plo가-홀덤보다-분산이-높은가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 프리플랍 에퀴티 수렴</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">매치업</th>
+          <th style="text-align: left">홀덤 에퀴티</th>
+          <th style="text-align: left">PLO 에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">프리미엄 vs 랜덤</td>
+          <td style="text-align: left">AA vs 72o: 87%</td>
+          <td style="text-align: left">AAKK ds vs 랜덤: 65%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">프리미엄 vs 프리미엄</td>
+          <td style="text-align: left">AA vs KK: 82%</td>
+          <td style="text-align: left">AAKK ds vs KQJTds: 57%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">탑 핸드 vs 좋은 핸드</td>
+          <td style="text-align: left">AK vs JTs: 63%</td>
+          <td style="text-align: left">AKQJds vs JT98ds: 54%</td>
+      </tr>
+  </tbody>
+</table>
+<p>PLO에서는 <strong>에퀴티 차이가 작아서</strong> 강한 핸드도 자주 집니다.</p>
+<p><strong>2. 멀티웨이 팟 빈도</strong></p>
+<p>PLO에서는 멀티웨이 팟이 흔합니다. 더 많은 플레이어 = 더 많은 변수 = 높은 분산.</p>
+<p><strong>3. 큰 팟 빈도</strong></p>
+<p>PLO의 팟-리밋 구조와 드로우 중심 플레이로 인해 <strong>큰 팟이 자주</strong> 발생합니다. 큰 팟은 분산을 높입니다.</p>
+<p><strong>4. 쿨러<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> 빈도</strong></p>
+<p>세트 오버 세트, 플러시 오버 플러시, 스트레이트 오버 스트레이트가 홀덤보다 <strong>훨씬 자주</strong> 발생합니다.</p>
+<h3 id="분산의-수학적-이해">분산의 수학적 이해<a href="#분산의-수학적-이해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>표준편차 비교</strong> (100핸드당, 대략):</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">게임</th>
+          <th style="text-align: left">표준편차</th>
+          <th style="text-align: left">의미</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">NL 홀덤 (6max)</td>
+          <td style="text-align: left">70-90 bb/100</td>
+          <td style="text-align: left">100핸드마다 ±70-90bb 변동 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PLO (6max)</td>
+          <td style="text-align: left">120-150 bb/100</td>
+          <td style="text-align: left">100핸드마다 ±120-150bb 변동 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PLO (풀링)</td>
+          <td style="text-align: left">150-200 bb/100</td>
+          <td style="text-align: left">매우 높은 분산</td>
+      </tr>
+  </tbody>
+</table>
+<p>PLO는 홀덤의 <strong>1.5-2배 분산</strong>을 가집니다.</p>
+<h3 id="분산이-미치는-영향">분산이 미치는 영향<a href="#분산이-미치는-영향" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>단기적 영향</strong>:</p>
+<ul>
+<li>50바이인 다운스윙도 가능 (실력과 무관하게)</li>
+<li>큰 업스윙도 실력의 증거가 아님</li>
+<li>결과보다 <strong>과정</strong>에 집중해야 함</li>
+</ul>
+<p><strong>장기적 영향</strong>:</p>
+<ul>
+<li>수익 플레이어도 장기간이 필요함</li>
+<li>샘플 사이즈가 홀덤보다 더 커야 함</li>
+<li>최소 10만 핸드 이상 필요 (통계적 의미)</li>
+</ul>
+<h3 id="다운스윙의-현실">다운스윙의 현실<a href="#다운스윙의-현실" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>PLO에서 예상되는 다운스윙</strong> (승률 있는 플레이어 기준):</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">플레이어 승률</th>
+          <th style="text-align: left">10만 핸드 중 최대 다운스윙 (예상)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">5bb/100</td>
+          <td style="text-align: left">30-50 바이인</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">10bb/100</td>
+          <td style="text-align: left">20-40 바이인</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">15bb/100</td>
+          <td style="text-align: left">15-30 바이인</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 실력 있는 플레이어도 <strong>30-50 바이인 다운스윙</strong>을 경험할 수 있습니다. 이것은 정상입니다.</p>
+<h2 id="뱅크롤-관리-bankroll-management">뱅크롤 관리 (Bankroll Management)<a href="#뱅크롤-관리-bankroll-management" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="뱅크롤이란">뱅크롤이란?<a href="#뱅크롤이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>뱅크롤</strong>은 포커에 투자한 총 자금입니다. 뱅크롤 관리는 파산 위험을 최소화하면서 적절한 스테이크에서 플레이하는 것입니다.</p>
+<h3 id="plo-뱅크롤-가이드라인">PLO 뱅크롤 가이드라인<a href="#plo-뱅크롤-가이드라인" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보수적 뱅크롤</strong> (권장):</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">게임 유형</th>
+          <th style="text-align: left">최소 바이인 수</th>
+          <th style="text-align: left">권장 바이인 수</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">PLO 캐시 (풀링)</td>
+          <td style="text-align: left">30</td>
+          <td style="text-align: left">50</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PLO 캐시 (6max)</td>
+          <td style="text-align: left">40</td>
+          <td style="text-align: left">60</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PLO 캐시 (헤즈업)</td>
+          <td style="text-align: left">50</td>
+          <td style="text-align: left">75+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PLO 토너먼트</td>
+          <td style="text-align: left">100</td>
+          <td style="text-align: left">150+</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>홀덤과의 비교</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">게임</th>
+          <th style="text-align: left">홀덤 권장</th>
+          <th style="text-align: left">PLO 권장</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">6max 캐시</td>
+          <td style="text-align: left">20-30 바이인</td>
+          <td style="text-align: left">40-60 바이인</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">풀링 캐시</td>
+          <td style="text-align: left">15-20 바이인</td>
+          <td style="text-align: left">30-50 바이인</td>
+      </tr>
+  </tbody>
+</table>
+<p>PLO는 홀덤의 <strong>약 2배 뱅크롤</strong>이 필요합니다.</p>
+<h3 id="스테이크-이동-규칙">스테이크 이동 규칙<a href="#스테이크-이동-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상향 이동 (Move Up)</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">기준</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">뱅크롤</td>
+          <td style="text-align: left">다음 스테이크 권장 바이인 수 충족</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">승률</td>
+          <td style="text-align: left">현재 스테이크에서 증명된 승률</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">멘탈</td>
+          <td style="text-align: left">더 큰 금액에서 편안함</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">샘플</td>
+          <td style="text-align: left">최소 3-5만 핸드</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>하향 이동 (Move Down)</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">조건</th>
+          <th style="text-align: left">기준</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">뱅크롤 감소</td>
+          <td style="text-align: left">권장 바이인 수 이하로 떨어짐</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">구체적 규칙</td>
+          <td style="text-align: left">예: 40 바이인 → 30 바이인 되면 드롭</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">멘탈</td>
+          <td style="text-align: left">현재 스테이크에서 불편함</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심 규칙</strong>: 상향 이동보다 <strong>하향 이동에 더 빠르게</strong> 대응하세요.</p>
+<h3 id="뱅크롤-관리-실전-예시">뱅크롤 관리 실전 예시<a href="#뱅크롤-관리-실전-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>시나리오</strong>: $1,000 뱅크롤, PLO 플레이</p>
+<p><strong>계산</strong>:</p>
+<ul>
+<li>보수적 기준: 50 바이인</li>
+<li>$1,000 / 50 = $20</li>
+<li>플레이 가능 스테이크: <strong>PLO $0.10/$0.20</strong> (100bb = $20)</li>
+</ul>
+<p><strong>상향 이동 계획</strong>:</p>
+<ul>
+<li>$0.10/$0.20에서 50 바이인 = $1,000 (현재)</li>
+<li>$0.25/$0.50에서 50 바이인 = $2,500</li>
+<li>→ 뱅크롤이 $2,500 이상이 되면 상향 고려</li>
+</ul>
+<p><strong>하향 이동 규칙</strong>:</p>
+<ul>
+<li>뱅크롤이 $600 ($0.10/$0.20의 30 바이인) 이하로 떨어지면</li>
+<li>→ $0.05/$0.10으로 하향</li>
+</ul>
+<h3 id="뱅크롤-관리-체크리스트">뱅크롤 관리 체크리스트<a href="#뱅크롤-관리-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 현재 뱅크롤 정확히 파악</li>
+<li><input disabled="" type="checkbox"> 플레이 스테이크의 바이인 수 계산</li>
+<li><input disabled="" type="checkbox"> 상향/하향 이동 기준 사전 설정</li>
+<li><input disabled="" type="checkbox"> 감정적 결정 금지 (틸트 상태에서 스테이크 변경 X)</li>
+<li><input disabled="" type="checkbox"> 정기적인 뱅크롤 검토 (주간/월간)</li>
+</ul>
+<h2 id="멘탈-관리와-틸트-대응">멘탈 관리와 틸트 대응<a href="#멘탈-관리와-틸트-대응" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="틸트tilt란">틸트(Tilt)란?<a href="#틸트tilt란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>틸트</strong>는 감정적 요인으로 인해 최적의 플레이에서 벗어나는 상태입니다. 분노, 좌절, 과신, 지루함 등 다양한 형태가 있습니다.</p>
+<h3 id="틸트의-유형">틸트의 유형<a href="#틸트의-유형" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 분노 틸트 (Angry Tilt)</strong></p>
+<p>배드빗<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>이나 쿨러 후 분노로 인한 틸트.</p>
+<p>증상:</p>
+<ul>
+<li>과도하게 공격적인 플레이</li>
+<li>불필요한 블러프</li>
+<li>&ldquo;복수&quot;를 위한 무리한 플레이</li>
+</ul>
+<p><strong>2. 좌절 틸트 (Frustrated Tilt)</strong></p>
+<p>연속적인 손실 후 무력감.</p>
+<p>증상:</p>
+<ul>
+<li>패시브한 플레이</li>
+<li>폴드해야 할 핸드를 콜</li>
+<li>자신감 상실</li>
+</ul>
+<p><strong>3. 과신 틸트 (Winner&rsquo;s Tilt)</strong></p>
+<p>연승 후 과신.</p>
+<p>증상:</p>
+<ul>
+<li>핸드 선택 기준 완화</li>
+<li>불필요한 블러프</li>
+<li>상대 과소평가</li>
+</ul>
+<p><strong>4. 지루함 틸트 (Boredom Tilt)</strong></p>
+<p>좋은 핸드가 안 올 때.</p>
+<p>증상:</p>
+<ul>
+<li>플레이해선 안 될 핸드 플레이</li>
+<li>불필요한 블러프</li>
+<li>집중력 저하</li>
+</ul>
+<h3 id="plo에서-틸트가-더-위험한-이유">PLO에서 틸트가 더 위험한 이유<a href="#plo에서-틸트가-더-위험한-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">요소</th>
+          <th style="text-align: left">홀덤</th>
+          <th style="text-align: left">PLO</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">배드빗 빈도</td>
+          <td style="text-align: left">낮음</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">쿨러 빈도</td>
+          <td style="text-align: left">낮음</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">결과 변동성</td>
+          <td style="text-align: left">중간</td>
+          <td style="text-align: left">높음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">틸트 한 번의 비용</td>
+          <td style="text-align: left">큼</td>
+          <td style="text-align: left">매우 큼</td>
+      </tr>
+  </tbody>
+</table>
+<p>PLO에서는 <strong>틸트의 기회가 많고, 비용도 큽니다.</strong></p>
+<h3 id="틸트-예방-전략">틸트 예방 전략<a href="#틸트-예방-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 세션 전 준비</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">항목</th>
+          <th style="text-align: left">체크</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">충분한 수면</td>
+          <td style="text-align: left">□</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">식사/수분</td>
+          <td style="text-align: left">□</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">명확한 목표 (시간/핸드)</td>
+          <td style="text-align: left">□</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스톱로스 설정</td>
+          <td style="text-align: left">□</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">방해 요소 제거</td>
+          <td style="text-align: left">□</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2. 스톱로스 (Stop-Loss) 규칙</strong></p>
+<p>세션당 최대 손실 한도를 미리 정합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">권장 스톱로스</th>
+          <th style="text-align: left">설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">3 바이인</td>
+          <td style="text-align: left">보수적</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">5 바이인</td>
+          <td style="text-align: left">표준</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2 바이인 (틸트 경향)</td>
+          <td style="text-align: left">틸트 성향 강한 경우</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>스톱로스에 도달하면</strong>: 무조건 세션 종료. 예외 없음.</p>
+<p><strong>3. 세션 중 모니터링</strong></p>
+<p>다음 신호가 나타나면 <strong>즉시 휴식</strong>:</p>
+<ul>
+<li>심박수 증가</li>
+<li>손에 땀</li>
+<li>과도한 감정 (흥분/분노)</li>
+<li>집중력 저하</li>
+<li>&ldquo;이번엔 다르다&quot;는 생각</li>
+<li>플레이 기준 무시</li>
+</ul>
+<h3 id="틸트-발생-시-대응">틸트 발생 시 대응<a href="#틸트-발생-시-대응" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>즉각 대응 (5분 규칙)</strong>:</p>
+<ol>
+<li>플레이 중단</li>
+<li>자리에서 일어남</li>
+<li>깊은 호흡 (4초 흡입, 7초 유지, 8초 배출)</li>
+<li>5분간 다른 활동 (산책, 물 마시기)</li>
+<li>복귀 전 자가 점검: &ldquo;지금 최적의 플레이가 가능한가?&rdquo;</li>
+</ol>
+<p><strong>복귀 결정</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상태</th>
+          <th style="text-align: left">결정</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">완전히 진정됨</td>
+          <td style="text-align: left">복귀 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">아직 감정적</td>
+          <td style="text-align: left">세션 종료</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">불확실</td>
+          <td style="text-align: left">세션 종료 (안전하게)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="다운스윙-멘탈-관리">다운스윙 멘탈 관리<a href="#다운스윙-멘탈-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>다운스윙은 피할 수 없습니다. 관리하는 방법만 있습니다.</p>
+<p><strong>1. 다운스윙의 정상성 인정</strong></p>
+<ul>
+<li>10-20 바이인 다운스윙: <strong>매우 흔함</strong></li>
+<li>30-50 바이인 다운스윙: <strong>일어날 수 있음</strong></li>
+<li>이것은 실력과 무관할 수 있음</li>
+</ul>
+<p><strong>2. 과정에 집중</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">집중해야 할 것</th>
+          <th style="text-align: left">집중하지 말아야 할 것</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">결정의 질</td>
+          <td style="text-align: left">결과</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">핸드 분석</td>
+          <td style="text-align: left">승패 금액</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">학습/개선</td>
+          <td style="text-align: left">배드빗 반추</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">다음 핸드</td>
+          <td style="text-align: left">이전 핸드</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>3. 핸드 리뷰 강화</strong></p>
+<p>다운스윙 중에는 <strong>핸드 리뷰</strong>를 더 열심히 해야 합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">질문</th>
+          <th style="text-align: left">목적</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">내 결정이 수학적으로 맞았는가?</td>
+          <td style="text-align: left">실수 vs 분산 구분</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">같은 상황에서 다시 같은 결정을 하겠는가?</td>
+          <td style="text-align: left">결정 검증</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">놓친 밸류나 불필요한 블러프가 있었는가?</td>
+          <td style="text-align: left">리크<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> 발견</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>4. 스테이크 하향 고려</strong></p>
+<p>다운스윙이 심하면 <strong>스테이크 하향</strong>을 진지하게 고려하세요.</p>
+<p>장점:</p>
+<ul>
+<li>금전적 압박 감소</li>
+<li>멘탈 부담 감소</li>
+<li>자신감 회복 기회</li>
+</ul>
+<h3 id="장기적-멘탈-건강">장기적 멘탈 건강<a href="#장기적-멘탈-건강" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 포커 외 생활 유지</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">활동</th>
+          <th style="text-align: left">효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">운동</td>
+          <td style="text-align: left">스트레스 해소, 집중력 향상</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">사회적 관계</td>
+          <td style="text-align: left">포커 외 정체성 유지</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">취미</td>
+          <td style="text-align: left">정신적 휴식</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">수면</td>
+          <td style="text-align: left">의사결정 능력 유지</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2. 현실적 기대치 설정</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">비현실적 기대</th>
+          <th style="text-align: left">현실적 기대</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">매일 수익</td>
+          <td style="text-align: left">장기적 수익</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">항상 최고의 플레이</td>
+          <td style="text-align: left">대부분 좋은 플레이</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">배드빗 없음</td>
+          <td style="text-align: left">배드빗은 일상</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">꾸준한 상승 곡선</td>
+          <td style="text-align: left">변동성 있는 상승</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>3. 포커는 마라톤</strong></p>
+<p>PLO 성공은 <strong>수개월, 수년</strong>의 관점에서 측정됩니다. 단기 결과에 일희일비하지 마세요.</p>
+<h2 id="실전-멘탈-시나리오">실전 멘탈 시나리오<a href="#실전-멘탈-시나리오" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="시나리오-1-세-번-연속-올인-패배">시나리오 1: 세 번 연속 올인 패배<a href="#시나리오-1-세-번-연속-올인-패배" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>모두 프리플랍 올인</li>
+<li><code>AAKK</code> vs <code>JT98</code> ds → 패 (플러시 히트)</li>
+<li><code>KKQQ</code> ds vs <code>AA72</code> → 패 (A 히트)</li>
+<li>넛 플러시 드로우 + 세트 vs 탑 세트 → 패 (보드 페어)</li>
+</ul>
+<p><strong>즉각 반응</strong>:</p>
+<ul>
+<li>분노/좌절 인식</li>
+<li>플레이 일시 중단</li>
+<li>심호흡</li>
+</ul>
+<p><strong>자가 점검</strong>:</p>
+<ul>
+<li>&ldquo;내 올인 결정이 잘못됐는가?&rdquo; → 아니오, 모두 +EV 결정</li>
+<li>&ldquo;이것은 분산인가 실수인가?&rdquo; → 분산</li>
+<li>&ldquo;지금 최적 플레이가 가능한가?&rdquo; → 솔직하게 평가</li>
+</ul>
+<p><strong>결정</strong>:</p>
+<ul>
+<li>감정이 가라앉았으면 → 계속 플레이</li>
+<li>아직 흥분 상태면 → 15분 휴식 또는 세션 종료</li>
+</ul>
+<h3 id="시나리오-2-10-바이인-다운스윙-중">시나리오 2: 10 바이인 다운스윙 중<a href="#시나리오-2-10-바이인-다운스윙-중" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>지난 2주간 10 바이인 손실</li>
+<li>자신감 하락</li>
+<li>&ldquo;실력이 없는 것 아닌가&rdquo; 의심</li>
+</ul>
+<p><strong>대응</strong>:</p>
+<p><strong>1단계: 객관적 분석</strong></p>
+<ul>
+<li>핸드 히스토리 리뷰</li>
+<li>주요 팟 10-20개 상세 분석</li>
+<li>실수와 분산 구분</li>
+</ul>
+<p><strong>2단계: 분석 결과에 따른 행동</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">분석 결과</th>
+          <th style="text-align: left">행동</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">실수가 많았음</td>
+          <td style="text-align: left">해당 리크 수정, 학습</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">실수 없이 분산</td>
+          <td style="text-align: left">같은 플레이 유지, 인내</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">혼합</td>
+          <td style="text-align: left">수정 가능한 것 수정, 나머지 인내</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>3단계: 필요시 조치</strong></p>
+<ul>
+<li>뱅크롤 체크 → 하향 이동 필요?</li>
+<li>스톱로스 조정 → 일시적으로 타이트하게</li>
+<li>휴식 → 며칠 쉬는 것도 방법</li>
+</ul>
+<h3 id="시나리오-3-연승-후-과신">시나리오 3: 연승 후 과신<a href="#시나리오-3-연승-후-과신" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>지난 주 15 바이인 업스윙</li>
+<li>&ldquo;내가 테이블에서 최고&quot;라는 느낌</li>
+<li>평소보다 느슨한 플레이</li>
+</ul>
+<p><strong>위험 신호</strong>:</p>
+<ul>
+<li>핸드 기준 완화</li>
+<li>불필요한 블러프 증가</li>
+<li>상대 과소평가</li>
+<li>&ldquo;내 직관은 항상 맞아&rdquo;</li>
+</ul>
+<p><strong>대응</strong>:</p>
+<ul>
+<li>업스윙도 분산의 일부임을 인식</li>
+<li>핸드 기준을 명문화하고 준수</li>
+<li>매 세션 전 기본으로 돌아가기</li>
+<li>&ldquo;겸손 유지&rdquo; 자기 암시</li>
+</ul>
+<h2 id="멘탈-관리-체크리스트">멘탈 관리 체크리스트<a href="#멘탈-관리-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>세션 전</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> 몸 상태 점검 (수면, 식사, 컨디션)</li>
+<li><input disabled="" type="checkbox"> 명확한 목표 설정 (시간, 핸드, 스톱로스)</li>
+<li><input disabled="" type="checkbox"> 방해 요소 제거</li>
+<li><input disabled="" type="checkbox"> 감정 상태 점검 (&ldquo;지금 최적 플레이 가능한가?&rdquo;)</li>
+</ul>
+<p><strong>세션 중</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> 정기적 자가 점검 (30분-1시간마다)</li>
+<li><input disabled="" type="checkbox"> 틸트 신호 모니터링</li>
+<li><input disabled="" type="checkbox"> 스톱로스 준수</li>
+<li><input disabled="" type="checkbox"> 휴식 필요시 즉시 실행</li>
+</ul>
+<p><strong>세션 후</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> 핸드 리뷰 (주요 팟)</li>
+<li><input disabled="" type="checkbox"> 결정 품질 평가 (결과 무시)</li>
+<li><input disabled="" type="checkbox"> 다음 세션을 위한 노트</li>
+<li><input disabled="" type="checkbox"> 분리 (포커 외 활동)</li>
+</ul>
+<h2 id="다음-편에서는">다음 편에서는<a href="#다음-편에서는" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>블로커, 분산, 멘탈의 핵심을 다뤘습니다. 이제 <strong>멀티테이블링과 게임 선택</strong>으로 넘어갑니다.</p>
+<p>13편에서는 <strong>멀티테이블링과 게임 선택 전략</strong>을 다룹니다. PLO에서 효과적으로 여러 테이블을 플레이하는 방법, 수익성 높은 게임을 찾는 방법, 테이블 선택의 중요성을 배웁니다. 같은 실력이라도 게임 선택으로 수익이 크게 달라질 수 있습니다.</p>
+<hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><strong>블러프 캐치(Bluff Catch)</strong>: 상대의 블러프를 잡기 위해 약한 핸드로 콜하는 것. 쇼다운 가치가 있지만 밸류벳할 정도는 아닌 핸드로 상대 블러프를 기다리는 전략입니다.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><strong>쿨러(Cooler)</strong>: 두 플레이어 모두 매우 강한 핸드를 가지고 있어서 큰 팟이 불가피한 상황. 세트 오버 세트, 플러시 오버 플러시 등. 실력과 관계없이 스택을 잃는 상황입니다.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><strong>배드빗(Bad Beat)</strong>: 에퀴티 우위에 있던 핸드가 낮은 확률의 아웃에 지는 것. 예: 95% 유리한 상황에서 5% 확률에 지는 것. PLO에서는 에퀴티 차이가 작아서 &ldquo;배드빗&quot;의 정의가 홀덤과 다를 수 있습니다.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p><strong>리크(Leak)</strong>: 플레이어의 게임에서 반복적으로 돈을 잃게 만드는 약점. 예: 과도한 블러프, 드로우에 너무 많은 돈 지불, 특정 상황에서의 잘못된 폴드 등.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260112-plo-guide-13/" class="button inline prev">
+        &lt; [<span class="button__text">PLO 가이드: #13 - 멀티테이블링과 게임 선택 - 수익 극대화의 비밀</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260112-plo-guide-11/" class="button inline next">
+         [<span class="button__text">PLO 가이드: #11 - 에퀴티와 확률 계산 - 오마하의 수학적 기초</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

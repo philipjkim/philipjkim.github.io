@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>PLO 가이드: #11 - 에퀴티와 확률 계산 - 오마하의 수학적 기초 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="이번 편에서는 오마하의 수학적 기초를 다룹니다. 아웃 계산, 팟 오즈, 임플라이드 오즈, 에퀴티 실현까지. 이 기초를 익히면 테이블에서 더 정확한 결정을 내릴 수 있습니다." />
+<meta name="keywords" content="poker, omaha, strategy, PLO" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260112-plo-guide-11/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="PLO 가이드: #11 - 에퀴티와 확률 계산 - 오마하의 수학적 기초">
+<meta property="og:description" content="이번 편에서는 오마하의 수학적 기초를 다룹니다. 아웃 계산, 팟 오즈, 임플라이드 오즈, 에퀴티 실현까지. 이 기초를 익히면 테이블에서 더 정확한 결정을 내릴 수 있습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260112-plo-guide-11/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-12 10:14:24 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260112-plo-guide-11/">PLO 가이드: #11 - 에퀴티와 확률 계산 - 오마하의 수학적 기초</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-12</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/omaha/">omaha</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/plo/">PLO</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>포커는 불완전한 정보 속에서 확률적 결정을 내리는 게임입니다. 감이나 직관도 중요하지만, <strong>수학적 기초</strong> 없이는 장기적으로 수익을 낼 수 없습니다. 특히 오마하는 홀덤보다 복잡한 수학이 필요합니다. 4장의 카드, 6개의 조합, 다양한 드로우가 얽히면서 계산이 기하급수적으로 복잡해집니다.</p>
+<p>하지만 두려워할 필요 없습니다. 모든 상황을 정확히 계산할 필요는 없습니다. 핵심 원리를 이해하고, 실전에서 <strong>빠르게 근사치를 계산</strong>하는 방법을 익히면 충분합니다.</p>
+<p>이번 편에서는 오마하의 수학적 기초를 다룹니다. 아웃 계산, 팟 오즈, 임플라이드 오즈, 에퀴티 실현까지. 이 기초를 익히면 테이블에서 더 정확한 결정을 내릴 수 있습니다.</p>
+<p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="아웃-계산의-기초-홀덤과-오마하의-차이">아웃 계산의 기초: 홀덤과 오마하의 차이<a href="#아웃-계산의-기초-홀덤과-오마하의-차이" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="아웃outs이란">아웃(Outs)이란?<a href="#아웃outs이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>아웃</strong>은 현재 지고 있는 핸드를 이기는 핸드로 만들어주는 카드입니다.</p>
+<p><strong>홀덤 예시</strong>:</p>
+<ul>
+<li>내 핸드: <code>A♠K♠</code></li>
+<li>보드: <code>Q♠J♠4♥</code></li>
+<li>아웃: 스페이드 9장 (플러시), T 4장 (스트레이트) = 12아웃 (중복 제외)</li>
+</ul>
+<p>홀덤에서는 아웃 계산이 비교적 간단합니다. 오마하에서는 <strong>훨씬 복잡</strong>합니다.</p>
+<h3 id="오마하에서-아웃-계산이-복잡한-이유">오마하에서 아웃 계산이 복잡한 이유<a href="#오마하에서-아웃-계산이-복잡한-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 6개의 2카드 조합</strong></p>
+<p>4장의 홀 카드에서 2장을 선택하는 조합이 6개입니다. 각 조합이 다른 드로우를 만들 수 있습니다.</p>
+<p><strong>2. 랩 드로우의 존재</strong></p>
+<p>오마하 특유의 랩 드로우는 8아웃에서 20아웃까지 다양합니다. 어떤 카드가 스트레이트를 완성시키는지 정확히 파악해야 합니다.</p>
+<p><strong>3. 리드로우 고려</strong></p>
+<p>드로우가 완성되어도 상대에게 질 수 있습니다. &ldquo;라이브 아웃&rdquo;<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>과 &ldquo;데드 아웃&quot;을 구분해야 합니다.</p>
+<p><strong>4. 동시에 여러 드로우</strong></p>
+<p>플러시 드로우 + 스트레이트 드로우 + 페어가 동시에 있을 수 있습니다. 중복되는 아웃을 정확히 계산해야 합니다.</p>
+<h3 id="기본-아웃-수">기본 아웃 수<a href="#기본-아웃-수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">드로우 유형</th>
+          <th style="text-align: left">기본 아웃 수</th>
+          <th style="text-align: left">비고</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">플러시 드로우</td>
+          <td style="text-align: left">9</td>
+          <td style="text-align: left">13장 - 보드 2장 - 내 손 2장</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">오픈 엔디드 스트레이트</td>
+          <td style="text-align: left">8</td>
+          <td style="text-align: left">양쪽 끝 카드 각 4장</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">거터샷 (인사이드)</td>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">한 카드만 필요</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">투 페어 → 풀하우스</td>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">각 페어 카드 2장씩</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세트 → 풀하우스/쿼드</td>
+          <td style="text-align: left">7</td>
+          <td style="text-align: left">보드 페어 6장 + 쿼드 1장</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="오마하-랩-드로우-아웃-계산">오마하 랩 드로우 아웃 계산<a href="#오마하-랩-드로우-아웃-계산" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>랩 드로우의 아웃 수를 계산하는 방법을 단계별로 알아봅시다.</p>
+<p><strong>예시 상황</strong>:</p>
+<ul>
+<li>보드: <code>9♠8♣2♦</code></li>
+<li>내 핸드: <code>J♥T♥7♣6♣</code></li>
+</ul>
+<p><strong>단계 1: 가능한 스트레이트 찾기</strong></p>
+<p>보드의 9와 8을 포함하는 스트레이트를 모두 나열합니다:</p>
+<ul>
+<li><code>KQJT9</code> - 불가능 (내 손에 K, Q 없음)</li>
+<li><code>QJT98</code> - 가능 (<code>JT</code> 사용, Q 필요)</li>
+<li><code>JT987</code> - 가능 (<code>T7</code> 또는 <code>J7</code> 사용, 추가 카드 필요)</li>
+<li><code>T9876</code> - 가능 (<code>T7</code>, <code>T6</code>, <code>76</code> 사용)</li>
+<li><code>98765</code> - 가능 (<code>76</code> 사용, 5 필요)</li>
+</ul>
+<p><strong>단계 2: 각 카드가 완성시키는 스트레이트 확인</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">카드</th>
+          <th style="text-align: left">완성되는 스트레이트</th>
+          <th style="text-align: left">사용하는 홀 카드</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Q</td>
+          <td style="text-align: left"><code>QJT98</code></td>
+          <td style="text-align: left"><code>JT</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">J</td>
+          <td style="text-align: left"><code>JT987</code></td>
+          <td style="text-align: left"><code>T7</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">T</td>
+          <td style="text-align: left"><code>T9876</code></td>
+          <td style="text-align: left"><code>76</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">7</td>
+          <td style="text-align: left"><code>T9876</code></td>
+          <td style="text-align: left"><code>T6</code> (또는 98765에 76)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">6</td>
+          <td style="text-align: left"><code>98765</code></td>
+          <td style="text-align: left"><code>76</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">5</td>
+          <td style="text-align: left"><code>98765</code></td>
+          <td style="text-align: left"><code>76</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>단계 3: 아웃 수 계산</strong></p>
+<ul>
+<li>Q: 4장</li>
+<li>J: 3장 (1장은 내 손에)</li>
+<li>T: 3장 (1장은 내 손에)</li>
+<li>7: 3장 (1장은 내 손에)</li>
+<li>6: 3장 (1장은 내 손에)</li>
+<li>5: 4장</li>
+</ul>
+<p><strong>총 아웃</strong>: 4 + 3 + 3 + 3 + 3 + 4 = <strong>20아웃</strong></p>
+<h3 id="중복-아웃-처리">중복 아웃 처리<a href="#중복-아웃-처리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>플러시 드로우와 스트레이트 드로우가 동시에 있을 때, 일부 아웃이 <strong>중복</strong>됩니다.</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>보드: <code>9♠8♠2♦</code></li>
+<li>내 핸드: <code>A♠J♠T♥7♣</code></li>
+</ul>
+<p>드로우:</p>
+<ul>
+<li>넛 플러시 드로우: 9아웃 (스페이드)</li>
+<li>스트레이트 드로우: <code>JT7</code>로 Q, J, T, 7, 6 = 약 13-15아웃</li>
+</ul>
+<p><strong>중복 카드</strong>: <code>Q♠</code>, <code>J♠</code>, <code>6♠</code> 등 (스페이드이면서 스트레이트 완성)</p>
+<p><strong>정확한 계산</strong>:</p>
+<ol>
+<li>플러시 아웃: 9</li>
+<li>스트레이트 아웃: ~15</li>
+<li>중복 (스페이드 스트레이트 카드): ~4</li>
+<li><strong>총 아웃</strong>: 9 + 15 - 4 = <strong>~20아웃</strong></li>
+</ol>
+<h3 id="아웃-할인-discounting-outs">아웃 할인 (Discounting Outs)<a href="#아웃-할인-discounting-outs" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>모든 아웃이 &ldquo;라이브&quot;한 것은 아닙니다. 일부 아웃은 <strong>할인</strong>해야 합니다.</p>
+<p><strong>아웃을 할인해야 하는 상황</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">할인 이유</th>
+          <th style="text-align: left">할인율</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">상대가 같은 드로우 가능</td>
+          <td style="text-align: left">내 아웃이 상대 아웃과 중복</td>
+          <td style="text-align: left">10-30%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">완성해도 넛이 아님</td>
+          <td style="text-align: left">더 강한 핸드에 질 수 있음</td>
+          <td style="text-align: left">20-50%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">보드 페어 가능성</td>
+          <td style="text-align: left">플러시/스트레이트가 풀하우스에 짐</td>
+          <td style="text-align: left">10-20%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대 블로커 예상</td>
+          <td style="text-align: left">상대가 특정 카드 보유 추정</td>
+          <td style="text-align: left">10-30%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>예시: 세컨드 넛 플러시 드로우 할인</strong></p>
+<ul>
+<li>내 핸드: <code>K♠Q♠xx</code></li>
+<li>보드: <code>J♠T♠4♥</code></li>
+<li>기본 플러시 아웃: 9</li>
+<li>상대가 <code>A♠</code>를 가지고 있을 확률: ~20%</li>
+<li><strong>할인된 아웃</strong>: 9 × 0.8 = 약 7아웃</li>
+</ul>
+<h2 id="팟-오즈pot-odds와-콜-결정">팟 오즈(Pot Odds)와 콜 결정<a href="#팟-오즈pot-odds와-콜-결정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="팟-오즈란">팟 오즈란?<a href="#팟-오즈란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>팟 오즈</strong>는 콜해야 하는 금액 대비 이길 경우 얻는 금액의 비율입니다.</p>
+<pre tabindex="0"><code>팟 오즈 = 콜해야 하는 금액 : (현재 팟 + 상대 베팅)
+</code></pre><p><strong>예시</strong>:</p>
+<ul>
+<li>현재 팟: $100</li>
+<li>상대 베팅: $50</li>
+<li>콜해야 하는 금액: $50</li>
+<li>팟 오즈: $50 : $150 = 1:3 (또는 25%)</li>
+</ul>
+<h3 id="팟-오즈를-퍼센트로-변환">팟 오즈를 퍼센트로 변환<a href="#팟-오즈를-퍼센트로-변환" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>팟 오즈를 <strong>필요 승률</strong>로 변환하면 계산이 쉬워집니다.</p>
+<pre tabindex="0"><code>필요 승률 = 콜 금액 / (콜 금액 + 현재 팟 + 상대 베팅)
+</code></pre><p><strong>빠른 참조 테이블</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상대 베팅 (팟 대비)</th>
+          <th style="text-align: left">필요 승률</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">1/4 팟</td>
+          <td style="text-align: left">16.7%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">1/3 팟</td>
+          <td style="text-align: left">20%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">1/2 팟</td>
+          <td style="text-align: left">25%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2/3 팟</td>
+          <td style="text-align: left">28.5%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">3/4 팟</td>
+          <td style="text-align: left">30%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">풀 팟</td>
+          <td style="text-align: left">33%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">1.5x 팟</td>
+          <td style="text-align: left">37.5%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2x 팟</td>
+          <td style="text-align: left">40%</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="아웃에서-승률로-변환">아웃에서 승률로 변환<a href="#아웃에서-승률로-변환" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>아웃 수를 알면 <strong>대략적인 승률</strong>을 계산할 수 있습니다.</p>
+<p><strong>2-4 룰 (Rule of 2 and 4)</strong>:</p>
+<ul>
+<li><strong>플랍 → 리버 (2장)</strong>: 아웃 수 × 4 = 대략적 승률</li>
+<li><strong>턴 → 리버 (1장)</strong>: 아웃 수 × 2 = 대략적 승률</li>
+</ul>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>9아웃 플러시 드로우</li>
+<li>플랍에서: 9 × 4 = 36% (정확히는 35%)</li>
+<li>턴에서: 9 × 2 = 18% (정확히는 19.6%)</li>
+</ul>
+<p><strong>아웃별 승률 테이블</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">아웃 수</th>
+          <th style="text-align: left">턴에서 히트</th>
+          <th style="text-align: left">턴+리버 히트</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">8.5%</td>
+          <td style="text-align: left">16.5%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">6</td>
+          <td style="text-align: left">12.8%</td>
+          <td style="text-align: left">24.1%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">8</td>
+          <td style="text-align: left">17%</td>
+          <td style="text-align: left">31.5%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">9</td>
+          <td style="text-align: left">19.1%</td>
+          <td style="text-align: left">35%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">10</td>
+          <td style="text-align: left">21.3%</td>
+          <td style="text-align: left">38.4%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">12</td>
+          <td style="text-align: left">25.5%</td>
+          <td style="text-align: left">44.9%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">13</td>
+          <td style="text-align: left">27.7%</td>
+          <td style="text-align: left">48.1%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">15</td>
+          <td style="text-align: left">31.9%</td>
+          <td style="text-align: left">54.1%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">17</td>
+          <td style="text-align: left">36.2%</td>
+          <td style="text-align: left">59.8%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">20</td>
+          <td style="text-align: left">42.6%</td>
+          <td style="text-align: left">67.5%</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="팟-오즈-기반-콜-결정">팟 오즈 기반 콜 결정<a href="#팟-오즈-기반-콜-결정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>결정 규칙</strong>:</p>
+<ul>
+<li>내 승률 &gt; 필요 승률 → 콜 (수학적으로 +EV)</li>
+<li>내 승률 &lt; 필요 승률 → 폴드 (수학적으로 -EV)</li>
+<li>내 승률 ≈ 필요 승률 → 다른 요소 고려 (임플라이드 오즈 등)</li>
+</ul>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>보드: <code>T♠8♠4♥</code></li>
+<li>내 핸드: <code>A♠K♠J♥9♣</code> (넛 플러시 드로우 + 거터샷)</li>
+<li>아웃: 플러시 9 + 스트레이트 Q 4 - 중복 1 = 12아웃</li>
+<li>상대: 풀 팟 베팅 ($100 into $100)</li>
+<li>필요 승률: 33%</li>
+<li>내 승률 (플랍): 12 × 4 = 48%</li>
+</ul>
+<p><strong>48% &gt; 33%</strong> → 콜</p>
+<h2 id="임플라이드-오즈implied-odds와-역임플라이드-오즈">임플라이드 오즈(Implied Odds)와 역임플라이드 오즈<a href="#임플라이드-오즈implied-odds와-역임플라이드-오즈" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="임플라이드-오즈란">임플라이드 오즈란?<a href="#임플라이드-오즈란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>임플라이드 오즈</strong>는 드로우가 완성됐을 때 <strong>추가로 얻을 수 있는 금액</strong>을 고려한 오즈입니다. 현재 팟 오즈만으로는 콜이 안 되더라도, 히트 후 추가 밸류를 기대할 수 있으면 콜이 정당화됩니다.</p>
+<p><strong>공식</strong>:</p>
+<pre tabindex="0"><code>임플라이드 오즈 = (현재 팟 + 상대 베팅 + 예상 추가 수익) : 콜 금액
+</code></pre><p><strong>예시</strong>:</p>
+<ul>
+<li>현재 팟: $50</li>
+<li>상대 베팅: $50</li>
+<li>콜 금액: $50</li>
+<li>순수 팟 오즈: 1:2 (33% 필요)</li>
+<li>내 승률: 20% (9아웃 턴에서)</li>
+<li>순수 팟 오즈만으로는 폴드</li>
+</ul>
+<p><strong>하지만</strong>, 히트 후 상대 스택 $200 중 $100을 추가로 얻을 수 있다면:</p>
+<ul>
+<li>임플라이드 오즈: ($50 + $50 + $100) : $50 = 4:1 (20% 필요)</li>
+<li><strong>20% = 20%</strong> → 콜 가능 (최소한 손익분기)</li>
+</ul>
+<h3 id="임플라이드-오즈가-높은-상황">임플라이드 오즈가 높은 상황<a href="#임플라이드-오즈가-높은-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">딥스택</td>
+          <td style="text-align: left">상대 스택이 많아 추가 수익 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">히든 드로우</td>
+          <td style="text-align: left">드로우가 보이지 않아 상대가 페이오프</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 강한 핸드 예상</td>
+          <td style="text-align: left">상대가 폴드하지 않을 것</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛 드로우</td>
+          <td style="text-align: left">히트하면 확실히 이김</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">드라이 보드에서 플러시 드로우</td>
+          <td style="text-align: left">완성되면 눈에 안 띔</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="임플라이드-오즈가-낮은-상황">임플라이드 오즈가 낮은 상황<a href="#임플라이드-오즈가-낮은-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">숏스택</td>
+          <td style="text-align: left">추가로 얻을 스택이 없음</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">드로우가 뻔함</td>
+          <td style="text-align: left">상대가 완성 알고 폴드</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">멀티웨이</td>
+          <td style="text-align: left">누군가 폴드, 추가 밸류 감소</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">상대가 타이트</td>
+          <td style="text-align: left">약한 핸드로 콜 안 함</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스케어 카드가 뻔함</td>
+          <td style="text-align: left">플러시/스트레이트 보드에서 체크</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="역임플라이드-오즈-reverse-implied-odds">역임플라이드 오즈 (Reverse Implied Odds)<a href="#역임플라이드-오즈-reverse-implied-odds" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>역임플라이드 오즈</strong>는 드로우가 완성되어도 <strong>더 강한 핸드에 지면서 추가로 잃는 금액</strong>입니다.</p>
+<p><strong>위험한 상황</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">예시</th>
+          <th style="text-align: left">위험</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">세컨드 넛 플러시</td>
+          <td style="text-align: left">K-하이 플러시</td>
+          <td style="text-align: left">A-하이 플러시에 스택 손실</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">로우 스트레이트</td>
+          <td style="text-align: left">8-하이 스트레이트</td>
+          <td style="text-align: left">더 높은 스트레이트에 손실</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세트 (페어드 보드 가능)</td>
+          <td style="text-align: left">미들 세트</td>
+          <td style="text-align: left">탑 세트, 풀하우스에 손실</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">언더 풀하우스</td>
+          <td style="text-align: left">7풀 on K7x</td>
+          <td style="text-align: left">더 높은 풀하우스에 손실</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>역임플라이드 오즈 고려 시 아웃 할인</strong>:</p>
+<p>세컨드 넛 드로우의 경우, 아웃을 <strong>20-50% 할인</strong>해야 합니다.</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li><code>K♠</code> 플러시 드로우 (세컨드 넛)</li>
+<li>기본 아웃: 9</li>
+<li>상대가 <code>A♠</code> 가질 확률: ~15%</li>
+<li>그 경우 손실 예상: 스택의 50%</li>
+<li><strong>할인된 에퀴티</strong>: 실질적으로 7-8아웃 가치</li>
+</ul>
+<h2 id="에퀴티-실현-equity-realization">에퀴티 실현 (Equity Realization)<a href="#에퀴티-실현-equity-realization" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="에퀴티-실현이란">에퀴티 실현이란?<a href="#에퀴티-실현이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>에퀴티</strong>는 현재 시점에서 팟을 이길 확률입니다. 하지만 모든 에퀴티를 <strong>실제로 실현</strong>할 수 있는 것은 아닙니다.</p>
+<p><strong>에퀴티 실현</strong>은 이론적 에퀴티 중 <strong>실제로 얻을 수 있는 비율</strong>입니다.</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>내 에퀴티: 40%</li>
+<li>에퀴티 실현율: 80%</li>
+<li><strong>실질 에퀴티</strong>: 40% × 80% = 32%</li>
+</ul>
+<h3 id="에퀴티-실현에-영향을-미치는-요소">에퀴티 실현에 영향을 미치는 요소<a href="#에퀴티-실현에-영향을-미치는-요소" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>에퀴티 실현을 높이는 요소</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">요소</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">포지션 (IP)</td>
+          <td style="text-align: left">정보 우위, 팟 컨트롤 용이</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛 잠재력</td>
+          <td style="text-align: left">완성되면 확실히 이김</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">플레이어빌리티</td>
+          <td style="text-align: left">다양한 플랍에서 플레이 가능</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스킬 우위</td>
+          <td style="text-align: left">어려운 상황에서 좋은 결정</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">딥스택</td>
+          <td style="text-align: left">임플라이드 오즈 활용</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>에퀴티 실현을 낮추는 요소</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">요소</th>
+          <th style="text-align: left">이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">포지션 없음 (OOP)</td>
+          <td style="text-align: left">정보 불리, 어려운 결정</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세컨드 넛 드로우</td>
+          <td style="text-align: left">역임플라이드 오즈</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">멀티웨이 팟</td>
+          <td style="text-align: left">더 많은 상대 = 더 강한 핸드 필요</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">스킬 열세</td>
+          <td style="text-align: left">실수로 에퀴티 손실</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">숏스택</td>
+          <td style="text-align: left">올인 각에서 포스트플랍 플레이 제한</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="핸드-유형별-에퀴티-실현율-대략">핸드 유형별 에퀴티 실현율 (대략)<a href="#핸드-유형별-에퀴티-실현율-대략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드 유형</th>
+          <th style="text-align: left">IP 실현율</th>
+          <th style="text-align: left">OOP 실현율</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">넛 콤보 드로우</td>
+          <td style="text-align: left">95-100%</td>
+          <td style="text-align: left">85-95%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">넛 플러시 드로우</td>
+          <td style="text-align: left">90-95%</td>
+          <td style="text-align: left">80-90%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">빅 랩 (13아웃+)</td>
+          <td style="text-align: left">90-95%</td>
+          <td style="text-align: left">80-90%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">세컨드 넛 플러시</td>
+          <td style="text-align: left">75-85%</td>
+          <td style="text-align: left">65-75%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">100%+</td>
+          <td style="text-align: left">95-100%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">오버페어</td>
+          <td style="text-align: left">70-80%</td>
+          <td style="text-align: left">55-70%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">탑 페어</td>
+          <td style="text-align: left">60-75%</td>
+          <td style="text-align: left">45-60%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">약한 드로우</td>
+          <td style="text-align: left">70-80%</td>
+          <td style="text-align: left">55-70%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>100%+</strong>: 임플라이드 오즈로 에퀴티 이상 수익 가능</p>
+<h3 id="에퀴티-실현과-프리플랍-결정">에퀴티 실현과 프리플랍 결정<a href="#에퀴티-실현과-프리플랍-결정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에퀴티 실현 개념은 <strong>프리플랍 결정</strong>에도 적용됩니다.</p>
+<p><strong>예시: 3bet에 콜할지 결정</strong></p>
+<ul>
+<li>내 핸드: <code>J♠T♠9♥8♥</code> (더블 수티드 런다운)</li>
+<li>상대 3bet 레인지 대비 에퀴티: 45%</li>
+<li>OOP에서 콜</li>
+<li>에퀴티 실현율: ~80%</li>
+<li><strong>실질 에퀴티</strong>: 45% × 80% = 36%</li>
+</ul>
+<p>팟 오즈가 30%를 요구하면 콜, 40%를 요구하면 폴드 (또는 4bet 고려)</p>
+<h2 id="실전-빠른-계산법">실전 빠른 계산법<a href="#실전-빠른-계산법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>테이블에서 복잡한 수학을 할 시간이 없습니다. <strong>빠르게 근사치를 계산</strong>하는 방법을 익혀야 합니다.</p>
+<h3 id="2-4-룰-응용">2-4 룰 응용<a href="#2-4-룰-응용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>플랍에서 (2장 남음)</strong>: 아웃 × 4 = 승률%
+<strong>턴에서 (1장 남음)</strong>: 아웃 × 2 = 승률%</p>
+<p><strong>보정</strong>:</p>
+<ul>
+<li>아웃이 10개 이상일 때: 결과에서 1-2% 빼기</li>
+<li>아웃이 15개 이상일 때: 결과에서 3-4% 빼기</li>
+</ul>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>13아웃 랩 (플랍)</li>
+<li>계산: 13 × 4 = 52%</li>
+<li>보정: 52% - 2% = 50%</li>
+<li>실제: 48.1% (근사치 정확)</li>
+</ul>
+<h3 id="팟-오즈-빠른-계산">팟 오즈 빠른 계산<a href="#팟-오즈-빠른-계산" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상대 베팅 사이즈별 필요 승률 암기</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">베팅</th>
+          <th style="text-align: left">필요 승률</th>
+          <th style="text-align: left">기억법</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">1/2 팟</td>
+          <td style="text-align: left">25%</td>
+          <td style="text-align: left">&ldquo;4분의 1&rdquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2/3 팟</td>
+          <td style="text-align: left">28-29%</td>
+          <td style="text-align: left">&ldquo;거의 30%&rdquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">풀 팟</td>
+          <td style="text-align: left">33%</td>
+          <td style="text-align: left">&ldquo;3분의 1&rdquo;</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="아웃-빠르게-세기">아웃 빠르게 세기<a href="#아웃-빠르게-세기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>플러시 드로우</strong>: 항상 9아웃 (암기)</p>
+<p><strong>스트레이트 드로우</strong>:</p>
+<ul>
+<li>오픈 엔디드: 8아웃</li>
+<li>거터샷: 4아웃</li>
+<li>랩: 보드 숫자 주변 카드 × 4 (대략)</li>
+</ul>
+<p><strong>랩 빠른 추정법</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">상황</th>
+          <th style="text-align: left">대략적 아웃</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">13카드 랩 (4장 연속 감싸기)</td>
+          <td style="text-align: left">13-17</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">10카드 랩 (3장 연속 감싸기)</td>
+          <td style="text-align: left">10-13</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">기본 오픈 엔디드</td>
+          <td style="text-align: left">8</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">더블 거터</td>
+          <td style="text-align: left">8</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="콤보-드로우-빠른-계산">콤보 드로우 빠른 계산<a href="#콤보-드로우-빠른-계산" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>공식</strong>: 플러시 아웃 + 스트레이트 아웃 - 중복 (보통 2-4)</p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>플러시 드로우 (9) + 13랩 (13) = 22</li>
+<li>중복 예상 (3-4) = 22 - 3 = <strong>19아웃</strong></li>
+</ul>
+<h3 id="실전-계산-예시">실전 계산 예시<a href="#실전-계산-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>팟: $80</li>
+<li>상대 베팅: $60 (3/4 팟)</li>
+<li>내 핸드: 12아웃 콤보 드로우 (플랍)</li>
+</ul>
+<p><strong>계산 과정</strong> (5초 내):</p>
+<ol>
+<li>필요 승률: ~30% (3/4 팟 ≈ 30%)</li>
+<li>내 승률: 12 × 4 = 48% (플랍)</li>
+<li><strong>48% &gt; 30%</strong> → 콜</li>
+</ol>
+<p><strong>고급 고려 (시간 있으면)</strong>:</p>
+<ul>
+<li>넛 드로우인가? → Yes → 추가 임플라이드</li>
+<li>OOP인가? → Yes → 에퀴티 실현 80% → 48% × 0.8 = 38.4%</li>
+<li><strong>38.4% &gt; 30%</strong> → 여전히 콜</li>
+</ul>
+<h2 id="오마하-특수-상황의-에퀴티">오마하 특수 상황의 에퀴티<a href="#오마하-특수-상황의-에퀴티" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="상황-1-랩-vs-세트">상황 1: 랩 vs 세트<a href="#상황-1-랩-vs-세트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보드</strong>: <code>T♠8♣4♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>T♥T♣xx</code></td>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">55-60%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>J♠9♥7♣6♦</code></td>
+          <td style="text-align: left">13아웃 랩</td>
+          <td style="text-align: left">40-45%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 탑 세트가 유리하지만, 랩도 <strong>콜하기에 충분한</strong> 에퀴티</p>
+<h3 id="상황-2-랩--플러시-드로우-vs-세트">상황 2: 랩 + 플러시 드로우 vs 세트<a href="#상황-2-랩--플러시-드로우-vs-세트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보드</strong>: <code>T♠8♠4♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>T♥T♣xx</code></td>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">45-50%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>A♠J♠9♥7♣</code></td>
+          <td style="text-align: left">넛 콤보 드로우</td>
+          <td style="text-align: left">50-55%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 콤보 드로우가 <strong>페이버릿</strong>! 세트가 언더독.</p>
+<h3 id="상황-3-오버페어-vs-랩">상황 3: 오버페어 vs 랩<a href="#상황-3-오버페어-vs-랩" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보드</strong>: <code>9♠7♣4♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>A♠A♥xx</code></td>
+          <td style="text-align: left">오버페어</td>
+          <td style="text-align: left">30-40%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>J♥T♥8♣6♣</code></td>
+          <td style="text-align: left">빅 랩</td>
+          <td style="text-align: left">60-70%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 오버페어는 <strong>심각한 언더독</strong>. 오마하에서 원 페어의 한계.</p>
+<h3 id="상황-4-세트-vs-세트">상황 4: 세트 vs 세트<a href="#상황-4-세트-vs-세트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보드</strong>: <code>K♠9♣4♦</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>K♥K♣xx</code></td>
+          <td style="text-align: left">탑 세트</td>
+          <td style="text-align: left">70-75%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>9♠9♥xx</code></td>
+          <td style="text-align: left">미들 세트</td>
+          <td style="text-align: left">25-30%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 세트 오버 세트는 치명적. 미들/바텀 세트로 큰 팟 주의.</p>
+<h3 id="상황-5-플러시-vs-플러시-드로우">상황 5: 플러시 vs 플러시 드로우<a href="#상황-5-플러시-vs-플러시-드로우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보드</strong>: <code>K♠9♠4♠</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>A♠J♣xx</code></td>
+          <td style="text-align: left">넛 플러시</td>
+          <td style="text-align: left">75-80%</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>Q♠T♣9♥8♦</code></td>
+          <td style="text-align: left">세컨드 넛 + 페어</td>
+          <td style="text-align: left">20-25%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 메이드 플러시 vs 드로우는 메이드 유리. 이미 완성된 핸드.</p>
+<h3 id="상황-6-풀하우스-vs-플러시">상황 6: 풀하우스 vs 플러시<a href="#상황-6-풀하우스-vs-플러시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>보드</strong>: <code>K♠K♣9♠4♠</code></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">핸드</th>
+          <th style="text-align: left">타입</th>
+          <th style="text-align: left">에퀴티</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>K♥9♥xx</code></td>
+          <td style="text-align: left">풀하우스</td>
+          <td style="text-align: left">80%+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>A♠Q♠xx</code></td>
+          <td style="text-align: left">넛 플러시</td>
+          <td style="text-align: left">20% 이하</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>핵심</strong>: 페어드 보드에서 플러시는 약함. 풀하우스 가능성 항상 고려.</p>
+<h2 id="에퀴티-계산-도구-활용">에퀴티 계산 도구 활용<a href="#에퀴티-계산-도구-활용" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="소프트웨어-도구">소프트웨어 도구<a href="#소프트웨어-도구" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>실전 외의 <strong>스터디 세션</strong>에서는 에퀴티 계산기를 활용하세요.</p>
+<p><strong>추천 도구</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">도구</th>
+          <th style="text-align: left">특징</th>
+          <th style="text-align: left">용도</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Equilab (PLO 버전)</td>
+          <td style="text-align: left">무료, 핸드 vs 핸드/레인지</td>
+          <td style="text-align: left">기본 에퀴티 학습</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Flopzilla (PLO)</td>
+          <td style="text-align: left">레인지 분석, 보드 텍스처</td>
+          <td style="text-align: left">레인지 플레이 학습</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PPT (ProPokerTools)</td>
+          <td style="text-align: left">온라인 무료</td>
+          <td style="text-align: left">빠른 확인</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GTO Wizard / MonkerSolver</td>
+          <td style="text-align: left">GTO 솔루션</td>
+          <td style="text-align: left">고급 분석</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="스터디-방법">스터디 방법<a href="#스터디-방법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 핸드 vs 핸드 에퀴티 익히기</strong></p>
+<p>다양한 상황의 에퀴티를 반복 계산하여 <strong>직관</strong> 형성:</p>
+<ul>
+<li>탑 세트 vs 랩</li>
+<li>오버페어 vs 드로우</li>
+<li>플러시 vs 스트레이트</li>
+</ul>
+<p><strong>2. 실전 핸드 리뷰</strong></p>
+<p>플레이한 핸드의 에퀴티를 계산하여 결정 검증:</p>
+<ul>
+<li>내 콜이 수학적으로 맞았는가?</li>
+<li>상대 레인지 대비 내 에퀴티는?</li>
+</ul>
+<p><strong>3. 팟 오즈 드릴</strong></p>
+<p>랜덤 상황 생성 후 빠르게 계산 연습:</p>
+<ul>
+<li>팟 $X, 베팅 $Y, 내 아웃 Z → 콜? 폴드?</li>
+</ul>
+<h2 id="에퀴티-계산-체크리스트">에퀴티 계산 체크리스트<a href="#에퀴티-계산-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>플랍에서</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> 내 드로우의 아웃 수는? (랩? 플러시? 콤보?)</li>
+<li><input disabled="" type="checkbox"> 넛 드로우인가? (아니면 할인)</li>
+<li><input disabled="" type="checkbox"> 상대 베팅 사이즈와 필요 승률은?</li>
+<li><input disabled="" type="checkbox"> 내 승률은 필요 승률보다 높은가?</li>
+<li><input disabled="" type="checkbox"> 임플라이드 오즈가 있는가?</li>
+<li><input disabled="" type="checkbox"> 역임플라이드 오즈 위험은?</li>
+</ul>
+<p><strong>턴에서</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> 남은 아웃 수는? (카드 1장만 남음)</li>
+<li><input disabled="" type="checkbox"> 아웃 수 × 2 = 승률</li>
+<li><input disabled="" type="checkbox"> 팟 오즈와 비교</li>
+<li><input disabled="" type="checkbox"> 스택이 얼마나 남았는가? (올인 각?)</li>
+</ul>
+<h2 id="다음-편에서는">다음 편에서는<a href="#다음-편에서는" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>에퀴티와 확률의 수학적 기초를 다졌습니다. 이제 <strong>심리적, 전략적 요소</strong>로 넘어갈 시간입니다.</p>
+<p>12편에서는 <strong>블로커, 분산, 멘탈 관리</strong>를 다룹니다. 블로커의 개념과 활용법, PLO의 높은 분산과 뱅크롤 관리, 다운스윙에서의 멘탈 유지법을 배웁니다. 수학만큼 중요한 심리적 준비를 갖추겠습니다.</p>
+<hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><strong>라이브 아웃(Live Outs)</strong>: 실제로 덱에 남아있고, 내 핸드를 최고의 핸드로 만들어주는 아웃. 상대가 블로킹하거나, 히트해도 지는 아웃은 &ldquo;데드 아웃(Dead Outs)&ldquo;입니다. 정확한 아웃 계산을 위해서는 라이브 아웃만 세야 합니다.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260112-plo-guide-12/" class="button inline prev">
+        &lt; [<span class="button__text">PLO 가이드: #12 - 블로커, 분산, 멘탈 관리 - 오마하의 숨은 변수들</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260112-plo-guide-10/" class="button inline next">
+         [<span class="button__text">PLO 가이드: #10 - 3bet/4bet 팟 전략 - 프리플랍 전쟁에서 우위 점하기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
