@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Texas Hold&#39;em 가이드: #11. 익스플로잇 전략 - 상대 유형별 조정 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="지금까지 우리는 균형 잡힌(GTO에 가까운) 전략을 배웠습니다. 하지만 실제 포커 테이블에서 완벽하게 균형 잡힌 플레이어는 거의 없습니다. 대부분의 상대는 분명한 약점을 가지고 있고, 이를 착취(Exploit)하는 것이 수익의 핵심입니다." />
+<meta name="keywords" content="poker, holdem, strategy, NLH, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260115-nlh-guide-11/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Texas Hold&#39;em 가이드: #11. 익스플로잇 전략 - 상대 유형별 조정">
+<meta property="og:description" content="지금까지 우리는 균형 잡힌(GTO에 가까운) 전략을 배웠습니다. 하지만 실제 포커 테이블에서 완벽하게 균형 잡힌 플레이어는 거의 없습니다. 대부분의 상대는 분명한 약점을 가지고 있고, 이를 착취(Exploit)하는 것이 수익의 핵심입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260115-nlh-guide-11/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-15 07:16:53 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260115-nlh-guide-11/">Texas Hold&rsquo;em 가이드: #11. 익스플로잇 전략 - 상대 유형별 조정</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-15</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/holdem/">holdem</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/nlh/">NLH</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <blockquote>
+<p>&ldquo;GTO는 상대를 모를 때 쓰는 것이다. 상대를 알면 착취하라.&rdquo;</p></blockquote>
+<p>지금까지 우리는 균형 잡힌(GTO에 가까운) 전략을 배웠습니다. 하지만 실제 포커 테이블에서 완벽하게 균형 잡힌 플레이어는 거의 없습니다. 대부분의 상대는 <strong>분명한 약점</strong>을 가지고 있고, 이를 착취(Exploit)하는 것이 수익의 핵심입니다.</p>
+<p>이번 편에서는 상대 유형을 분류하고, 각 유형에 맞는 익스플로잇 전략을 배워보겠습니다.</p>
+<p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="익스플로잇이란">익스플로잇이란?<a href="#익스플로잇이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="gto-vs-익스플로잇">GTO vs 익스플로잇<a href="#gto-vs-익스플로잇" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>GTO (Game Theory Optimal)</strong>:</p>
+<ul>
+<li>상대가 누구든 손해 보지 않는 전략</li>
+<li>착취 불가능</li>
+<li>상대 약점을 활용하지 않음</li>
+</ul>
+<p><strong>익스플로잇 (Exploitative)</strong>:</p>
+<ul>
+<li>상대의 약점을 공략하는 전략</li>
+<li>최대 EV 추구</li>
+<li>역착취 가능성 있음</li>
+</ul>
+<h3 id="왜-익스플로잇해야-하는가">왜 익스플로잇해야 하는가<a href="#왜-익스플로잇해야-하는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>현실</strong>: 대부분의 상대는 GTO에서 벗어남</p>
+<ul>
+<li>너무 많이 폴드하거나</li>
+<li>너무 많이 콜하거나</li>
+<li>너무 많이 블러프하거나</li>
+<li>충분히 블러프하지 않거나</li>
+</ul>
+<p>이런 불균형을 <strong>방치하면 EV 손실</strong>입니다.</p>
+<h3 id="익스플로잇의-리스크">익스플로잇의 리스크<a href="#익스플로잇의-리스크" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>역착취 가능성</strong>:</p>
+<ul>
+<li>상대가 당신의 조정을 눈치채면</li>
+<li>상대가 역으로 당신을 착취</li>
+</ul>
+<p><strong>대응</strong>:</p>
+<ul>
+<li>약한 상대에게는 강하게 익스플로잇</li>
+<li>강한 상대에게는 GTO에 가깝게</li>
+</ul>
+<hr>
+<h2 id="플레이어-유형-분류">플레이어 유형 분류<a href="#플레이어-유형-분류" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="두-가지-축">두 가지 축<a href="#두-가지-축" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 타이트 vs 루즈 (핸드 선택)</strong></p>
+<ul>
+<li>타이트: 좁은 레인지, 선택적</li>
+<li>루즈: 넓은 레인지, 많은 핸드 플레이</li>
+</ul>
+<p><strong>2. 패시브 vs 어그레시브 (베팅 스타일)</strong></p>
+<ul>
+<li>패시브: 체크/콜 위주</li>
+<li>어그레시브: 베팅/레이즈 위주</li>
+</ul>
+<h3 id="네-가지-기본-유형">네 가지 기본 유형<a href="#네-가지-기본-유형" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>유형</th>
+          <th>타이트/루즈</th>
+          <th>패시브/어그레시브</th>
+          <th>별명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>니트 (Nit)</td>
+          <td>타이트</td>
+          <td>패시브</td>
+          <td>바위</td>
+      </tr>
+      <tr>
+          <td>TAG</td>
+          <td>타이트</td>
+          <td>어그레시브</td>
+          <td>샤크</td>
+      </tr>
+      <tr>
+          <td>피쉬/콜링스테이션</td>
+          <td>루즈</td>
+          <td>패시브</td>
+          <td>물고기/ATM</td>
+      </tr>
+      <tr>
+          <td>LAG/마니악</td>
+          <td>루즈</td>
+          <td>어그레시브</td>
+          <td>미친놈</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="타이트한-상대-익스플로잇하기">타이트한 상대 익스플로잇하기<a href="#타이트한-상대-익스플로잇하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="니트-tight-passive">니트 (Tight-Passive)<a href="#니트-tight-passive" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>프리미엄 핸드만 플레이</li>
+<li>베팅/레이즈 = 항상 강함</li>
+<li>블러프 거의 안 함</li>
+<li>쉽게 폴드</li>
+</ul>
+<p><strong>익스플로잇 전략</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th>전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>그들의 베팅/레이즈</td>
+          <td>강한 핸드 아니면 폴드</td>
+      </tr>
+      <tr>
+          <td>그들이 체크/콜</td>
+          <td>밸류 위주, 블러프 적게</td>
+      </tr>
+      <tr>
+          <td>당신이 포지션</td>
+          <td>자주 스틸, 공격적</td>
+      </tr>
+      <tr>
+          <td>당신의 블러프</td>
+          <td>매우 효과적 (쉽게 폴드)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>실전 팁</strong>:</p>
+<ul>
+<li>그들의 레이즈에 TPTK도 폴드 고려</li>
+<li>블라인드 스틸 빈도 높이기</li>
+<li>C-bet 빈도 높이기</li>
+<li>그들이 저항하면 포기</li>
+</ul>
+<h3 id="tag-tight-aggressive">TAG (Tight-Aggressive)<a href="#tag-tight-aggressive" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>선택적이지만 공격적</li>
+<li>좋은 플레이어인 경우 많음</li>
+<li>균형 잡힌 경향</li>
+</ul>
+<p><strong>익스플로잇 전략</strong>:</p>
+<p>대부분의 TAG도 완벽하지 않습니다:</p>
+<ul>
+<li>특정 스팟에서 오버폴드</li>
+<li>특정 스팟에서 오버블러프</li>
+<li>패턴이 있음</li>
+</ul>
+<p><strong>실전 팁</strong>:</p>
+<ul>
+<li>명확한 약점 찾기 전까지 GTO적 접근</li>
+<li>패턴 파악 후 조정</li>
+<li>무리한 플레이 자제</li>
+</ul>
+<hr>
+<h2 id="루즈한-상대-익스플로잇하기">루즈한 상대 익스플로잇하기<a href="#루즈한-상대-익스플로잇하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="피쉬콜링-스테이션-loose-passive">피쉬/콜링 스테이션 (Loose-Passive)<a href="#피쉬콜링-스테이션-loose-passive" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>너무 많은 핸드 플레이</li>
+<li>폴드를 거의 안 함</li>
+<li>약한 핸드로도 쇼다운까지</li>
+<li>블러프를 거의 안 함</li>
+</ul>
+<p><strong>익스플로잇 전략</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th>전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>밸류벳</td>
+          <td>매우 넓게, 씬 밸류벳</td>
+      </tr>
+      <tr>
+          <td>블러프</td>
+          <td>거의 하지 말 것</td>
+      </tr>
+      <tr>
+          <td>핸드 선택</td>
+          <td>플레이어빌리티 중시</td>
+      </tr>
+      <tr>
+          <td>사이징</td>
+          <td>크게 (콜할 거니까)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>왜 블러프하면 안 되는가</strong>:</p>
+<ul>
+<li>그들은 거의 폴드 안 함</li>
+<li>블러프 = 돈 버리기</li>
+<li>대신 밸류로 돈 뽑기</li>
+</ul>
+<p><strong>실전 팁</strong>:</p>
+<ul>
+<li>&ldquo;이게 콜받을까?&rdquo; 의심이 들어도 베팅</li>
+<li>미들 페어로도 밸류벳 가능</li>
+<li>탑 페어 약한 키커도 3스트릿 밸류</li>
+<li>그들의 레이즈만 존중</li>
+</ul>
+<h3 id="lag마니악-loose-aggressive">LAG/마니악 (Loose-Aggressive)<a href="#lag마니악-loose-aggressive" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>많은 핸드 플레이</li>
+<li>공격적, 블러프 많음</li>
+<li>예측 어려움</li>
+<li>큰 팟 자주 발생</li>
+</ul>
+<p><strong>익스플로잇 전략</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th>전략</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>블러프캐쳐</td>
+          <td>자주 콜 (그들은 블러프 많음)</td>
+      </tr>
+      <tr>
+          <td>밸류 핸드</td>
+          <td>트랩, 슬로우플레이 고려</td>
+      </tr>
+      <tr>
+          <td>포지션</td>
+          <td>그들 왼쪽에 앉아라 (IP 확보)</td>
+      </tr>
+      <tr>
+          <td>핸드 선택</td>
+          <td>타이트하게 (강한 핸드로 대응)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>주의점</strong>:</p>
+<ul>
+<li>그들도 가끔 강한 핸드가 있음</li>
+<li>완전한 공기로 계속 콜하진 말 것</li>
+<li>적절한 블러프캐쳐 선택</li>
+</ul>
+<p><strong>실전 팁</strong>:</p>
+<ul>
+<li>그들의 공격에 패닉하지 말 것</li>
+<li>좋은 핸드로 천천히 플레이</li>
+<li>스윙 대비 (분산 크게)</li>
+<li>그들이 체크하면 = 진짜 약함</li>
+</ul>
+<hr>
+<h2 id="hud-스탯-읽는-법-온라인">HUD 스탯 읽는 법 (온라인)<a href="#hud-스탯-읽는-법-온라인" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="hud란">HUD란?<a href="#hud란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>HUD (Heads-Up Display)</strong> 는 온라인 포커에서 상대의 통계를 화면에 표시해주는 도구입니다.</p>
+<h3 id="핵심-스탯과-해석">핵심 스탯과 해석<a href="#핵심-스탯과-해석" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>VPIP (Voluntarily Put $ In Pot)</strong></p>
+<p>팟에 자발적으로 돈을 넣는 비율</p>
+<table>
+  <thead>
+      <tr>
+          <th>VPIP</th>
+          <th>해석</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&lt; 15%</td>
+          <td>매우 타이트 (니트)</td>
+      </tr>
+      <tr>
+          <td>15-22%</td>
+          <td>타이트</td>
+      </tr>
+      <tr>
+          <td>22-30%</td>
+          <td>표준/약간 루즈</td>
+      </tr>
+      <tr>
+          <td>&gt; 30%</td>
+          <td>루즈</td>
+      </tr>
+      <tr>
+          <td>&gt; 40%</td>
+          <td>매우 루즈 (피쉬)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>PFR (Pre-Flop Raise)</strong></p>
+<p>프리플랍 레이즈 비율</p>
+<table>
+  <thead>
+      <tr>
+          <th>PFR</th>
+          <th>해석</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&lt; 10%</td>
+          <td>패시브</td>
+      </tr>
+      <tr>
+          <td>10-18%</td>
+          <td>표준</td>
+      </tr>
+      <tr>
+          <td>&gt; 20%</td>
+          <td>어그레시브</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>VPIP-PFR 갭</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>갭 (VPIP - PFR)</th>
+          <th>해석</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&lt; 4</td>
+          <td>어그레시브 (레이즈 or 폴드)</td>
+      </tr>
+      <tr>
+          <td>4-8</td>
+          <td>표준</td>
+      </tr>
+      <tr>
+          <td>&gt; 10</td>
+          <td>패시브 (콜 많음)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>예시 해석</strong>:</p>
+<ul>
+<li>VPIP 45 / PFR 8: 루즈-패시브 피쉬</li>
+<li>VPIP 18 / PFR 16: 타이트-어그레시브 TAG</li>
+<li>VPIP 28 / PFR 24: 루즈-어그레시브 LAG</li>
+</ul>
+<h3 id="추가-유용한-스탯">추가 유용한 스탯<a href="#추가-유용한-스탯" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>3-bet%</strong>: 3-bet 빈도</p>
+<ul>
+<li>&lt; 4%: 프리미엄만 3-bet</li>
+<li>4-7%: 표준</li>
+<li>
+<blockquote>
+<p>8%: 라이트 3-bet 많음</p></blockquote>
+</li>
+</ul>
+<p><strong>Fold to 3-bet%</strong>: 3-bet에 폴드 비율</p>
+<ul>
+<li>
+<blockquote>
+<p>65%: 많이 폴드 → 라이트 3-bet 하세요</p></blockquote>
+</li>
+<li>&lt; 50%: 폴드 안 함 → 밸류 위주 3-bet</li>
+</ul>
+<p><strong>C-bet%</strong>: C-bet 빈도</p>
+<ul>
+<li>
+<blockquote>
+<p>70%: 거의 항상 C-bet → 플로팅/레이즈</p></blockquote>
+</li>
+<li>&lt; 50%: 선택적 C-bet → 그들의 C-bet 존중</li>
+</ul>
+<p><strong>Fold to C-bet%</strong>: C-bet에 폴드 비율</p>
+<ul>
+<li>
+<blockquote>
+<p>60%: 쉽게 폴드 → 블러프 C-bet 늘리기</p></blockquote>
+</li>
+<li>&lt; 40%: 폴드 안 함 → 밸류 위주</li>
+</ul>
+<p><strong>WTSD% (Went to Showdown)</strong>: 쇼다운 비율</p>
+<ul>
+<li>
+<blockquote>
+<p>30%: 쇼다운 많이 감 → 블러프 줄이기</p></blockquote>
+</li>
+<li>&lt; 24%: 쉽게 포기 → 블러프 늘리기</li>
+</ul>
+<hr>
+<h2 id="익스플로잇-실전-예시">익스플로잇 실전 예시<a href="#익스플로잇-실전-예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="예시-1-니트-상대-블러프">예시 1: 니트 상대 블러프<a href="#예시-1-니트-상대-블러프" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>니트 (VPIP 12/PFR 10) 가 UTG 오픈</li>
+<li>당신: BTN, K♠ J♣ 콜</li>
+<li>플랍: A♥ 8♣ 3♦</li>
+<li>니트 C-bet, 당신 콜</li>
+<li>턴: 5♠, 니트 체크</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>니트의 UTG 레인지: 매우 타이트</li>
+<li>플랍 C-bet, 턴 체크 = 레인지 캡핑</li>
+<li>AA, AK, AQ는 대부분 턴 베팅</li>
+<li>남은 레인지: 약한 Ax, KK, QQ, JJ</li>
+</ul>
+<p><strong>액션</strong>: 베팅 66%</p>
+<ul>
+<li>니트는 쉽게 폴드</li>
+<li>KK, QQ, JJ도 A 보드에서 고민</li>
+<li>콜당해도 리버 블러프 옵션</li>
+</ul>
+<h3 id="예시-2-콜링-스테이션-밸류벳">예시 2: 콜링 스테이션 밸류벳<a href="#예시-2-콜링-스테이션-밸류벳" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>피쉬 (VPIP 52/PFR 8, WTSD 35%) BB</li>
+<li>당신: CO 오픈, A♦ 8♦</li>
+<li>플랍: 8♠ 5♥ 2♣</li>
+<li>당신 C-bet, 피쉬 콜</li>
+<li>턴: K♣, 당신 베팅, 피쉬 콜</li>
+<li>리버: 3♦</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>피쉬는 매우 넓은 레인지로 콜</li>
+<li>탑 페어 미디엄 키커</li>
+<li>일반적으론 체크/콜 라인일 수 있음</li>
+<li>하지만 이 상대는 뭐든 콜</li>
+</ul>
+<p><strong>액션</strong>: 밸류벳 50%</p>
+<ul>
+<li>피쉬는 77, 66, 44, A5, A2, K5 등으로 콜</li>
+<li>일반 상대면 씬 밸류지만 여기선 명확한 밸류</li>
+<li>블러프 절대 금지 (어차피 폴드 안 함)</li>
+</ul>
+<h3 id="예시-3-lag-상대-트랩">예시 3: LAG 상대 트랩<a href="#예시-3-lag-상대-트랩" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>LAG (VPIP 32/PFR 26) BTN 오픈</li>
+<li>당신: BB, A♠ A♥, 콜 (3-bet 대신)</li>
+</ul>
+<p><strong>이유</strong>:</p>
+<ul>
+<li>일반적으론 AA로 3-bet</li>
+<li>하지만 LAG는 3-bet에 4-bet 블러프 또는 폴드</li>
+<li>콜하면 포스트플랍에서 그의 공격성 이용</li>
+</ul>
+<p><strong>플랍: J♦ 7♠ 3♣</strong></p>
+<ul>
+<li>당신 체크, LAG 베팅, 당신 콜</li>
+</ul>
+<p><strong>턴: 5♥</strong></p>
+<ul>
+<li>당신 체크, LAG 베팅, 당신 콜</li>
+</ul>
+<p><strong>리버: 2♣</strong></p>
+<ul>
+<li>당신 체크, LAG 큰 베팅</li>
+<li>당신 레이즈</li>
+</ul>
+<p><strong>결과</strong>:</p>
+<ul>
+<li>LAG의 공격성을 역이용</li>
+<li>스택 전체 획득 가능</li>
+</ul>
+<h3 id="예시-4-스탯-기반-조정">예시 4: 스탯 기반 조정<a href="#예시-4-스탯-기반-조정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>상대 스탯: VPIP 25 / PFR 20 / Fold to 3-bet 72%</li>
+<li>상대 CO 오픈</li>
+<li>당신: BTN, 7♠ 6♠</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>상대는 어그레시브하지만</li>
+<li>Fold to 3-bet 72% = 매우 높음</li>
+<li>3-bet에 자주 폴드</li>
+</ul>
+<p><strong>액션</strong>: 라이트 3-bet</p>
+<ul>
+<li>상대가 72% 폴드하면 즉시 수익</li>
+<li>콜당해도 76s는 플레이 가능</li>
+<li>익스플로잇: 높은 폴드 to 3-bet 활용</li>
+</ul>
+<hr>
+<h2 id="테이블-다이내믹-조정">테이블 다이내믹 조정<a href="#테이블-다이내믹-조정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="테이블-전체-평가">테이블 전체 평가<a href="#테이블-전체-평가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>개별 상대뿐 아니라 테이블 전체의 경향을 파악하세요.</p>
+<p><strong>타이트한 테이블</strong>:</p>
+<ul>
+<li>스틸 빈도 높이기</li>
+<li>블러프 효과적</li>
+<li>밸류 레인지 좁히기</li>
+</ul>
+<p><strong>루즈한 테이블</strong>:</p>
+<ul>
+<li>타이트하게, 밸류 위주</li>
+<li>블러프 줄이기</li>
+<li>큰 팟 준비</li>
+</ul>
+<h3 id="이미지-관리">이미지 관리<a href="#이미지-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>당신의 테이블 이미지도 중요합니다.</p>
+<p><strong>타이트한 이미지</strong>:</p>
+<ul>
+<li>블러프가 더 효과적</li>
+<li>밸류벳에 덜 콜받음</li>
+</ul>
+<p><strong>루즈한 이미지</strong>:</p>
+<ul>
+<li>블러프가 덜 효과적</li>
+<li>밸류벳에 더 많이 콜받음</li>
+</ul>
+<p><strong>조정</strong>:</p>
+<ul>
+<li>타이트한 이미지 → 블러프 빈도 높이기</li>
+<li>루즈한 이미지 → 밸류 위주</li>
+</ul>
+<hr>
+<h2 id="익스플로잇-요약-표">익스플로잇 요약 표<a href="#익스플로잇-요약-표" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>상대 유형</th>
+          <th>핵심 약점</th>
+          <th>익스플로잇</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>니트</td>
+          <td>쉽게 폴드</td>
+          <td>자주 블러프, 그들의 베팅엔 폴드</td>
+      </tr>
+      <tr>
+          <td>TAG</td>
+          <td>패턴 있음</td>
+          <td>패턴 파악 후 조정</td>
+      </tr>
+      <tr>
+          <td>피쉬/콜링스테이션</td>
+          <td>폴드 안 함</td>
+          <td>밸류 극대화, 블러프 금지</td>
+      </tr>
+      <tr>
+          <td>LAG/마니악</td>
+          <td>블러프 과다</td>
+          <td>블러프캐쳐, 트랩</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="정리">정리<a href="#정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>익스플로잇은 포커 수익의 <strong>핵심 원천</strong>입니다.</p>
+<p><strong>핵심 포인트</strong>:</p>
+<ol>
+<li>GTO는 기본, 익스플로잇은 수익</li>
+<li>상대 유형 파악: 타이트/루즈 × 패시브/어그레시브</li>
+<li>니트: 블러프 많이, 그들 저항엔 폴드</li>
+<li>피쉬: 밸류 극대화, 블러프 금지</li>
+<li>LAG: 블러프캐쳐, 트랩 활용</li>
+<li>HUD 스탯으로 상대 유형 빠르게 파악</li>
+</ol>
+<p>다음 편에서는 <strong>멀티웨이 팟 전략</strong>을 다룹니다. 3명 이상이 참여할 때 완전히 달라지는 전략을 배워보겠습니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260115-nlh-guide-12/" class="button inline prev">
+        &lt; [<span class="button__text">Texas Hold&#39;em 가이드: #12. 멀티웨이 팟 전략 - 3명 이상일 때 달라지는 모든 것</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260115-nlh-guide-10/" class="button inline next">
+         [<span class="button__text">Texas Hold&#39;em 가이드: #10. 블러프의 기술</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
