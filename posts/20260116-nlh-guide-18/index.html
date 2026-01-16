@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Texas Hold&#39;em 가이드: #18. 토너먼트 전략 (上) - ICM과 단계별 전략 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="토너먼트 포커는 캐시게임과 근본적으로 다른 게임입니다. 캐시게임에서 칩은 곧 돈이지만, 토너먼트에서 칩은 프라이즈 풀의 지분을 나타내며, 그 가치는 상황에 따라 변합니다." />
+<meta name="keywords" content="poker, holdem, strategy, NLH, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260116-nlh-guide-18/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Texas Hold&#39;em 가이드: #18. 토너먼트 전략 (上) - ICM과 단계별 전략">
+<meta property="og:description" content="토너먼트 포커는 캐시게임과 근본적으로 다른 게임입니다. 캐시게임에서 칩은 곧 돈이지만, 토너먼트에서 칩은 프라이즈 풀의 지분을 나타내며, 그 가치는 상황에 따라 변합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260116-nlh-guide-18/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-16 18:45:41 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260116-nlh-guide-18/">Texas Hold&rsquo;em 가이드: #18. 토너먼트 전략 (上) - ICM과 단계별 전략</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-16</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/poker/">poker</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/holdem/">holdem</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/nlh/">NLH</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p>&ldquo;토너먼트에서 칩은 돈이 아니다. 칩의 가치는 상황에 따라 변한다.&rdquo;</p></blockquote>
+<p>토너먼트 포커는 캐시게임과 <strong>근본적으로 다른 게임</strong>입니다. 캐시게임에서 칩은 곧 돈이지만, 토너먼트에서 칩은 프라이즈 풀의 지분을 나타내며, 그 가치는 상황에 따라 변합니다.</p>
+<p>이번 편에서는 토너먼트 특유의 개념인 ICM과 단계별 전략을 배워보겠습니다.</p>
+<hr>
+<h2 id="캐시게임-vs-토너먼트-근본적-차이">캐시게임 vs 토너먼트: 근본적 차이<a href="#캐시게임-vs-토너먼트-근본적-차이" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="칩-가치의-차이">칩 가치의 차이<a href="#칩-가치의-차이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>캐시게임</strong>:</p>
+<ul>
+<li>1 칩 = $1 (또는 해당 금액)</li>
+<li>항상 동일한 가치</li>
+<li>cEV(Chip EV) = $EV</li>
+</ul>
+<p><strong>토너먼트</strong>:</p>
+<ul>
+<li>칩 가치 ≠ 고정</li>
+<li>칩이 많아질수록 추가 칩의 가치 감소</li>
+<li>cEV ≠ $EV</li>
+</ul>
+<h3 id="예시-칩-가치의-비선형성">예시: 칩 가치의 비선형성<a href="#예시-칩-가치의-비선형성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>: 3명 남은 SNG, 프라이즈 50%/30%/20%</p>
+<table>
+  <thead>
+      <tr>
+          <th>플레이어</th>
+          <th>칩</th>
+          <th>프라이즈 풀 지분 ($EV)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>A</td>
+          <td>5000</td>
+          <td>50% × total?</td>
+      </tr>
+      <tr>
+          <td>B</td>
+          <td>3000</td>
+          <td>30% × total?</td>
+      </tr>
+      <tr>
+          <td>C</td>
+          <td>2000</td>
+          <td>20% × total?</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>만약 칩 = 돈이라면</strong>:</p>
+<ul>
+<li>A: 50%, B: 30%, C: 20%</li>
+</ul>
+<p><strong>실제 ICM 계산</strong>:</p>
+<ul>
+<li>A: ~41%, B: ~32%, C: ~27%</li>
+</ul>
+<p>칩 리더가 가진 칩의 &ldquo;한계 가치&quot;가 낮습니다.</p>
+<h3 id="결과-플레이-조정">결과: 플레이 조정<a href="#결과-플레이-조정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>캐시게임</strong>: 칩 EV 최대화
+<strong>토너먼트</strong>: 달러 EV ($EV) 최대화 → ICM 고려</p>
+<hr>
+<h2 id="icm-independent-chip-model-이해하기">ICM (Independent Chip Model) 이해하기<a href="#icm-independent-chip-model-이해하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="icm이란">ICM이란?<a href="#icm이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>ICM</strong>은 현재 칩 스택을 토너먼트 프라이즈 지분으로 변환하는 모델입니다.</p>
+<p><strong>핵심 원리</strong>:</p>
+<ol>
+<li>칩이 많을수록 1등 확률 높음</li>
+<li>하지만 추가 칩의 가치는 체감</li>
+<li>칩을 잃으면 가치 손실이 더 큼</li>
+</ol>
+<h3 id="icm-계산의-직관적-이해">ICM 계산의 직관적 이해<a href="#icm-계산의-직관적-이해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>첫 번째 칩의 가치 &gt; 마지막 칩의 가치</strong></p>
+<p><strong>예시</strong>:</p>
+<ul>
+<li>0 칩 → 1000 칩: 생존, 거대한 가치</li>
+<li>10000 칩 → 11000 칩: 약간의 추가 가치</li>
+<li>이미 많은 칩이 있으면 추가 칩 가치 낮음</li>
+</ul>
+<h3 id="위험-프리미엄-risk-premium">위험 프리미엄 (Risk Premium)<a href="#위험-프리미엄-risk-premium" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>ICM에서 <strong>위험은 비대칭적</strong>입니다.</p>
+<p><strong>예시</strong>: 당신 5000칩, 상대 5000칩</p>
+<ul>
+<li>이기면: 10000칩 (하지만 $EV 증가 &lt; 2배)</li>
+<li>지면: 0칩 (탈락)</li>
+</ul>
+<p><strong>손실의 고통 &gt; 이익의 기쁨</strong></p>
+<p>따라서 <strong>위험 회피</strong>가 종종 최적입니다.</p>
+<hr>
+<h2 id="버블-플레이-icm-압박이-극대화되는-순간">버블 플레이: ICM 압박이 극대화되는 순간<a href="#버블-플레이-icm-압박이-극대화되는-순간" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="버블이란">버블이란?<a href="#버블이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>버블</strong>은 프라이즈에 들어가기 직전, 마지막 탈락자가 결정되는 시점입니다.</p>
+<p><strong>예시</strong>: 100명 토너먼트, 15명 입상</p>
+<ul>
+<li>16명 남음 = 버블</li>
+<li>다음 탈락자는 상금 없이 아웃</li>
+</ul>
+<h3 id="버블에서의-icm-압박">버블에서의 ICM 압박<a href="#버블에서의-icm-압박" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>버블에서 탈락 = 0원</strong>
+<strong>버블 통과 = 최소 입상금 보장</strong></p>
+<p>이 차이가 엄청난 ICM 압박을 만듭니다.</p>
+<h3 id="버블-전략-스택별-접근">버블 전략: 스택별 접근<a href="#버블-전략-스택별-접근" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>빅 스택 (칩 리더)</strong>:</p>
+<ul>
+<li>ICM 압박 <strong>가하기</strong></li>
+<li>미디엄/스몰 스택은 버스트 피하려 함</li>
+<li>공격적으로 스틸</li>
+<li>리스크 낮은 작은 팟 자주 획득</li>
+</ul>
+<p><strong>미디엄 스택</strong>:</p>
+<ul>
+<li>가장 어려운 위치</li>
+<li>버스트 피하면서 성장 필요</li>
+<li>빅 스택과의 대결 피하기</li>
+<li>스몰 스택 압박 가능</li>
+</ul>
+<p><strong>스몰 스택</strong>:</p>
+<ul>
+<li>생존이 목표</li>
+<li>하지만 너무 타이트하면 블라인드로 소멸</li>
+<li>좋은 스팟에서 푸시</li>
+<li>빅 스택과 헤즈업 피하기</li>
+</ul>
+<p><strong>베리 스몰 스택 (&lt; 10BB)</strong>:</p>
+<ul>
+<li>역설적으로 <strong>더 자유로움</strong></li>
+<li>어차피 곧 올인해야 함</li>
+<li>ICM 압박 적음 (잃을 것 없음)</li>
+<li>스팟 찾아 푸시</li>
+</ul>
+<hr>
+<h2 id="앤티ante-구조의-영향">앤티(Ante) 구조의 영향<a href="#앤티ante-구조의-영향" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="앤티란">앤티란?<a href="#앤티란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>앤티</strong>는 블라인드 외에 모든 플레이어가 내는 강제 베팅입니다.</p>
+<p><strong>일반적인 앤티 구조</strong>:</p>
+<ul>
+<li>클래식 앤티: 모든 플레이어가 동일 금액</li>
+<li>빅 블라인드 앤티: BB가 전체 앤티를 대신 냄</li>
+</ul>
+<h3 id="앤티가-게임에-미치는-영향">앤티가 게임에 미치는 영향<a href="#앤티가-게임에-미치는-영향" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 팟이 커짐</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>구조</th>
+          <th>시작 팟 (9명)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>블라인드만</td>
+          <td>1.5BB</td>
+      </tr>
+      <tr>
+          <td>+ 0.1BB 앤티</td>
+          <td>2.4BB</td>
+      </tr>
+      <tr>
+          <td>+ BB 앤티</td>
+          <td>2.5BB</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2. 스틸 가치 증가</strong></p>
+<ul>
+<li>더 많은 데드 머니</li>
+<li>스틸 성공 시 더 큰 보상</li>
+<li>오픈 레인지 확장</li>
+</ul>
+<p><strong>3. 블라인드 디펜스 중요</strong></p>
+<ul>
+<li>팟 오즈 좋아짐</li>
+<li>폴드하면 더 큰 손실</li>
+<li>디펜스 레인지 확장</li>
+</ul>
+<h3 id="앤티-구조에서의-조정">앤티 구조에서의 조정<a href="#앤티-구조에서의-조정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>조정</th>
+          <th>방향</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>오픈 레인지</td>
+          <td>확장 (더 많은 데드 머니)</td>
+      </tr>
+      <tr>
+          <td>스틸 빈도</td>
+          <td>증가</td>
+      </tr>
+      <tr>
+          <td>3-bet 블러프</td>
+          <td>증가 (폴드 에퀴티 가치 상승)</td>
+      </tr>
+      <tr>
+          <td>BB 디펜스</td>
+          <td>확장 (팟 오즈 좋음)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="토너먼트-단계별-전략">토너먼트 단계별 전략<a href="#토너먼트-단계별-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1단계-얼리-스테이지-deep-stack">1단계: 얼리 스테이지 (Deep Stack)<a href="#1단계-얼리-스테이지-deep-stack" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>100BB+ 딥스택</li>
+<li>ICM 압박 거의 없음</li>
+<li>캐시게임과 유사</li>
+</ul>
+<p><strong>전략</strong>:</p>
+<ul>
+<li>딥스택 전략 적용</li>
+<li>스펙 핸드 가치 높음</li>
+<li>임플라이드 오즈 추구</li>
+<li>칩 축적 목표</li>
+</ul>
+<p><strong>조정 포인트</strong>:</p>
+<ul>
+<li>약간의 분산 회피 (리바이 없으므로)</li>
+<li>마지날 스팟 피하기</li>
+<li>좋은 스팟 기다리기</li>
+</ul>
+<h3 id="2단계-미들-스테이지-antes-begin">2단계: 미들 스테이지 (Antes Begin)<a href="#2단계-미들-스테이지-antes-begin" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>40-70BB</li>
+<li>앤티 시작</li>
+<li>스택 분포 다양해짐</li>
+</ul>
+<p><strong>전략</strong>:</p>
+<ul>
+<li>스틸 빈도 증가</li>
+<li>포지션 중요성 상승</li>
+<li>숏스택 버스트 노리기</li>
+<li>빅 스택과의 불필요한 대결 피하기</li>
+</ul>
+<p><strong>조정 포인트</strong>:</p>
+<ul>
+<li>스택 크기 인식</li>
+<li>테이블 다이내믹 파악</li>
+<li>앤티 고려한 레인지 조정</li>
+</ul>
+<h3 id="3단계-버블-itm-직전">3단계: 버블 (ITM 직전)<a href="#3단계-버블-itm-직전" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>ICM 압박 최대</li>
+<li>생존 vs 칩 축적 딜레마</li>
+<li>스택별 전략 차별화</li>
+</ul>
+<p><strong>전략</strong>:</p>
+<ul>
+<li>빅 스택: 공격적 스틸</li>
+<li>미디엄: 신중하게</li>
+<li>스몰: 생존, 하지만 죽어가지 않기</li>
+<li>베리 스몰: 푸시 기회 찾기</li>
+</ul>
+<h3 id="4단계-itm-in-the-money">4단계: ITM (In The Money)<a href="#4단계-itm-in-the-money" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>최소 상금 보장</li>
+<li>ICM 압박 약간 완화</li>
+<li>하지만 여전히 존재</li>
+</ul>
+<p><strong>전략</strong>:</p>
+<ul>
+<li>버블 직후 약간 루즈해짐</li>
+<li>빅 점프 (페이 점프) 고려</li>
+<li>파이널 테이블 목표</li>
+</ul>
+<h3 id="5단계-파이널-테이블-접근">5단계: 파이널 테이블 접근<a href="#5단계-파이널-테이블-접근" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>페이 점프가 커짐</li>
+<li>ICM 다시 중요해짐</li>
+<li>9-10명 남았을 때</li>
+</ul>
+<p><strong>전략</strong>:</p>
+<ul>
+<li>파이널 테이블 버블과 유사</li>
+<li>빅 스택 공격, 스몰 스택 생존</li>
+</ul>
+<hr>
+<h2 id="icm-계산기와-활용">ICM 계산기와 활용<a href="#icm-계산기와-활용" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="icm-계산기란">ICM 계산기란?<a href="#icm-계산기란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>ICM 계산기는 현재 칩 분포에서 각 플레이어의 $EV를 계산합니다.</p>
+<p><strong>대표적인 도구</strong>:</p>
+<ul>
+<li>ICMIZER</li>
+<li>HoldemResources Calculator</li>
+<li>PokerStove (기본)</li>
+</ul>
+<h3 id="icm-계산기-활용법">ICM 계산기 활용법<a href="#icm-계산기-활용법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>1. 푸시/폴드 레인지 확인</strong></p>
+<ul>
+<li>특정 상황에서 +$EV 푸시 레인지</li>
+<li>cEV vs $EV 비교</li>
+</ul>
+<p><strong>2. 콜 레인지 확인</strong></p>
+<ul>
+<li>상대 푸시에 대한 $EV 콜 레인지</li>
+<li>ICM 고려한 조정</li>
+</ul>
+<p><strong>3. 딜 메이킹 계산</strong></p>
+<ul>
+<li>프라이즈 분배 협상 시 기준</li>
+</ul>
+<h3 id="icm-계산-예시">ICM 계산 예시<a href="#icm-계산-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>: SNG 버블, 4명 중 3명 입상</p>
+<table>
+  <thead>
+      <tr>
+          <th>플레이어</th>
+          <th>칩</th>
+          <th>입상금 구조</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>A</td>
+          <td>4000</td>
+          <td>1등: 50%</td>
+      </tr>
+      <tr>
+          <td>B</td>
+          <td>3000</td>
+          <td>2등: 30%</td>
+      </tr>
+      <tr>
+          <td>C</td>
+          <td>2000</td>
+          <td>3등: 20%</td>
+      </tr>
+      <tr>
+          <td>D</td>
+          <td>1000</td>
+          <td>4등: 0%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>ICM $EV 계산 결과</strong>:</p>
+<ul>
+<li>A: ~35%</li>
+<li>B: ~28%</li>
+<li>C: ~22%</li>
+<li>D: ~15%</li>
+</ul>
+<p><strong>시사점</strong>:</p>
+<ul>
+<li>D는 절박 (버블 보이)</li>
+<li>A가 D를 타겟팅 유리</li>
+<li>B, C는 D 아웃 기다리는 것이 EV+</li>
+</ul>
+<hr>
+<h2 id="실전-시나리오">실전 시나리오<a href="#실전-시나리오" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="시나리오-1-버블-빅-스택">시나리오 1: 버블 빅 스택<a href="#시나리오-1-버블-빅-스택" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>MTT 버블, 당신 칩 리더</li>
+<li>폴드 돌아오고 당신 BTN</li>
+<li>핸드: K♠ 7♦</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>빅 스택으로서 ICM 압박 가능</li>
+<li>SB, BB는 버스트 피하려 함</li>
+<li>K7o로 스틸 +$EV?</li>
+</ul>
+<p><strong>액션</strong>: 레이즈</p>
+<ul>
+<li>블라인드 스틸</li>
+<li>3-bet 당해도 폴드 가능</li>
+<li>ICM 레버리지 활용</li>
+</ul>
+<h3 id="시나리오-2-버블-미디엄-스택">시나리오 2: 버블 미디엄 스택<a href="#시나리오-2-버블-미디엄-스택" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>버블, 당신 미디엄 스택 (25BB)</li>
+<li>칩 리더가 BTN에서 오픈</li>
+<li>당신 BB, A♠ J♦</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>AJo = 좋은 핸드</li>
+<li>하지만 칩 리더와 대결</li>
+<li>버스트 시 입상 실패</li>
+</ul>
+<p><strong>옵션</strong>:</p>
+<ol>
+<li>폴드: 너무 타이트, EV 손실</li>
+<li>콜: 가능, OOP에서 플레이</li>
+<li>3-bet: 리스크 있지만 폴드 에퀴티</li>
+</ol>
+<p><strong>액션</strong>: 콜 또는 작은 3-bet</p>
+<ul>
+<li>올인 3-bet은 리스크 과다</li>
+<li>콜 후 포스트플랍 플레이</li>
+<li>작은 3-bet으로 폴드 에퀴티 추구</li>
+</ul>
+<h3 id="시나리오-3-버블-스몰-스택-푸시">시나리오 3: 버블 스몰 스택 푸시<a href="#시나리오-3-버블-스몰-스택-푸시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>상황</strong>:</p>
+<ul>
+<li>버블, 당신 12BB</li>
+<li>CO에서 7♠ 7♥</li>
+<li>앞에 모두 폴드</li>
+</ul>
+<p><strong>분석</strong>:</p>
+<ul>
+<li>77 = 강한 푸시 후보</li>
+<li>12BB = 푸시/폴드 영역</li>
+<li>버블이지만 폴드하기엔 너무 강함</li>
+</ul>
+<p><strong>액션</strong>: 올인</p>
+<ul>
+<li>77은 ICM 고려해도 푸시</li>
+<li>폴드하면 블라인드로 소멸</li>
+<li>콜당해도 플립 이상</li>
+</ul>
+<hr>
+<h2 id="흔한-토너먼트-실수">흔한 토너먼트 실수<a href="#흔한-토너먼트-실수" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="실수-1-버블에서-너무-타이트">실수 1: 버블에서 너무 타이트<a href="#실수-1-버블에서-너무-타이트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>블라인드로 죽어감</li>
+<li>입상해도 최하위</li>
+<li>적절한 스팟에서 푸시 필요</li>
+</ul>
+<h3 id="실수-2-빅-스택인데-소극적">실수 2: 빅 스택인데 소극적<a href="#실수-2-빅-스택인데-소극적" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>ICM 레버리지 활용 안 함</li>
+<li>다른 사람들이 버블 버스트 기다림</li>
+<li>공격해서 칩 모아야 함</li>
+</ul>
+<h3 id="실수-3-icm-무시">실수 3: ICM 무시<a href="#실수-3-icm-무시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>캐시게임처럼 플레이</li>
+<li>마지날 스팟에서 버스트</li>
+<li>$EV 손실</li>
+</ul>
+<h3 id="실수-4-icm-과대평가">실수 4: ICM 과대평가<a href="#실수-4-icm-과대평가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>너무 니트하게 플레이</li>
+<li>좋은 +$EV 스팟 포기</li>
+<li>칩 축적 실패</li>
+</ul>
+<hr>
+<h2 id="정리">정리<a href="#정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>토너먼트는 <strong>ICM이라는 추가 레이어</strong>가 있는 게임입니다.</p>
+<p><strong>핵심 포인트</strong>:</p>
+<ol>
+<li>칩 ≠ 돈, 칩 가치는 상황에 따라 변함</li>
+<li>ICM: 칩을 $EV로 변환하는 모델</li>
+<li>버블에서 ICM 압박 극대화</li>
+<li>스택별 전략: 빅=공격, 미디엄=신중, 스몰=생존+푸시</li>
+<li>앤티 구조: 스틸/디펜스 레인지 확장</li>
+<li>단계별로 전략 조정 필요</li>
+</ol>
+<p>다음 편에서는 <strong>토너먼트 전략 (下)</strong> 를 다룹니다. 파이널 테이블, 다양한 토너먼트 포맷, 딜 메이킹을 배워보겠습니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260116-nlh-guide-19/" class="button inline prev">
+        &lt; [<span class="button__text">Texas Hold&#39;em 가이드: #19. 토너먼트 전략 (下) - 파이널 테이블과 다양한 포맷</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260116-nlh-guide-17/" class="button inline next">
+         [<span class="button__text">Texas Hold&#39;em 가이드: #17. GTO와 익스플로잇의 균형</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
