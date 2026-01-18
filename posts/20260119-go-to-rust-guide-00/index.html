@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Go 개발자를 위한 Rust 학습 가이드: #0. Overview :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Go 언어에 익숙한 개발자가 Rust를 체계적으로 학습할 수 있도록 구성된 가이드 Overview" />
+<meta name="keywords" content="golang, programming, dev, rust, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260119-go-to-rust-guide-00/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go 개발자를 위한 Rust 학습 가이드: #0. Overview">
+<meta property="og:description" content="Go 언어에 익숙한 개발자가 Rust를 체계적으로 학습할 수 있도록 구성된 가이드 Overview" />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260119-go-to-rust-guide-00/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-19 08:36:02 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260119-go-to-rust-guide-00/">Go 개발자를 위한 Rust 학습 가이드: #0. Overview</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-19</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/rust/">rust</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>From Go to Rust: A Comprehensive Guide for Go Developers</strong></p></blockquote>
+<p>Go 언어에 익숙한 개발자가 Rust를 체계적으로 학습할 수 있도록 구성된 가이드입니다. Go와의 비교를 통해 새로운 개념을 빠르게 이해하고, 실무에서 바로 적용할 수 있는 실용적인 내용을 담았습니다.</p>
+<hr>
+<h2 id="가이드의-특징">가이드의 특징<a href="#가이드의-특징" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><strong>Go 개발자 관점</strong>: 모든 개념을 Go와 비교하여 설명, 익숙한 개념에서 출발</li>
+<li><strong>실용적 접근</strong>: 이론보다 실제 코드 예제 중심</li>
+<li><strong>점진적 난이도</strong>: 기초부터 고급까지 체계적 진행</li>
+<li><strong>실전 지향</strong>: 각 섹션에 Go ↔ Rust 코드 변환 예제 포함</li>
+<li><strong>함정 주의</strong>: Go 개발자가 흔히 하는 실수와 해결법 명시</li>
+</ul>
+<hr>
+<h2 id="섹션별-상세-목차">섹션별 상세 목차<a href="#섹션별-상세-목차" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<hr>
+<h2 id="section-1-시작하기---rust-소개와-환경-설정">Section 1: 시작하기 - Rust 소개와 환경 설정<a href="#section-1-시작하기---rust-소개와-환경-설정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 설계 철학을 이해하고, Go와의 포지셔닝 차이를 명확히 합니다. 개발 환경을 설정하고 첫 프로젝트를 생성합니다.</p>
+<h3 id="11-rust는-왜-배워야-하는가">1.1 Rust는 왜 배워야 하는가?<a href="#11-rust는-왜-배워야-하는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Rust의 설계 철학: 안전성(Safety), 속도(Speed), 동시성(Concurrency)</li>
+<li>Go vs Rust: 설계 목표의 차이</li>
+<li>Rust가 빛나는 영역
+<ul>
+<li>시스템 프로그래밍</li>
+<li>WebAssembly</li>
+<li>임베디드 시스템</li>
+<li>고성능 네트워크 서비스</li>
+</ul>
+</li>
+<li>언제 Go를, 언제 Rust를 선택할 것인가</li>
+</ul>
+<h3 id="12-개발-환경-설정">1.2 개발 환경 설정<a href="#12-개발-환경-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>rustup을 통한 설치</li>
+<li>Cargo 기초: Rust의 빌드 시스템이자 패키지 매니저</li>
+<li><code>cargo</code> vs <code>go</code> 명령어 비교</li>
+<li>IDE 설정
+<ul>
+<li>VS Code + rust-analyzer</li>
+<li>JetBrains RustRover</li>
+</ul>
+</li>
+<li>유용한 Cargo 명령어와 확장 도구</li>
+</ul>
+<h3 id="13-첫-번째-rust-프로젝트">1.3 첫 번째 Rust 프로젝트<a href="#13-첫-번째-rust-프로젝트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Hello, World! 작성 및 분석</li>
+<li><code>cargo new</code> vs <code>go mod init</code></li>
+<li>프로젝트 구조 비교
+<ul>
+<li>Go workspace vs Cargo workspace</li>
+<li><code>go.mod</code> vs <code>Cargo.toml</code></li>
+</ul>
+</li>
+<li>빌드와 실행: <code>cargo build</code>, <code>cargo run</code></li>
+</ul>
+<h3 id="14-repl과-빠른-실험-환경">1.4 REPL과 빠른 실험 환경<a href="#14-repl과-빠른-실험-환경" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Rust Playground (play.rust-lang.org)</li>
+<li><code>cargo run --example</code></li>
+<li>evcxr: Rust REPL</li>
+<li>문서 내 예제 실행</li>
+</ul>
+<h3 id="15-go-개발자가-알아야-할-rust-생태계">1.5 Go 개발자가 알아야 할 Rust 생태계<a href="#15-go-개발자가-알아야-할-rust-생태계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>crates.io vs pkg.go.dev</li>
+<li>docs.rs: 자동 생성 문서</li>
+<li>필수 크레이트 소개
+<ul>
+<li>serde: 직렬화/역직렬화</li>
+<li>tokio: 비동기 런타임</li>
+<li>anyhow/thiserror: 에러 처리</li>
+<li>clap: CLI 파싱</li>
+<li>tracing: 로깅과 추적</li>
+</ul>
+</li>
+<li>문서화 문화와 예제 코드의 중요성</li>
+</ul>
+<hr>
+<h2 id="section-2-기본-문법과-타입-시스템">Section 2: 기본 문법과 타입 시스템<a href="#section-2-기본-문법과-타입-시스템" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 기본 문법을 Go와 비교하며 학습합니다. 불변성 기본 원칙, 타입 시스템, 함수, 제어 흐름을 다룹니다.</p>
+<h3 id="21-변수와-가변성">2.1 변수와 가변성<a href="#21-변수와-가변성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>let</code> vs <code>var</code>: 불변이 기본인 이유</li>
+<li><code>mut</code> 키워드: 명시적 가변성</li>
+<li>섀도잉(Shadowing): Go에 없는 개념</li>
+<li>상수(<code>const</code>)와 정적 변수(<code>static</code>)</li>
+<li>변수 선언 비교 예제</li>
+</ul>
+<h3 id="22-기본-데이터-타입">2.2 기본 데이터 타입<a href="#22-기본-데이터-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>스칼라 타입
+<ul>
+<li>정수: <code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code>, <code>isize</code></li>
+<li>부호 없는 정수: <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code>, <code>usize</code></li>
+<li>부동소수점: <code>f32</code>, <code>f64</code></li>
+<li>불리언: <code>bool</code></li>
+<li>문자: <code>char</code> (4바이트 유니코드)</li>
+</ul>
+</li>
+<li>Go ↔ Rust 타입 매핑 테이블</li>
+<li>타입 추론과 명시적 타입 지정</li>
+<li>타입 변환: <code>as</code> 키워드 vs Go의 타입 캐스팅</li>
+<li>리터럴 표기법과 타입 접미사</li>
+</ul>
+<h3 id="23-복합-타입">2.3 복합 타입<a href="#23-복합-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>튜플(Tuple)
+<ul>
+<li>정의와 구조 분해</li>
+<li>Go의 다중 반환값과의 비교</li>
+</ul>
+</li>
+<li>배열(Array)
+<ul>
+<li>고정 크기, 스택 할당</li>
+<li><code>[T; N]</code> 문법</li>
+</ul>
+</li>
+<li>슬라이스(Slice) 참조
+<ul>
+<li><code>&amp;[T]</code> 문법</li>
+<li>Go slice와의 결정적 차이점</li>
+</ul>
+</li>
+</ul>
+<h3 id="24-함수">2.4 함수<a href="#24-함수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>함수 선언 문법: <code>fn</code> 키워드</li>
+<li>매개변수와 반환 타입 명시</li>
+<li>표현식(Expression) vs 문장(Statement)
+<ul>
+<li>세미콜론의 의미</li>
+<li>마지막 표현식이 반환값</li>
+</ul>
+</li>
+<li>다중 반환: 튜플 활용</li>
+<li>Go 함수와의 문법 비교</li>
+</ul>
+<h3 id="25-제어-흐름">2.5 제어 흐름<a href="#25-제어-흐름" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>if</code> 표현식
+<ul>
+<li>Go와 달리 표현식이다!</li>
+<li><code>let</code>과 함께 사용</li>
+</ul>
+</li>
+<li>반복문
+<ul>
+<li><code>loop</code>: 무한 루프와 값 반환</li>
+<li><code>while</code>: 조건부 루프</li>
+<li><code>for</code>: 이터레이터 기반 루프</li>
+</ul>
+</li>
+<li>Go의 <code>for</code>와 Rust의 <code>for</code> 비교</li>
+<li><code>break</code>, <code>continue</code>, 레이블</li>
+<li>Range 표현식 맛보기</li>
+</ul>
+<h3 id="26-주석과-문서화">2.6 주석과 문서화<a href="#26-주석과-문서화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>일반 주석: <code>//</code>, <code>/* */</code></li>
+<li>문서 주석: <code>///</code>, <code>//!</code></li>
+<li>rustdoc vs godoc</li>
+<li>문서 내 예제 코드</li>
+<li>문서 테스트(Doc Tests)</li>
+</ul>
+<hr>
+<h2 id="section-3-소유권과-빌림-ownership--borrowing">Section 3: 소유권과 빌림 (Ownership &amp; Borrowing)<a href="#section-3-소유권과-빌림-ownership--borrowing" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 가장 핵심적이고 독특한 개념입니다. Go의 GC 기반 메모리 관리와 완전히 다른 접근법을 이해합니다.</p>
+<h3 id="31-소유권이란-무엇인가">3.1 소유권이란 무엇인가?<a href="#31-소유권이란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>메모리 관리의 세 가지 방식
+<ul>
+<li>가비지 컬렉션 (Go, Java, Python)</li>
+<li>수동 관리 (C, C++)</li>
+<li>소유권 시스템 (Rust)</li>
+</ul>
+</li>
+<li>Go의 GC vs Rust의 소유권: 트레이드오프</li>
+<li>스택(Stack) vs 힙(Heap) 메모리</li>
+<li>소유권이 해결하는 문제들</li>
+</ul>
+<h3 id="32-소유권-규칙">3.2 소유권 규칙<a href="#32-소유권-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>세 가지 핵심 규칙
+<ol>
+<li>각 값은 하나의 소유자를 가진다</li>
+<li>한 번에 하나의 소유자만 존재한다</li>
+<li>소유자가 스코프를 벗어나면 값이 드롭된다</li>
+</ol>
+</li>
+<li>소유권 이동(Move)
+<ul>
+<li>Go에서는 볼 수 없는 개념</li>
+<li>이동 후 원본 사용 불가</li>
+</ul>
+</li>
+<li><code>Copy</code> 트레이트
+<ul>
+<li>이동 대신 복사되는 타입들</li>
+<li>스택 전용 타입</li>
+</ul>
+</li>
+<li><code>Clone</code> 트레이트
+<ul>
+<li>명시적 깊은 복사</li>
+<li><code>.clone()</code> 메서드</li>
+</ul>
+</li>
+</ul>
+<h3 id="33-참조와-빌림-references--borrowing">3.3 참조와 빌림 (References &amp; Borrowing)<a href="#33-참조와-빌림-references--borrowing" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>불변 참조: <code>&amp;T</code>
+<ul>
+<li>읽기 전용 빌림</li>
+<li>여러 개 동시 가능</li>
+</ul>
+</li>
+<li>가변 참조: <code>&amp;mut T</code>
+<ul>
+<li>수정 가능한 빌림</li>
+<li>배타적 접근</li>
+</ul>
+</li>
+<li>빌림 규칙
+<ul>
+<li>여러 불변 참조 OR 하나의 가변 참조</li>
+<li>불변과 가변의 동시 존재 불가</li>
+</ul>
+</li>
+<li>Go 포인터와 Rust 참조의 차이
+<ul>
+<li>널 불가능</li>
+<li>항상 유효함 보장</li>
+<li>자동 역참조</li>
+</ul>
+</li>
+</ul>
+<h3 id="34-슬라이스-타입">3.4 슬라이스 타입<a href="#34-슬라이스-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>문자열 슬라이스: <code>&amp;str</code>
+<ul>
+<li><code>String</code> vs <code>&amp;str</code></li>
+<li>문자열 리터럴의 타입</li>
+</ul>
+</li>
+<li>배열/벡터 슬라이스: <code>&amp;[T]</code></li>
+<li>슬라이스 생성: 범위 문법</li>
+<li>Go slice와의 비교
+<ul>
+<li>소유권 관점에서의 차이</li>
+<li>용량(capacity) 개념</li>
+</ul>
+</li>
+</ul>
+<h3 id="35-댕글링-참조-방지">3.5 댕글링 참조 방지<a href="#35-댕글링-참조-방지" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>댕글링 참조란?</li>
+<li>Rust가 컴파일 타임에 잡아주는 버그들</li>
+<li>Go에서 발생할 수 있는 동시성 버그 예시</li>
+<li>Rust에서는 왜 불가능한가</li>
+</ul>
+<h3 id="36-라이프타임-기초">3.6 라이프타임 기초<a href="#36-라이프타임-기초" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>라이프타임이 필요한 이유</li>
+<li>라이프타임 추론</li>
+<li>라이프타임 생략 규칙 (Elision Rules)</li>
+<li>명시적 라이프타임 문법: <code>'a</code></li>
+<li>함수에서의 라이프타임</li>
+<li>구조체에서의 라이프타임</li>
+<li>흔한 라이프타임 오류와 해결법</li>
+</ul>
+<h3 id="37-실전-연습-소유권-사고방식-익히기">3.7 실전 연습: 소유권 사고방식 익히기<a href="#37-실전-연습-소유권-사고방식-익히기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>일반적인 소유권 패턴들</li>
+<li>Go 코드를 Rust로 변환할 때 주의점</li>
+<li>컴파일러 에러 메시지 읽는 법</li>
+<li>소유권 문제 해결 전략
+<ul>
+<li>클론 사용</li>
+<li>참조 사용</li>
+<li>구조 변경</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="section-4-구조체-열거형-패턴-매칭">Section 4: 구조체, 열거형, 패턴 매칭<a href="#section-4-구조체-열거형-패턴-매칭" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>데이터를 구조화하는 방법을 학습합니다. Rust의 enum은 Go의 const/iota보다 훨씬 강력합니다.</p>
+<h3 id="41-구조체-struct">4.1 구조체 (Struct)<a href="#41-구조체-struct" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>구조체 정의와 인스턴스 생성</li>
+<li>Go struct와의 문법 비교</li>
+<li>필드 초기화 축약 문법</li>
+<li>구조체 업데이트 문법: <code>..</code> 스프레드</li>
+<li>튜플 구조체: <code>struct Point(i32, i32)</code></li>
+<li>유닛 구조체: <code>struct Marker</code></li>
+<li>가시성과 pub 키워드</li>
+</ul>
+<h3 id="42-메서드와-연관-함수">4.2 메서드와 연관 함수<a href="#42-메서드와-연관-함수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>impl</code> 블록</li>
+<li>메서드 정의
+<ul>
+<li><code>self</code>: 소유권 가져감</li>
+<li><code>&amp;self</code>: 불변 빌림</li>
+<li><code>&amp;mut self</code>: 가변 빌림</li>
+</ul>
+</li>
+<li>Go의 리시버 메서드와 비교</li>
+<li>연관 함수 (Associated Functions)
+<ul>
+<li><code>Self</code> 키워드</li>
+<li>생성자 패턴: <code>new()</code>, <code>default()</code></li>
+</ul>
+</li>
+<li>여러 <code>impl</code> 블록</li>
+</ul>
+<h3 id="43-열거형-enum">4.3 열거형 (Enum)<a href="#43-열거형-enum" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>기본 열거형</li>
+<li>Go의 <code>const</code> + <code>iota</code> vs Rust <code>enum</code></li>
+<li>데이터를 담는 열거형 (Go에 없는 강력한 기능)
+<ul>
+<li>튜플 variant</li>
+<li>구조체 variant</li>
+</ul>
+</li>
+<li><code>Option&lt;T&gt;</code>: null 없는 세상
+<ul>
+<li><code>Some(T)</code>와 <code>None</code></li>
+<li>Go의 nil/zero value와 비교</li>
+</ul>
+</li>
+<li><code>Result&lt;T, E&gt;</code>: 에러 처리의 새로운 패러다임
+<ul>
+<li><code>Ok(T)</code>와 <code>Err(E)</code></li>
+<li>Go의 <code>(value, error)</code> 반환과 비교</li>
+</ul>
+</li>
+</ul>
+<h3 id="44-패턴-매칭">4.4 패턴 매칭<a href="#44-패턴-매칭" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>match</code> 표현식
+<ul>
+<li>기본 문법</li>
+<li>모든 경우 처리 필수 (Exhaustive)</li>
+</ul>
+</li>
+<li>Go의 <code>switch</code>와의 비교
+<ul>
+<li>fallthrough 없음</li>
+<li>표현식으로 사용 가능</li>
+</ul>
+</li>
+<li><code>if let</code>: 단일 패턴 매칭</li>
+<li><code>while let</code>: 반복 패턴 매칭</li>
+<li>패턴 문법 총정리
+<ul>
+<li>리터럴 매칭</li>
+<li>변수 바인딩</li>
+<li>구조 분해 (Destructuring)</li>
+<li>가드 조건 (<code>if</code>)</li>
+<li><code>@</code> 바인딩</li>
+<li><code>_</code> 와일드카드</li>
+<li><code>..</code> 나머지 무시</li>
+</ul>
+</li>
+</ul>
+<h3 id="45-실전-패턴-타입으로-상태-표현하기">4.5 실전 패턴: 타입으로 상태 표현하기<a href="#45-실전-패턴-타입으로-상태-표현하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>상태 머신 패턴</li>
+<li>Go interface vs Rust enum: 선택 기준</li>
+<li>newtype 패턴: 타입 안전성 강화</li>
+<li>빌더 패턴 맛보기</li>
+</ul>
+<hr>
+<h2 id="section-5-트레이트와-제네릭">Section 5: 트레이트와 제네릭<a href="#section-5-트레이트와-제네릭" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 다형성을 담당하는 트레이트와 제네릭을 학습합니다. Go interface와의 근본적인 차이를 이해합니다.</p>
+<h3 id="51-트레이트-기초">5.1 트레이트 기초<a href="#51-트레이트-기초" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>트레이트란?</li>
+<li>트레이트 정의: <code>trait</code> 키워드</li>
+<li>Go interface vs Rust trait
+<ul>
+<li>구조적(Structural) vs 명시적(Nominal)</li>
+<li>암묵적 구현 vs 명시적 구현</li>
+</ul>
+</li>
+<li>트레이트 구현: <code>impl Trait for Type</code></li>
+<li>기본 구현 (Default Implementation)</li>
+<li>고아 규칙 (Orphan Rule)</li>
+</ul>
+<h3 id="52-표준-라이브러리의-주요-트레이트">5.2 표준 라이브러리의 주요 트레이트<a href="#52-표준-라이브러리의-주요-트레이트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Debug</code>: 디버그 출력 (<code>{:?}</code>)</li>
+<li><code>Display</code>: 사용자 친화적 출력 (<code>{}</code>)</li>
+<li><code>Clone</code>: 명시적 복사</li>
+<li><code>Copy</code>: 암묵적 복사</li>
+<li><code>PartialEq</code>, <code>Eq</code>: 동등성 비교</li>
+<li><code>PartialOrd</code>, <code>Ord</code>: 순서 비교</li>
+<li><code>Default</code>: 기본값 생성</li>
+<li><code>From</code>, <code>Into</code>: 타입 변환</li>
+<li><code>TryFrom</code>, <code>TryInto</code>: 실패 가능한 변환</li>
+<li><code>Iterator</code>: 이터레이터 프로토콜</li>
+<li><code>Drop</code>: 소멸자</li>
+</ul>
+<h3 id="53-제네릭">5.3 제네릭<a href="#53-제네릭" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>제네릭 함수</li>
+<li>제네릭 구조체</li>
+<li>제네릭 열거형</li>
+<li>제네릭 메서드</li>
+<li>Go 1.18+ 제네릭과의 비교
+<ul>
+<li>문법 차이</li>
+<li>기능 차이</li>
+</ul>
+</li>
+<li>단형화 (Monomorphization)
+<ul>
+<li>런타임 비용 제로</li>
+<li>Go interface의 동적 디스패치와 비교</li>
+</ul>
+</li>
+</ul>
+<h3 id="54-트레이트-바운드">5.4 트레이트 바운드<a href="#54-트레이트-바운드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>기본 문법: <code>T: Trait</code></li>
+<li>다중 바운드: <code>T: Trait1 + Trait2</code></li>
+<li><code>where</code> 절: 복잡한 바운드 표현</li>
+<li>Go의 타입 제약과 비교</li>
+<li>조건부 구현</li>
+</ul>
+<h3 id="55-고급-트레이트-기능">5.5 고급 트레이트 기능<a href="#55-고급-트레이트-기능" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>연관 타입 (Associated Types)
+<ul>
+<li>제네릭 파라미터 vs 연관 타입</li>
+<li>Iterator의 Item 타입</li>
+</ul>
+</li>
+<li>트레이트 객체: <code>dyn Trait</code>
+<ul>
+<li>동적 디스패치</li>
+<li>객체 안전성 (Object Safety)</li>
+</ul>
+</li>
+<li><code>impl Trait</code>
+<ul>
+<li>반환 타입에서의 사용</li>
+<li>매개변수에서의 사용</li>
+</ul>
+</li>
+<li>Go interface와의 상세 비교
+<ul>
+<li>vtable 구조</li>
+<li>성능 특성</li>
+</ul>
+</li>
+</ul>
+<h3 id="56-derive-매크로">5.6 Derive 매크로<a href="#56-derive-매크로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>#[derive(...)]</code> 속성</li>
+<li>자동 구현 가능한 트레이트들</li>
+<li>serde와 직렬화/역직렬화
+<ul>
+<li><code>#[derive(Serialize, Deserialize)]</code></li>
+<li>Go의 encoding/json 태그와 비교</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="section-6-에러-처리">Section 6: 에러 처리<a href="#section-6-에러-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 에러 처리 철학과 실전 패턴을 학습합니다. Go의 <code>if err != nil</code> 패턴과 비교합니다.</p>
+<h3 id="61-rust의-에러-처리-철학">6.1 Rust의 에러 처리 철학<a href="#61-rust의-에러-처리-철학" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>복구 가능한 에러 vs 복구 불가능한 에러</li>
+<li><code>Result&lt;T, E&gt;</code> vs <code>panic!</code></li>
+<li>Go의 error 인터페이스와 비교</li>
+<li>Rust에서 panic이 적절한 경우</li>
+</ul>
+<h3 id="62-resultt-e-심화">6.2 Result&lt;T, E&gt; 심화<a href="#62-resultt-e-심화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Result의 구조</li>
+<li>패턴 매칭으로 처리</li>
+<li><code>if let</code>으로 처리</li>
+<li>주요 메서드들
+<ul>
+<li><code>unwrap()</code>: 성공 시 값, 실패 시 panic</li>
+<li><code>expect(msg)</code>: 커스텀 panic 메시지</li>
+<li><code>unwrap_or(default)</code>: 기본값 제공</li>
+<li><code>unwrap_or_else(f)</code>: 지연 기본값</li>
+<li><code>unwrap_or_default()</code>: Default 트레이트 활용</li>
+</ul>
+</li>
+<li>언제 <code>unwrap</code>을 사용해도 되는가</li>
+</ul>
+<h3 id="63--연산자">6.3 ? 연산자<a href="#63--연산자" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>에러 전파의 편리한 문법</li>
+<li><code>?</code> 동작 원리</li>
+<li>Go의 <code>if err != nil</code> 보일러플레이트와 비교</li>
+<li><code>From</code> 트레이트와의 연계</li>
+<li>체이닝 사용법</li>
+<li><code>main</code>에서 <code>Result</code> 반환하기</li>
+</ul>
+<h3 id="64-option-활용">6.4 Option<!-- raw HTML omitted --> 활용<a href="#64-option-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>null의 부재</li>
+<li>Option 주요 메서드들
+<ul>
+<li><code>map()</code>: 값 변환</li>
+<li><code>and_then()</code>: 체이닝 (flatMap)</li>
+<li><code>or_else()</code>: 대체값</li>
+<li><code>filter()</code>: 조건부 유지</li>
+<li><code>ok_or()</code>: Option → Result 변환</li>
+</ul>
+</li>
+<li>Go의 nil 검사 패턴과 비교</li>
+<li><code>?</code> 연산자와 Option</li>
+</ul>
+<h3 id="65-커스텀-에러-타입">6.5 커스텀 에러 타입<a href="#65-커스텀-에러-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>에러 타입 정의하기</li>
+<li><code>std::error::Error</code> 트레이트 구현</li>
+<li><code>std::fmt::Display</code> 구현</li>
+<li>thiserror 크레이트
+<ul>
+<li><code>#[derive(Error)]</code></li>
+<li><code>#[error(&quot;...&quot;)]</code> 속성</li>
+</ul>
+</li>
+<li>anyhow 크레이트
+<ul>
+<li>빠른 프로토타이핑</li>
+<li><code>anyhow::Result&lt;T&gt;</code></li>
+<li>컨텍스트 추가</li>
+</ul>
+</li>
+</ul>
+<h3 id="66-에러-처리-패턴과-베스트-프랙티스">6.6 에러 처리 패턴과 베스트 프랙티스<a href="#66-에러-처리-패턴과-베스트-프랙티스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>라이브러리 vs 애플리케이션 에러 전략</li>
+<li>에러 컨텍스트 추가하기</li>
+<li>Go의 <code>errors.Wrap</code>/<code>fmt.Errorf</code>와 비교</li>
+<li>에러 다운캐스팅</li>
+<li>에러 처리 계층 설계</li>
+</ul>
+<hr>
+<h2 id="section-7-컬렉션과-이터레이터">Section 7: 컬렉션과 이터레이터<a href="#section-7-컬렉션과-이터레이터" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 주요 컬렉션과 강력한 이터레이터 시스템을 학습합니다.</p>
+<h3 id="71-표준-컬렉션-개요">7.1 표준 컬렉션 개요<a href="#71-표준-컬렉션-개요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Vec&lt;T&gt;</code>: 동적 배열</li>
+<li><code>String</code>: 소유된 문자열</li>
+<li><code>HashMap&lt;K, V&gt;</code>: 해시 맵</li>
+<li><code>HashSet&lt;T&gt;</code>: 해시 셋</li>
+<li><code>BTreeMap&lt;K, V&gt;</code>: 정렬된 맵</li>
+<li><code>BTreeSet&lt;T&gt;</code>: 정렬된 셋</li>
+<li><code>VecDeque&lt;T&gt;</code>: 양방향 큐</li>
+<li>Go 컬렉션과의 매핑</li>
+</ul>
+<h3 id="72-vec-심화">7.2 Vec<!-- raw HTML omitted --> 심화<a href="#72-vec-심화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>생성 방법들
+<ul>
+<li><code>Vec::new()</code></li>
+<li><code>vec![]</code> 매크로</li>
+<li><code>Vec::with_capacity()</code></li>
+</ul>
+</li>
+<li>기본 연산: push, pop, insert, remove</li>
+<li>용량 관리: capacity vs length</li>
+<li>슬라이싱과 범위 인덱싱</li>
+<li>Go의 <code>append</code> vs Rust의 <code>push</code></li>
+<li>소유권과 Vec
+<ul>
+<li>요소 이동</li>
+<li>요소 빌림</li>
+</ul>
+</li>
+</ul>
+<h3 id="73-문자열-처리">7.3 문자열 처리<a href="#73-문자열-처리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>String</code> vs <code>&amp;str</code>
+<ul>
+<li>소유권 관점</li>
+<li>힙 vs 스택/정적</li>
+</ul>
+</li>
+<li>UTF-8 인코딩과 인덱싱</li>
+<li>Go의 string과 비교</li>
+<li>문자열 생성과 변환</li>
+<li>문자 순회
+<ul>
+<li><code>chars()</code>: 유니코드 스칼라</li>
+<li><code>bytes()</code>: 바이트</li>
+<li>Go의 <code>rune</code> 순회와 비교</li>
+</ul>
+</li>
+<li>문자열 연결과 포맷팅
+<ul>
+<li><code>+</code> 연산자</li>
+<li><code>format!</code> 매크로</li>
+<li><code>push_str</code>, <code>push</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="74-hashmap-활용">7.4 HashMap 활용<a href="#74-hashmap-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>생성과 기본 연산</li>
+<li>Entry API
+<ul>
+<li><code>entry()</code>, <code>or_insert()</code>, <code>or_insert_with()</code></li>
+<li>Go에 없는 강력한 기능</li>
+</ul>
+</li>
+<li>해싱과 <code>Eq</code>, <code>Hash</code> 트레이트</li>
+<li>커스텀 타입을 키로 사용</li>
+<li>동시성과 HashMap
+<ul>
+<li>Go의 <code>sync.Map</code>과 비교</li>
+<li><code>RwLock&lt;HashMap&lt;K, V&gt;&gt;</code></li>
+<li>dashmap 크레이트</li>
+</ul>
+</li>
+</ul>
+<h3 id="75-이터레이터-기초">7.5 이터레이터 기초<a href="#75-이터레이터-기초" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Iterator</code> 트레이트</li>
+<li>이터레이터 생성
+<ul>
+<li><code>iter()</code>: <code>&amp;T</code> 이터레이터</li>
+<li><code>iter_mut()</code>: <code>&amp;mut T</code> 이터레이터</li>
+<li><code>into_iter()</code>: <code>T</code> 이터레이터 (소유권 이동)</li>
+</ul>
+</li>
+<li>Go의 <code>range</code>와 비교</li>
+<li><code>for</code> 루프와 이터레이터</li>
+</ul>
+<h3 id="76-이터레이터-어댑터">7.6 이터레이터 어댑터<a href="#76-이터레이터-어댑터" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>변환 어댑터
+<ul>
+<li><code>map()</code>: 요소 변환</li>
+<li><code>filter()</code>: 요소 필터링</li>
+<li><code>filter_map()</code>: 변환 + 필터링</li>
+<li><code>flat_map()</code>: 평탄화 + 변환</li>
+</ul>
+</li>
+<li>제어 어댑터
+<ul>
+<li><code>take()</code>, <code>skip()</code></li>
+<li><code>take_while()</code>, <code>skip_while()</code></li>
+<li><code>step_by()</code></li>
+</ul>
+</li>
+<li>조합 어댑터
+<ul>
+<li><code>chain()</code>: 이터레이터 연결</li>
+<li><code>zip()</code>: 이터레이터 결합</li>
+<li><code>enumerate()</code>: 인덱스 추가</li>
+</ul>
+</li>
+<li>지연 평가 (Lazy Evaluation)</li>
+</ul>
+<h3 id="77-이터레이터-컨슈머">7.7 이터레이터 컨슈머<a href="#77-이터레이터-컨슈머" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>collect()</code>: 컬렉션으로 수집</li>
+<li><code>fold()</code>: 누적 연산</li>
+<li><code>reduce()</code>: fold의 초기값 없는 버전</li>
+<li><code>for_each()</code>: 부수 효과 실행</li>
+<li><code>count()</code>, <code>sum()</code>, <code>product()</code></li>
+<li><code>any()</code>, <code>all()</code>, <code>find()</code></li>
+<li><code>max()</code>, <code>min()</code>, <code>max_by()</code>, <code>min_by()</code></li>
+</ul>
+<h3 id="78-클로저와-함수형-패턴">7.8 클로저와 함수형 패턴<a href="#78-클로저와-함수형-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>클로저 문법</li>
+<li>캡처 방식
+<ul>
+<li>불변 빌림</li>
+<li>가변 빌림</li>
+<li>소유권 이동 (<code>move</code>)</li>
+</ul>
+</li>
+<li>Go의 클로저와 비교</li>
+<li><code>Fn</code>, <code>FnMut</code>, <code>FnOnce</code> 트레이트</li>
+<li>이터레이터 체이닝 실전 예제</li>
+<li>Go 스타일 vs Rust 함수형 스타일 비교</li>
+</ul>
+<hr>
+<h2 id="section-8-동시성-프로그래밍">Section 8: 동시성 프로그래밍<a href="#section-8-동시성-프로그래밍" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 &ldquo;Fearless Concurrency&quot;를 실현하는 동시성 프로그래밍을 학습합니다.</p>
+<h3 id="81-rust의-동시성-철학">8.1 Rust의 동시성 철학<a href="#81-rust의-동시성-철학" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>&ldquo;Fearless Concurrency&quot;란?</li>
+<li>컴파일 타임 데이터 레이스 방지</li>
+<li>Go의 &ldquo;Don&rsquo;t communicate by sharing memory&rdquo; 철학과 비교</li>
+<li>Rust는 어떻게 메모리 안전성을 보장하는가</li>
+</ul>
+<h3 id="82-스레드-기초">8.2 스레드 기초<a href="#82-스레드-기초" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>std::thread::spawn</code></li>
+<li>클로저와 스레드</li>
+<li><code>JoinHandle</code>과 반환값</li>
+<li>Go goroutine과의 차이
+<ul>
+<li>OS 스레드 vs 그린 스레드</li>
+<li>스택 크기</li>
+<li>스케줄링</li>
+</ul>
+</li>
+<li><code>move</code> 키워드와 소유권</li>
+</ul>
+<h3 id="83-메시지-패싱">8.3 메시지 패싱<a href="#83-메시지-패싱" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>채널 기초: <code>std::sync::mpsc</code>
+<ul>
+<li><code>channel()</code>: 무한 버퍼</li>
+<li><code>sync_channel()</code>: 유한 버퍼</li>
+</ul>
+</li>
+<li>송신자(<code>Sender</code>)와 수신자(<code>Receiver</code>)</li>
+<li>Go channel과의 비교
+<ul>
+<li>버퍼링 방식</li>
+<li>닫기 의미론</li>
+</ul>
+</li>
+<li>여러 생산자: <code>Sender::clone()</code></li>
+<li>채널을 통한 소유권 전달</li>
+</ul>
+<h3 id="84-선택적-수신">8.4 선택적 수신<a href="#84-선택적-수신" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>crossbeam의 <code>select!</code></li>
+<li>Go의 <code>select</code>와 비교</li>
+<li>타임아웃 처리</li>
+<li>비블로킹 연산</li>
+</ul>
+<h3 id="85-공유-상태-동시성">8.5 공유 상태 동시성<a href="#85-공유-상태-동시성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Mutex&lt;T&gt;</code>
+<ul>
+<li>락 획득과 해제</li>
+<li><code>lock()</code> vs <code>try_lock()</code></li>
+<li>Go의 <code>sync.Mutex</code>와 비교</li>
+</ul>
+</li>
+<li><code>RwLock&lt;T&gt;</code>
+<ul>
+<li>읽기 락과 쓰기 락</li>
+<li>Go의 <code>sync.RWMutex</code>와 비교</li>
+</ul>
+</li>
+<li>데드락 방지 전략</li>
+<li>락 가드와 스코프</li>
+</ul>
+<h3 id="86-arc-스레드-안전한-참조-카운팅">8.6 Arc: 스레드 안전한 참조 카운팅<a href="#86-arc-스레드-안전한-참조-카운팅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Rc&lt;T&gt;</code> vs <code>Arc&lt;T&gt;</code></li>
+<li><code>Arc&lt;Mutex&lt;T&gt;&gt;</code> 패턴</li>
+<li>Go에서 공유 상태 vs Rust에서 공유 상태</li>
+</ul>
+<h3 id="87-send와-sync-트레이트">8.7 Send와 Sync 트레이트<a href="#87-send와-sync-트레이트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Send</code>: 스레드 간 소유권 전달 가능</li>
+<li><code>Sync</code>: 스레드 간 참조 공유 가능</li>
+<li>타입 시스템을 통한 동시성 안전성</li>
+<li>Go에서 흔히 발생하는 동시성 버그</li>
+<li>Rust에서는 왜 불가능한가</li>
+</ul>
+<h3 id="88-동시성-패턴">8.8 동시성 패턴<a href="#88-동시성-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Worker Pool 패턴</li>
+<li>Fan-out/Fan-in 패턴</li>
+<li>Go와 Rust 코드 비교</li>
+</ul>
+<h3 id="89-rayon-데이터-병렬성">8.9 Rayon: 데이터 병렬성<a href="#89-rayon-데이터-병렬성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>병렬 이터레이터</li>
+<li><code>par_iter()</code>, <code>par_iter_mut()</code></li>
+<li>Go의 errgroup과 비교</li>
+<li>작업 분할과 조인</li>
+</ul>
+<hr>
+<h2 id="section-9-비동기-프로그래밍">Section 9: 비동기 프로그래밍<a href="#section-9-비동기-프로그래밍" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Rust의 async/await 모델을 학습합니다. Go의 goroutine 모델과의 근본적 차이를 이해합니다.</p>
+<h3 id="91-비동기의-필요성">9.1 비동기의 필요성<a href="#91-비동기의-필요성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>동기 vs 비동기</li>
+<li>블로킹 vs 논블로킹</li>
+<li>Go의 goroutine 모델
+<ul>
+<li>런타임 내장</li>
+<li>블로킹 코드가 비동기처럼 동작</li>
+</ul>
+</li>
+<li>Rust의 async 모델
+<ul>
+<li>런타임 선택 가능</li>
+<li>명시적 비동기</li>
+</ul>
+</li>
+<li>언제 스레드, 언제 async</li>
+</ul>
+<h3 id="92-future-트레이트">9.2 Future 트레이트<a href="#92-future-트레이트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Future</code>란?</li>
+<li><code>Poll</code> 열거형</li>
+<li>지연 실행 (Lazy Execution)</li>
+<li>Go goroutine과의 개념적 차이</li>
+</ul>
+<h3 id="93-asyncawait-기초">9.3 async/await 기초<a href="#93-asyncawait-기초" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>async fn</code>: 비동기 함수 정의</li>
+<li><code>.await</code>: Future 실행</li>
+<li>비동기 블록: <code>async { }</code></li>
+<li>반환 타입: <code>impl Future&lt;Output = T&gt;</code></li>
+<li>에러 처리와 <code>?</code></li>
+</ul>
+<h3 id="94-tokio-런타임">9.4 Tokio 런타임<a href="#94-tokio-런타임" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>런타임이 필요한 이유</li>
+<li>Tokio 설치와 설정</li>
+<li><code>#[tokio::main]</code> 매크로</li>
+<li><code>tokio::spawn</code>: 태스크 생성</li>
+<li>Go 런타임과의 비교
+<ul>
+<li>스케줄러</li>
+<li>작업 훔치기 (Work Stealing)</li>
+</ul>
+</li>
+</ul>
+<h3 id="95-비동기-io">9.5 비동기 IO<a href="#95-비동기-io" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>tokio::fs</code>: 파일 시스템</li>
+<li><code>tokio::net</code>: 네트워크
+<ul>
+<li><code>TcpListener</code>, <code>TcpStream</code></li>
+<li><code>UdpSocket</code></li>
+</ul>
+</li>
+<li><code>tokio::io</code>: AsyncRead, AsyncWrite</li>
+<li>Go의 <code>io.Reader</code>/<code>io.Writer</code>와 비교</li>
+<li>버퍼링과 BufReader/BufWriter</li>
+</ul>
+<h3 id="96-동시-실행">9.6 동시 실행<a href="#96-동시-실행" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>tokio::join!</code>: 모두 완료 대기</li>
+<li><code>tokio::select!</code>: 첫 번째 완료 대기</li>
+<li>Go의 <code>select</code>와 비교</li>
+<li><code>tokio::spawn</code> vs <code>join!</code></li>
+<li>타임아웃: <code>tokio::time::timeout</code></li>
+<li>취소와 드롭</li>
+</ul>
+<h3 id="97-비동기-스트림">9.7 비동기 스트림<a href="#97-비동기-스트림" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Stream</code> 트레이트</li>
+<li><code>StreamExt</code> 어댑터</li>
+<li>Go의 channel과 비교</li>
+<li><code>tokio::sync::mpsc</code>: 비동기 채널</li>
+<li><code>tokio_stream</code> 크레이트</li>
+</ul>
+<h3 id="98-동기화-프리미티브">9.8 동기화 프리미티브<a href="#98-동기화-프리미티브" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>tokio::sync::Mutex</code>: 비동기 뮤텍스</li>
+<li><code>tokio::sync::RwLock</code>: 비동기 읽기-쓰기 락</li>
+<li><code>tokio::sync::Semaphore</code>: 세마포어</li>
+<li><code>tokio::sync::oneshot</code>: 일회성 채널</li>
+<li><code>tokio::sync::broadcast</code>: 브로드캐스트 채널</li>
+<li><code>tokio::sync::watch</code>: 감시 채널</li>
+</ul>
+<h3 id="99-실전-비동기-패턴">9.9 실전 비동기 패턴<a href="#99-실전-비동기-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>HTTP 클라이언트: reqwest</li>
+<li>웹 서버: axum
+<ul>
+<li>라우팅</li>
+<li>미들웨어</li>
+<li>상태 공유</li>
+</ul>
+</li>
+<li>Go의 <code>net/http</code>와 비교</li>
+<li>데이터베이스: sqlx</li>
+<li>그레이스풀 셧다운</li>
+</ul>
+<hr>
+<h2 id="section-10-프로젝트-관리와-실전-패턴">Section 10: 프로젝트 관리와 실전 패턴<a href="#section-10-프로젝트-관리와-실전-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>실제 Rust 프로젝트를 구성하고 관리하는 방법, 그리고 실전에서 사용되는 패턴들을 학습합니다.</p>
+<h3 id="101-cargo-심화">10.1 Cargo 심화<a href="#101-cargo-심화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>Cargo.toml</code> 상세 설정
+<ul>
+<li><code>[package]</code> 섹션</li>
+<li><code>[dependencies]</code> 섹션</li>
+<li><code>[dev-dependencies]</code> 섹션</li>
+<li><code>[build-dependencies]</code> 섹션</li>
+<li><code>[features]</code> 섹션</li>
+</ul>
+</li>
+<li>의존성 관리
+<ul>
+<li>버전 지정</li>
+<li>Git 의존성</li>
+<li>경로 의존성</li>
+<li>피처 플래그</li>
+</ul>
+</li>
+<li>Go modules와 비교</li>
+<li>프라이빗 레지스트리</li>
+</ul>
+<h3 id="102-모듈-시스템">10.2 모듈 시스템<a href="#102-모듈-시스템" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><code>mod</code> 키워드</li>
+<li>파일 시스템과 모듈 구조</li>
+<li><code>pub</code>: 가시성 제어</li>
+<li><code>pub(crate)</code>, <code>pub(super)</code>: 제한된 가시성</li>
+<li><code>use</code>: 경로 가져오기</li>
+<li><code>self</code>, <code>super</code>, <code>crate</code></li>
+<li>Go 패키지 시스템과의 비교</li>
+<li>워크스페이스
+<ul>
+<li>멀티 크레이트 프로젝트</li>
+<li>Go workspace와 비교</li>
+</ul>
+</li>
+</ul>
+<h3 id="103-테스트">10.3 테스트<a href="#103-테스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>유닛 테스트
+<ul>
+<li><code>#[test]</code> 속성</li>
+<li><code>#[cfg(test)]</code> 모듈</li>
+<li>assert 매크로들</li>
+</ul>
+</li>
+<li>통합 테스트
+<ul>
+<li><code>tests/</code> 디렉토리</li>
+<li>각 파일이 별도 크레이트</li>
+</ul>
+</li>
+<li>문서 테스트</li>
+<li>테이블 드리븐 테스트</li>
+<li>Go의 테스팅과 비교
+<ul>
+<li><code>_test.go</code> vs <code>#[test]</code></li>
+<li><code>go test</code> vs <code>cargo test</code></li>
+</ul>
+</li>
+<li>테스트 설정과 정리</li>
+</ul>
+<h3 id="104-벤치마킹과-프로파일링">10.4 벤치마킹과 프로파일링<a href="#104-벤치마킹과-프로파일링" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>내장 벤치마크 (nightly)</li>
+<li>Criterion 크레이트</li>
+<li>벤치마크 작성법</li>
+<li>flamegraph로 프로파일링</li>
+<li>Go의 pprof와 비교</li>
+</ul>
+<h3 id="105-빌드와-릴리스">10.5 빌드와 릴리스<a href="#105-빌드와-릴리스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>빌드 프로파일
+<ul>
+<li><code>[profile.dev]</code></li>
+<li><code>[profile.release]</code></li>
+<li>커스텀 프로파일</li>
+</ul>
+</li>
+<li>컴파일러 최적화 옵션</li>
+<li>크로스 컴파일
+<ul>
+<li><code>rustup target add</code></li>
+<li><code>.cargo/config.toml</code></li>
+</ul>
+</li>
+<li>Go의 크로스 컴파일과 비교</li>
+<li>바이너리 크기 최적화
+<ul>
+<li>LTO (Link Time Optimization)</li>
+<li>심볼 스트리핑</li>
+<li>의존성 최소화</li>
+</ul>
+</li>
+</ul>
+<h3 id="106-unsafe-rust">10.6 unsafe Rust<a href="#106-unsafe-rust" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>unsafe가 필요한 경우</li>
+<li>unsafe 블록</li>
+<li>unsafe 함수와 메서드</li>
+<li>unsafe 트레이트</li>
+<li>안전한 추상화 만들기</li>
+<li>FFI와 C 연동
+<ul>
+<li>extern &ldquo;C&rdquo;</li>
+<li><code>#[repr(C)]</code></li>
+<li>bindgen, cbindgen</li>
+</ul>
+</li>
+<li>Go의 cgo와 비교</li>
+</ul>
+<h3 id="107-실전-설계-패턴">10.7 실전 설계 패턴<a href="#107-실전-설계-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Builder 패턴
+<ul>
+<li>복잡한 객체 생성</li>
+<li>메서드 체이닝</li>
+</ul>
+</li>
+<li>Type State 패턴
+<ul>
+<li>컴파일 타임 상태 검증</li>
+<li>Go에서는 구현 불가능한 패턴</li>
+</ul>
+</li>
+<li>Newtype 패턴
+<ul>
+<li>타입 안전성</li>
+<li>트레이트 구현</li>
+</ul>
+</li>
+<li>에러 처리 전략
+<ul>
+<li>라이브러리 설계</li>
+<li>애플리케이션 설계</li>
+</ul>
+</li>
+</ul>
+<h3 id="108-go-코드를-rust로-포팅하기">10.8 Go 코드를 Rust로 포팅하기<a href="#108-go-코드를-rust로-포팅하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>마이그레이션 전략</li>
+<li>일반적인 변환 패턴
+<ul>
+<li>구조체</li>
+<li>인터페이스</li>
+<li>에러 처리</li>
+<li>동시성</li>
+</ul>
+</li>
+<li>흔한 함정과 해결법</li>
+<li>성능 비교</li>
+</ul>
+<h3 id="109-생태계와-크레이트-추천">10.9 생태계와 크레이트 추천<a href="#109-생태계와-크레이트-추천" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>웹 프레임워크
+<ul>
+<li>axum</li>
+<li>actix-web</li>
+<li>rocket</li>
+</ul>
+</li>
+<li>CLI
+<ul>
+<li>clap</li>
+<li>structopt (구버전)</li>
+</ul>
+</li>
+<li>직렬화
+<ul>
+<li>serde</li>
+<li>serde_json, serde_yaml</li>
+</ul>
+</li>
+<li>로깅과 추적
+<ul>
+<li>tracing</li>
+<li>log</li>
+<li>env_logger</li>
+</ul>
+</li>
+<li>데이터베이스
+<ul>
+<li>sqlx</li>
+<li>diesel</li>
+<li>sea-orm</li>
+</ul>
+</li>
+<li>HTTP 클라이언트
+<ul>
+<li>reqwest</li>
+</ul>
+</li>
+<li>유틸리티
+<ul>
+<li>anyhow, thiserror</li>
+<li>itertools</li>
+<li>chrono</li>
+<li>regex</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="부록">부록<a href="#부록" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="a-go--rust-치트시트">A. Go ↔ Rust 치트시트<a href="#a-go--rust-치트시트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>문법 대응표</li>
+<li>타입 매핑</li>
+<li>표준 라이브러리 대응</li>
+</ul>
+<h3 id="b-자주-묻는-질문-faq">B. 자주 묻는 질문 (FAQ)<a href="#b-자주-묻는-질문-faq" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h3 id="c-추가-학습-자료">C. 추가 학습 자료<a href="#c-추가-학습-자료" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>공식 문서</li>
+<li>추천 도서</li>
+<li>온라인 강좌</li>
+<li>커뮤니티</li>
+</ul>
+<hr>
+<h2 id="버전-정보">버전 정보<a href="#버전-정보" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><strong>작성일</strong>: 2025년 1월</li>
+<li><strong>Rust 버전</strong>: 1.75+ (2024 에디션 기준)</li>
+<li><strong>대상 독자</strong>: Go 언어에 익숙한 개발자</li>
+</ul>
+<hr>
+<p><em>이 가이드는 Go 개발자의 관점에서 Rust를 학습할 수 있도록 구성되었습니다. 각 섹션은 독립적으로 읽을 수 있지만, 순서대로 진행하는 것을 권장합니다.</em></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260116-modern-worship-guitar-guide/" class="button inline next">
+         [<span class="button__text">Modern Worship &amp; Pop Guitar – Technique Playbook</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
