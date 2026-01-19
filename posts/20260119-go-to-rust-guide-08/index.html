@@ -494,7 +494,7 @@ Rust의 철학: &ldquo;Fearless Concurrency through ownership.&rdquo;</p>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><hr>
 <h2 id="85-공유-상태-동시성">8.5 공유 상태 동시성<a href="#85-공유-상태-동시성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<h3 id="mutex">Mutex<!-- raw HTML omitted --><a href="#mutex" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h3 id="mutex">Mutex<T><a href="#mutex" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="n">Mutex</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -529,7 +529,7 @@ Rust의 철학: &ldquo;Fearless Concurrency through ownership.&rdquo;</p>
 <li>언락을 잊을 수 없음 (RAII)</li>
 <li>컴파일러가 안전성 검사</li>
 </ol>
-<h3 id="rwlock">RwLock<!-- raw HTML omitted --><a href="#rwlock" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h3 id="rwlock">RwLock<T><a href="#rwlock" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="n">RwLock</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RwLock</span>::<span class="n">new</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span><span class="w">
@@ -562,7 +562,7 @@ Rust의 철학: &ldquo;Fearless Concurrency through ownership.&rdquo;</p>
 </span></span></span><span class="line"><span class="cl"><span class="c1">// 4. 단일 락에 여러 데이터 그룹화
 </span></span></span></code></pre></div><hr>
 <h2 id="86-arc-스레드-안전한-참조-카운팅">8.6 Arc: 스레드 안전한 참조 카운팅<a href="#86-arc-스레드-안전한-참조-카운팅" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<h3 id="rc-vs-arc">Rc<!-- raw HTML omitted --> vs Arc<!-- raw HTML omitted --><a href="#rc-vs-arc" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h3 id="rc-vs-arc">Rc<T> vs Arc<T><a href="#rc-vs-arc" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">rc</span>::<span class="n">Rc</span><span class="p">;</span><span class="w">      </span><span class="c1">// 단일 스레드
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="n">Arc</span><span class="p">;</span><span class="w">    </span><span class="c1">// 멀티 스레드
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
@@ -576,7 +576,7 @@ Rust의 철학: &ldquo;Fearless Concurrency through ownership.&rdquo;</p>
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">thread</span>::<span class="n">spawn</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;</span><span class="si">{}</span><span class="s">&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">arc_clone</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">});</span><span class="w">
-</span></span></span></code></pre></div><h3 id="arcmutex-패턴">Arc&lt;Mutex<!-- raw HTML omitted -->&gt; 패턴<a href="#arcmutex-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</span></span></span></code></pre></div><h3 id="arcmutex-패턴">Arc&lt;Mutex<T>&gt; 패턴<a href="#arcmutex-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="p">{</span><span class="n">Arc</span><span class="p">,</span><span class="w"> </span><span class="n">Mutex</span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">thread</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
