@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Java to Go: #1. Go 첫인상: 철학과 패러다임의 차이 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Java를 수년간 써온 개발자가 Go를 처음 접하면 당혹스럽다. &#34;왜 이렇게 만들었지?&#34;라는 생각이 끊이지 않는다. 이 글에서는 Go의 설계 철학을 이해하고, Java에서 Go로의 전환이 언제 적절한지 판단할 수 있는 기준을 제시한다." />
+<meta name="keywords" content="golang, programming, dev, java, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260121-java-to-go-guide-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Java to Go: #1. Go 첫인상: 철학과 패러다임의 차이">
+<meta property="og:description" content="Java를 수년간 써온 개발자가 Go를 처음 접하면 당혹스럽다. &#34;왜 이렇게 만들었지?&#34;라는 생각이 끊이지 않는다. 이 글에서는 Go의 설계 철학을 이해하고, Java에서 Go로의 전환이 언제 적절한지 판단할 수 있는 기준을 제시한다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260121-java-to-go-guide-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-21 12:28:27 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260121-java-to-go-guide-01/">Java to Go: #1. Go 첫인상: 철학과 패러다임의 차이</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-21</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/java/">java</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<p>Java를 수년간 써온 개발자가 Go를 처음 접하면 당혹스럽다. &ldquo;왜 이렇게 만들었지?&ldquo;라는 생각이 끊이지 않는다. 이 글에서는 Go의 설계 철학을 이해하고, Java에서 Go로의 전환이 언제 적절한지 판단할 수 있는 기준을 제시한다.</p>
+<hr>
+<h2 id="1-go의-설계-철학-less-is-more">1. Go의 설계 철학: &ldquo;Less is more&rdquo;<a href="#1-go의-설계-철학-less-is-more" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go는 2009년 Google에서 Robert Griesemer, Rob Pike, Ken Thompson이 만들었다. 세 사람 모두 수십 년 경력의 시스템 프로그래머로, C++의 복잡성에 지쳐 있었다. Go의 탄생 배경 자체가 &ldquo;복잡함에 대한 반발&quot;이다.</p>
+<h3 id="단순함을-위해-포기한-것들">단순함을 위해 포기한 것들<a href="#단순함을-위해-포기한-것들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Go는 의도적으로 많은 기능을 빼버렸다.</p>
+<p><strong>제네릭의 제한적 지원</strong>: Go 1.18(2022년)에서야 제네릭이 추가됐고, 지금도 Java의 제네릭보다 표현력이 제한적이다. 와일드카드(<code>? extends T</code>)나 공변성/반공변성 같은 개념이 없다.</p>
+<p><strong>예외(Exception) 없음</strong>: <code>try-catch-finally</code>가 없다. 에러는 그냥 값이다. 함수가 <code>(결과, error)</code> 튜플을 반환하고, 호출자가 매번 체크한다.</p>
+<p><strong>상속 없음</strong>: <code>extends</code>, <code>implements</code> 키워드가 없다. 클래스 계층 구조를 설계할 수 없다.</p>
+<p><strong>어노테이션 없음</strong>: <code>@Override</code>, <code>@Autowired</code> 같은 메타데이터 마킹이 불가능하다. 리플렉션 기반 프레임워크의 &ldquo;마법&quot;이 작동하기 어렵다.</p>
+<h3 id="왜-이렇게-만들었을까">왜 이렇게 만들었을까?<a href="#왜-이렇게-만들었을까" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Go 팀의 철학은 명확하다: <strong>코드는 작성되는 것보다 읽히는 횟수가 훨씬 많다.</strong> 따라서 작성 편의성보다 가독성을 우선한다.</p>
+<p>Java Spring 프로젝트를 생각해보자. 새로 합류한 개발자가 코드를 이해하려면 어노테이션이 어떻게 처리되는지, AOP가 어디서 개입하는지, 빈 라이프사이클이 어떻게 되는지 알아야 한다. &ldquo;마법&quot;이 많을수록 학습 곡선이 가파르다.</p>
+<p>Go는 이런 &ldquo;마법&quot;을 거의 허용하지 않는다. 코드가 하는 일이 그대로 보인다. 지루할 수 있지만, 6개월 후 돌아와서 읽어도 이해하기 쉽다.</p>
+<hr>
+<h2 id="2-oop-vs-go의-접근법">2. OOP vs Go의 접근법<a href="#2-oop-vs-go의-접근법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="상속-대신-컴포지션">상속 대신 컴포지션<a href="#상속-대신-컴포지션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java에서 흔히 보는 상속 구조를 생각해보자.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Animal</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">speak</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Dog</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Animal</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">speak</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34; barks&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Go에는 상속이 없다. 대신 구조체 임베딩(embedding)으로 비슷한 효과를 낸다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Animal</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Name</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Dog</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Animal</span>  <span class="c1">// 임베딩</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">Dog</span><span class="p">)</span> <span class="nf">Speak</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">Name</span> <span class="o">+</span> <span class="s">&#34; barks&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>Dog</code>가 <code>Animal</code>을 &ldquo;상속&quot;하는 게 아니라 &ldquo;포함&quot;한다. <code>d.Name</code>으로 접근할 수 있는 건 문법적 편의일 뿐, 실제로는 <code>d.Animal.Name</code>이다.</p>
+<p>이 차이가 왜 중요한가? 상속은 강한 결합을 만든다. 부모 클래스의 변경이 모든 자식에 영향을 미친다. 컴포지션은 더 느슨한 결합을 유지하면서 코드 재사용을 가능하게 한다.</p>
+<h3 id="암묵적-인터페이스-구현">암묵적 인터페이스 구현<a href="#암묵적-인터페이스-구현" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java에서 인터페이스 구현은 명시적이다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">Writer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">data</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FileWriter</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">Writer</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// 명시적 선언</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Go에서는 <code>implements</code> 키워드가 없다. 메서드 시그니처만 맞으면 자동으로 인터페이스를 구현한 것으로 간주한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Writer</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">Write</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">FileWriter</span> <span class="kd">struct</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">fw</span> <span class="nx">FileWriter</span><span class="p">)</span> <span class="nf">Write</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>  <span class="c1">// 자동으로 Writer 구현</span>
+</span></span></code></pre></div><p>이를 &ldquo;덕 타이핑(Duck Typing)&ldquo;이라 부른다. &ldquo;오리처럼 걷고 오리처럼 꽥꽥거리면 오리다.&rdquo;</p>
+<p>장점은 유연성이다. 표준 라이브러리의 <code>io.Writer</code> 인터페이스를 구현하기 위해 별도 import나 선언 없이, 그냥 <code>Write([]byte) (int, error)</code> 메서드만 구현하면 된다.</p>
+<p>단점은 명시성 부족이다. 어떤 struct가 어떤 interface를 구현하는지 코드만 봐서는 바로 알기 어렵다. IDE의 도움이 필요하다.</p>
+<hr>
+<h2 id="3-java-개발자가-처음에-불편해하는-것들">3. Java 개발자가 처음에 불편해하는 것들<a href="#3-java-개발자가-처음에-불편해하는-것들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="if-err--nil-지옥">if err != nil 지옥<a href="#if-err--nil-지옥" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java 개발자가 Go 코드를 보면 가장 먼저 눈에 띄는 것이 반복되는 에러 체크다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">file</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;config.json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;failed to open config: %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">data</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">ReadAll</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;failed to read config: %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">config</span> <span class="nx">Config</span>
+</span></span><span class="line"><span class="cl"><span class="nx">err</span> <span class="p">=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">config</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;failed to parse config: %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Java라면 <code>try</code> 블록 하나로 감싸면 될 일을 Go에서는 매번 체크해야 한다. 처음엔 굉장히 번거롭게 느껴진다.</p>
+<p>그러나 시간이 지나면 이게 장점이라는 걸 알게 된다. 에러가 어디서 발생했는지, 어떻게 전파되는지 코드만 봐도 명확하다. Java에서 <code>NullPointerException</code> 스택 트레이스를 따라가며 디버깅하던 경험을 떠올려보라.</p>
+<h3 id="제네릭의-한계">제네릭의 한계<a href="#제네릭의-한계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java에서 흔히 쓰는 패턴이 Go에서는 불가능하거나 어렵다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Java: 복잡한 타입 바운드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Comparable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Go 제네릭은 이런 표현력이 떨어진다. 복잡한 제네릭 코드가 필요한 상황이라면 Go가 적합하지 않을 수 있다.</p>
+<h3 id="프레임워크-부재">프레임워크 부재<a href="#프레임워크-부재" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java 생태계에는 Spring이라는 거대한 프레임워크가 있다. DI, AOP, 트랜잭션 관리, 보안 등을 종합적으로 제공한다.</p>
+<p>Go에는 Spring 같은 &ldquo;올인원&rdquo; 프레임워크가 없다. 의도적으로 그렇다. Go 커뮤니티는 작은 라이브러리들을 조합해서 쓰는 것을 선호한다. Gin(HTTP), GORM(ORM), Wire(DI) 등을 직접 조합해야 한다.</p>
+<p>장점은 자유도다. 단점은 매번 조합을 직접 해야 하고, 베스트 프랙티스가 팀마다 다를 수 있다는 것이다.</p>
+<hr>
+<h2 id="4-when-to-go-마이그레이션이-적절한-상황">4. When to Go: 마이그레이션이 적절한 상황<a href="#4-when-to-go-마이그레이션이-적절한-상황" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-고성능-네트워크-서비스--api-gateway--proxy">4.1 고성능 네트워크 서비스 / API Gateway / Proxy<a href="#41-고성능-네트워크-서비스--api-gateway--proxy" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 Go가 적합한가:</strong></p>
+<p>Go는 네트워크 I/O 처리에 최적화되어 있다. Goroutine은 OS 스레드보다 훨씬 가볍다(초기 스택 2KB vs Java Virtual Thread도 수 KB 이상). 수십만 개의 동시 연결을 단일 프로세스로 처리할 수 있다.</p>
+<p>Cloudflare, Netflix, Uber의 API Gateway들이 Go로 작성된 이유가 있다. 높은 동시성이 필요한 프록시, 로드밸런서, 리버스 프록시 같은 인프라 컴포넌트에 Go는 탁월하다.</p>
+<p><strong>Java와의 비교:</strong></p>
+<p>Java도 Virtual Thread(Project Loom) 도입으로 동시성 처리가 개선됐지만, 런타임 오버헤드와 메모리 사용량에서 Go가 여전히 유리하다. 특히 컨테이너 환경에서 메모리 128MB~512MB로 운영해야 하는 경우, JVM의 힙 관리 오버헤드가 부담이 된다.</p>
+<p><strong>적합한 케이스:</strong></p>
+<ul>
+<li>초당 수만~수십만 요청을 처리하는 API Gateway</li>
+<li>L4/L7 프록시, 로드밸런서</li>
+<li>WebSocket 서버, 실시간 메시징 서버</li>
+<li>gRPC 기반 서비스 메시</li>
+</ul>
+<h3 id="42-cli-도구-및-devops-유틸리티">4.2 CLI 도구 및 DevOps 유틸리티<a href="#42-cli-도구-및-devops-유틸리티" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 Go가 적합한가:</strong></p>
+<p>Go는 단일 바이너리로 컴파일된다. 의존성 없이 바이너리 하나만 배포하면 된다. Docker, Kubernetes, Terraform, Hugo 모두 Go로 작성됐다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 크로스 컴파일이 기본 지원</span>
+</span></span><span class="line"><span class="cl"><span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build -o myapp-linux
+</span></span><span class="line"><span class="cl"><span class="nv">GOOS</span><span class="o">=</span>darwin <span class="nv">GOARCH</span><span class="o">=</span>arm64 go build -o myapp-mac
+</span></span><span class="line"><span class="cl"><span class="nv">GOOS</span><span class="o">=</span>windows <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build -o myapp.exe
+</span></span></code></pre></div><p><strong>Java와의 비교:</strong></p>
+<p>Java로 CLI 도구를 만들면 JRE가 필요하다. GraalVM Native Image로 네이티브 바이너리를 만들 수 있지만, 빌드 시간이 길고 리플렉션 설정이 까다롭다. Spring Boot 앱을 Native Image로 만들려면 상당한 노력이 필요하다.</p>
+<p><strong>적합한 케이스:</strong></p>
+<ul>
+<li>내부 배포 도구, 자동화 스크립트</li>
+<li>인프라 관리 CLI (kubectl 플러그인 등)</li>
+<li>로그 분석, 데이터 변환 유틸리티</li>
+</ul>
+<h3 id="43-마이크로서비스의-사이드카--경량-서비스">4.3 마이크로서비스의 사이드카 / 경량 서비스<a href="#43-마이크로서비스의-사이드카--경량-서비스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 Go가 적합한가:</strong></p>
+<p>마이크로서비스 환경에서 사이드카 패턴을 쓸 때, 각 Pod마다 붙는 프록시는 최대한 가벼워야 한다. Envoy(C++)나 Linkerd-proxy(Rust)처럼 Go로 작성된 사이드카도 메모리 10~50MB 수준으로 운영 가능하다.</p>
+<p>또한 서비스 시작 시간이 중요하다. Go 바이너리는 밀리초 단위로 시작된다. Kubernetes에서 Pod가 빠르게 스케일 아웃되어야 할 때 JVM의 웜업 시간(수 초~수십 초)은 치명적일 수 있다.</p>
+<p><strong>적합한 케이스:</strong></p>
+<ul>
+<li>서비스 메시 사이드카</li>
+<li>단순 CRUD + 비즈니스 로직이 적은 마이크로서비스</li>
+<li>람다/서버리스 함수 (콜드 스타트 최소화)</li>
+</ul>
+<h3 id="44-컨테이너클라우드-네이티브-환경">4.4 컨테이너/클라우드 네이티브 환경<a href="#44-컨테이너클라우드-네이티브-환경" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 Go가 적합한가:</strong></p>
+<p>Go 바이너리는 보통 10~20MB 수준이다. <code>scratch</code> 또는 <code>distroless</code> 베이스 이미지에 바이너리만 넣으면 최종 이미지가 20MB 이하가 된다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> scratch</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> myapp /myapp<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;/myapp&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p>이미지 크기가 작으면 pull 시간이 짧고, 스케일 아웃이 빠르다. 또한 공격 표면(attack surface)이 줄어 보안에도 유리하다.</p>
+<p><strong>Java와의 비교:</strong></p>
+<p>Spring Boot 앱을 최적화해도 이미지가 200MB 이상 나오기 쉽다. JRE만 100MB가 넘기 때문이다. 물론 Jib 같은 도구로 레이어 캐싱을 최적화할 수 있지만, 근본적인 크기 차이는 줄어들지 않는다.</p>
+<p><strong>적합한 케이스:</strong></p>
+<ul>
+<li>Kubernetes 환경에서 수백 개 Pod를 운영하는 경우</li>
+<li>엣지 컴퓨팅, IoT 게이트웨이 (리소스 제약 환경)</li>
+<li>빈번한 배포가 필요한 환경</li>
+</ul>
+<h3 id="45-시스템-프로그래밍--인프라-도구">4.5 시스템 프로그래밍 / 인프라 도구<a href="#45-시스템-프로그래밍--인프라-도구" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 Go가 적합한가:</strong></p>
+<p>Go는 시스템 프로그래밍 언어로 설계됐다. OS API에 직접 접근하기 쉽고, C 라이브러리와의 연동(cgo)도 지원한다. Docker, Kubernetes, etcd, Prometheus, Grafana 등 클라우드 인프라의 핵심 컴포넌트들이 Go로 작성된 이유다.</p>
+<p><strong>적합한 케이스:</strong></p>
+<ul>
+<li>컨테이너 런타임, 오케스트레이션 도구</li>
+<li>모니터링 에이전트, 메트릭 수집기</li>
+<li>스토리지 시스템, 분산 시스템 컴포넌트</li>
+</ul>
+<hr>
+<h2 id="5-when-not-to-go-마이그레이션이-득보다-실이-많은-상황">5. When NOT to Go: 마이그레이션이 득보다 실이 많은 상황<a href="#5-when-not-to-go-마이그레이션이-득보다-실이-많은-상황" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-복잡한-도메인-로직이-있는-엔터프라이즈-애플리케이션">5.1 복잡한 도메인 로직이 있는 엔터프라이즈 애플리케이션<a href="#51-복잡한-도메인-로직이-있는-엔터프라이즈-애플리케이션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 Java가 더 나은가:</strong></p>
+<p>복잡한 비즈니스 도메인을 모델링할 때는 풍부한 타입 시스템과 OOP 기능이 도움이 된다. Java는 상속, 다형성, 제네릭, 어노테이션 등으로 도메인 모델을 정교하게 표현할 수 있다.</p>
+<p>예를 들어 금융 도메인의 복잡한 상속 계층을 생각해보자.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FinancialInstrument</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Money</span><span class="w"> </span><span class="n">notional</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">LocalDate</span><span class="w"> </span><span class="n">maturityDate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="n">Money</span><span class="w"> </span><span class="nf">calculatePresentValue</span><span class="p">(</span><span class="n">MarketData</span><span class="w"> </span><span class="n">market</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Bond</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FinancialInstrument</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Rate</span><span class="w"> </span><span class="n">couponRate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Frequency</span><span class="w"> </span><span class="n">paymentFrequency</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 복잡한 가격 계산 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Option</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FinancialInstrument</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">OptionType</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">Money</span><span class="w"> </span><span class="n">strikePrice</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Black-Scholes 모델 등</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Go로 이런 도메인 모델을 표현하면 interface와 struct 조합으로 어느 정도 가능하지만, 코드가 더 장황해지고 타입 안전성이 떨어진다.</p>
+<p><strong>구체적으로 Java가 유리한 점:</strong></p>
+<ul>
+<li><strong>추상 클래스</strong>: Go에는 없다. 부분 구현을 공유하려면 임베딩과 인터페이스를 복잡하게 조합해야 한다.</li>
+<li><strong>제네릭 표현력</strong>: 복잡한 타입 바운드(<code>&lt;T extends Comparable&lt;T&gt; &amp; Serializable&gt;</code>)를 Go로 표현하기 어렵다.</li>
+<li><strong>어노테이션 기반 검증</strong>: <code>@NotNull</code>, <code>@Valid</code> 같은 선언적 검증이 불가능하다. 코드로 직접 검증 로직을 작성해야 한다.</li>
+<li><strong>AOP</strong>: 횡단 관심사(로깅, 보안, 트랜잭션)를 깔끔하게 분리하기 어렵다.</li>
+</ul>
+<p><strong>적합하지 않은 케이스:</strong></p>
+<ul>
+<li>ERP, CRM 같은 복잡한 엔터프라이즈 애플리케이션</li>
+<li>금융 거래 시스템, 보험 상품 관리 시스템</li>
+<li>복잡한 워크플로우 엔진</li>
+</ul>
+<h3 id="52-spring-생태계에-깊이-의존하는-경우">5.2 Spring 생태계에 깊이 의존하는 경우<a href="#52-spring-생태계에-깊이-의존하는-경우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>왜 마이그레이션이 어려운가:</strong></p>
+<p>Spring은 단순한 프레임워크가 아니라 하나의 생태계다. Spring Security, Spring Data, Spring Batch, Spring Integration 등이 유기적으로 연결되어 있다.</p>
+<p><strong>Spring Security를 예로 들면:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SecurityConfig</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">SecurityFilterChain</span><span class="w"> </span><span class="nf">filterChain</span><span class="p">(</span><span class="n">HttpSecurity</span><span class="w"> </span><span class="n">http</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">oauth2Login</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">authorizeHttpRequests</span><span class="p">(</span><span class="n">auth</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">auth</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">requestMatchers</span><span class="p">(</span><span class="s">&#34;/admin/**&#34;</span><span class="p">).</span><span class="na">hasRole</span><span class="p">(</span><span class="s">&#34;ADMIN&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">anyRequest</span><span class="p">().</span><span class="na">authenticated</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 몇 줄이 OAuth2 인증, 세션 관리, CSRF 보호, 권한 체크를 모두 처리한다. Go로 동일한 기능을 구현하려면:</p>
+<ul>
+<li>OAuth2 라이브러리 선택 및 통합</li>
+<li>세션 스토어 구현 (Redis 연동 등)</li>
+<li>미들웨어 체인 직접 구성</li>
+<li>권한 체크 로직 직접 구현</li>
+</ul>
+<p>Spring이 제공하는 &ldquo;배터리 포함(batteries included)&rdquo; 경험을 Go에서 재현하려면 상당한 노력이 필요하다.</p>
+<p><strong>Spring Batch의 경우:</strong></p>
+<p>Java에는 Spring Batch라는 검증된 배치 프레임워크가 있다. 청크 기반 처리, 재시작 가능성, 병렬 처리, 스킵/재시도 정책 등을 선언적으로 설정할 수 있다.</p>
+<p>Go에는 이에 대응하는 프레임워크가 없다. 배치 처리 로직을 직접 구현해야 하고, 장애 복구, 체크포인팅 등을 수동으로 처리해야 한다.</p>
+<p><strong>적합하지 않은 케이스:</strong></p>
+<ul>
+<li>Spring Security로 복잡한 인증/인가를 구현한 시스템</li>
+<li>Spring Batch로 대규모 배치 처리를 하는 시스템</li>
+<li>Spring Integration/Spring Cloud Stream으로 메시징을 처리하는 시스템</li>
+<li>Spring Data로 여러 데이터소스를 통합 관리하는 시스템</li>
+</ul>
+<h3 id="53-대규모-트랜잭션-처리와-복잡한-orm이-필요한-경우">5.3 대규모 트랜잭션 처리와 복잡한 ORM이 필요한 경우<a href="#53-대규모-트랜잭션-처리와-복잡한-orm이-필요한-경우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>RDB를 주 Datasource로 사용할 때 Go는 유용한가?</strong></p>
+<p>결론부터 말하면: <strong>단순한 CRUD라면 Go도 충분하지만, 복잡한 ORM 기능이 필요하면 Java/JPA가 낫다.</strong></p>
+<p><strong>Go의 ORM 상황:</strong></p>
+<p>Go의 대표적인 ORM은 GORM이다. 기본적인 CRUD, 관계 매핑, 마이그레이션을 지원한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ID</span>        <span class="kt">uint</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Name</span>      <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Orders</span>    <span class="p">[]</span><span class="nx">Order</span> <span class="s">`gorm:&#34;foreignKey:UserID&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">db</span><span class="p">.</span><span class="nf">Preload</span><span class="p">(</span><span class="s">&#34;Orders&#34;</span><span class="p">).</span><span class="nf">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">users</span><span class="p">)</span>
+</span></span></code></pre></div><p>그러나 JPA/Hibernate와 비교하면 기능이 제한적이다.</p>
+<p><strong>Java JPA가 우위인 영역:</strong></p>
+<ol>
+<li>
+<p><strong>Lazy Loading</strong>: JPA는 진정한 lazy loading을 지원한다. 연관 엔티티에 접근할 때 자동으로 쿼리가 실행된다. GORM의 Preload는 eager loading에 가깝다.</p>
+</li>
+<li>
+<p><strong>Dirty Checking</strong>: JPA는 엔티티 변경을 자동 감지해서 트랜잭션 커밋 시 업데이트한다. GORM은 명시적으로 <code>Save()</code>를 호출해야 한다.</p>
+</li>
+<li>
+<p><strong>복잡한 상속 매핑</strong>: JPA의 <code>@Inheritance</code> 전략(SINGLE_TABLE, JOINED, TABLE_PER_CLASS)을 GORM으로 구현하기 어렵다.</p>
+</li>
+<li>
+<p><strong>2차 캐시</strong>: Hibernate의 2차 캐시(EhCache, Redis)는 성숙하고 검증되어 있다. GORM에는 공식적인 2차 캐시가 없다.</p>
+</li>
+<li>
+<p><strong>Criteria API / QueryDSL</strong>: 타입 안전한 동적 쿼리 빌딩이 Java 쪽이 훨씬 강력하다.</p>
+</li>
+</ol>
+<p><strong>Go가 RDB와 함께 적합한 경우:</strong></p>
+<ul>
+<li>단순한 CRUD 중심의 마이크로서비스</li>
+<li>쿼리가 대부분 직접 작성하는(raw SQL) 경우</li>
+<li>sqlx처럼 SQL을 직접 다루는 것을 선호하는 경우</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// sqlx: SQL을 직접 작성하되 struct 매핑은 자동화</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">users</span> <span class="p">[]</span><span class="nx">User</span>
+</span></span><span class="line"><span class="cl"><span class="nx">db</span><span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">users</span><span class="p">,</span> <span class="s">&#34;SELECT * FROM users WHERE status = ?&#34;</span><span class="p">,</span> <span class="s">&#34;active&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p><strong>Go가 RDB와 함께 적합하지 않은 경우:</strong></p>
+<ul>
+<li>복잡한 엔티티 관계와 상속 구조</li>
+<li>복잡한 트랜잭션 경계 관리</li>
+<li>대규모 배치 처리 (flush/clear 관리)</li>
+<li>동적 쿼리 빌딩이 많은 경우</li>
+</ul>
+<h3 id="54-팀의-학습-곡선과-기존-자산">5.4 팀의 학습 곡선과 기존 자산<a href="#54-팀의-학습-곡선과-기존-자산" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>팀 역량을 고려해야 하는 이유:</strong></p>
+<p>Java 10년차 개발자 5명으로 구성된 팀이 있다고 하자. Go로 전환하면:</p>
+<ul>
+<li>언어 학습: 2~4주 (기본 문법)</li>
+<li>관용적 Go 코드 작성: 2~3개월</li>
+<li>Go 생태계 파악 및 라이브러리 선정: 1~2개월</li>
+<li>프로덕션 레벨의 안정성 확보: 6개월~1년</li>
+</ul>
+<p>이 기간 동안 생산성이 떨어진다. 기존 Java로 했으면 3개월 걸릴 프로젝트가 Go로 하면 6개월 걸릴 수 있다.</p>
+<p><strong>기존 자산의 가치:</strong></p>
+<p>대부분의 조직에는 수년간 축적된 내부 라이브러리가 있다.</p>
+<ul>
+<li>공통 로깅/모니터링 라이브러리</li>
+<li>내부 인증/인가 모듈</li>
+<li>도메인 특화 유틸리티</li>
+<li>테스트 픽스처와 헬퍼</li>
+</ul>
+<p>이것들을 Go로 다시 만드는 건 상당한 비용이다. 특히 버그가 잡히고 엣지 케이스가 처리된 mature한 코드를 처음부터 다시 작성하는 건 리스크다.</p>
+<p><strong>Go 전환이 적합하지 않은 상황:</strong></p>
+<ul>
+<li>팀 전체가 Java/JVM 전문가로 구성된 경우</li>
+<li>내부 Java 라이브러리 자산이 많은 경우</li>
+<li>프로젝트 일정이 촉박한 경우</li>
+<li>Go 경험자가 팀에 없고 채용도 어려운 경우</li>
+</ul>
+<h3 id="55-monolith에서-msa로-전환한다면">5.5 Monolith에서 MSA로 전환한다면?<a href="#55-monolith에서-msa로-전환한다면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>이 질문에 대한 답은 &ldquo;상황에 따라 다르다&quot;이다.</strong></p>
+<p><strong>시나리오 1: 기존 Monolith를 점진적으로 분리하는 경우</strong></p>
+<p>기존 Java Monolith에서 서비스를 하나씩 떼어내는 상황이라면, 처음에는 Java로 유지하는 게 안전하다.</p>
+<p>이유:</p>
+<ul>
+<li>기존 도메인 모델을 재사용할 수 있다</li>
+<li>팀이 익숙한 기술 스택이다</li>
+<li>내부 라이브러리를 공유할 수 있다</li>
+<li>점진적 전환 시 리스크가 낮다</li>
+</ul>
+<p><strong>시나리오 2: 신규 서비스를 추가하는 경우</strong></p>
+<p>Monolith는 그대로 두고 새 기능을 별도 서비스로 만드는 경우, Go를 고려해볼 만하다.</p>
+<p>특히 다음 조건이 맞으면 Go가 적합하다:</p>
+<ul>
+<li>도메인 로직이 단순하다</li>
+<li>고성능/저지연이 요구된다</li>
+<li>컨테이너 리소스를 최소화해야 한다</li>
+<li>팀에 Go 경험자가 있다</li>
+</ul>
+<p><strong>시나리오 3: 전면 재작성(Rewrite)하는 경우</strong></p>
+<p>레거시 Monolith를 완전히 새로 작성하는 경우, 언어 선택은 더 자유롭다. 하지만 이 경우에도:</p>
+<ul>
+<li>복잡한 도메인 로직이 많으면 Java가 안전하다</li>
+<li>단순한 서비스들의 집합이면 Go도 좋다</li>
+<li>팀 역량이 가장 중요한 요소다</li>
+</ul>
+<p><strong>하이브리드 접근:</strong></p>
+<p>많은 조직이 &ldquo;적재적소&quot;전략을 쓴다.</p>
+<ul>
+<li><strong>Java</strong>: 복잡한 비즈니스 로직, 배치 처리, 엔터프라이즈 통합</li>
+<li><strong>Go</strong>: API Gateway, 사이드카, 고성능 서비스, CLI 도구, 인프라 컴포넌트</li>
+</ul>
+<p>예를 들어 Uber는 Java(서비스 로직)와 Go(인프라, 고성능 컴포넌트)를 함께 사용한다.</p>
+<hr>
+<h2 id="6-결론-마이그레이션-결정-체크리스트">6. 결론: 마이그레이션 결정 체크리스트<a href="#6-결론-마이그레이션-결정-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go로 전환을 고려할 때 다음 질문들을 던져보자.</p>
+<h3 id="go를-선택해야-하는-신호">Go를 선택해야 하는 신호<a href="#go를-선택해야-하는-신호" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>✅ 동시 연결 수만~수십만 개 처리가 필요한가?<br>
+✅ 서비스 시작 시간이 중요한가? (서버리스, 빈번한 스케일링)<br>
+✅ 컨테이너 메모리를 256MB 이하로 유지해야 하는가?<br>
+✅ 단일 바이너리 배포가 중요한가? (CLI, 에이전트)<br>
+✅ 비즈니스 로직이 단순한 CRUD 중심인가?<br>
+✅ 팀에 Go 경험자가 있거나 학습 의지가 강한가?</p>
+<h3 id="java를-유지해야-하는-신호">Java를 유지해야 하는 신호<a href="#java를-유지해야-하는-신호" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>✅ 복잡한 도메인 모델과 비즈니스 로직이 있는가?<br>
+✅ Spring 생태계(Security, Batch, Integration 등)에 의존하는가?<br>
+✅ 복잡한 ORM 기능(Lazy Loading, 2차 캐시, 상속 매핑)이 필요한가?<br>
+✅ 대규모 트랜잭션과 배치 처리가 핵심인가?<br>
+✅ 팀이 Java 전문가들로 구성되어 있는가?<br>
+✅ 내부 Java 라이브러리 자산이 많은가?</p>
+<p>어느 쪽도 압도적이지 않다면, <strong>기존 기술 스택을 유지하는 것이 보통 안전한 선택</strong>이다. 새 언어 도입은 그 자체로 비용이기 때문이다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260121-java-to-go-guide-02/" class="button inline prev">
+        &lt; [<span class="button__text">Java to Go: #2. 문법 전환 가이드: Java 코드를 Go로 옮기기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260119-go-to-rust-guide-10/" class="button inline next">
+         [<span class="button__text">Go to Rust: #10. 프로젝트 관리와 실전 패턴</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
