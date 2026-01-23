@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 5: 나만의 Plugin Marketplace 만들기 - 팀/조직 확장 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Plugin 구조와 plugin.json 작성법, Marketplace 구축 및 GitHub 배포, 팀/조직을 위한 Custom Marketplace 운영 방법을 다룹니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-05/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 5: 나만의 Plugin Marketplace 만들기 - 팀/조직 확장">
+<meta property="og:description" content="Plugin 구조와 plugin.json 작성법, Marketplace 구축 및 GitHub 배포, 팀/조직을 위한 Custom Marketplace 운영 방법을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-05/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:21:03 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-05/">Claude Code 완전 정복 가이드 Part 5: 나만의 Plugin Marketplace 만들기 - 팀/조직 확장</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간 30분
+<strong>난이도</strong>: ⭐⭐⭐⭐
+<strong>사전 요구사항</strong>: Part 1-4 완료, Git/GitHub 기본 지식
+<strong>Claude Code 버전</strong>: 2.1.x</p></blockquote>
+<hr>
+<h2 id="1-plugin-구조-이해">1. Plugin 구조 이해<a href="#1-plugin-구조-이해" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-plugin-디렉토리-구조">1.1 Plugin 디렉토리 구조<a href="#11-plugin-디렉토리-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>💡 <strong>주의</strong>: 2026년 기준, <code>marketplace.json</code>에서 Skills를 로드하려면 <code>skills</code> 필드가 <strong>필수</strong>입니다. 이 필드가 없으면 Skills가 로드되지 않습니다.</p>
+<pre tabindex="0"><code>my-plugin/
+├── .claude-plugin/
+│   └── plugin.json          # 필수: 플러그인 메타데이터
+├── skills/                  # 선택: Skills
+│   └── my-skill/
+│       └── SKILL.md
+├── commands/                # 선택: Slash Commands
+│   └── my-command.md
+├── agents/                  # 선택: Subagents
+│   └── my-agent.md
+├── hooks/                   # 선택: Hooks 설정
+│   └── hooks.json
+├── .mcp.json               # 선택: MCP 서버 설정
+└── README.md               # 권장: 문서화
+</code></pre><h3 id="12-pluginjson-필수-필드">1.2 plugin.json 필수 필드<a href="#12-pluginjson-필수-필드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;my-awesome-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;플러그인 설명&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;author&#34;</span><span class="p">:</span> <span class="s2">&#34;Your Name&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/you/my-plugin&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="13-pluginjson-전체-스키마">1.3 plugin.json 전체 스키마<a href="#13-pluginjson-전체-스키마" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;my-awesome-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;이 플러그인이 무엇을 하는지 간단히 설명&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;author&#34;</span><span class="p">:</span> <span class="s2">&#34;Your Name &lt;you@example.com&gt;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/you/my-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;repository&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;git&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/you/my-plugin.git&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;MIT&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;keywords&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;go&#34;</span><span class="p">,</span> <span class="s2">&#34;testing&#34;</span><span class="p">,</span> <span class="s2">&#34;conventions&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;engines&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;claude-code&#34;</span><span class="p">:</span> <span class="s2">&#34;&gt;=2.0.0&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;dependencies&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;plugins&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;other-plugin@marketplace&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><hr>
+<h2 id="2-첫-번째-plugin-만들기">2. 첫 번째 Plugin 만들기<a href="#2-첫-번째-plugin-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-시나리오">2.1 시나리오<a href="#21-시나리오" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java/Kotlin 개발팀을 위한 Plugin을 만들어봅시다. 다음을 포함합니다:</p>
+<ul>
+<li>코딩 컨벤션 Skill</li>
+<li>테스트 작성 Skill</li>
+<li>커밋 메시지 형식 Command</li>
+</ul>
+<h3 id="22-디렉토리-구조-생성">2.2 디렉토리 구조 생성<a href="#22-디렉토리-구조-생성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p jvm-team-plugin/.claude-plugin
+</span></span><span class="line"><span class="cl">mkdir -p jvm-team-plugin/skills/kotlin-conventions
+</span></span><span class="line"><span class="cl">mkdir -p jvm-team-plugin/skills/test-patterns
+</span></span><span class="line"><span class="cl">mkdir -p jvm-team-plugin/commands
+</span></span></code></pre></div><h3 id="23-pluginjson-작성">2.3 plugin.json 작성<a href="#23-pluginjson-작성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>jvm-team-plugin/.claude-plugin/plugin.json</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;jvm-team-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;JVM(Java/Kotlin) 개발팀을 위한 코딩 컨벤션, 테스트 패턴, Git 워크플로우&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;author&#34;</span><span class="p">:</span> <span class="s2">&#34;Your Team&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;homepage&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/your-org/jvm-team-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;license&#34;</span><span class="p">:</span> <span class="s2">&#34;MIT&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;keywords&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;java&#34;</span><span class="p">,</span> <span class="s2">&#34;kotlin&#34;</span><span class="p">,</span> <span class="s2">&#34;spring-boot&#34;</span><span class="p">,</span> <span class="s2">&#34;testing&#34;</span><span class="p">,</span> <span class="s2">&#34;conventions&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="24-skills-작성">2.4 Skills 작성<a href="#24-skills-작성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>skills/kotlin-conventions/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: kotlin-conventions
+</span></span><span class="line"><span class="cl">description: Kotlin 코딩 컨벤션. Kotlin 코드 작성, 리뷰 시 자동 적용.
+</span></span><span class="line"><span class="cl">             &#34;Kotlin&#34;, &#34;코틀린&#34;, &#34;kt 파일&#34; 작업 시 활성화.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Kotlin Coding Conventions
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 파일 구조
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">```kotlin
+</span></span><span class="line"><span class="cl">// 1. 패키지 선언
+</span></span><span class="line"><span class="cl">package com.example.feature
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 2. Import (알파벳 순, 와일드카드 금지)
+</span></span><span class="line"><span class="cl">import com.example.other.SomeClass
+</span></span><span class="line"><span class="cl">import org.springframework.stereotype.Service
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 3. 클래스/함수 정의
+</span></span></code></pre></div><h2 id="네이밍-규칙">네이밍 규칙<a href="#네이밍-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>대상</th>
+          <th>규칙</th>
+          <th>예시</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>클래스</td>
+          <td>PascalCase</td>
+          <td><code>UserService</code>, <code>PaymentGateway</code></td>
+      </tr>
+      <tr>
+          <td>함수</td>
+          <td>camelCase, 동사로 시작</td>
+          <td><code>createUser</code>, <code>findById</code></td>
+      </tr>
+      <tr>
+          <td>변수</td>
+          <td>camelCase</td>
+          <td><code>userId</code>, <code>isActive</code></td>
+      </tr>
+      <tr>
+          <td>상수</td>
+          <td>SCREAMING_SNAKE_CASE</td>
+          <td><code>MAX_RETRY_COUNT</code></td>
+      </tr>
+      <tr>
+          <td>패키지</td>
+          <td>lowercase</td>
+          <td><code>com.example.userservice</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="함수-작성-규칙">함수 작성 규칙<a href="#함수-작성-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// ✅ 좋은 예: 단일 표현식 함수
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fun</span> <span class="nf">isValid</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="n">email</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&#34;@&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ✅ 좋은 예: 명확한 반환 타입
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fun</span> <span class="nf">findUser</span><span class="p">(</span><span class="n">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">User</span><span class="p">?</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="n">id</span><span class="p">).</span><span class="n">orElse</span><span class="p">(</span><span class="k">null</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ❌ 나쁜 예: 불필요한 Unit 반환
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fun</span> <span class="nf">saveUser</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span> <span class="n">Unit</span> <span class="p">{</span>  <span class="c1">// Unit 생략
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">userRepository</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="null-처리">Null 처리<a href="#null-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// ✅ Safe call + Elvis
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">user</span><span class="o">?.</span><span class="n">name</span> <span class="o">?:</span> <span class="s2">&#34;Unknown&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ✅ let으로 null 체크
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">user</span><span class="o">?.</span><span class="n">let</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sendEmail</span><span class="p">(</span><span class="k">it</span><span class="p">.</span><span class="n">email</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ❌ 강제 unwrap 금지 (테스트 제외)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">user</span><span class="o">!!</span><span class="p">.</span><span class="n">name</span>  <span class="c1">// 프로덕션 코드에서 금지
+</span></span></span></code></pre></div><h2 id="data-class-규칙">Data Class 규칙<a href="#data-class-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// ✅ DTO는 data class
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">data</span> <span class="k">class</span> <span class="nc">UserResponse</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">email</span><span class="p">:</span> <span class="n">String</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ✅ Entity는 일반 class (JPA 프록시 호환)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Entity</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">User</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Id</span> <span class="nd">@GeneratedValue</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">id</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="m">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">var</span> <span class="py">email</span><span class="p">:</span> <span class="n">String</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h2 id="extension-function">Extension Function<a href="#extension-function" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// 유틸리티성 확장 함수는 Extensions.kt에 모아두기
+</span></span></span><span class="line"><span class="cl"><span class="c1">// com/example/common/Extensions.kt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">String</span><span class="p">.</span><span class="n">toSlug</span><span class="p">():</span> <span class="n">String</span> <span class="p">=</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="n">lowercase</span><span class="p">().</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">,</span> <span class="s2">&#34;-&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">List</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;.</span><span class="n">secondOrNull</span><span class="p">():</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="n">getOrNull</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>
+**skills/test-patterns/SKILL.md**:
+
+```markdown
+---
+name: test-patterns
+description: JVM 테스트 작성 패턴. JUnit 5, MockK 기반.
+             &#34;테스트 작성&#34;, &#34;단위 테스트&#34;, &#34;통합 테스트&#34; 요청 시 활성화.
+---
+
+# JVM Test Patterns
+
+## 테스트 클래스 구조
+
+```kotlin
+@ExtendWith(MockKExtension::class)
+internal class UserServiceTest {
+
+    @MockK
+    private lateinit var userRepository: UserRepository
+
+    @MockK
+    private lateinit var eventPublisher: EventPublisher
+
+    @InjectMockKs
+    private lateinit var sut: UserService  // System Under Test
+
+    @BeforeEach
+    fun setUp() {
+        // 공통 Mock 설정
+    }
+
+    @Nested
+    @DisplayName(&#34;createUser&#34;)
+    inner class CreateUser {
+
+        @Test
+        fun `should create user when valid input`() {
+            // Given
+            val request = CreateUserRequest(name = &#34;John&#34;, email = &#34;john@test.com&#34;)
+            val savedUser = User(id = 1L, name = &#34;John&#34;, email = &#34;john@test.com&#34;)
+
+            every { userRepository.save(any()) } returns savedUser
+            every { eventPublisher.publish(any()) } just Runs
+
+            // When
+            val result = sut.createUser(request)
+
+            // Then
+            assertThat(result.id).isEqualTo(1L)
+            verify(exactly = 1) { userRepository.save(any()) }
+            verify(exactly = 1) { eventPublisher.publish(match { it is UserCreatedEvent }) }
+        }
+
+        @Test
+        fun `should throw exception when email already exists`() {
+            // Given
+            val request = CreateUserRequest(name = &#34;John&#34;, email = &#34;existing@test.com&#34;)
+            every { userRepository.existsByEmail(request.email) } returns true
+
+            // When &amp; Then
+            assertThrows&lt;DuplicateEmailException&gt; {
+                sut.createUser(request)
+            }
+        }
+    }
+}
+</code></pre><h2 id="네이밍-규칙-1">네이밍 규칙<a href="#네이밍-규칙-1" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// 백틱 사용, should_결과_when_조건 패턴
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="err">`</span><span class="n">should</span> <span class="k">return</span> <span class="n">user</span> <span class="k">when</span> <span class="n">valid</span> <span class="n">id</span> <span class="n">provided</span><span class="err">`</span>
+</span></span><span class="line"><span class="cl"><span class="err">`</span><span class="n">should</span> <span class="k">throw</span> <span class="n">exception</span> <span class="k">when</span> <span class="n">user</span> <span class="n">not</span> <span class="n">found</span><span class="err">`</span>
+</span></span><span class="line"><span class="cl"><span class="err">`</span><span class="n">should</span> <span class="n">send</span> <span class="n">email</span> <span class="k">when</span> <span class="n">user</span> <span class="n">created</span><span class="err">`</span>
+</span></span></code></pre></div><h2 id="mockk-사용법">MockK 사용법<a href="#mockk-사용법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// Stubbing
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">every</span> <span class="p">{</span> <span class="n">repository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span> <span class="p">}</span> <span class="n">returns</span> <span class="n">user</span>
+</span></span><span class="line"><span class="cl"><span class="n">every</span> <span class="p">{</span> <span class="n">repository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="n">any</span><span class="p">())</span> <span class="p">}</span> <span class="n">returns</span> <span class="k">null</span>
+</span></span><span class="line"><span class="cl"><span class="n">every</span> <span class="p">{</span> <span class="n">service</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">any</span><span class="p">())</span> <span class="p">}</span> <span class="n">throws</span> <span class="n">SomeException</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Relaxed mock (모든 메서드 기본값 반환)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@MockK</span><span class="p">(</span><span class="n">relaxed</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">private</span> <span class="k">lateinit</span> <span class="k">var</span> <span class="py">logger</span><span class="p">:</span> <span class="n">Logger</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Verification
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">verify</span> <span class="p">{</span> <span class="n">repository</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">verify</span><span class="p">(</span><span class="n">exactly</span> <span class="p">=</span> <span class="m">2</span><span class="p">)</span> <span class="p">{</span> <span class="n">service</span><span class="p">.</span><span class="n">notify</span><span class="p">(</span><span class="n">any</span><span class="p">())</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">verify</span><span class="p">(</span><span class="n">ordering</span> <span class="p">=</span> <span class="nc">Ordering</span><span class="p">.</span><span class="n">SEQUENCE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">service</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">service</span><span class="p">.</span><span class="n">process</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">service</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="통합-테스트">통합 테스트<a href="#통합-테스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="nd">@SpringBootTest</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@AutoConfigureMockMvc</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">UserApiIntegrationTest</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">lateinit</span> <span class="k">var</span> <span class="py">mockMvc</span><span class="p">:</span> <span class="n">MockMvc</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">lateinit</span> <span class="k">var</span> <span class="py">userRepository</span><span class="p">:</span> <span class="n">UserRepository</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Test</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">`POST users should create user and return 201`</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Given
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="s">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">            {
+</span></span></span><span class="line"><span class="cl"><span class="s">                &#34;name&#34;: &#34;John&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">                &#34;email&#34;: &#34;john@test.com&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">            }
+</span></span></span><span class="line"><span class="cl"><span class="s">        &#34;&#34;&#34;</span><span class="p">.</span><span class="n">trimIndent</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// When &amp; Then
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">mockMvc</span><span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&#34;/api/v1/users&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">contentType</span> <span class="p">=</span> <span class="nc">MediaType</span><span class="p">.</span><span class="n">APPLICATION_JSON</span>
+</span></span><span class="line"><span class="cl">            <span class="n">content</span> <span class="p">=</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}.</span><span class="n">andExpect</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">status</span> <span class="p">{</span> <span class="n">isCreated</span><span class="p">()</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">jsonPath</span><span class="p">(</span><span class="s2">&#34;$.data.name&#34;</span><span class="p">)</span> <span class="p">{</span> <span class="k">value</span><span class="p">(</span><span class="s2">&#34;John&#34;</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// DB 검증
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">val</span> <span class="py">saved</span> <span class="p">=</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">findByEmail</span><span class="p">(</span><span class="s2">&#34;john@test.com&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">assertThat</span><span class="p">(</span><span class="n">saved</span><span class="p">).</span><span class="n">isNotNull</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="테스트-데이터-빌더">테스트 데이터 빌더<a href="#테스트-데이터-빌더" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// test/fixtures/UserFixtures.kt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">object</span> <span class="nc">UserFixtures</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">aUser</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">id</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="m">1L</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;Test User&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">email</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;test@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">id</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span> <span class="p">=</span> <span class="n">email</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">aCreateUserRequest</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;Test User&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">email</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;test@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span> <span class="p">=</span> <span class="n">CreateUserRequest</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span> <span class="p">=</span> <span class="n">email</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 사용
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="nc">UserFixtures</span><span class="p">.</span><span class="n">aUser</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="s2">&#34;Custom Name&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>
+### 2.5 Command 작성
+
+**commands/conventional-commit.md**:
+
+```markdown
+---
+name: conventional-commit
+description: Conventional Commits 형식으로 커밋 메시지를 생성합니다.
+---
+
+# Conventional Commit Generator
+
+현재 staged 변경사항을 분석하여 Conventional Commits 형식의 커밋 메시지를 생성합니다.
+
+## 커밋 타입
+
+| 타입 | 설명 | 예시 |
+|------|------|------|
+| feat | 새 기능 | `feat: add user registration` |
+| fix | 버그 수정 | `fix: resolve null pointer in UserService` |
+| refactor | 리팩토링 | `refactor: extract validation logic` |
+| test | 테스트 | `test: add unit tests for PaymentService` |
+| docs | 문서 | `docs: update API documentation` |
+| chore | 빌드/설정 | `chore: update gradle dependencies` |
+| perf | 성능 | `perf: optimize database query` |
+
+## 형식
+</code></pre><p><type>(<scope>): <subject></p>
+<body>
+<footer>
+```
+<h2 id="작업-순서">작업 순서<a href="#작업-순서" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ol>
+<li><code>git diff --staged</code> 실행하여 변경사항 확인</li>
+<li>변경 내용 분석</li>
+<li>적절한 타입과 scope 선택</li>
+<li>명확한 subject 작성 (50자 이내, 명령형)</li>
+<li>필요시 body에 상세 설명 추가</li>
+</ol>
+<h2 id="예시">예시<a href="#예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code>feat(user): add email verification flow
+
+- Add EmailVerificationService
+- Create verification token entity
+- Implement verification endpoint
+
+Closes #123
+</code></pre><pre tabindex="0"><code>
+### 2.6 README.md 작성
+
+```markdown
+# JVM Team Plugin
+
+Java/Kotlin 개발팀을 위한 Claude Code 플러그인입니다.
+
+## 설치
+
+```bash
+/plugin marketplace add your-org/jvm-team-plugin
+/plugin install jvm-team-plugin@your-org
+</code></pre><h2 id="포함된-기능">포함된 기능<a href="#포함된-기능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="skills-자동-활성화">Skills (자동 활성화)<a href="#skills-자동-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>Skill</th>
+          <th>설명</th>
+          <th>트리거</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>kotlin-conventions</code></td>
+          <td>Kotlin 코딩 컨벤션</td>
+          <td>Kotlin 코드 작성 시</td>
+      </tr>
+      <tr>
+          <td><code>test-patterns</code></td>
+          <td>테스트 작성 패턴</td>
+          <td>테스트 작성 요청 시</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="commands-수동-호출">Commands (수동 호출)<a href="#commands-수동-호출" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>Command</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>/conventional-commit</code></td>
+          <td>커밋 메시지 생성</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="사용-예시">사용 예시<a href="#사용-예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code># Kotlin 코드 작성 시 자동으로 컨벤션 적용
+&#34;UserService 클래스 만들어줘&#34;
+
+# 테스트 작성
+&#34;UserService에 대한 단위 테스트 작성해줘&#34;
+
+# 커밋 메시지 생성
+/conventional-commit
+</code></pre><h2 id="기여">기여<a href="#기여" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이슈와 PR을 환영합니다!</p>
+<h2 id="라이선스">라이선스<a href="#라이선스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>MIT</p>
+<pre tabindex="0"><code>
+---
+
+## 3. Plugin을 Marketplace로 배포하기
+
+### 3.1 marketplace.json 작성
+
+Marketplace는 여러 Plugin을 묶어서 배포하는 카탈로그입니다.
+
+**저장소 구조**:
+</code></pre><p>my-marketplace/
+├── .claude-plugin/
+│   └── marketplace.json     # Marketplace 정의
+├── plugins/
+│   ├── jvm-team-plugin/     # Plugin 1
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── skills/
+│   │   └── commands/
+│   └── go-team-plugin/      # Plugin 2
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       └── skills/
+└── README.md</p>
+<pre tabindex="0"><code>
+**.claude-plugin/marketplace.json**:
+
+```json
+{
+  &#34;name&#34;: &#34;my-org-marketplace&#34;,
+  &#34;version&#34;: &#34;1.0.0&#34;,
+  &#34;description&#34;: &#34;우리 조직의 Claude Code 플러그인 모음&#34;,
+  &#34;plugins&#34;: [
+    {
+      &#34;name&#34;: &#34;jvm-team-plugin&#34;,
+      &#34;path&#34;: &#34;plugins/jvm-team-plugin&#34;,
+      &#34;description&#34;: &#34;Java/Kotlin 개발팀용 플러그인&#34;,
+      &#34;skills&#34;: [&#34;./skills&#34;]
+    },
+    {
+      &#34;name&#34;: &#34;go-team-plugin&#34;,
+      &#34;path&#34;: &#34;plugins/go-team-plugin&#34;,
+      &#34;description&#34;: &#34;Go 개발팀용 플러그인&#34;,
+      &#34;skills&#34;: [&#34;./skills&#34;]
+    }
+  ]
+}
+</code></pre><p>⚠️ <strong>중요</strong>: <code>skills</code> 필드를 반드시 포함해야 합니다. 이 필드가 Claude Code에게 SKILL.md 파일이 있는 디렉토리를 알려줍니다.</p>
+<h3 id="32-github-repository-구성">3.2 GitHub Repository 구성<a href="#32-github-repository-구성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 1. GitHub repo 생성</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https://github.com/your-org/claude-plugins</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. 로컬에서 초기화</span>
+</span></span><span class="line"><span class="cl">git init my-marketplace
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> my-marketplace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 파일 구조 생성 (위의 구조 참조)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 커밋 및 푸시</span>
+</span></span><span class="line"><span class="cl">git add .
+</span></span><span class="line"><span class="cl">git commit -m <span class="s2">&#34;chore: initial marketplace setup&#34;</span>
+</span></span><span class="line"><span class="cl">git remote add origin https://github.com/your-org/claude-plugins.git
+</span></span><span class="line"><span class="cl">git push -u origin main
+</span></span></code></pre></div><h3 id="33-배포-후-설치-테스트">3.3 배포 후 설치 테스트<a href="#33-배포-후-설치-테스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Claude Code에서</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 1. Marketplace 추가</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add your-org/claude-plugins
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. 플러그인 목록 확인</span>
+</span></span><span class="line"><span class="cl">/plugin
+</span></span><span class="line"><span class="cl"><span class="c1"># → Discover 탭에서 jvm-team-plugin, go-team-plugin 확인</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 설치</span>
+</span></span><span class="line"><span class="cl">/plugin install jvm-team-plugin@my-org-marketplace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 동작 확인</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;Kotlin으로 UserService 만들어줘&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># → kotlin-conventions Skill이 자동 활성화되어야 함</span>
+</span></span></code></pre></div><hr>
+<h2 id="4-실전-javago-개발팀을-위한-custom-marketplace-구축">4. 실전: Java/Go 개발팀을 위한 Custom Marketplace 구축<a href="#4-실전-javago-개발팀을-위한-custom-marketplace-구축" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-marketplace-전체-구조">4.1 Marketplace 전체 구조<a href="#41-marketplace-전체-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>company-claude-plugins/
+├── .claude-plugin/
+│   └── marketplace.json
+├── plugins/
+│   ├── jvm-standards/
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── skills/
+│   │   │   ├── kotlin-style/
+│   │   │   │   └── SKILL.md
+│   │   │   ├── spring-patterns/
+│   │   │   │   └── SKILL.md
+│   │   │   └── jvm-testing/
+│   │   │       └── SKILL.md
+│   │   └── commands/
+│   │       └── gradle-build.md
+│   │
+│   ├── go-standards/
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── skills/
+│   │   │   ├── go-style/
+│   │   │   │   └── SKILL.md
+│   │   │   ├── go-errors/
+│   │   │   │   └── SKILL.md
+│   │   │   └── go-testing/
+│   │   │       └── SKILL.md
+│   │   └── commands/
+│   │       └── go-build.md
+│   │
+│   └── shared-workflows/
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       ├── commands/
+│       │   ├── pr-create.md
+│       │   └── release-prepare.md
+│       └── agents/
+│           └── code-reviewer.md
+│
+└── README.md
+</code></pre><h3 id="42-marketplacejson">4.2 marketplace.json<a href="#42-marketplacejson" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;company-standards&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;2.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;회사 표준 개발 가이드라인 및 워크플로우&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;author&#34;</span><span class="p">:</span> <span class="s2">&#34;Platform Team&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;plugins&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;jvm-standards&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;plugins/jvm-standards&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Java/Kotlin 개발 표준 (Spring Boot, Gradle)&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;tags&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;java&#34;</span><span class="p">,</span> <span class="s2">&#34;kotlin&#34;</span><span class="p">,</span> <span class="s2">&#34;spring-boot&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;go-standards&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;plugins/go-standards&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Go 개발 표준 (Gin, sqlx)&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;tags&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;go&#34;</span><span class="p">,</span> <span class="s2">&#34;golang&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;shared-workflows&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;plugins/shared-workflows&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;공통 Git 워크플로우 및 코드 리뷰&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;tags&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;git&#34;</span><span class="p">,</span> <span class="s2">&#34;workflow&#34;</span><span class="p">,</span> <span class="s2">&#34;review&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="43-팀-코딩-컨벤션-skill-예제">4.3 팀 코딩 컨벤션 Skill 예제<a href="#43-팀-코딩-컨벤션-skill-예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>plugins/jvm-standards/skills/spring-patterns/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: spring-patterns
+</span></span><span class="line"><span class="cl">description: Spring Boot 패턴 가이드. Controller, Service, Repository 작성 시 활성화.
+</span></span><span class="line"><span class="cl">             &#34;API 만들어줘&#34;, &#34;서비스 작성&#34;, &#34;레포지토리&#34; 요청 시 사용.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Spring Boot Patterns (회사 표준)
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 레이어 구조
+</span></span></span></code></pre></div><p>com.company.{service}/
+├── api/                    # Presentation Layer
+│   ├── controller/         # REST Controllers
+│   ├── dto/               # Request/Response DTOs
+│   └── advice/            # Exception Handlers
+├── application/           # Application Layer
+│   └── service/           # Use Cases
+├── domain/                # Domain Layer
+│   ├── model/             # Entities
+│   ├── repository/        # Repository Interfaces
+│   └── event/             # Domain Events
+└── infrastructure/        # Infrastructure Layer
+├── persistence/       # Repository Implementations
+├── client/           # External API Clients
+└── config/           # Configurations</p>
+<pre tabindex="0"><code>
+## Controller 패턴
+
+```kotlin
+@RestController
+@RequestMapping(&#34;/api/v1/users&#34;)
+class UserController(
+    private val userService: UserService
+) {
+    @GetMapping(&#34;/{id}&#34;)
+    fun getUser(@PathVariable id: Long): ApiResponse&lt;UserResponse&gt; {
+        return ApiResponse.success(userService.getUser(id))
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createUser(
+        @Valid @RequestBody request: CreateUserRequest
+    ): ApiResponse&lt;UserResponse&gt; {
+        return ApiResponse.success(userService.createUser(request))
+    }
+
+    @PutMapping(&#34;/{id}&#34;)
+    fun updateUser(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: UpdateUserRequest
+    ): ApiResponse&lt;UserResponse&gt; {
+        return ApiResponse.success(userService.updateUser(id, request))
+    }
+
+    @DeleteMapping(&#34;/{id}&#34;)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteUser(@PathVariable id: Long) {
+        userService.deleteUser(id)
+    }
+}
+</code></pre><h2 id="service-패턴">Service 패턴<a href="#service-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="p">(</span><span class="n">readOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">UserService</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">val</span> <span class="py">userRepository</span><span class="p">:</span> <span class="n">UserRepository</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">val</span> <span class="py">eventPublisher</span><span class="p">:</span> <span class="n">ApplicationEventPublisher</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">getUser</span><span class="p">(</span><span class="n">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">UserResponse</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">orElseThrow</span> <span class="p">{</span> <span class="n">UserNotFoundException</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nc">UserResponse</span><span class="p">.</span><span class="n">from</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Transactional</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">createUser</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">CreateUserRequest</span><span class="p">):</span> <span class="n">UserResponse</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 검증
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">require</span><span class="p">(!</span><span class="n">userRepository</span><span class="p">.</span><span class="n">existsByEmail</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">email</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">throw</span> <span class="n">DuplicateEmailException</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">email</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 생성
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="n">name</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="n">email</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">email</span>
+</span></span><span class="line"><span class="cl">        <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">savedUser</span> <span class="p">=</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 이벤트 발행
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">eventPublisher</span><span class="p">.</span><span class="n">publishEvent</span><span class="p">(</span><span class="n">UserCreatedEvent</span><span class="p">(</span><span class="n">savedUser</span><span class="p">.</span><span class="n">id</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nc">UserResponse</span><span class="p">.</span><span class="n">from</span><span class="p">(</span><span class="n">savedUser</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="공통-응답-형식">공통 응답 형식<a href="#공통-응답-형식" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">data</span> <span class="k">class</span> <span class="nc">ApiResponse</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">success</span><span class="p">:</span> <span class="n">Boolean</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">data</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">error</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">meta</span><span class="p">:</span> <span class="n">MetaInfo</span> <span class="p">=</span> <span class="n">MetaInfo</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">success</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">T</span><span class="p">):</span> <span class="n">ApiResponse</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ApiResponse</span><span class="p">(</span><span class="n">success</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="k">data</span> <span class="p">=</span> <span class="k">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">error</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span> <span class="n">ApiResponse</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ApiResponse</span><span class="p">(</span><span class="n">success</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span> <span class="n">error</span> <span class="p">=</span> <span class="n">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">data</span> <span class="k">class</span> <span class="nc">ErrorInfo</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">code</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">message</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">details</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">FieldError</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">data</span> <span class="k">class</span> <span class="nc">MetaInfo</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">requestId</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="nc">UUID</span><span class="p">.</span><span class="n">randomUUID</span><span class="p">().</span><span class="n">toString</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">timestamp</span><span class="p">:</span> <span class="n">Instant</span> <span class="p">=</span> <span class="nc">Instant</span><span class="p">.</span><span class="n">now</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h2 id="예외-처리">예외 처리<a href="#예외-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// 비즈니스 예외 기본 클래스
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">sealed</span> <span class="k">class</span> <span class="nc">BusinessException</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">errorCode</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">override</span> <span class="k">val</span> <span class="py">message</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">status</span><span class="p">:</span> <span class="n">HttpStatus</span> <span class="p">=</span> <span class="nc">HttpStatus</span><span class="p">.</span><span class="n">BAD_REQUEST</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">:</span> <span class="n">RuntimeException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 구체적인 예외들
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">UserNotFoundException</span><span class="p">(</span><span class="n">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">)</span> <span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">BusinessException</span><span class="p">(</span><span class="s2">&#34;USER_NOT_FOUND&#34;</span><span class="p">,</span> <span class="s2">&#34;User not found: </span><span class="si">$id</span><span class="s2">&#34;</span><span class="p">,</span> <span class="nc">HttpStatus</span><span class="p">.</span><span class="n">NOT_FOUND</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">DuplicateEmailException</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">BusinessException</span><span class="p">(</span><span class="s2">&#34;DUPLICATE_EMAIL&#34;</span><span class="p">,</span> <span class="s2">&#34;Email already exists: </span><span class="si">$email</span><span class="s2">&#34;</span><span class="p">,</span> <span class="nc">HttpStatus</span><span class="p">.</span><span class="n">CONFLICT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// GlobalExceptionHandler
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@RestControllerAdvice</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">GlobalExceptionHandler</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@ExceptionHandler</span><span class="p">(</span><span class="n">BusinessException</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">handleBusinessException</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">BusinessException</span><span class="p">):</span> <span class="n">ResponseEntity</span><span class="p">&lt;</span><span class="n">ApiResponse</span><span class="p">&lt;</span><span class="n">Nothing</span><span class="p">&gt;&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ResponseEntity</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">status</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">body</span><span class="p">(</span><span class="nc">ApiResponse</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="n">ErrorInfo</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">errorCode</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="n">message</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><pre tabindex="0"><code>
+### 4.4 배포 파이프라인 자동화 Command
+
+**plugins/shared-workflows/commands/pr-create.md**:
+
+```markdown
+---
+name: pr-create
+description: 현재 브랜치의 변경사항으로 Pull Request를 생성합니다.
+             GitHub CLI(gh)를 사용합니다.
+---
+
+# PR Create Command
+
+## 사전 조건 확인
+
+1. `gh auth status`로 GitHub 인증 확인
+2. 현재 브랜치가 main/master가 아닌지 확인
+3. 커밋되지 않은 변경사항이 없는지 확인
+
+## 작업 순서
+
+1. 현재 브랜치명 확인
+2. `git log main..HEAD --oneline`으로 커밋 목록 확인
+3. 변경된 파일 목록 확인
+4. PR 제목 생성 (브랜치명 기반)
+5. PR 본문 생성:
+   - 변경 사항 요약
+   - 관련 이슈 링크
+   - 테스트 방법
+   - 체크리스트
+6. `gh pr create` 실행
+
+## PR 본문 템플릿
+
+```markdown
+## 📋 Summary
+&lt;!-- 변경 사항 요약 --&gt;
+
+## 🔗 Related Issues
+&lt;!-- 관련 이슈: closes #123 --&gt;
+
+## 🧪 Test Plan
+&lt;!-- 테스트 방법 --&gt;
+
+## ✅ Checklist
+- [ ] 테스트 코드 작성/수정
+- [ ] 문서 업데이트
+- [ ] 린트 통과
+- [ ] 빌드 성공
+</code></pre><h2 id="명령어-예시">명령어 예시<a href="#명령어-예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gh pr create <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --title <span class="s2">&#34;feat(user): add email verification&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --body <span class="s2">&#34;</span><span class="k">$(</span>cat pr-body.md<span class="k">)</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --base main <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --reviewer <span class="s2">&#34;@team/backend&#34;</span>
+</span></span></code></pre></div><pre tabindex="0"><code>
+---
+
+## 5. 조직 전체 배포 (Enterprise)
+
+### 5.1 Managed Settings를 통한 배포
+
+Enterprise 환경에서는 관리자가 조직 전체에 Skills와 Plugins를 배포할 수 있습니다.
+</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
+│                    Enterprise 배포 구조                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                   Organization Admin                     │   │
+│  │                                                         │   │
+│  │  Managed Settings에서 필수 플러그인 지정                 │   │
+│  │  - company-standards@our-marketplace                    │   │
+│  │  - security-guidelines@our-marketplace                  │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│                              ▼ 자동 배포                        │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐           │
+│  │   개발자 A   │ │   개발자 B   │ │   개발자 C   │           │
+│  │              │ │              │ │              │           │
+│  │ Claude Code  │ │ Claude Code  │ │ Claude Code  │           │
+│  │ 시작 시      │ │ 시작 시      │ │ 시작 시      │           │
+│  │ 자동 설치됨  │ │ 자동 설치됨  │ │ 자동 설치됨  │           │
+│  └──────────────┘ └──────────────┘ └──────────────┘           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</p>
+<pre tabindex="0"><code>
+### 5.2 보안 고려사항
+</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
+│                      보안 체크리스트                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  □ 모든 플러그인은 내부 검토를 거쳤는가?                        │
+│  □ Skills에 민감한 정보(API 키, 비밀번호)가 포함되지 않았는가?  │
+│  □ 스크립트는 필요한 최소 권한만 요청하는가?                    │
+│  □ 외부 의존성의 보안을 검토했는가?                             │
+│  □ 정기적인 보안 업데이트 프로세스가 있는가?                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</p>
+<pre tabindex="0"><code>
+⚠️ **주의**: Skills와 Plugins는 사용자 머신에서 코드를 실행할 수 있습니다. 신뢰할 수 있는 소스의 플러그인만 사용하세요.
+
+---
+
+## 6. Marketplace 유지보수
+
+### 6.1 버전 관리 전략
+
+**Semantic Versioning 적용**:
+</code></pre><p>MAJOR.MINOR.PATCH</p>
+<p>MAJOR: 호환성이 깨지는 변경 (Skills 제거, 이름 변경)
+MINOR: 새 기능 추가 (새 Skill, 새 Command)
+PATCH: 버그 수정, 문서 업데이트</p>
+<pre tabindex="0"><code>
+**CHANGELOG.md 유지**:
+
+```markdown
+# Changelog
+
+## [2.1.0] - 2025-01-23
+
+### Added
+- `spring-security` skill 추가
+
+### Changed
+- `kotlin-conventions` skill에 coroutine 패턴 추가
+
+### Fixed
+- `test-patterns` skill의 MockK 예제 오류 수정
+
+## [2.0.0] - 2025-01-15
+
+### Breaking Changes
+- `java-style` skill을 `kotlin-conventions`로 통합
+- 기존 `java-style` 사용자는 마이그레이션 필요
+</code></pre><h3 id="62-플러그인-품질-검증">6.2 플러그인 품질 검증<a href="#62-플러그인-품질-검증" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>배포 전 체크리스트:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    배포 전 품질 검증                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  □ plugin.json이 올바른 형식인가?                               │
+│  □ 모든 SKILL.md에 name과 description이 있는가?                │
+│  □ description이 명확하고 트리거 조건을 설명하는가?             │
+│  □ 실제 프로젝트에서 테스트했는가?                              │
+│  □ README.md가 최신 상태인가?                                   │
+│  □ 버전 번호를 올렸는가?                                        │
+│  □ CHANGELOG.md를 업데이트했는가?                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="63-커뮤니티-기여-받기">6.3 커뮤니티 기여 받기<a href="#63-커뮤니티-기여-받기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오픈소스 Marketplace 운영 시:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CONTRIBUTING.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 기여 가이드
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### 새 Skill 제안
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> Issue를 먼저 열어 논의
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> Fork 후 브랜치 생성
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> Skill 작성 (템플릿 참조)
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> 테스트
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> PR 생성
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Skill 작성 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> SKILL.md는 skills/{skill-name}/SKILL.md에 위치
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> YAML frontmatter에 name, description 필수
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> description은 트리거 조건을 명확히 설명
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 예제 코드 포함
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 금지/권장 패턴 구분
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### PR 리뷰 기준
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 기존 Skill과 중복되지 않는가?
+</span></span><span class="line"><span class="cl"><span class="k">-</span> description이 명확한가?
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 예제가 실용적인가?
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 회사 표준과 충돌하지 않는가?
+</span></span></code></pre></div><hr>
+<h2 id="7-정리">7. 정리<a href="#7-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="이번-파트에서-배운-것">이번 파트에서 배운 것<a href="#이번-파트에서-배운-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>Plugin 구조</strong>: <code>.claude-plugin/plugin.json</code> + skills/ + commands/ + agents/</li>
+<li><strong>Marketplace 구조</strong>: <code>marketplace.json</code>으로 여러 Plugin 묶기</li>
+<li><strong>GitHub 배포</strong>: repo 생성 → marketplace.json 작성 → push</li>
+<li><strong>Enterprise 배포</strong>: Managed Settings를 통한 조직 전체 배포</li>
+<li><strong>유지보수</strong>: Semantic Versioning, CHANGELOG, 품질 검증</li>
+</ol>
+<h3 id="핵심-명령어">핵심 명령어<a href="#핵심-명령어" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Marketplace 추가</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add <span class="o">{</span>org<span class="o">}</span>/<span class="o">{</span>repo<span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 플러그인 설치</span>
+</span></span><span class="line"><span class="cl">/plugin install <span class="o">{</span>plugin<span class="o">}</span>@<span class="o">{</span>marketplace<span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 플러그인 관리</span>
+</span></span><span class="line"><span class="cl">/plugin  <span class="c1"># 인터랙티브 UI</span>
+</span></span></code></pre></div><h3 id="다음-파트-예고">다음 파트 예고<a href="#다음-파트-예고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이제 모든 도구를 배웠습니다. <strong>Part 6</strong>에서는 이들을 조합한 <strong>고급 패턴</strong>과 프로덕션 환경에서의 <strong>Best Practices</strong>를 다룹니다.</p>
+<hr>
+<h2 id="참고-자료">참고 자료<a href="#참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/discover-plugins">Claude Code Plugins 공식 문서</a></li>
+<li><a href="https://github.com/anthropics/claude-plugins-official">Plugin 구조 예제</a></li>
+<li><a href="https://github.com/daymade/claude-code-skills">커뮤니티 Marketplace 예제</a></li>
+<li><a href="https://composio.dev/blog/claude-code-plugin">Plugin 개발 가이드</a></li>
+</ul>
+<hr>
+<p><strong>이전</strong>: <a href="./part4-plugins-marketplace.md">Part 4: Plugins &amp; Marketplace</a>
+<strong>다음</strong>: <a href="./part6-advanced-patterns.md">Part 6: 고급 패턴과 Best Practices</a></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-06/" class="button inline prev">
+        &lt; [<span class="button__text">Claude Code 완전 정복 가이드 Part 6: 고급 패턴과 Best Practices</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-04/" class="button inline next">
+         [<span class="button__text">Claude Code 완전 정복 가이드 Part 4: Plugins &amp; Marketplace - 재사용 가능한 확장 패키지</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 4: Plugins &amp; Marketplace - 재사용 가능한 확장 패키지 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code의 Plugin, Command, Subagent, Hook 개념 비교와 Marketplace 활용법, 커뮤니티 플러그인과 나만의 규칙을 조합하는 3-Layer Stacking 전략을 다룹니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 4: Plugins &amp; Marketplace - 재사용 가능한 확장 패키지">
+<meta property="og:description" content="Claude Code의 Plugin, Command, Subagent, Hook 개념 비교와 Marketplace 활용법, 커뮤니티 플러그인과 나만의 규칙을 조합하는 3-Layer Stacking 전략을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:21:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-04/">Claude Code 완전 정복 가이드 Part 4: Plugins &amp; Marketplace - 재사용 가능한 확장 패키지</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간
+<strong>난이도</strong>: ⭐⭐⭐
+<strong>사전 요구사항</strong>: Part 1, 2, 3 완료
+<strong>Claude Code 버전</strong>: 2.1.x (VSCode Native Plugin Management 지원)</p></blockquote>
+<hr>
+<h2 id="1-plugin이란-무엇인가">1. Plugin이란 무엇인가?<a href="#1-plugin이란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-skills-vs-commands-vs-plugins-vs-subagents-개념-정리">1.1 Skills vs Commands vs Plugins vs Subagents 개념 정리<a href="#11-skills-vs-commands-vs-plugins-vs-subagents-개념-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code의 확장 시스템은 여러 요소로 구성됩니다. 각각의 역할을 명확히 이해해야 합니다:</p>
+<p>💡 <strong>Claude Code 2.1+ 업데이트</strong>:</p>
+<ul>
+<li><strong>VSCode Native Plugin Management</strong>: VS Code 확장에서 플러그인을 직접 탐색하고 관리할 수 있습니다.</li>
+<li><strong>Task Management System</strong>: 의존성 추적이 포함된 새로운 태스크 관리 시스템이 추가되었습니다.</li>
+<li><strong>Anthropic 공식 Marketplace</strong>: <code>anthropics/claude-code</code> 저장소에 공식 플러그인 마켓플레이스가 포함되어 있습니다.</li>
+</ul>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                    Claude Code 확장 시스템 전체 구조                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
+│  │   Skills    │  │  Commands   │  │  Subagents  │  │   Plugins   │       │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘       │
+│         │                │                │                │               │
+│         ▼                ▼                ▼                ▼               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
+│  │ 자동 호출   │  │ 수동 호출   │  │ 위임 실행   │  │ 배포 패키지 │       │
+│  │ 참조 지식   │  │ /command    │  │ 격리 컨텍스트│  │ (컨테이너)  │       │
+│  │             │  │             │  │             │  │             │       │
+│  │ &#34;레시피북&#34;  │  │ &#34;단축키&#34;    │  │ &#34;전문가&#34;    │  │ &#34;도구상자&#34;  │       │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘       │
+│                                                                             │
+│                              Plugin이 포함할 수 있는 것                      │
+│                    ┌──────────────────────────────────────┐                │
+│                    │  ┌────────┐ ┌────────┐ ┌────────┐   │                │
+│                    │  │ Skills │ │Commands│ │Subagent│   │                │
+│                    │  └────────┘ └────────┘ └────────┘   │                │
+│                    │  ┌────────┐ ┌────────┐              │                │
+│                    │  │ Hooks  │ │  MCP   │              │                │
+│                    │  └────────┘ └────────┘              │                │
+│                    └──────────────────────────────────────┘                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="12-각-요소-상세-비교">1.2 각 요소 상세 비교<a href="#12-각-요소-상세-비교" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>요소</th>
+          <th>호출 방식</th>
+          <th>컨텍스트</th>
+          <th>주요 용도</th>
+          <th>저장 위치</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Skills</strong></td>
+          <td>자동 (description 매칭)</td>
+          <td>메인에 주입</td>
+          <td>참조 지식, 패턴</td>
+          <td><code>.claude/skills/</code></td>
+      </tr>
+      <tr>
+          <td><strong>Commands</strong></td>
+          <td>수동 (<code>/command</code>)</td>
+          <td>메인에서 실행</td>
+          <td>반복 작업 자동화</td>
+          <td><code>.claude/commands/</code></td>
+      </tr>
+      <tr>
+          <td><strong>Subagents</strong></td>
+          <td>명시적 위임</td>
+          <td>격리된 윈도우</td>
+          <td>독립적 작업 처리</td>
+          <td><code>.claude/agents/</code></td>
+      </tr>
+      <tr>
+          <td><strong>Plugins</strong></td>
+          <td>설치 후 내부 요소 사용</td>
+          <td>해당 없음</td>
+          <td>배포/공유 패키지</td>
+          <td>Marketplace</td>
+      </tr>
+      <tr>
+          <td><strong>Hooks</strong></td>
+          <td>이벤트 트리거</td>
+          <td>자동 실행</td>
+          <td>강제 자동화</td>
+          <td><code>.claude/settings.json</code></td>
+      </tr>
+      <tr>
+          <td><strong>MCP</strong></td>
+          <td>외부 도구 연결</td>
+          <td>도구로 사용</td>
+          <td>외부 시스템 통합</td>
+          <td><code>.mcp.json</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="13-plugin이-해결하는-문제">1.3 Plugin이 해결하는 문제<a href="#13-plugin이-해결하는-문제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      Plugin 등장 이전                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  &#34;팀원 A의 Claude Code 설정을 팀원 B에게 공유하려면?&#34;            │
+│                                                                 │
+│  1. Skills 폴더 복사                                            │
+│  2. Commands 폴더 복사                                          │
+│  3. Agents 폴더 복사                                            │
+│  4. 설정 파일 수정                                              │
+│  5. 버전 관리 별도                                              │
+│  6. 업데이트 수동 반영                                          │
+│                                                                 │
+│  → 복잡하고 오류 발생 가능성 높음                                │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                      Plugin 등장 이후                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  # 한 번의 명령으로 설치 완료                                    │
+│  /plugin marketplace add my-team/our-plugins                    │
+│  /plugin install our-coding-standards@our-plugins               │
+│                                                                 │
+│  → 버전 관리, 자동 업데이트, 의존성 해결 모두 자동               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="2-marketplace-시스템-이해">2. Marketplace 시스템 이해<a href="#2-marketplace-시스템-이해" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-marketplace란">2.1 Marketplace란?<a href="#21-marketplace란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Marketplace는 <strong>Plugin들의 카탈로그</strong>입니다. Plugin을 검색하고 설치할 수 있는 저장소입니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Marketplace 구조                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              Official Marketplace                        │   │
+│  │         (anthropics/claude-plugins-official)            │   │
+│  │                                                         │   │
+│  │  • Anthropic이 관리                                     │   │
+│  │  • 품질/보안 검증됨                                      │   │
+│  │  • Claude Code 시작 시 자동 사용 가능                    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│          ┌──────────────────┴──────────────────┐               │
+│          ▼                                      ▼               │
+│  ┌───────────────────┐              ┌───────────────────┐      │
+│  │ Community         │              │ Private           │      │
+│  │ Marketplaces      │              │ Marketplaces      │      │
+│  │                   │              │                   │      │
+│  │ • VoltAgent       │              │ • 회사 내부용     │      │
+│  │ • obra/superpowers│              │ • 팀 전용         │      │
+│  │ • 개인 개발자들   │              │ • 비공개 GitHub   │      │
+│  └───────────────────┘              └───────────────────┘      │
+│                                                                 │
+│        분산형 구조: 누구나 Marketplace를 만들 수 있음            │
+│        Anthropic 승인 불필요                                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="22-분산형-구조의-장점">2.2 분산형 구조의 장점<a href="#22-분산형-구조의-장점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>누구나 생성 가능</strong>: GitHub repo만 있으면 Marketplace 운영 가능</li>
+<li><strong>승인 불필요</strong>: 중앙 검증 없이 자유롭게 배포</li>
+<li><strong>버전 관리</strong>: Git을 통한 자연스러운 버전 관리</li>
+<li><strong>자동 업데이트</strong>: Marketplace 업데이트 시 설치된 Plugin도 갱신</li>
+</ul>
+<p>⚠️ <strong>주의</strong>: 커뮤니티 Marketplace의 Plugin은 직접 코드를 검토한 후 설치하세요.</p>
+<hr>
+<h2 id="3-marketplace-사용하기">3. Marketplace 사용하기<a href="#3-marketplace-사용하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-marketplace-추가">3.1 Marketplace 추가<a href="#31-marketplace-추가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Claude Code 실행 후</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 1. Official Marketplace (자동으로 사용 가능하지만 명시적 추가도 가능)</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add anthropics/claude-plugins-official
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. Community Marketplace 추가</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add VoltAgent/awesome-claude-code-subagents
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 다른 커뮤니티 Marketplace</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add obra/superpowers-marketplace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 로컬 Marketplace (개발용)</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add /path/to/local/marketplace
+</span></span></code></pre></div><h3 id="32-플러그인-탐색">3.2 플러그인 탐색<a href="#32-플러그인-탐색" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 인터랙티브 UI 열기</span>
+</span></span><span class="line"><span class="cl">/plugin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Tab으로 탭 전환:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - Discover: 사용 가능한 플러그인 탐색</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - Installed: 설치된 플러그인 관리</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - Marketplaces: 마켓플레이스 관리</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - Errors: 로딩 오류 확인</span>
+</span></span></code></pre></div><h3 id="33-플러그인-설치">3.3 플러그인 설치<a href="#33-플러그인-설치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 인터랙티브 UI에서 설치</span>
+</span></span><span class="line"><span class="cl">/plugin
+</span></span><span class="line"><span class="cl"><span class="c1"># → Discover 탭에서 원하는 플러그인 선택</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># → 설치 범위 선택 (user/project)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># CLI로 직접 설치</span>
+</span></span><span class="line"><span class="cl">/plugin install golang-pro@voltagent
+</span></span><span class="line"><span class="cl">/plugin install commit-commands@claude-plugin-directory
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 설치 범위 지정</span>
+</span></span><span class="line"><span class="cl">/plugin install my-plugin@marketplace --scope user     <span class="c1"># 전역</span>
+</span></span><span class="line"><span class="cl">/plugin install my-plugin@marketplace --scope project  <span class="c1"># 프로젝트만</span>
+</span></span></code></pre></div><h3 id="34-설치-범위-scope-이해">3.4 설치 범위 (Scope) 이해<a href="#34-설치-범위-scope-이해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>Scope</th>
+          <th>위치</th>
+          <th>적용 범위</th>
+          <th>사용 시점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>user</code></td>
+          <td><code>~/.claude/</code></td>
+          <td>모든 프로젝트</td>
+          <td>개인 워크플로우, 범용 도구</td>
+      </tr>
+      <tr>
+          <td><code>project</code></td>
+          <td><code>.claude/</code></td>
+          <td>현재 프로젝트만</td>
+          <td>프로젝트 특화 도구, 팀 공유</td>
+      </tr>
+  </tbody>
+</table>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      Scope 선택 가이드                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  &#34;이 플러그인을 모든 프로젝트에서 사용하고 싶다&#34;                  │
+│      └─▶ --scope user                                          │
+│                                                                 │
+│  &#34;이 프로젝트에서만 사용하고, 팀원도 사용하게 하고 싶다&#34;          │
+│      └─▶ --scope project (+ Git 커밋)                          │
+│                                                                 │
+│  &#34;테스트 목적으로만 설치하고 싶다&#34;                               │
+│      └─▶ --scope project (나중에 삭제)                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="4-유용한-커뮤니티-플러그인-소개">4. 유용한 커뮤니티 플러그인 소개<a href="#4-유용한-커뮤니티-플러그인-소개" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-anthropic-공식-skills-anthropicsskills">4.1 Anthropic 공식 Skills (anthropics/skills)<a href="#41-anthropic-공식-skills-anthropicsskills" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>Marketplace</strong>: <code>anthropics/skills</code> (⭐ 37.5k)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/plugin marketplace add anthropics/skills
+</span></span><span class="line"><span class="cl">/plugin install document-skills@anthropic-agent-skills
+</span></span><span class="line"><span class="cl">/plugin install example-skills@anthropic-agent-skills
+</span></span></code></pre></div><table>
+  <thead>
+      <tr>
+          <th>Plugin</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>docx</code></td>
+          <td>Word 문서 생성/편집, 변경 추적, 코멘트</td>
+      </tr>
+      <tr>
+          <td><code>pdf</code></td>
+          <td>PDF 텍스트 추출, 생성, 병합, 폼 처리</td>
+      </tr>
+      <tr>
+          <td><code>pptx</code></td>
+          <td>PowerPoint 프레젠테이션 생성/편집</td>
+      </tr>
+      <tr>
+          <td><code>xlsx</code></td>
+          <td>Excel 스프레드시트, 수식, 차트</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="42-claude-code-공식-플러그인">4.2 Claude Code 공식 플러그인<a href="#42-claude-code-공식-플러그인" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>Marketplace</strong>: <code>anthropics/claude-code</code> (⭐ 55k)</p>
+<p>공식 저장소에 포함된 플러그인들:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Plugin</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>plugin-toolkit</code></td>
+          <td>플러그인 개발용 7개 전문가 Skills</td>
+      </tr>
+      <tr>
+          <td><code>pr-review-agents</code></td>
+          <td>PR 리뷰 전문 에이전트 (테스트, 에러 처리, 타입 설계)</td>
+      </tr>
+      <tr>
+          <td><code>commit-workflows</code></td>
+          <td>커밋 자동화 워크플로우</td>
+      </tr>
+      <tr>
+          <td><code>frontend-design</code></td>
+          <td>고품질 프론트엔드 UI 생성</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="43-인기-커뮤니티-플러그인-2026년-1월-기준">4.3 인기 커뮤니티 플러그인 (2026년 1월 기준)<a href="#43-인기-커뮤니티-플러그인-2026년-1월-기준" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>Plugin</th>
+          <th>Stars</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>claude-hud</strong></td>
+          <td>1.9k</td>
+          <td>컨텍스트 사용량, 활성 도구, 진행 상황 표시</td>
+      </tr>
+      <tr>
+          <td><strong>claude-workflow-v2</strong></td>
+          <td>1.1k</td>
+          <td>범용 워크플로우 플러그인 (에이전트, 스킬, 훅, 커맨드)</td>
+      </tr>
+      <tr>
+          <td><strong>claude-code-safety-net</strong></td>
+          <td>752</td>
+          <td>위험한 git/파일시스템 명령 차단</td>
+      </tr>
+      <tr>
+          <td><strong>claude-design-engineer</strong></td>
+          <td>1.1k</td>
+          <td>일관된 UI 디자인 엔지니어링</td>
+      </tr>
+      <tr>
+          <td><strong>n-skills</strong></td>
+          <td>789</td>
+          <td>Claude Code, Codex 호환 플러그인 마켓플레이스</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="44-skills-marketplace-skillsmp">4.4 Skills Marketplace (SkillsMP)<a href="#44-skills-marketplace-skillsmp" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>커뮤니티 Skills 검색 플랫폼: <a href="https://skillsmp.com/">skillsmp.com</a></p>
+<ul>
+<li>SKILL.md 표준 호환 (Claude Code, OpenAI Codex CLI 지원)</li>
+<li><code>marketplace.json</code> 포함 시 원클릭 설치 지원</li>
+<li>최소 2 stars 품질 필터링</li>
+</ul>
+<hr>
+<h2 id="5--커뮤니티-플러그인과-나만의-규칙-조합하기">5. ⭐ 커뮤니티 플러그인과 나만의 규칙 조합하기<a href="#5--커뮤니티-플러그인과-나만의-규칙-조합하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-문제-상황">5.1 문제 상황<a href="#51-문제-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>VoltAgent의 <code>golang-pro</code>와 같은 커뮤니티 Subagent를 설치했습니다. 하지만:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                       golang-pro 내용                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  - Go 언어 일반 베스트 프랙티스                                  │
+│  - 동시성 패턴 (goroutine, channel)                             │
+│  - 표준 라이브러리 활용                                          │
+│  - 일반적인 프로젝트 구조                                        │
+│                                                                 │
+│  ⚠️ 하지만 부족한 것:                                           │
+│  - 우리 팀의 특정 네이밍 컨벤션                                  │
+│  - 우리가 사용하는 특정 프레임워크 규칙 (예: Gin, Echo)          │
+│  - 우리 회사의 에러 코드 체계                                    │
+│  - 프로젝트 특화 패턴                                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="52-해결책-3-layer-stacking-전략">5.2 해결책: 3-Layer Stacking 전략<a href="#52-해결책-3-layer-stacking-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>커뮤니티 플러그인을 <strong>기반</strong>으로 하고, 그 위에 <strong>나만의 규칙을 레이어링</strong>합니다:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    3-Layer Stacking 전략                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Layer 3: 프로젝트별 CLAUDE.md                    [가장 구체적] │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ • 이 프로젝트만의 특수한 규칙                            │   │
+│  │ • 예: &#34;internal/ 패키지 사용 금지&#34;                       │   │
+│  │ • 예: &#34;Kafka 토픽 네이밍: {service}.{event}.{version}&#34;   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              ▲                                  │
+│                              │ 보완                             │
+│                              │                                  │
+│  Layer 2: 나만의 Custom Skill                                   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ • ~/.claude/skills/my-go-conventions/SKILL.md           │   │
+│  │ • 상세한 네이밍 컨벤션                                   │   │
+│  │ • 우리 팀의 에러 핸들링 패턴                             │   │
+│  │ • 특정 프레임워크 사용 규칙                              │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              ▲                                  │
+│                              │ 보완                             │
+│                              │                                  │
+│  Layer 1: 커뮤니티 Subagent (golang-pro)         [가장 일반적] │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ • 일반적인 Go 베스트 프랙티스                            │   │
+│  │ • 동시성 패턴, 표준 라이브러리                           │   │
+│  │ • 커뮤니티에서 검증된 지식                               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="53-실습-voltagentgolang-pro--나만의-go-컨벤션-조합">5.3 실습: VoltAgent/golang-pro + 나만의 Go 컨벤션 조합<a href="#53-실습-voltagentgolang-pro--나만의-go-컨벤션-조합" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>Step 1: 커뮤니티 플러그인 설치</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/plugin marketplace add VoltAgent/awesome-claude-code-subagents
+</span></span><span class="line"><span class="cl">/plugin install golang-pro@voltagent --scope user
+</span></span></code></pre></div><p><strong>Step 2: 나만의 Custom Skill 생성 (Layer 2)</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p ~/.claude/skills/my-go-conventions
+</span></span></code></pre></div><p><strong>~/.claude/skills/my-go-conventions/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: my-go-conventions
+</span></span><span class="line"><span class="cl">description: 우리 팀의 Go 코딩 컨벤션. Go 코드 작성, 리뷰, 수정 시 사용.
+</span></span><span class="line"><span class="cl">             golang-pro subagent와 함께 사용됨.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 우리 팀의 Go 코딩 컨벤션
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">이 Skill은 golang-pro의 일반적인 베스트 프랙티스 위에
+</span></span><span class="line"><span class="cl">우리 팀만의 규칙을 추가합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 네이밍 컨벤션 (팀 규칙)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### 패키지 명명
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>```go
+</span></span><span class="line"><span class="cl">// ✅ 좋은 예
+</span></span><span class="line"><span class="cl">package userservice
+</span></span><span class="line"><span class="cl">package paymentgateway
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// ❌ 나쁜 예
+</span></span><span class="line"><span class="cl">package user_service    // 언더스코어 금지
+</span></span><span class="line"><span class="cl">package userService     // camelCase 금지
+</span></span></code></pre></div><h3 id="인터페이스-명명">인터페이스 명명<a href="#인터페이스-명명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 단일 메서드 인터페이스: -er 접미사</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Reader</span> <span class="kd">interface</span> <span class="p">{</span> <span class="nf">Read</span><span class="p">()</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Processor</span> <span class="kd">interface</span> <span class="p">{</span> <span class="nf">Process</span><span class="p">()</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 다중 메서드 인터페이스: 역할을 나타내는 명사</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">UserRepository</span> <span class="kd">interface</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PaymentGateway</span> <span class="kd">interface</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</span></span></code></pre></div><h3 id="변수-명명">변수 명명<a href="#변수-명명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 로컬 변수: 짧고 명확하게</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">u</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">users</span> <span class="p">{</span> <span class="p">}</span>  <span class="c1">// u for user</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 패키지 변수: 명확하게</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">DefaultTimeout</span> <span class="p">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span>
+</span></span></code></pre></div><h2 id="에러-처리-팀-규칙">에러 처리 (팀 규칙)<a href="#에러-처리-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="에러-코드-체계">에러 코드 체계<a href="#에러-코드-체계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 우리 팀의 에러 코드 형식: {도메인}{숫자}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// USR001 - 사용자 도메인, 001번 에러</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ErrUserNotFound</span>     <span class="p">=</span> <span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;USR001&#34;</span><span class="p">,</span> <span class="s">&#34;user not found&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ErrInvalidEmail</span>     <span class="p">=</span> <span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;USR002&#34;</span><span class="p">,</span> <span class="s">&#34;invalid email format&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ErrPaymentFailed</span>    <span class="p">=</span> <span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;PAY001&#34;</span><span class="p">,</span> <span class="s">&#34;payment processing failed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h3 id="에러-래핑-규칙">에러 래핑 규칙<a href="#에러-래핑-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 항상 컨텍스트 추가 + 에러 코드 포함</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;[USR001] failed to get user %d: %w&#34;</span><span class="p">,</span> <span class="nx">userID</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="프로젝트-구조-팀-규칙">프로젝트 구조 (팀 규칙)<a href="#프로젝트-구조-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code>cmd/
+├── api/            # REST API 서버
+└── worker/         # 백그라운드 워커
+
+internal/
+├── domain/         # 도메인 모델, 비즈니스 로직
+├── port/           # 인터페이스 정의 (Hexagonal)
+│   ├── in/         # 인바운드 포트 (Use Cases)
+│   └── out/        # 아웃바운드 포트 (Repositories)
+├── adapter/        # 포트 구현체
+│   ├── in/         # 인바운드 어댑터 (HTTP handlers)
+│   └── out/        # 아웃바운드 어댑터 (DB, External API)
+└── config/         # 설정
+
+pkg/                # 외부 공개 패키지 (재사용 가능)
+</code></pre><h2 id="gin-프레임워크-규칙-팀-규칙">Gin 프레임워크 규칙 (팀 규칙)<a href="#gin-프레임워크-규칙-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="핸들러-구조">핸들러 구조<a href="#핸들러-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 핸들러는 adapter/in/http/ 에 위치</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">UserHandler</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">userService</span> <span class="nx">port</span><span class="p">.</span><span class="nx">UserService</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewUserHandler</span><span class="p">(</span><span class="nx">us</span> <span class="nx">port</span><span class="p">.</span><span class="nx">UserService</span><span class="p">)</span> <span class="o">*</span><span class="nx">UserHandler</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">UserHandler</span><span class="p">{</span><span class="nx">userService</span><span class="p">:</span> <span class="nx">us</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 메서드명: HTTP메서드 + 리소스</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">UserHandler</span><span class="p">)</span> <span class="nf">GetUser</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">UserHandler</span><span class="p">)</span> <span class="nf">CreateUser</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</span></span></code></pre></div><h3 id="응답-형식">응답 형식<a href="#응답-형식" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 성공 응답</span>
+</span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusOK</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;success&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;data&#34;</span><span class="p">:</span>    <span class="nx">result</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 에러 응답</span>
+</span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;success&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;error&#34;</span><span class="p">:</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;code&#34;</span><span class="p">:</span>    <span class="s">&#34;USR001&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s">&#34;message&#34;</span><span class="p">:</span> <span class="s">&#34;user not found&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></div><h2 id="테스트-규칙-팀-규칙">테스트 규칙 (팀 규칙)<a href="#테스트-규칙-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="mock-생성">Mock 생성<a href="#mock-생성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mockgen 사용</span>
+</span></span><span class="line"><span class="cl">mockgen -source<span class="o">=</span>internal/port/out/user_repository.go <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>        -destination<span class="o">=</span>internal/port/out/mock/user_repository_mock.go
+</span></span></code></pre></div><h3 id="테스트-파일-위치">테스트 파일 위치<a href="#테스트-파일-위치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>유닛 테스트: 같은 패키지에 <code>_test.go</code></li>
+<li>통합 테스트: <code>test/integration/</code></li>
+</ul>
+<pre tabindex="0"><code>
+**Step 3: 프로젝트별 CLAUDE.md에 특수 규칙 추가 (Layer 3)**
+
+```markdown
+# User Service
+
+Go 기반 사용자 관리 마이크로서비스
+
+## 빌드 및 테스트
+- 빌드: `go build ./cmd/api`
+- 테스트: `go test ./...`
+- 린트: `golangci-lint run`
+
+## 이 프로젝트만의 특수 규칙
+
+IMPORTANT: 다음 규칙은 이 프로젝트에만 적용됩니다.
+
+1. internal/legacy/ 패키지는 수정하지 마세요 (deprecated 예정)
+2. Kafka 토픽 네이밍: `user-service.{event}.v1`
+   - 예: `user-service.user-created.v1`
+3. Redis 키 프리픽스: `user-svc:`
+4. 모든 API는 `/api/v1/` 프리픽스 사용
+
+## 환경별 설정
+- 로컬: `config/local.yaml`
+- 테스트: `config/test.yaml`
+- 프로덕션: 환경 변수로 주입
+</code></pre><h3 id="54-레이어별-역할-분담-정리">5.4 레이어별 역할 분담 정리<a href="#54-레이어별-역할-분담-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>레이어</th>
+          <th>저장 위치</th>
+          <th>로드 시점</th>
+          <th>내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Layer 1</strong> (커뮤니티)</td>
+          <td>Plugin (user scope)</td>
+          <td>Subagent 호출 시</td>
+          <td>일반적인 언어 베스트 프랙티스</td>
+      </tr>
+      <tr>
+          <td><strong>Layer 2</strong> (팀 규칙)</td>
+          <td><code>~/.claude/skills/</code></td>
+          <td>자동 (description 매칭)</td>
+          <td>팀/회사 공통 컨벤션</td>
+      </tr>
+      <tr>
+          <td><strong>Layer 3</strong> (프로젝트)</td>
+          <td><code>./CLAUDE.md</code></td>
+          <td>항상</td>
+          <td>프로젝트 특화 규칙</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="55-판단-기준-어디에-넣을까">5.5 판단 기준: 어디에 넣을까?<a href="#55-판단-기준-어디에-넣을까" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│              &#34;이 규칙은 어디에 작성해야 할까?&#34;                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Q1: 언어 자체의 일반적인 규칙인가?                              │
+│      │                                                         │
+│      ├─ Yes → 커뮤니티 플러그인이 이미 포함하고 있을 가능성 높음  │
+│      │        (추가 작성 불필요)                                 │
+│      │                                                         │
+│      └─ No → Q2로                                              │
+│                                                                 │
+│  Q2: 모든 프로젝트에 적용되는 우리 팀/회사의 규칙인가?           │
+│      │                                                         │
+│      ├─ Yes → Layer 2: Custom Skill로 작성                     │
+│      │        ~/.claude/skills/my-conventions/                 │
+│      │                                                         │
+│      └─ No → Q3로                                              │
+│                                                                 │
+│  Q3: 이 특정 프로젝트에만 적용되는 규칙인가?                     │
+│      │                                                         │
+│      └─ Yes → Layer 3: 프로젝트 CLAUDE.md에 작성               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="6-플러그인-관리">6. 플러그인 관리<a href="#6-플러그인-관리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-설치된-플러그인-확인-및-비활성화">6.1 설치된 플러그인 확인 및 비활성화<a href="#61-설치된-플러그인-확인-및-비활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 설치된 플러그인 목록</span>
+</span></span><span class="line"><span class="cl">/plugin
+</span></span><span class="line"><span class="cl"><span class="c1"># → Installed 탭으로 이동</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 플러그인 비활성화 (삭제 없이)</span>
+</span></span><span class="line"><span class="cl">/plugin disable golang-pro@voltagent
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 플러그인 활성화</span>
+</span></span><span class="line"><span class="cl">/plugin <span class="nb">enable</span> golang-pro@voltagent
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 플러그인 삭제</span>
+</span></span><span class="line"><span class="cl">/plugin uninstall golang-pro@voltagent
+</span></span></code></pre></div><h3 id="62-자동-업데이트-설정">6.2 자동 업데이트 설정<a href="#62-자동-업데이트-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 마켓플레이스 자동 업데이트 활성화</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace update voltagent --auto-update
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 수동 업데이트</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace update voltagent
+</span></span></code></pre></div><h3 id="63-marketplace-제거-시-주의사항">6.3 Marketplace 제거 시 주의사항<a href="#63-marketplace-제거-시-주의사항" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>⚠️ Marketplace를 제거하면 해당 Marketplace에서 설치한 <strong>모든 플러그인도 삭제</strong>됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 주의: 이 명령은 voltagent에서 설치한 모든 플러그인을 삭제합니다</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace remove voltagent
+</span></span></code></pre></div><hr>
+<h2 id="7-실습-프로젝트에-유용한-플러그인-설치하고-활용하기">7. 실습: 프로젝트에 유용한 플러그인 설치하고 활용하기<a href="#7-실습-프로젝트에-유용한-플러그인-설치하고-활용하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="71-시나리오">7.1 시나리오<a href="#71-시나리오" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>새로운 Go 마이크로서비스 프로젝트를 시작합니다. 다음 플러그인들을 조합하여 설정합니다.</p>
+<h3 id="72-step-by-step">7.2 Step-by-Step<a href="#72-step-by-step" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>Step 1: Marketplace 추가</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">claude
+</span></span><span class="line"><span class="cl">/plugin marketplace add VoltAgent/awesome-claude-code-subagents
+</span></span><span class="line"><span class="cl">/plugin marketplace add anthropics/skills
+</span></span></code></pre></div><p><strong>Step 2: 필요한 플러그인 설치</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Language specialist</span>
+</span></span><span class="line"><span class="cl">/plugin install golang-pro@voltagent --scope user
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Code quality</span>
+</span></span><span class="line"><span class="cl">/plugin install code-reviewer@voltagent --scope user
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Documentation</span>
+</span></span><span class="line"><span class="cl">/plugin install docx@anthropics --scope user
+</span></span></code></pre></div><p><strong>Step 3: Custom Skill 생성</strong></p>
+<p>앞서 만든 <code>my-go-conventions</code> Skill을 <code>~/.claude/skills/</code>에 생성합니다.</p>
+<p><strong>Step 4: 프로젝트 CLAUDE.md 작성</strong></p>
+<p>프로젝트 루트에 프로젝트 특화 규칙을 담은 CLAUDE.md를 작성합니다.</p>
+<p><strong>Step 5: 동작 확인</strong></p>
+<pre tabindex="0"><code>사용자: &#34;새로운 UserService 만들어줘&#34;
+
+Claude의 동작:
+1. CLAUDE.md 로드 (프로젝트 기본 정보)
+2. my-go-conventions Skill 자동 활성화 (Go 코드 작성 감지)
+3. golang-pro Subagent의 지식 참조 가능
+4. 3-Layer의 규칙을 모두 적용하여 코드 생성
+</code></pre><hr>
+<h2 id="8-정리">8. 정리<a href="#8-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="이번-파트에서-배운-것">이번 파트에서 배운 것<a href="#이번-파트에서-배운-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>Plugin은 배포 패키지</strong>: Skills, Commands, Subagents, Hooks를 묶어서 공유</li>
+<li><strong>Marketplace는 분산형</strong>: 누구나 만들 수 있고, 승인 불필요</li>
+<li><strong>설치 범위</strong>: <code>user</code> (전역) vs <code>project</code> (프로젝트)</li>
+<li><strong>3-Layer Stacking</strong>: 커뮤니티 + Custom Skill + 프로젝트 CLAUDE.md 조합</li>
+</ol>
+<h3 id="핵심-전략">핵심 전략<a href="#핵심-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>커뮤니티 플러그인을 기반으로, 팀 규칙을 Skill로, 프로젝트 규칙을 CLAUDE.md로 레이어링하세요.</strong></p></blockquote>
+<h3 id="다음-파트-예고">다음 파트 예고<a href="#다음-파트-예고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이제 나만의 Plugin을 만들어 GitHub으로 배포하는 방법을 배웁니다. <strong>Part 5</strong>에서는 Custom Marketplace를 구축합니다.</p>
+<hr>
+<h2 id="-참고-자료">📚 참고 자료<a href="#-참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/discover-plugins">Claude Code Plugins 공식 문서</a></li>
+<li><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent Subagents Collection</a></li>
+<li><a href="https://github.com/anthropics/skills">Anthropic Skills Repository</a></li>
+<li><a href="https://www.eesel.ai/blog/skills-vs-subagent">Skills vs Subagents 비교</a></li>
+<li><a href="https://composio.dev/blog/claude-code-plugin">Claude Code Plugin 워크플로우</a></li>
+</ul>
+<hr>
+<p><strong>이전</strong>: <a href="./part3-skills-system.md">Part 3: Skills 시스템</a>
+<strong>다음</strong>: <a href="./part5-custom-marketplace.md">Part 5: 나만의 Plugin Marketplace 만들기</a></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-05/" class="button inline prev">
+        &lt; [<span class="button__text">Claude Code 완전 정복 가이드 Part 5: 나만의 Plugin Marketplace 만들기 - 팀/조직 확장</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-03/" class="button inline next">
+         [<span class="button__text">Claude Code 완전 정복 가이드 Part 3: Skills 시스템 - 온디맨드 전문가 활용하기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

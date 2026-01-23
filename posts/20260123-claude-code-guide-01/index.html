@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 1: CLAUDE.md 기초 - 첫 발을 내딛다 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code의 Agentic Coding 개념과 CLAUDE.md 파일의 역할, 계층적 구조, 작성 방법을 다룹니다. Java/Kotlin, Go 프로젝트용 실전 템플릿도 포함되어 있습니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 1: CLAUDE.md 기초 - 첫 발을 내딛다">
+<meta property="og:description" content="Claude Code의 Agentic Coding 개념과 CLAUDE.md 파일의 역할, 계층적 구조, 작성 방법을 다룹니다. Java/Kotlin, Go 프로젝트용 실전 템플릿도 포함되어 있습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:20:51 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-01/">Claude Code 완전 정복 가이드 Part 1: CLAUDE.md 기초 - 첫 발을 내딛다</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 30분
+<strong>난이도</strong>: ⭐
+<strong>사전 요구사항</strong>: Claude Code 설치 완료 (v2.1.x)</p></blockquote>
+<hr>
+<h2 id="1-claude-code란-무엇인가">1. Claude Code란 무엇인가?<a href="#1-claude-code란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-agentic-coding의-개념">1.1 Agentic Coding의 개념<a href="#11-agentic-coding의-개념" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code는 단순한 코드 자동완성 도구가 아닙니다. <strong>Agentic Coding Assistant</strong>로서, 터미널에서 직접 코드베이스를 읽고, 파일을 생성/수정하고, 테스트를 실행하고, Git 작업까지 수행할 수 있습니다. 2025년 2월 첫 출시 이후 빠르게 발전하여, 현재 버전 2.1.x에서는 <strong>Opus 4.5</strong> 모델을 지원하며 더욱 강력한 기능을 제공합니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    기존 AI 코딩 도구                             │
+│  ┌─────────┐      ┌─────────┐      ┌─────────┐                 │
+│  │  질문   │ ───▶ │  답변   │ ───▶ │ 복사/   │                 │
+│  │         │      │ (코드)  │      │ 붙여넣기│                 │
+│  └─────────┘      └─────────┘      └─────────┘                 │
+│        사람이 직접 코드를 복사하고 적용해야 함                     │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    Claude Code (Agentic)                        │
+│  ┌─────────┐      ┌─────────┐      ┌─────────┐      ┌────────┐ │
+│  │  지시   │ ───▶ │ 코드    │ ───▶ │ 파일    │ ───▶ │ 테스트 │ │
+│  │         │      │ 분석    │      │ 수정    │      │ 실행   │ │
+│  └─────────┘      └─────────┘      └─────────┘      └────────┘ │
+│        Claude가 직접 코드베이스에서 작업을 수행                    │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="12-claude-code의-핵심-특징">1.2 Claude Code의 핵심 특징<a href="#12-claude-code의-핵심-특징" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>특징</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>파일 시스템 접근</strong></td>
+          <td>프로젝트의 모든 파일을 읽고 쓸 수 있음</td>
+      </tr>
+      <tr>
+          <td><strong>터미널 명령 실행</strong></td>
+          <td><code>npm test</code>, <code>go build</code>, <code>gradle build</code> 등 직접 실행</td>
+      </tr>
+      <tr>
+          <td><strong>Git 통합</strong></td>
+          <td>브랜치 생성, 커밋, PR 생성까지 자동화 가능</td>
+      </tr>
+      <tr>
+          <td><strong>컨텍스트 인식</strong></td>
+          <td>CLAUDE.md를 통해 프로젝트 특성을 이해</td>
+      </tr>
+      <tr>
+          <td><strong>도구 확장</strong></td>
+          <td>Skills, Plugins, MCP를 통한 기능 확장</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="13-기존-도구와의-차이점">1.3 기존 도구와의 차이점<a href="#13-기존-도구와의-차이점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>GitHub Copilot     │  현재 파일의 코드 자동완성에 집중
+Cursor             │  IDE 내에서 AI 채팅 + 코드 수정
+───────────────────┼────────────────────────────────────
+Claude Code        │  터미널 기반, 전체 코드베이스 접근,
+                   │  명령 실행, 완전한 자율성
+</code></pre><p>Claude Code는 &ldquo;주니어 개발자에게 작업을 위임하는 것&quot;과 비슷합니다. 명확한 지시와 컨텍스트를 제공하면 스스로 작업을 완료합니다.</p>
+<hr>
+<h2 id="2-claudemd의-역할과-동작-원리">2. CLAUDE.md의 역할과 동작 원리<a href="#2-claudemd의-역할과-동작-원리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-claudemd란">2.1 CLAUDE.md란?<a href="#21-claudemd란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CLAUDE.md는 Claude Code가 <strong>모든 대화를 시작할 때 자동으로 읽는 특별한 파일</strong>입니다. 프로젝트의 &ldquo;사용 설명서&quot;라고 생각하면 됩니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────┐
+│                    Claude Code 시작                          │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  1. ~/.claude/CLAUDE.md 로드 (전역 설정)                     │
+│  2. 프로젝트 루트 CLAUDE.md 로드                             │
+│  3. 현재 작업 디렉토리의 CLAUDE.md 로드 (있다면)              │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              사용자 대화 시작 (컨텍스트 확보 완료)             │
+└─────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="22-계층적-구조-이해">2.2 계층적 구조 이해<a href="#22-계층적-구조-이해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CLAUDE.md는 여러 위치에 존재할 수 있으며, 모두 병합되어 적용됩니다:</p>
+<pre tabindex="0"><code>우선순위 (낮음 → 높음)
+─────────────────────────────────────────────────────────────
+
+1. ~/.claude/CLAUDE.md          # 전역: 모든 프로젝트에 적용
+   │                            # 예: 개인 코딩 스타일, 선호하는 도구
+   │
+   ▼
+2. /project/CLAUDE.md           # 프로젝트: 팀과 공유 (Git 커밋)
+   │                            # 예: 빌드 명령, 테스트 방법, 아키텍처
+   │
+   ▼
+3. /project/CLAUDE.local.md     # 개인 오버라이드 (.gitignore 대상)
+   │                            # 예: 로컬 환경 설정, 개인 API 키
+   │
+   ▼
+4. /project/src/module/CLAUDE.md  # 하위 디렉토리: 해당 모듈 작업 시만
+                                  # 예: 특정 모듈의 규칙
+</code></pre><p>💡 <strong>Best Practice</strong>: 하위 디렉토리의 CLAUDE.md는 Claude가 해당 디렉토리의 파일을 작업할 때만 동적으로 로드됩니다.</p>
+<h3 id="23-init-명령어로-자동-생성하기">2.3 /init 명령어로 자동 생성하기<a href="#23-init-명령어로-자동-생성하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code는 프로젝트를 분석하여 기본 CLAUDE.md를 자동 생성해줍니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Claude Code 실행 후</span>
+</span></span><span class="line"><span class="cl">/init
+</span></span></code></pre></div><p><code>/init</code> 명령어는 다음을 자동으로 감지합니다:</p>
+<ul>
+<li>빌드 시스템 (Gradle, Maven, npm, Go modules 등)</li>
+<li>테스트 프레임워크</li>
+<li>코드 패턴과 구조</li>
+<li>기존 README.md 내용</li>
+</ul>
+<p>생성된 CLAUDE.md를 기반으로 프로젝트에 맞게 수정하면 됩니다.</p>
+<hr>
+<h2 id="3-첫-번째-claudemd-작성하기">3. 첫 번째 CLAUDE.md 작성하기<a href="#3-첫-번째-claudemd-작성하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-필수-포함-요소">3.1 필수 포함 요소<a href="#31-필수-포함-요소" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>좋은 CLAUDE.md는 Claude에게 다음을 알려줍니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th>요소</th>
+          <th>설명</th>
+          <th>예시</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>WHAT</strong></td>
+          <td>프로젝트가 무엇인지</td>
+          <td>&ldquo;Spring Boot 기반 결제 API 서버&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>WHY</strong></td>
+          <td>각 부분의 목적</td>
+          <td>&ldquo;internal/ 패키지는 외부 노출 금지&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>HOW</strong></td>
+          <td>작업 방법</td>
+          <td>&ldquo;테스트: <code>./gradlew test</code>&rdquo;</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="32-기본-템플릿-구조">3.2 기본 템플릿 구조<a href="#32-기본-템플릿-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 프로젝트 이름
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">프로젝트에 대한 한 줄 설명
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 실행
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: <span class="sb">`command here`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`command here`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 단일 테스트: <span class="sb">`command here`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트: <span class="sb">`command here`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 코드 스타일
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 스타일 가이드라인 1
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 스타일 가이드라인 2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 구조
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">주요 디렉토리와 그 역할 설명
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 워크플로우
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Git 브랜치 전략
+</span></span><span class="line"><span class="cl"><span class="k">-</span> PR 규칙
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 기타 개발 프로세스
+</span></span></code></pre></div><h3 id="33-javakotlin-프로젝트용-템플릿">3.3 Java/Kotlin 프로젝트용 템플릿<a href="#33-javakotlin-프로젝트용-템플릿" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Payment API Server
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Spring Boot 3.x 기반 결제 처리 API 서버
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: <span class="sb">`./gradlew build`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 전체 테스트: <span class="sb">`./gradlew test`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 단일 테스트: <span class="sb">`./gradlew test --tests &#34;ClassName.methodName&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트: <span class="sb">`./gradlew ktlintCheck`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 포맷팅: <span class="sb">`./gradlew ktlintFormat`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 기술 스택
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Java 21 / Kotlin 1.9
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Spring Boot 3.2
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Gradle 8.x (Kotlin DSL)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> JUnit 5 + MockK
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 구조
+</span></span></span></code></pre></div><p>src/main/kotlin/com/example/payment/
+├── api/           # REST Controllers
+├── application/   # Use Cases, Application Services
+├── domain/        # Domain Models, Repository Interfaces
+└── infrastructure/# Repository Implementations, External APIs</p>
+<pre tabindex="0"><code>
+## 코드 스타일
+
+- Kotlin 공식 코딩 컨벤션 준수
+- 함수명: camelCase (동사로 시작)
+- 클래스명: PascalCase
+- 상수: SCREAMING_SNAKE_CASE
+- 패키지명: lowercase (단어 구분 없음)
+
+## 테스트 규칙
+
+- 테스트 클래스명: `{대상클래스}Test`
+- 테스트 메서드명: `should_결과_when_조건` 패턴
+- Given-When-Then 구조 사용
+- Mock은 MockK 사용 (Mockito 금지)
+
+## Git 워크플로우
+
+- 브랜치: `feature/{ticket-number}-{short-description}`
+- 커밋: Conventional Commits 형식
+  - `feat:`, `fix:`, `refactor:`, `test:`, `docs:`
+- PR 전 `./gradlew build` 성공 필수
+</code></pre><h3 id="34-go-프로젝트용-템플릿">3.4 Go 프로젝트용 템플릿<a href="#34-go-프로젝트용-템플릿" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># User Service
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Go 1.22 기반 사용자 관리 마이크로서비스
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: <span class="sb">`go build -o bin/server ./cmd/server`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 전체 테스트: <span class="sb">`go test ./...`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 커버리지: <span class="sb">`go test -cover ./...`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 단일 테스트: <span class="sb">`go test -run TestFunctionName ./path/to/package`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트: <span class="sb">`golangci-lint run`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 기술 스택
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Go 1.22
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Gin (HTTP Framework)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> sqlx (Database)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Wire (DI)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 구조
+</span></span></span></code></pre></div><p>.
+├── cmd/
+│   └── server/        # 애플리케이션 진입점
+├── internal/          # 외부 import 금지
+│   ├── handler/       # HTTP handlers
+│   ├── service/       # 비즈니스 로직
+│   ├── repository/    # 데이터 접근
+│   └── model/         # 도메인 모델
+├── pkg/               # 외부에서 import 가능한 패키지
+└── api/               # OpenAPI specs</p>
+<pre tabindex="0"><code>
+## 코드 스타일
+
+- `gofmt` 자동 포맷팅 적용
+- 변수명: camelCase (짧고 명확하게)
+- 인터페이스명: `-er` 접미사 (Reader, Writer, Handler)
+- 에러 처리: 즉시 처리, 절대 무시하지 않음
+- 주석: exported 항목은 반드시 GoDoc 형식으로
+
+## 에러 처리 패턴
+
+```go
+// 권장
+if err != nil {
+    return fmt.Errorf(&#34;failed to create user: %w&#34;, err)
+}
+
+// 금지
+if err != nil {
+    return err  // 컨텍스트 없음
+}
+</code></pre><h2 id="테스트-규칙">테스트 규칙<a href="#테스트-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>테스트 파일: <code>{파일명}_test.go</code></li>
+<li>테이블 기반 테스트 선호</li>
+<li>Mock은 인터페이스 기반으로 직접 작성 또는 mockgen 사용</li>
+</ul>
+<h2 id="git-워크플로우">Git 워크플로우<a href="#git-워크플로우" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>브랜치: <code>feature/{description}</code> 또는 <code>fix/{description}</code></li>
+<li>커밋: 명령형 현재 시제 (&ldquo;Add feature&rdquo; not &ldquo;Added feature&rdquo;)</li>
+<li>PR 전 <code>golangci-lint run</code> 통과 필수</li>
+</ul>
+<pre tabindex="0"><code>
+---
+
+## 4. 실습: Spring Boot 프로젝트에 CLAUDE.md 적용
+
+### 4.1 시나리오
+
+새로운 Spring Boot 프로젝트를 시작하고 CLAUDE.md를 설정해봅시다.
+
+### 4.2 Step-by-Step
+
+**Step 1: 프로젝트 폴더로 이동**
+
+```bash
+cd ~/projects/my-spring-app
+</code></pre><p><strong>Step 2: Claude Code 실행 및 초기화</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">claude
+</span></span></code></pre></div><p>Claude Code 프롬프트에서:</p>
+<pre tabindex="0"><code>/init
+</code></pre><p><strong>Step 3: 생성된 CLAUDE.md 확인</strong></p>
+<p>Claude가 프로젝트를 분석하여 기본 CLAUDE.md를 생성합니다. 내용을 확인하고 부족한 부분을 추가합니다.</p>
+<p><strong>Step 4: 프로젝트별 규칙 추가</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 추가할 내용 예시
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 도메인 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Entity 클래스는 반드시 <span class="sb">`domain`</span> 패키지에 위치
+</span></span><span class="line"><span class="cl"><span class="k">-</span> DTO는 <span class="sb">`api.dto`</span> 패키지에 위치
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Entity와 DTO 간 변환은 MapStruct 사용
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 예외 처리
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 비즈니스 예외: <span class="sb">`BusinessException`</span> 상속
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 예외 코드: <span class="sb">`ErrorCode`</span> enum 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> GlobalExceptionHandler에서 일괄 처리
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## API 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> REST API: <span class="sb">`/api/v1/`</span> 프리픽스
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 응답 형식: <span class="sb">`ApiResponse&lt;T&gt;`</span> wrapper 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 페이징: <span class="sb">`Pageable`</span> 파라미터 사용
+</span></span></code></pre></div><p><strong>Step 5: 동작 확인</strong></p>
+<p>Claude Code에서 질문해봅니다:</p>
+<pre tabindex="0"><code>새로운 User 엔티티를 만들어줘
+</code></pre><p>Claude는 CLAUDE.md의 규칙을 따라:</p>
+<ul>
+<li><code>domain</code> 패키지에 Entity 생성</li>
+<li><code>api.dto</code> 패키지에 DTO 생성</li>
+<li>MapStruct mapper 생성</li>
+</ul>
+<h3 id="43-확인-포인트">4.3 확인 포인트<a href="#43-확인-포인트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>✅ Claude가 코드 스타일을 따르는가?
+✅ 테스트 명령어를 올바르게 사용하는가?
+✅ 프로젝트 구조를 이해하고 있는가?</p>
+<hr>
+<h2 id="5-claudemd-작성-팁">5. CLAUDE.md 작성 팁<a href="#5-claudemd-작성-팁" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-do-이렇게-하세요">5.1 DO: 이렇게 하세요<a href="#51-do-이렇게-하세요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ✅ 좋은 예: 구체적이고 실행 가능한 지시
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 단일 테스트: <span class="sb">`./gradlew test --tests &#34;UserServiceTest.shouldCreateUser&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 통합 테스트: <span class="sb">`./gradlew integrationTest`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 코드 스타일
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 함수는 20줄 이하로 유지
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 한 파일에 하나의 public 클래스만
+</span></span></code></pre></div><h3 id="52-dont-이렇게-하지-마세요">5.2 DON&rsquo;T: 이렇게 하지 마세요<a href="#52-dont-이렇게-하지-마세요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ❌ 나쁜 예: 모호하고 일반적인 내용
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 테스트를 잘 작성하세요
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 커버리지를 높이세요
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 코드 스타일
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 좋은 코드를 작성하세요
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 가독성 있게 작성하세요
+</span></span></code></pre></div><h3 id="53-핵심-원칙">5.3 핵심 원칙<a href="#53-핵심-원칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>원칙</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>간결하게</strong></td>
+          <td>100-200줄 이내 권장</td>
+      </tr>
+      <tr>
+          <td><strong>구체적으로</strong></td>
+          <td>실행 가능한 명령어와 규칙</td>
+      </tr>
+      <tr>
+          <td><strong>검증 가능하게</strong></td>
+          <td>&ldquo;이 줄을 삭제해도 Claude가 실수하지 않을까?&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>업데이트</strong></td>
+          <td>코드처럼 CLAUDE.md도 유지보수</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="6-자주-발생하는-문제와-해결">6. 자주 발생하는 문제와 해결<a href="#6-자주-발생하는-문제와-해결" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-claude가-claudemd를-무시하는-것-같아요">6.1 Claude가 CLAUDE.md를 무시하는 것 같아요<a href="#61-claude가-claudemd를-무시하는-것-같아요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>원인</strong>: CLAUDE.md가 너무 길거나 지시가 모호함</p>
+<p><strong>해결</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 강조가 필요한 규칙에는 IMPORTANT 추가
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>IMPORTANT: 절대로 main 브랜치에 직접 커밋하지 마세요.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 또는 대문자로 강조
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>YOU MUST run tests before committing.
+</span></span></code></pre></div><h3 id="62-프로젝트마다-다른-설정을-적용하고-싶어요">6.2 프로젝트마다 다른 설정을 적용하고 싶어요<a href="#62-프로젝트마다-다른-설정을-적용하고-싶어요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>해결</strong>: 계층적 구조 활용</p>
+<pre tabindex="0"><code>~/.claude/CLAUDE.md           # 공통 (개인 스타일)
+/project-a/CLAUDE.md          # Project A 전용
+/project-b/CLAUDE.md          # Project B 전용
+</code></pre><h3 id="63-팀원과-설정을-공유하고-싶어요">6.3 팀원과 설정을 공유하고 싶어요<a href="#63-팀원과-설정을-공유하고-싶어요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>해결</strong>: 프로젝트 루트의 CLAUDE.md를 Git에 커밋</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 팀 공유용</span>
+</span></span><span class="line"><span class="cl">git add CLAUDE.md
+</span></span><span class="line"><span class="cl">git commit -m <span class="s2">&#34;docs: add CLAUDE.md for team collaboration&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 개인 설정은 .gitignore</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;CLAUDE.local.md&#34;</span> &gt;&gt; .gitignore
+</span></span></code></pre></div><hr>
+<h2 id="7-정리">7. 정리<a href="#7-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="이번-파트에서-배운-것">이번 파트에서 배운 것<a href="#이번-파트에서-배운-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>Claude Code</strong>는 Agentic Coding Assistant로, 코드베이스에서 직접 작업을 수행</li>
+<li><strong>CLAUDE.md</strong>는 프로젝트의 &ldquo;사용 설명서&quot;로, 모든 대화 시작 시 자동 로드</li>
+<li><strong>계층적 구조</strong>로 전역/프로젝트/개인 설정을 분리 가능</li>
+<li><strong>좋은 CLAUDE.md</strong>는 구체적이고 실행 가능한 지시를 포함</li>
+</ol>
+<h3 id="다음-파트-예고">다음 파트 예고<a href="#다음-파트-예고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CLAUDE.md가 점점 커지면 Claude가 지시를 무시하기 시작합니다. <strong>Part 2</strong>에서는 CLAUDE.md를 최적화하고 효율적으로 관리하는 방법을 배웁니다.</p>
+<hr>
+<h2 id="-참고-자료">📚 참고 자료<a href="#-참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/best-practices">Claude Code 공식 문서 - Best Practices</a></li>
+<li><a href="https://github.com/anthropics/claude-code">Claude Code GitHub Repository</a></li>
+<li><a href="https://www.anthropic.com/engineering/claude-code-best-practices">Anthropic Engineering - Claude Code Best Practices</a></li>
+</ul>
+<hr>
+<p><strong>다음</strong>: <a href="./part2-claude-md-optimization.md">Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라</a></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-02/" class="button inline prev">
+        &lt; [<span class="button__text">Claude Code 완전 정복 가이드 Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-00/" class="button inline next">
+         [<span class="button__text">Claude Code 완전 정복 가이드 Part 0: Overview</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 3: Skills 시스템 - 온디맨드 전문가 활용하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code의 Skills 시스템을 통한 Progressive Disclosure 개념, Skills vs Subagents 비교, SKILL.md 작성법, 실전 예제를 다룹니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 3: Skills 시스템 - 온디맨드 전문가 활용하기">
+<meta property="og:description" content="Claude Code의 Skills 시스템을 통한 Progressive Disclosure 개념, Skills vs Subagents 비교, SKILL.md 작성법, 실전 예제를 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:20:57 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-03/">Claude Code 완전 정복 가이드 Part 3: Skills 시스템 - 온디맨드 전문가 활용하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간
+<strong>난이도</strong>: ⭐⭐⭐
+<strong>사전 요구사항</strong>: Part 1, 2 완료
+<strong>Claude Code 버전</strong>: 2.1.x (Hot Reload 지원)</p></blockquote>
+<hr>
+<h2 id="1-skills란-무엇인가">1. Skills란 무엇인가?<a href="#1-skills란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-claudemd-vs-skills의-핵심-차이">1.1 CLAUDE.md vs Skills의 핵심 차이<a href="#11-claudemd-vs-skills의-핵심-차이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>CLAUDE.md</strong>는 항상 로드되는 &ldquo;기본 매뉴얼&quot;입니다. 반면 <strong>Skills</strong>는 필요할 때만 로드되는 &ldquo;전문 레시피북&quot;입니다.</p>
+<p>💡 <strong>Claude Code 2.1+ 새 기능</strong>: <strong>Hot Reload</strong> - Skills를 수정하면 Claude Code를 재시작하지 않아도 즉시 반영됩니다. <code>~/.claude/skills/</code> 또는 <code>.claude/skills/</code> 디렉토리의 변경사항이 실시간으로 적용됩니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                        CLAUDE.md                                │
+├─────────────────────────────────────────────────────────────────┤
+│  • 항상 전체 내용이 로드됨                                       │
+│  • 프로젝트 기본 정보 (빌드, 테스트, 구조)                        │
+│  • 모든 대화에 적용되는 규칙                                     │
+│  • 간결하게 유지해야 함 (Part 2 참조)                            │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              │ 보완
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                          Skills                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  • 필요할 때만 로드됨 (Progressive Disclosure)                   │
+│  • 특정 작업에 대한 상세 지식                                    │
+│  • Claude가 description 보고 자동 판단                          │
+│  • 토큰 효율적                                                   │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="12-progressive-disclosure-필요할-때만-로드되는-지식">1.2 Progressive Disclosure: 필요할 때만 로드되는 지식<a href="#12-progressive-disclosure-필요할-때만-로드되는-지식" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Skills는 <strong>2단계 로딩</strong> 시스템을 사용합니다:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Skills 로딩 메커니즘                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1단계: 메타데이터 스캔 (항상)                                   │
+│  ┌─────────────────────────────────────────────────────┐        │
+│  │ name: go-error-handling                             │        │
+│  │ description: Go 에러 처리 패턴. 에러 핸들링,       │ ~100   │
+│  │              에러 래핑, 커스텀 에러 작업 시 사용    │ 토큰   │
+│  └─────────────────────────────────────────────────────┘        │
+│                              │                                  │
+│         description이 현재 작업과 매칭되면                       │
+│                              ▼                                  │
+│  2단계: 전체 내용 로드 (필요시에만)                              │
+│  ┌─────────────────────────────────────────────────────┐        │
+│  │ # Go Error Handling Patterns                        │        │
+│  │                                                     │        │
+│  │ ## 기본 원칙                                        │ &lt;5k    │
+│  │ - 에러는 즉시 처리                                  │ 토큰   │
+│  │ - fmt.Errorf로 컨텍스트 추가                        │        │
+│  │ ...                                                 │        │
+│  │ (상세 내용)                                         │        │
+│  └─────────────────────────────────────────────────────┘        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="13-토큰-절약-효과">1.3 토큰 절약 효과<a href="#13-토큰-절약-효과" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>구분</th>
+          <th>토큰 사용</th>
+          <th>언제</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>메타데이터</strong></td>
+          <td>~100 토큰/Skill</td>
+          <td>항상 (모든 대화)</td>
+      </tr>
+      <tr>
+          <td><strong>전체 내용</strong></td>
+          <td>&lt;5,000 토큰</td>
+          <td>활성화 시에만</td>
+      </tr>
+  </tbody>
+</table>
+<p>10개의 Skill이 있어도 메타데이터만 ~1,000 토큰. 실제로 사용되는 Skill만 전체 로드됩니다.</p>
+<hr>
+<h2 id="2-skills-vs-subagents-언제-무엇을-쓸까">2. Skills vs Subagents: 언제 무엇을 쓸까?<a href="#2-skills-vs-subagents-언제-무엇을-쓸까" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-개념-비교">2.1 개념 비교<a href="#21-개념-비교" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Skills vs Subagents                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Skills (레시피)                 Subagents (전문가)              │
+│  ┌─────────────────┐            ┌─────────────────┐            │
+│  │                 │            │                 │            │
+│  │    📖           │            │    👨‍💼          │            │
+│  │  지식/패턴      │            │  독립 에이전트   │            │
+│  │                 │            │                 │            │
+│  └─────────────────┘            └─────────────────┘            │
+│                                                                 │
+│  • 메인 컨텍스트에 주입         • 격리된 컨텍스트 윈도우        │
+│  • 자동 호출 (description)     • 명시적 위임 또는 자동          │
+│  • 가벼운 참조 지식             • 복잡한 워크플로우 처리        │
+│  • 도구 제한 가능               • 도구 권한 별도 설정           │
+│                                                                 │
+│  예: 코딩 컨벤션, API 패턴      예: 코드 리뷰어, 디버거        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="22-선택-기준">2.2 선택 기준<a href="#22-선택-기준" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      무엇을 선택할까?                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  &#34;이 작업은...&#34;                                                 │
+│                                                                 │
+│  □ 참조용 지식이 필요하다 (패턴, 컨벤션, 가이드)                │
+│      └─▶ Skill 사용                                            │
+│                                                                 │
+│  □ 독립적인 분석/처리가 필요하다                                │
+│      └─▶ Subagent 사용                                         │
+│                                                                 │
+│  □ 여러 단계의 복잡한 워크플로우다                               │
+│      └─▶ Subagent 사용                                         │
+│                                                                 │
+│  □ 메인 대화의 컨텍스트를 오염시키고 싶지 않다                   │
+│      └─▶ Subagent 사용                                         │
+│                                                                 │
+│  □ 다른 에이전트/대화에서도 재사용하고 싶다                      │
+│      └─▶ Skill 사용 (포터블)                                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="23-함께-사용하기">2.3 함께 사용하기<a href="#23-함께-사용하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Skills와 Subagents는 상호 보완적입니다:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   조합 사용 예시                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  사용자: &#34;이 PR을 리뷰해줘&#34;                                      │
+│                              │                                  │
+│                              ▼                                  │
+│  ┌─────────────────────────────────────────────┐               │
+│  │           code-reviewer (Subagent)          │               │
+│  │                                             │               │
+│  │  격리된 컨텍스트에서 PR 분석                 │               │
+│  │              │                              │               │
+│  │              ▼                              │               │
+│  │  ┌───────────────────────────────┐         │               │
+│  │  │  go-conventions (Skill) 호출  │         │               │
+│  │  │  Go 코딩 컨벤션 참조           │         │               │
+│  │  └───────────────────────────────┘         │               │
+│  │              │                              │               │
+│  │              ▼                              │               │
+│  │  리뷰 결과 생성                             │               │
+│  └─────────────────────────────────────────────┘               │
+│                              │                                  │
+│                              ▼                                  │
+│  메인 대화에 결과만 반환 (컨텍스트 오염 없음)                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="3-첫-번째-skill-만들기">3. 첫 번째 Skill 만들기<a href="#3-첫-번째-skill-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-디렉토리-구조">3.1 디렉토리 구조<a href="#31-디렉토리-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>~/.claude/skills/              # 전역 Skills (모든 프로젝트)
+└── my-skill/
+    └── SKILL.md
+
+.claude/skills/                # 프로젝트 Skills
+└── project-skill/
+    ├── SKILL.md              # 필수
+    ├── scripts/              # 선택: 실행 스크립트
+    │   └── helper.py
+    └── resources/            # 선택: 참조 파일
+        └── template.json
+</code></pre><h3 id="32-skillmd-작성법">3.2 SKILL.md 작성법<a href="#32-skillmd-작성법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>SKILL.md는 두 부분으로 구성됩니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: skill-name
+</span></span><span class="line"><span class="cl">description: 이 스킬이 무엇을 하는지, 언제 사용하는지 설명
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Skill 제목
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">여기에 Claude가 따라야 할 상세 지침을 작성합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 섹션 1
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 섹션 2
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>...
+</span></span></code></pre></div><h3 id="33-yaml-frontmatter-필드">3.3 YAML Frontmatter 필드<a href="#33-yaml-frontmatter-필드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>필드</th>
+          <th>필수</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>✅</td>
+          <td>Skill 이름 (슬래시 커맨드가 됨: <code>/skill-name</code>)</td>
+      </tr>
+      <tr>
+          <td><code>description</code></td>
+          <td>✅</td>
+          <td>Claude가 자동 호출 판단에 사용</td>
+      </tr>
+      <tr>
+          <td><code>disable-model-invocation</code></td>
+          <td></td>
+          <td><code>true</code>면 자동 호출 비활성화</td>
+      </tr>
+      <tr>
+          <td><code>allowed-tools</code></td>
+          <td></td>
+          <td>사용 가능한 도구 제한</td>
+      </tr>
+      <tr>
+          <td><code>user-invocable</code></td>
+          <td></td>
+          <td>메뉴에 표시 여부</td>
+      </tr>
+  </tbody>
+</table>
+<p>💡 <strong>Claude Code 2.1+ 새 기능</strong>: Skills 내에서 <code>${CLAUDE_SESSION_ID}</code> 변수를 사용하여 현재 세션 ID에 접근할 수 있습니다. 세션별 로깅이나 상태 관리에 유용합니다.</p>
+<h3 id="34-기본-예제-코드-설명-skill">3.4 기본 예제: 코드 설명 Skill<a href="#34-기본-예제-코드-설명-skill" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: explain-code
+</span></span><span class="line"><span class="cl">description: 코드를 시각적 다이어그램과 비유로 설명합니다.
+</span></span><span class="line"><span class="cl">             코드 동작 방식을 설명하거나, 코드베이스를 가르치거나,
+</span></span><span class="line"><span class="cl">             &#34;이게 어떻게 동작해?&#34; 질문에 사용합니다.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 코드 설명 Skill
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">코드를 설명할 때 항상 다음 구조를 따르세요:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 1. 비유로 시작
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>코드를 일상생활의 무언가에 비유하여 시작합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 2. 다이어그램 그리기
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>ASCII 아트로 흐름, 구조, 관계를 시각화합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 3. 단계별 설명
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>코드가 어떻게 동작하는지 단계별로 설명합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 4. 주의점 하이라이트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>흔한 실수나 오해를 짚어줍니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 예시
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">사용자: &#34;이 함수 어떻게 동작해?&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">응답:
+</span></span><span class="line"><span class="cl">&#34;이 함수는 식당의 주문 시스템과 비슷합니다.
+</span></span></code></pre></div><p>주문 접수 → 주방 전달 → 조리 → 서빙
+│          │         │       │
+validate   enqueue   process  return</p>
+<pre tabindex="0"><code>
+단계별로 보면...&#34;
+</code></pre><hr>
+<h2 id="4-실전-skills-예제">4. 실전 Skills 예제<a href="#4-실전-skills-예제" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-java-프로젝트용-테스트-작성-skill">4.1 Java 프로젝트용 테스트 작성 Skill<a href="#41-java-프로젝트용-테스트-작성-skill" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: java-test-writer
+</span></span><span class="line"><span class="cl">description: Java 테스트 코드를 작성합니다.
+</span></span><span class="line"><span class="cl">             JUnit 5, MockK, Given-When-Then 패턴을 사용합니다.
+</span></span><span class="line"><span class="cl">             &#34;테스트 작성해줘&#34;, &#34;테스트 코드&#34;, &#34;단위 테스트&#34; 요청 시 사용.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Java Test Writing Skill
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트 클래스 구조
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">``<span class="sb">`java
+</span></span></span><span class="line"><span class="cl"><span class="sb">@ExtendWith(MockKExtension.class)
+</span></span></span><span class="line"><span class="cl"><span class="sb">class {TargetClass}Test {
+</span></span></span><span class="line"><span class="cl"><span class="sb">
+</span></span></span><span class="line"><span class="cl"><span class="sb">    @MockK
+</span></span></span><span class="line"><span class="cl"><span class="sb">    private lateinit var dependency: DependencyType
+</span></span></span><span class="line"><span class="cl"><span class="sb">
+</span></span></span><span class="line"><span class="cl"><span class="sb">    @InjectMockKs
+</span></span></span><span class="line"><span class="cl"><span class="sb">    private lateinit var sut: TargetClass  // System Under Test
+</span></span></span><span class="line"><span class="cl"><span class="sb">
+</span></span></span><span class="line"><span class="cl"><span class="sb">    @BeforeEach
+</span></span></span><span class="line"><span class="cl"><span class="sb">    fun setUp() {
+</span></span></span><span class="line"><span class="cl"><span class="sb">        // 공통 설정
+</span></span></span><span class="line"><span class="cl"><span class="sb">    }
+</span></span></span><span class="line"><span class="cl"><span class="sb">
+</span></span></span><span class="line"><span class="cl"><span class="sb">    @Test
+</span></span></span><span class="line"><span class="cl"><span class="sb">    fun `</span>should 결과 when 조건`() {
+</span></span><span class="line"><span class="cl">        // Given
+</span></span><span class="line"><span class="cl">        val input = ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // When
+</span></span><span class="line"><span class="cl">        val result = sut.methodUnderTest(input)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Then
+</span></span><span class="line"><span class="cl">        assertThat(result).isEqualTo(expected)
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></div><h2 id="네이밍-규칙">네이밍 규칙<a href="#네이밍-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>클래스: <code>{대상클래스}Test</code></li>
+<li>메서드: <code>should_{기대결과}_when_{조건}</code> (백틱 사용)</li>
+<li>변수: <code>sut</code> (System Under Test)</li>
+</ul>
+<h2 id="given-when-then-패턴">Given-When-Then 패턴<a href="#given-when-then-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">fun</span><span class="w"> </span><span class="err">`</span><span class="n">should</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">when</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">provided</span><span class="err">`</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Given - 테스트 데이터 및 Mock 설정</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">1L</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">expectedUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">User</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;John&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">every</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">userRepository</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">returns</span><span class="w"> </span><span class="n">expectedUser</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// When - 테스트 대상 메서드 실행</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userService</span><span class="p">.</span><span class="na">getUser</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Then - 결과 검증</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">isEqualTo</span><span class="p">(</span><span class="n">expectedUser</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">verify</span><span class="p">(</span><span class="n">exactly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">userRepository</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="mock-사용-규칙">Mock 사용 규칙<a href="#mock-사용-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>MockK 사용 (Mockito 금지)</li>
+<li><code>every { }</code> / <code>verify { }</code> 구문</li>
+<li><code>answers { }</code> for complex stubbing</li>
+</ul>
+<h2 id="금지-사항">금지 사항<a href="#금지-사항" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><code>@Autowired</code> in tests (use <code>@InjectMockKs</code>)</li>
+<li>Real database connections</li>
+<li>Thread.sleep() for async tests</li>
+</ul>
+<pre tabindex="0"><code>
+### 4.2 Go 프로젝트용 에러 핸들링 Skill
+
+```markdown
+---
+name: go-error-handling
+description: Go 에러 처리 패턴을 적용합니다.
+             에러 래핑, 커스텀 에러, 센티넬 에러 작업 시 사용.
+             &#34;에러 처리&#34;, &#34;error handling&#34;, &#34;에러 래핑&#34; 요청 시 활성화.
+---
+
+# Go Error Handling Patterns
+
+## 기본 원칙
+
+1. 에러는 즉시 처리하거나 래핑하여 반환
+2. 에러 메시지에 컨텍스트 추가
+3. 절대로 에러를 무시하지 않음
+
+## 에러 래핑 패턴
+
+```go
+// ✅ 좋은 예: 컨텍스트 추가
+if err != nil {
+    return fmt.Errorf(&#34;failed to create user %s: %w&#34;, username, err)
+}
+
+// ❌ 나쁜 예: 컨텍스트 없음
+if err != nil {
+    return err
+}
+
+// ❌ 최악: 에러 무시
+result, _ := someFunction()
+</code></pre><h2 id="커스텀-에러-타입">커스텀 에러 타입<a href="#커스텀-에러-타입" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 도메인 에러 정의</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">UserNotFoundError</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">UserID</span> <span class="kt">int64</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">UserNotFoundError</span><span class="p">)</span> <span class="nf">Error</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;user not found: %d&#34;</span><span class="p">,</span> <span class="nx">e</span><span class="p">.</span><span class="nx">UserID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 사용</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetUser</span><span class="p">(</span><span class="nx">id</span> <span class="kt">int64</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">User</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">user</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">repo</span><span class="p">.</span><span class="nf">Find</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">sql</span><span class="p">.</span><span class="nx">ErrNoRows</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">UserNotFoundError</span><span class="p">{</span><span class="nx">UserID</span><span class="p">:</span> <span class="nx">id</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;failed to get user: %w&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">user</span><span class="p">,</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="센티넬-에러">센티넬 에러<a href="#센티넬-에러" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 패키지 레벨에 정의</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ErrNotFound</span>     <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;not found&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ErrUnauthorized</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;unauthorized&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ErrInvalidInput</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;invalid input&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 사용</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ErrNotFound</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 404 처리</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="에러-체크-패턴">에러 체크 패턴<a href="#에러-체크-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// errors.Is - 에러 체인에서 특정 에러 찾기</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">sql</span><span class="p">.</span><span class="nx">ErrNoRows</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// errors.As - 특정 타입으로 캐스팅</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">notFoundErr</span> <span class="o">*</span><span class="nx">UserNotFoundError</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">As</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">notFoundErr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;User %d not found&#34;</span><span class="p">,</span> <span class="nx">notFoundErr</span><span class="p">.</span><span class="nx">UserID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="금지-패턴">금지 패턴<a href="#금지-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// ❌ panic 남용</span>
+</span></span><span class="line"><span class="cl"><span class="nb">panic</span><span class="p">(</span><span class="s">&#34;something went wrong&#34;</span><span class="p">)</span>  <span class="c1">// 복구 불가능한 경우만 사용</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ❌ 에러 문자열 비교</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;not found&#34;</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>  <span class="c1">// errors.Is 사용</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ❌ 에러 로그 후 반환</span>
+</span></span><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">return</span> <span class="nx">err</span>  <span class="c1">// 중복 로깅 발생, 한 곳에서만 로그</span>
+</span></span></code></pre></div><pre tabindex="0"><code>
+### 4.3 Redis 캐시 패턴 Skill
+
+```markdown
+---
+name: redis-cache-patterns
+description: Redis 캐시 구현 패턴을 제공합니다.
+             캐시 키 설계, TTL 전략, Cache-Aside 패턴 작업 시 사용.
+             &#34;Redis&#34;, &#34;캐시&#34;, &#34;caching&#34; 관련 요청 시 활성화.
+---
+
+# Redis Cache Patterns
+
+## 캐시 키 네이밍 규칙
+</code></pre><p>{service}:{entity}:{identifier}:{optional-suffix}</p>
+<p>예시:</p>
+<ul>
+<li>user-service:user:12345</li>
+<li>payment:transaction:uuid-here:status</li>
+<li>inventory:product:SKU123:stock</li>
+</ul>
+<pre tabindex="0"><code>
+## 키 프리픽스 상수화
+
+```java
+public class CacheKeys {
+    public static final String USER_PREFIX = &#34;user-service:user:&#34;;
+    public static final String SESSION_PREFIX = &#34;user-service:session:&#34;;
+
+    public static String userKey(Long userId) {
+        return USER_PREFIX + userId;
+    }
+}
+</code></pre><h2 id="cache-aside-패턴">Cache-Aside 패턴<a href="#cache-aside-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="nf">getUser</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">userId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CacheKeys</span><span class="p">.</span><span class="na">userKey</span><span class="p">(</span><span class="n">userId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 1. 캐시 조회</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">User</span><span class="w"> </span><span class="n">cached</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cached</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cached</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 2. DB 조회</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userRepository</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">.</span><span class="na">orElseThrow</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UserNotFoundException</span><span class="p">(</span><span class="n">userId</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 3. 캐시 저장</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">Duration</span><span class="p">.</span><span class="na">ofHours</span><span class="p">(</span><span class="n">1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">user</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="ttl-전략">TTL 전략<a href="#ttl-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>데이터 유형</th>
+          <th>TTL</th>
+          <th>이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>세션</td>
+          <td>30분</td>
+          <td>보안</td>
+      </tr>
+      <tr>
+          <td>사용자 프로필</td>
+          <td>1시간</td>
+          <td>자주 변경되지 않음</td>
+      </tr>
+      <tr>
+          <td>상품 정보</td>
+          <td>5분</td>
+          <td>재고 등 변경 가능</td>
+      </tr>
+      <tr>
+          <td>설정값</td>
+          <td>24시간</td>
+          <td>거의 변경 없음</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="캐시-무효화">캐시 무효화<a href="#캐시-무효화" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 단일 키 삭제</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">evictUser</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">userId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">delete</span><span class="p">(</span><span class="n">CacheKeys</span><span class="p">.</span><span class="na">userKey</span><span class="p">(</span><span class="n">userId</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 패턴으로 삭제 (주의: 프로덕션에서 KEYS 명령 지양)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">evictUserCache</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">keys</span><span class="p">(</span><span class="s">&#34;user-service:user:*&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">keys</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">keys</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">delete</span><span class="p">(</span><span class="n">keys</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 권장: SCAN 사용</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">evictByPattern</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">pattern</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ScanOptions</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ScanOptions</span><span class="p">.</span><span class="na">scanOptions</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">.</span><span class="na">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">.</span><span class="na">count</span><span class="p">(</span><span class="n">100</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">Cursor</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cursor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">scan</span><span class="p">(</span><span class="n">options</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">cursor</span><span class="p">.</span><span class="na">hasNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">delete</span><span class="p">(</span><span class="n">cursor</span><span class="p">.</span><span class="na">next</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="주의사항">주의사항<a href="#주의사항" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>프로덕션에서 <code>KEYS *</code> 명령 금지 (블로킹)</li>
+<li>대량 삭제 시 <code>SCAN</code> + 배치 삭제 사용</li>
+<li>캐시 워밍업 전략 고려</li>
+</ul>
+<pre tabindex="0"><code>
+### 4.4 API 설계 컨벤션 Skill
+
+```markdown
+---
+name: api-conventions
+description: REST API 설계 컨벤션을 제공합니다.
+             API 엔드포인트 설계, 응답 형식, 에러 처리 시 사용.
+             &#34;API 만들어줘&#34;, &#34;엔드포인트&#34;, &#34;REST&#34; 요청 시 활성화.
+---
+
+# REST API Design Conventions
+
+## URL 설계 원칙
+</code></pre><p>GET    /api/v1/users          # 목록 조회
+GET    /api/v1/users/{id}     # 단일 조회
+POST   /api/v1/users          # 생성
+PUT    /api/v1/users/{id}     # 전체 수정
+PATCH  /api/v1/users/{id}     # 부분 수정
+DELETE /api/v1/users/{id}     # 삭제</p>
+<h1 id="하위-리소스">하위 리소스<a href="#하위-리소스" class="hanchor" ariaLabel="Anchor">#</a> </h1>
+<p>GET    /api/v1/users/{id}/orders
+POST   /api/v1/users/{id}/orders</p>
+<h1 id="액션-동사가-필요한-경우">액션 (동사가 필요한 경우)<a href="#액션-동사가-필요한-경우" class="hanchor" ariaLabel="Anchor">#</a> </h1>
+<p>POST   /api/v1/users/{id}/activate
+POST   /api/v1/orders/{id}/cancel</p>
+<pre tabindex="0"><code>
+## 응답 형식
+
+### 성공 응답
+
+```json
+{
+  &#34;success&#34;: true,
+  &#34;data&#34;: {
+    &#34;id&#34;: 1,
+    &#34;name&#34;: &#34;John Doe&#34;,
+    &#34;email&#34;: &#34;john@example.com&#34;
+  },
+  &#34;meta&#34;: {
+    &#34;requestId&#34;: &#34;req-uuid&#34;,
+    &#34;timestamp&#34;: &#34;2025-01-23T10:00:00Z&#34;
+  }
+}
+</code></pre><h3 id="목록-응답-페이징">목록 응답 (페이징)<a href="#목록-응답-페이징" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;success&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;data&#34;</span><span class="p">:</span> <span class="p">[</span><span class="err">...</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;pagination&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;page&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;size&#34;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;totalElements&#34;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;totalPages&#34;</span><span class="p">:</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="에러-응답-rfc-7807-problem-details">에러 응답 (RFC 7807 Problem Details)<a href="#에러-응답-rfc-7807-problem-details" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;success&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;error&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;https://api.example.com/errors/validation&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;title&#34;</span><span class="p">:</span> <span class="s2">&#34;Validation Error&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;status&#34;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;detail&#34;</span><span class="p">:</span> <span class="s2">&#34;The request body contains invalid fields&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;instance&#34;</span><span class="p">:</span> <span class="s2">&#34;/api/v1/users&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;errors&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;field&#34;</span><span class="p">:</span> <span class="s2">&#34;email&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;message&#34;</span><span class="p">:</span> <span class="s2">&#34;must be a valid email address&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="http-상태-코드">HTTP 상태 코드<a href="#http-상태-코드" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>코드</th>
+          <th>의미</th>
+          <th>사용 시점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>OK</td>
+          <td>GET 성공, PUT/PATCH 성공</td>
+      </tr>
+      <tr>
+          <td>201</td>
+          <td>Created</td>
+          <td>POST 생성 성공</td>
+      </tr>
+      <tr>
+          <td>204</td>
+          <td>No Content</td>
+          <td>DELETE 성공</td>
+      </tr>
+      <tr>
+          <td>400</td>
+          <td>Bad Request</td>
+          <td>요청 형식 오류, 유효성 검증 실패</td>
+      </tr>
+      <tr>
+          <td>401</td>
+          <td>Unauthorized</td>
+          <td>인증 필요</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Forbidden</td>
+          <td>권한 없음</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Not Found</td>
+          <td>리소스 없음</td>
+      </tr>
+      <tr>
+          <td>409</td>
+          <td>Conflict</td>
+          <td>중복, 상태 충돌</td>
+      </tr>
+      <tr>
+          <td>422</td>
+          <td>Unprocessable Entity</td>
+          <td>비즈니스 규칙 위반</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Internal Server Error</td>
+          <td>서버 오류</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="쿼리-파라미터">쿼리 파라미터<a href="#쿼리-파라미터" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code># 페이징
+GET /api/v1/users?page=1&amp;size=20
+
+# 정렬
+GET /api/v1/users?sort=createdAt,desc
+
+# 필터링
+GET /api/v1/users?status=active&amp;role=admin
+
+# 검색
+GET /api/v1/users?q=john
+</code></pre><h2 id="버전-관리">버전 관리<a href="#버전-관리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>URL 경로: <code>/api/v1/</code>, <code>/api/v2/</code></li>
+<li>주요 변경 시에만 버전 증가</li>
+<li>이전 버전 최소 6개월 지원</li>
+</ul>
+<pre tabindex="0"><code>
+---
+
+## 5. Skills에 스크립트와 리소스 추가하기
+
+### 5.1 scripts/ 디렉토리 활용
+
+Skills는 실행 가능한 스크립트를 포함할 수 있습니다:
+</code></pre><p>~/.claude/skills/codebase-visualizer/
+├── SKILL.md
+└── scripts/
+└── generate-tree.py</p>
+<pre tabindex="0"><code>
+**SKILL.md**:
+```markdown
+---
+name: codebase-visualizer
+description: 코드베이스의 인터랙티브 트리 시각화를 생성합니다.
+             &#34;코드 구조 보여줘&#34;, &#34;프로젝트 구조 시각화&#34; 요청 시 사용.
+---
+
+# Codebase Visualizer
+
+코드베이스 구조를 시각화하려면 번들된 스크립트를 실행하세요:
+
+```bash
+python ~/.claude/skills/codebase-visualizer/scripts/generate-tree.py
+</code></pre><p>생성된 HTML 파일을 브라우저에서 열어 인터랙티브하게 탐색할 수 있습니다.</p>
+<pre tabindex="0"><code>
+### 5.2 resources/ 디렉토리로 템플릿 제공
+</code></pre><p>~/.claude/skills/api-scaffold/
+├── SKILL.md
+└── resources/
+├── controller-template.java
+├── service-template.java
+└── dto-template.java</p>
+<pre tabindex="0"><code>
+**SKILL.md**:
+```markdown
+---
+name: api-scaffold
+description: 새 API 엔드포인트를 위한 Controller, Service, DTO를 생성합니다.
+             &#34;새 API 만들어줘&#34;, &#34;CRUD 생성&#34; 요청 시 사용.
+---
+
+# API Scaffolding
+
+템플릿 파일들을 참조하여 일관된 구조로 생성하세요:
+
+- Controller: `resources/controller-template.java`
+- Service: `resources/service-template.java`
+- DTO: `resources/dto-template.java`
+
+## 생성 순서
+
+1. DTO 먼저 생성 (Request, Response)
+2. Service 인터페이스 및 구현체
+3. Controller
+4. 테스트 코드
+</code></pre><h3 id="53-실행-가능한-유틸리티-스크립트-번들링">5.3 실행 가능한 유틸리티 스크립트 번들링<a href="#53-실행-가능한-유틸리티-스크립트-번들링" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>더 복잡한 스킬은 여러 스크립트를 포함할 수 있습니다:</p>
+<pre tabindex="0"><code>~/.claude/skills/db-migration-helper/
+├── SKILL.md
+└── scripts/
+    ├── check-migration.sh      # 마이그레이션 상태 확인
+    ├── generate-migration.py   # 새 마이그레이션 생성
+    └── rollback.sh             # 롤백 실행
+</code></pre><hr>
+<h2 id="6-skills-호출-제어">6. Skills 호출 제어<a href="#6-skills-호출-제어" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-invocation-auto-vs-manual">6.1 invocation: auto vs manual<a href="#61-invocation-auto-vs-manual" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>기본적으로 Claude는 description을 보고 <strong>자동으로</strong> Skill을 호출합니다. 이를 제어할 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: dangerous-operation
+</span></span><span class="line"><span class="cl">description: 위험한 작업을 수행합니다.
+</span></span><span class="line"><span class="cl">disable-model-invocation: true  # 자동 호출 비활성화
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 이 Skill은 /dangerous-operation으로만 호출 가능
+</span></span></span></code></pre></div><h3 id="62-allowed-tools로-도구-제한">6.2 allowed-tools로 도구 제한<a href="#62-allowed-tools로-도구-제한" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>읽기 전용 Skill을 만들 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: safe-analyzer
+</span></span><span class="line"><span class="cl">description: 코드를 분석합니다 (수정 없음).
+</span></span><span class="line"><span class="cl">allowed-tools: Read, Grep, Glob
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Code Analyzer
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">이 Skill은 코드를 읽고 분석만 합니다. 수정 권한이 없습니다.
+</span></span></code></pre></div><p>사용 가능한 도구들:</p>
+<ul>
+<li><code>Read</code>: 파일 읽기</li>
+<li><code>Write</code>: 파일 쓰기</li>
+<li><code>Edit</code>: 파일 수정</li>
+<li><code>Bash</code>: 명령 실행</li>
+<li><code>Glob</code>: 파일 패턴 검색</li>
+<li><code>Grep</code>: 텍스트 검색</li>
+</ul>
+<h3 id="63-permission-설정">6.3 Permission 설정<a href="#63-permission-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>/permissions</code> 명령으로 특정 Skill의 사용을 제어할 수 있습니다:</p>
+<pre tabindex="0"><code># 특정 Skill만 허용
+Skill(commit)
+Skill(review-pr:*)
+
+# 특정 Skill 차단
+Skill(deploy:*)
+</code></pre><hr>
+<h2 id="7-실습-기존-claudemd에서-skills-분리하기">7. 실습: 기존 CLAUDE.md에서 Skills 분리하기<a href="#7-실습-기존-claudemd에서-skills-분리하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="71-before-모든-것이-claudemd에">7.1 Before: 모든 것이 CLAUDE.md에<a href="#71-before-모든-것이-claudemd에" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md (200줄)
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 정보
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드/테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Go 에러 처리 규칙 (50줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 에러는 즉시 처리
+</span></span><span class="line"><span class="cl"><span class="k">-</span> fmt.Errorf로 래핑
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (상세 규칙들)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## API 설계 규칙 (60줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> REST 원칙
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 응답 형식
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (상세 규칙들)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트 작성 규칙 (40줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> Given-When-Then
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (상세 규칙들)
+</span></span></code></pre></div><h3 id="72-after-skills로-분리">7.2 After: Skills로 분리<a href="#72-after-skills로-분리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>CLAUDE.md (50줄)</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># User Service
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Go 1.22 기반 사용자 관리 서비스
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: <span class="sb">`go build ./cmd/server`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`go test ./...`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트: <span class="sb">`golangci-lint run`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 구조
+</span></span></span></code></pre></div><p>cmd/server/    # 진입점
+internal/      # 내부 패키지
+pkg/           # 공개 패키지
+api/           # OpenAPI specs</p>
+<pre tabindex="0"><code>
+## 핵심 규칙
+
+IMPORTANT: 에러 처리, API 설계, 테스트 작성 시
+해당 Skills가 자동으로 활성화됩니다.
+</code></pre><p><strong>.claude/skills/go-error-handling/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: go-error-handling
+</span></span><span class="line"><span class="cl">description: Go 에러 처리 패턴. 에러 래핑, 커스텀 에러 작업 시 사용.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(Part 4.2의 내용)
+</span></span></code></pre></div><p><strong>.claude/skills/api-conventions/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: api-conventions
+</span></span><span class="line"><span class="cl">description: REST API 설계 규칙. 엔드포인트, 응답 형식 설계 시 사용.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(Part 4.4의 내용)
+</span></span></code></pre></div><p><strong>.claude/skills/go-test-writer/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: go-test-writer
+</span></span><span class="line"><span class="cl">description: Go 테스트 작성. 테이블 기반 테스트, Mock 사용 시.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(테스트 관련 상세 규칙)
+</span></span></code></pre></div><h3 id="73-결과-비교">7.3 결과 비교<a href="#73-결과-비교" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>Before</th>
+          <th>After</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CLAUDE.md 크기</td>
+          <td>200줄</td>
+          <td>50줄</td>
+      </tr>
+      <tr>
+          <td>항상 로드되는 토큰</td>
+          <td>~4,000</td>
+          <td>~1,000 + (Skill 메타데이터 ~300)</td>
+      </tr>
+      <tr>
+          <td>에러 처리 코드 작성 시</td>
+          <td>전체 200줄 로드</td>
+          <td>필요한 Skill만 로드</td>
+      </tr>
+      <tr>
+          <td>유지보수</td>
+          <td>한 파일에서 관리</td>
+          <td>주제별 분리로 명확</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="8-정리">8. 정리<a href="#8-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="이번-파트에서-배운-것">이번 파트에서 배운 것<a href="#이번-파트에서-배운-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>Skills는 Progressive Disclosure</strong>: 메타데이터만 스캔, 필요시 전체 로드</li>
+<li><strong>Skills vs Subagents</strong>: Skills는 참조 지식, Subagents는 독립 에이전트</li>
+<li><strong>SKILL.md 구조</strong>: YAML Frontmatter + Markdown 지침</li>
+<li><strong>스크립트/리소스 번들링</strong>: 실행 파일과 템플릿 포함 가능</li>
+<li><strong>호출 제어</strong>: <code>disable-model-invocation</code>, <code>allowed-tools</code></li>
+</ol>
+<h3 id="핵심-원칙">핵심 원칙<a href="#핵심-원칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>CLAUDE.md에는 &ldquo;항상 필요한 것&quot;만, Skills에는 &ldquo;때때로 필요한 것&quot;을</strong></p></blockquote>
+<h3 id="다음-파트-예고">다음 파트 예고<a href="#다음-파트-예고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Skills를 만들었다면, 이제 <strong>커뮤니티가 만든 플러그인을 활용</strong>하고 <strong>나만의 규칙과 조합</strong>하는 방법을 배웁니다. <strong>Part 4</strong>에서는 Plugins &amp; Marketplace를 다룹니다.</p>
+<hr>
+<h2 id="참고-자료">참고 자료<a href="#참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/skills">Claude Code Skills 공식 문서</a></li>
+<li><a href="https://github.com/anthropics/skills">Anthropic Skills GitHub</a></li>
+<li><a href="https://claude.com/blog/skills-explained">Skills Explained - Claude Blog</a></li>
+<li><a href="https://dev.to/nunc/claude-code-skills-vs-subagents-when-to-use-what-4d12">Skills vs Subagents 비교</a></li>
+</ul>
+<hr>
+<p><strong>이전</strong>: <a href="./part2-claude-md-optimization.md">Part 2: CLAUDE.md 최적화</a>
+<strong>다음</strong>: <a href="./part4-plugins-marketplace.md">Part 4: Plugins &amp; Marketplace</a></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-04/" class="button inline prev">
+        &lt; [<span class="button__text">Claude Code 완전 정복 가이드 Part 4: Plugins &amp; Marketplace - 재사용 가능한 확장 패키지</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-02/" class="button inline next">
+         [<span class="button__text">Claude Code 완전 정복 가이드 Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

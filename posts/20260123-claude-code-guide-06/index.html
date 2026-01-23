@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 6: 고급 패턴과 Best Practices :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hooks를 통한 강제 자동화, Subagents 활용 패턴, MCP 통합, 실전 레이어링 아키텍처, 팀 협업 워크플로우, 문제 해결 방법을 다룹니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-06/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 6: 고급 패턴과 Best Practices">
+<meta property="og:description" content="Hooks를 통한 강제 자동화, Subagents 활용 패턴, MCP 통합, 실전 레이어링 아키텍처, 팀 협업 워크플로우, 문제 해결 방법을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-06/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:21:06 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-06/">Claude Code 완전 정복 가이드 Part 6: 고급 패턴과 Best Practices</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간 30분
+<strong>난이도</strong>: ⭐⭐⭐⭐⭐
+<strong>사전 요구사항</strong>: Part 1-5 완료
+<strong>Claude Code 버전</strong>: 2.1.x (Opus 4.5)</p></blockquote>
+<hr>
+<h2 id="0-claude-code-21-주요-신기능">0. Claude Code 2.1 주요 신기능<a href="#0-claude-code-21-주요-신기능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>본격적인 내용에 앞서, Claude Code 2.1에서 추가된 핵심 기능들을 정리합니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th>기능</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Session Teleportation</strong></td>
+          <td><code>/teleport</code>, <code>/remote-env</code>로 로컬↔클라우드 세션 이동</td>
+      </tr>
+      <tr>
+          <td><strong>Hot Reload for Skills</strong></td>
+          <td>Skills 수정 시 재시작 없이 즉시 반영</td>
+      </tr>
+      <tr>
+          <td><strong>Setup Hook</strong></td>
+          <td><code>--init</code>, <code>--init-only</code>, <code>--maintenance</code> CLI 플래그용 훅</td>
+      </tr>
+      <tr>
+          <td><strong>Task Management</strong></td>
+          <td>의존성 추적이 포함된 태스크 관리 시스템</td>
+      </tr>
+      <tr>
+          <td><strong>Language Output</strong></td>
+          <td><code>language</code> 설정으로 출력 언어 지정</td>
+      </tr>
+      <tr>
+          <td><strong>Opus 4.5</strong></td>
+          <td>Pro 사용자에게 Opus 4.5 모델 제공</td>
+      </tr>
+      <tr>
+          <td><strong>respectGitignore</strong></td>
+          <td><code>@-mention</code> 파일 선택에서 gitignore 적용</td>
+      </tr>
+      <tr>
+          <td><strong>showTurnDuration</strong></td>
+          <td>턴 소요 시간 표시 설정</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="1-hooks-예외-없는-강제-자동화">1. Hooks: 예외 없는 강제 자동화<a href="#1-hooks-예외-없는-강제-자동화" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-claudemd-vs-hooks의-근본적-차이">1.1 CLAUDE.md vs Hooks의 근본적 차이<a href="#11-claudemd-vs-hooks의-근본적-차이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    CLAUDE.md vs Hooks                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  CLAUDE.md = &#34;권고&#34; (Advisory)                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  &#34;테스트를 실행해주세요&#34;                                  │   │
+│  │  &#34;린트를 돌려주세요&#34;                                      │   │
+│  │                                                         │   │
+│  │  → Claude가 따를 수도 있고, 잊을 수도 있음                │   │
+│  │  → 복잡한 대화에서 규칙이 희석될 수 있음                  │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  Hooks = &#34;강제&#34; (Enforcement)                                   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  파일 저장 시 → 자동으로 린트 실행                        │   │
+│  │  대화 시작 시 → 자동으로 컨텍스트 로드                    │   │
+│  │                                                         │   │
+│  │  → 예외 없이 항상 실행됨                                  │   │
+│  │  → Claude의 판단과 무관하게 트리거                        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="12-hooks-이벤트-종류">1.2 Hooks 이벤트 종류<a href="#12-hooks-이벤트-종류" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>이벤트</th>
+          <th>트리거 시점</th>
+          <th>사용 예시</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>PreToolUse</code></td>
+          <td>도구 실행 직전</td>
+          <td>위험한 명령 차단, 로깅</td>
+      </tr>
+      <tr>
+          <td><code>PostToolUse</code></td>
+          <td>도구 실행 직후</td>
+          <td>린트 자동 실행, 검증</td>
+      </tr>
+      <tr>
+          <td><code>Notification</code></td>
+          <td>알림 발생 시</td>
+          <td>외부 시스템 연동</td>
+      </tr>
+      <tr>
+          <td><code>Stop</code></td>
+          <td>작업 완료/중단 시</td>
+          <td>정리 작업, 리포트</td>
+      </tr>
+      <tr>
+          <td><code>Setup</code></td>
+          <td><code>--init</code>, <code>--init-only</code>, <code>--maintenance</code> 실행 시</td>
+          <td>저장소 초기화, 유지보수 (2.1+ 신규)</td>
+      </tr>
+  </tbody>
+</table>
+<p>💡 <strong>Claude Code 2.1+ 변경사항</strong>:</p>
+<ul>
+<li>Hook 실행 타임아웃이 60초에서 <strong>10분</strong>으로 증가했습니다.</li>
+<li>Permission 프롬프트에서 피드백을 제공할 수 있습니다.</li>
+</ul>
+<h3 id="13-hook-설정-방법">1.3 Hook 설정 방법<a href="#13-hook-설정-방법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>.claude/settings.json</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;echo &#39;File modification detected: $CLAUDE_FILE_PATH&#39;&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.go ]]; then gofmt -w \&#34;$CLAUDE_FILE_PATH\&#34;; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.kt ]]; then ktlint -F \&#34;$CLAUDE_FILE_PATH\&#34; 2&gt;/dev/null || true; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="14-실용적인-hook-예제">1.4 실용적인 Hook 예제<a href="#14-실용적인-hook-예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>예제 1: Go 파일 저장 시 자동 포맷팅</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.go ]]; then gofmt -w \&#34;$CLAUDE_FILE_PATH\&#34; &amp;&amp; echo &#39;✓ Formatted&#39;; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>예제 2: 테스트 파일 수정 시 해당 테스트 자동 실행</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *_test.go ]]; then go test -v \&#34;$(dirname $CLAUDE_FILE_PATH)/...\&#34; -run \&#34;$(basename $CLAUDE_FILE_PATH .go)\&#34; 2&gt;&amp;1 | head -50; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>예제 3: 위험한 파일 수정 방지</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == **/production/** ]] || [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.env ]]; then echo &#39;ERROR: Protected file&#39; &amp;&amp; exit 1; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="15-hook-vs-claudemd-선택-기준">1.5 Hook vs CLAUDE.md 선택 기준<a href="#15-hook-vs-claudemd-선택-기준" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                     언제 무엇을 사용할까?                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  &#34;이 규칙은 절대로 예외가 없어야 한다&#34;                           │
+│      └─▶ Hook 사용 (강제)                                      │
+│      예: 프로덕션 파일 보호, 자동 포맷팅                        │
+│                                                                 │
+│  &#34;이 규칙은 가이드라인이고, 상황에 따라 유연해도 된다&#34;            │
+│      └─▶ CLAUDE.md 사용 (권고)                                 │
+│      예: 코딩 스타일 선호, 커밋 메시지 형식                     │
+│                                                                 │
+│  &#34;특정 작업 후 자동으로 무언가를 실행해야 한다&#34;                  │
+│      └─▶ Hook 사용                                             │
+│      예: 파일 저장 후 린트, 테스트 자동 실행                    │
+│                                                                 │
+│  &#34;Claude에게 컨텍스트나 지식을 제공해야 한다&#34;                    │
+│      └─▶ CLAUDE.md 또는 Skill 사용                             │
+│      예: 프로젝트 구조 설명, API 패턴                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="2-subagents-활용-패턴">2. Subagents 활용 패턴<a href="#2-subagents-활용-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-subagent의-핵심-가치">2.1 Subagent의 핵심 가치<a href="#21-subagent의-핵심-가치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Subagents는 <strong>격리된 컨텍스트 윈도우</strong>에서 작업합니다. 이것이 중요한 이유:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    컨텍스트 오염 문제                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [메인 대화만 사용할 때]                                        │
+│                                                                 │
+│  사용자: &#34;이 코드베이스 분석해줘&#34;                                │
+│      │                                                         │
+│      ▼                                                         │
+│  Claude: (수백 개 파일 읽기)                                    │
+│      │                                                         │
+│      ▼                                                         │
+│  메인 컨텍스트: █████████████████████████ (가득 참)             │
+│      │                                                         │
+│      ▼                                                         │
+│  사용자: &#34;간단한 함수 하나 만들어줘&#34;                             │
+│      │                                                         │
+│      ▼                                                         │
+│  Claude: (컨텍스트 부족으로 이전 대화 일부 잊음) 😰              │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  [Subagent 사용할 때]                                           │
+│                                                                 │
+│  사용자: &#34;이 코드베이스 분석해줘&#34;                                │
+│      │                                                         │
+│      ▼                                                         │
+│  Claude: &#34;분석 작업을 Explore subagent에게 위임합니다&#34;          │
+│      │                                                         │
+│      ▼                                                         │
+│  ┌─────────────────────────────────────┐                       │
+│  │  Explore Subagent (격리된 컨텍스트)  │                       │
+│  │  - 수백 개 파일 읽기                │                       │
+│  │  - 분석 수행                        │                       │
+│  │  - 요약 결과만 반환                 │                       │
+│  └─────────────────────────────────────┘                       │
+│      │                                                         │
+│      ▼ (요약만 전달)                                           │
+│  메인 컨텍스트: ████░░░░░░░░░░░░░░░░░░░ (여유 있음)             │
+│      │                                                         │
+│      ▼                                                         │
+│  사용자: &#34;간단한 함수 하나 만들어줘&#34;                             │
+│      │                                                         │
+│      ▼                                                         │
+│  Claude: (이전 대화 기억, 정상 작업) 😊                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="22-built-in-subagents">2.2 Built-in Subagents<a href="#22-built-in-subagents" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code는 기본 Subagent를 제공합니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Subagent</th>
+          <th>용도</th>
+          <th>도구 권한</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Explore</code></td>
+          <td>코드베이스 탐색, 분석</td>
+          <td>Read, Grep, Glob (읽기 전용)</td>
+      </tr>
+      <tr>
+          <td><code>Plan</code></td>
+          <td>계획 수립, 설계</td>
+          <td>제한적</td>
+      </tr>
+      <tr>
+          <td><code>claude-code-guide</code></td>
+          <td>Claude Code 문서 조회</td>
+          <td>문서 접근</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="23-custom-subagent-만들기">2.3 Custom Subagent 만들기<a href="#23-custom-subagent-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>.claude/agents/code-reviewer.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: code-reviewer
+</span></span><span class="line"><span class="cl">description: 코드 품질과 보안을 검토합니다. PR 리뷰, 코드 분석 요청 시 사용.
+</span></span><span class="line"><span class="cl">tools: Read, Grep, Glob
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Code Reviewer Agent
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">당신은 시니어 개발자로서 코드 리뷰를 수행합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 리뷰 체크리스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### 1. 코드 품질
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> 함수가 단일 책임을 가지는가?
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 네이밍이 명확한가?
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 중복 코드가 있는가?
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 복잡도가 적절한가?
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 2. 보안
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> SQL Injection 가능성
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> XSS 가능성
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 민감 정보 노출
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 입력 검증
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 3. 성능
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> N+1 쿼리 문제
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 불필요한 메모리 할당
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 적절한 인덱스 사용
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 4. 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> 테스트 커버리지 적절한가?
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 엣지 케이스 테스트가 있는가?
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 출력 형식
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">```markdown
+</span></span><span class="line"><span class="cl"><span class="gu">## 리뷰 요약
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gs">**전체 평가**</span>: [APPROVE / REQUEST_CHANGES / COMMENT]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 주요 발견 사항
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> <span class="ge">**</span>[심각도]** 파일명:라인 - 설명
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 개선 제안
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 제안 1
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 제안 2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 칭찬할 점
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 잘한 점 1
+</span></span></code></pre></div><pre tabindex="0"><code>
+### 2.4 Subagent 아키텍처 패턴
+
+**패턴 1: Master-Clone (동일 작업 병렬화)**
+</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
+│                    Master-Clone 패턴                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  사용자: &ldquo;프로젝트의 모든 TODO 주석을 찾아서 정리해줘&rdquo;            │
+│                                                                 │
+│                    ┌─────────────┐                              │
+│                    │   Master    │                              │
+│                    │   Claude    │                              │
+│                    └──────┬──────┘                              │
+│           ┌───────────────┼───────────────┐                    │
+│           ▼               ▼               ▼                    │
+│    ┌────────────┐  ┌────────────┐  ┌────────────┐             │
+│    │  Clone 1   │  │  Clone 2   │  │  Clone 3   │             │
+│    │  (src/)    │  │  (test/)   │  │  (docs/)   │             │
+│    │  Explore   │  │  Explore   │  │  Explore   │             │
+│    └─────┬──────┘  └─────┬──────┘  └─────┬──────┘             │
+│          │               │               │                     │
+│          └───────────────┼───────────────┘                     │
+│                          ▼                                     │
+│                   ┌─────────────┐                              │
+│                   │   Master    │                              │
+│                   │   결과 통합  │                              │
+│                   └─────────────┘                              │
+│                                                                 │
+│  장점: 병렬 처리로 속도 향상                                     │
+│  적합: 대규모 코드베이스 검색, 분석                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</p>
+<pre tabindex="0"><code>
+**패턴 2: Lead-Specialist (전문가 분업)**
+</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
+│                    Lead-Specialist 패턴                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  사용자: &ldquo;새로운 결제 API 기능을 구현해줘&rdquo;                        │
+│                                                                 │
+│                    ┌─────────────┐                              │
+│                    │    Lead     │                              │
+│                    │   Claude    │                              │
+│                    └──────┬──────┘                              │
+│                           │                                     │
+│           ┌───────────────┼───────────────┐                    │
+│           ▼               ▼               ▼                    │
+│    ┌────────────┐  ┌────────────┐  ┌────────────┐             │
+│    │ API Design │  │  Security  │  │   Test     │             │
+│    │ Specialist │  │  Auditor   │  │  Writer    │             │
+│    └─────┬──────┘  └─────┬──────┘  └─────┬──────┘             │
+│          │               │               │                     │
+│    API 설계서        보안 검토       테스트 코드                 │
+│          │               │               │                     │
+│          └───────────────┼───────────────┘                     │
+│                          ▼                                     │
+│                   ┌─────────────┐                              │
+│                   │    Lead     │                              │
+│                   │  최종 구현   │                              │
+│                   └─────────────┘                              │
+│                                                                 │
+│  장점: 각 전문가의 깊은 지식 활용                                │
+│  적합: 복잡한 기능 구현, 다양한 관점 필요 시                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</p>
+<pre tabindex="0"><code>
+### 2.5 Subagent 호출 방법
+</code></pre><h1 id="자연어로-위임">자연어로 위임<a href="#자연어로-위임" class="hanchor" ariaLabel="Anchor">#</a> </h1>
+<p>&ldquo;Explore subagent를 사용해서 이 코드베이스의 인증 로직을 찾아줘&rdquo;</p>
+<h1 id="명시적-지시">명시적 지시<a href="#명시적-지시" class="hanchor" ariaLabel="Anchor">#</a> </h1>
+<p>&ldquo;code-reviewer subagent에게 이 PR의 변경사항을 리뷰하도록 해줘&rdquo;</p>
+<h1 id="병렬-실행-요청">병렬 실행 요청<a href="#병렬-실행-요청" class="hanchor" ariaLabel="Anchor">#</a> </h1>
+<p>&ldquo;5개의 Explore subagent를 병렬로 실행해서 각 모듈의 TODO를 찾아줘&rdquo;</p>
+<pre tabindex="0"><code>
+---
+
+## 3. MCP (Model Context Protocol) 통합
+
+### 3.1 MCP란?
+
+MCP는 Claude Code를 **외부 시스템과 연결**하는 프로토콜입니다.
+</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
+│                         MCP 개요                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                     Claude Code                          │   │
+│  │                                                         │   │
+│  │  &ldquo;데이터베이스에서 사용자 목록 조회해줘&rdquo;                  │   │
+│  │  &ldquo;Slack에 메시지 보내줘&rdquo;                                 │   │
+│  │  &ldquo;GitHub 이슈 생성해줘&rdquo;                                  │   │
+│  └──────────────────────┬──────────────────────────────────┘   │
+│                         │ MCP Protocol                         │
+│         ┌───────────────┼───────────────┐                      │
+│         ▼               ▼               ▼                      │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐               │
+│  │ PostgreSQL │  │   Slack    │  │   GitHub   │               │
+│  │ MCP Server │  │ MCP Server │  │ MCP Server │               │
+│  └────────────┘  └────────────┘  └────────────┘               │
+│         │               │               │                      │
+│         ▼               ▼               ▼                      │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐               │
+│  │  Database  │  │   Slack    │  │   GitHub   │               │
+│  │            │  │    API     │  │    API     │               │
+│  └────────────┘  └────────────┘  └────────────┘               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</p>
+<pre tabindex="0"><code>
+### 3.2 MCP 서버 설정
+
+**.mcp.json** (프로젝트 루트):
+
+```json
+{
+  &#34;mcpServers&#34;: {
+    &#34;filesystem&#34;: {
+      &#34;command&#34;: &#34;npx&#34;,
+      &#34;args&#34;: [&#34;-y&#34;, &#34;@modelcontextprotocol/server-filesystem&#34;, &#34;/path/to/project&#34;]
+    },
+    &#34;postgres&#34;: {
+      &#34;command&#34;: &#34;npx&#34;,
+      &#34;args&#34;: [&#34;-y&#34;, &#34;@modelcontextprotocol/server-postgres&#34;],
+      &#34;env&#34;: {
+        &#34;DATABASE_URL&#34;: &#34;postgresql://user:pass@localhost:5432/mydb&#34;
+      }
+    },
+    &#34;github&#34;: {
+      &#34;command&#34;: &#34;npx&#34;,
+      &#34;args&#34;: [&#34;-y&#34;, &#34;@modelcontextprotocol/server-github&#34;],
+      &#34;env&#34;: {
+        &#34;GITHUB_TOKEN&#34;: &#34;${GITHUB_TOKEN}&#34;
+      }
+    }
+  }
+}
+</code></pre><h3 id="33-유용한-mcp-서버들">3.3 유용한 MCP 서버들<a href="#33-유용한-mcp-서버들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>MCP Server</th>
+          <th>용도</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>server-filesystem</code></td>
+          <td>파일 시스템 접근</td>
+      </tr>
+      <tr>
+          <td><code>server-postgres</code></td>
+          <td>PostgreSQL 쿼리</td>
+      </tr>
+      <tr>
+          <td><code>server-github</code></td>
+          <td>GitHub API (이슈, PR, 코드)</td>
+      </tr>
+      <tr>
+          <td><code>server-slack</code></td>
+          <td>Slack 메시지</td>
+      </tr>
+      <tr>
+          <td><code>server-memory</code></td>
+          <td>장기 메모리 저장</td>
+      </tr>
+      <tr>
+          <td><code>server-puppeteer</code></td>
+          <td>웹 브라우저 자동화</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="34-mcp-디버깅">3.4 MCP 디버깅<a href="#34-mcp-디버깅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># MCP 디버그 모드로 Claude Code 실행</span>
+</span></span><span class="line"><span class="cl">claude --mcp-debug
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 특정 MCP 서버 로그 확인</span>
+</span></span><span class="line"><span class="cl">cat ~/.claude/mcp-logs/postgres.log
+</span></span></code></pre></div><hr>
+<h2 id="35-session-teleportation-21-신기능">3.5. Session Teleportation (2.1+ 신기능)<a href="#35-session-teleportation-21-신기능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="351-세션-이동이란">3.5.1 세션 이동이란?<a href="#351-세션-이동이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code 2.1에서 추가된 <strong>Session Teleportation</strong>을 사용하면 로컬 터미널 세션을 클라우드(claude.ai/code)로 이동하거나, 그 반대로 이동할 수 있습니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Session Teleportation                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  로컬 터미널                    claude.ai/code                  │
+│  ┌─────────────┐               ┌─────────────┐                 │
+│  │   Claude    │  ──/teleport──▶│   Claude    │                 │
+│  │   Code      │               │   Web       │                 │
+│  │   Session   │◀──/remote-env──│   Session   │                 │
+│  └─────────────┘               └─────────────┘                 │
+│                                                                 │
+│  활용 사례:                                                     │
+│  • 디바이스 간 작업 이동 (집 ↔ 회사)                            │
+│  • 팀원과 세션 공유                                             │
+│  • 긴 작업을 클라우드에서 계속 실행                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="352-사용-방법">3.5.2 사용 방법<a href="#352-사용-방법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 현재 세션을 claude.ai로 이동</span>
+</span></span><span class="line"><span class="cl">/teleport
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 원격 환경 설정</span>
+</span></span><span class="line"><span class="cl">/remote-env
+</span></span></code></pre></div><h3 id="353-vs-code에서의-세션-관리">3.5.3 VS Code에서의 세션 관리<a href="#353-vs-code에서의-세션-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code 2.1.16+에서는 VS Code 확장에서:</p>
+<ul>
+<li>OAuth 사용자가 원격 Claude 세션을 탐색하고 재개할 수 있음</li>
+<li>Sessions 다이얼로그에서 세션 관리 가능</li>
+</ul>
+<hr>
+<h2 id="4-plan-mode와-대규모-작업-관리">4. Plan Mode와 대규모 작업 관리<a href="#4-plan-mode와-대규모-작업-관리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-plan-mode-활성화">4.1 Plan Mode 활성화<a href="#41-plan-mode-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>대규모 작업은 <strong>계획 먼저, 실행 나중에</strong> 접근이 효과적입니다.</p>
+<pre tabindex="0"><code># Plan Mode 진입 (Shift + Tab + Tab)
+# 또는 명시적 요청:
+&#34;이 리팩토링을 계획만 먼저 세워줘. 실행은 내가 확인 후에.&#34;
+</code></pre><h3 id="42-planmd-체크리스트-패턴">4.2 plan.md 체크리스트 패턴<a href="#42-planmd-체크리스트-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>복잡한 작업은 plan.md 파일로 진행 상황을 추적합니다:</p>
+<p><strong>plan.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 결제 시스템 리팩토링 계획
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 목표
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 모놀리식 PaymentService를 도메인별로 분리
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트 커버리지 80% 이상 달성
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 단계별 계획
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Phase 1: 분석 (Day 1)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [x]</span> 현재 PaymentService 의존성 분석
+</span></span><span class="line"><span class="cl"><span class="k">- [x]</span> 도메인 경계 식별
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 영향 받는 클라이언트 코드 목록화
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Phase 2: 인터페이스 설계 (Day 2)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> PaymentProcessor 인터페이스 정의
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> RefundHandler 인터페이스 정의
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> PaymentRepository 인터페이스 정의
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Phase 3: 구현 (Day 3-4)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> CardPaymentProcessor 구현
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> BankTransferProcessor 구현
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> RefundService 분리
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 기존 코드 마이그레이션
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Phase 4: 테스트 (Day 5)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> 단위 테스트 작성
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 통합 테스트 작성
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 기존 테스트 수정
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Phase 5: 배포 (Day 6)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> Feature flag 설정
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> Canary 배포
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 모니터링 설정
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 리스크
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 기존 API 호환성 유지 필요
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 트랜잭션 경계 재설계 필요
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 진행 상황
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 현재 단계: Phase 1
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 마지막 업데이트: 2025-01-23
+</span></span></code></pre></div><h3 id="43-claude와-함께-계획-실행하기">4.3 Claude와 함께 계획 실행하기<a href="#43-claude와-함께-계획-실행하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>사용자: &#34;@plan.md 를 참고해서 Phase 2의 첫 번째 작업을 진행해줘&#34;
+
+Claude: plan.md를 확인했습니다. Phase 2의 첫 번째 작업인
+        &#34;PaymentProcessor 인터페이스 정의&#34;를 시작하겠습니다.
+
+        [작업 수행...]
+
+        완료되었습니다. plan.md를 업데이트하겠습니다.
+        - [x] PaymentProcessor 인터페이스 정의
+</code></pre><hr>
+<h2 id="5--실전-레이어링-아키텍처">5. ⭐ 실전 레이어링 아키텍처<a href="#5--실전-레이어링-아키텍처" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-전체-구조-복습">5.1 전체 구조 복습<a href="#51-전체-구조-복습" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Part 4에서 배운 3-Layer Stacking을 실전 예제와 함께 정리합니다:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                  실전 레이어링 아키텍처                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Layer 4: Hooks (강제 자동화)                            │   │
+│  │  - 파일 저장 시 자동 포맷팅                              │   │
+│  │  - 위험 파일 수정 방지                                   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              ▲                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Layer 3: 프로젝트 CLAUDE.md (프로젝트 특화)             │   │
+│  │  - 빌드/테스트 명령어                                    │   │
+│  │  - 이 프로젝트만의 특수 규칙                             │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              ▲                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Layer 2: Custom Skills (팀 공통)                        │   │
+│  │  - 팀 코딩 컨벤션                                        │   │
+│  │  - 팀 테스트 패턴                                        │   │
+│  │  - 팀 에러 처리 규칙                                     │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              ▲                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Layer 1: Community Plugins (일반 지식)                  │   │
+│  │  - 언어 베스트 프랙티스 (golang-pro, java-architect)    │   │
+│  │  - 프레임워크 패턴                                       │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              ▲                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Layer 0: Claude 기본 지식                               │   │
+│  │  - 프로그래밍 언어 기본                                  │   │
+│  │  - 일반적인 소프트웨어 엔지니어링                        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="52-javakotlin-프로젝트-완전한-설정-예제">5.2 Java/Kotlin 프로젝트 완전한 설정 예제<a href="#52-javakotlin-프로젝트-완전한-설정-예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>디렉토리 구조</strong>:</p>
+<pre tabindex="0"><code>~/.claude/
+├── CLAUDE.md                    # 전역 개인 설정
+├── skills/
+│   ├── kotlin-team-style/
+│   │   └── SKILL.md            # 팀 Kotlin 스타일
+│   └── spring-patterns/
+│       └── SKILL.md            # 팀 Spring 패턴
+└── agents/
+    └── code-reviewer.md        # 코드 리뷰어
+
+my-spring-project/
+├── CLAUDE.md                   # 프로젝트 설정
+├── CLAUDE.local.md             # 개인 오버라이드 (.gitignore)
+└── .claude/
+    ├── settings.json           # Hooks 설정
+    └── skills/
+        └── payment-domain/
+            └── SKILL.md        # 이 프로젝트 도메인 지식
+</code></pre><p><strong>~/.claude/CLAUDE.md</strong> (전역):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 개인 전역 설정
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 커뮤니케이션
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 한국어로 응답
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 코드 변경 시 이유 설명
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 불확실한 부분은 먼저 질문
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 선호 도구
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 테스트: JUnit 5 + MockK
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: Gradle Kotlin DSL
+</span></span></code></pre></div><p><strong>my-spring-project/CLAUDE.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Payment Gateway Service
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Spring Boot 3.2 기반 결제 게이트웨이
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 빌드: <span class="sb">`./gradlew build`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`./gradlew test`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 단일 테스트: <span class="sb">`./gradlew test --tests &#34;ClassName.methodName&#34;`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 이 프로젝트 특수 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">IMPORTANT: 다음 규칙은 이 프로젝트에만 적용됩니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> PG사 연동 코드는 <span class="sb">`infrastructure/pg/`</span> 에만 위치
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> 결제 금액은 반드시 BigDecimal 사용 (Double 금지)
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> 모든 외부 API 호출은 Circuit Breaker 적용 필수
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 환경
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> Java 21
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Spring Boot 3.2
+</span></span><span class="line"><span class="cl"><span class="k">-</span> PostgreSQL 15
+</span></span></code></pre></div><p><strong>my-spring-project/.claude/settings.json</strong> (Hooks):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.kt ]]; then ./gradlew ktlintFormat -q; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == **/production/** ]]; then echo &#39;ERROR: production 폴더 수정 금지&#39; &amp;&amp; exit 1; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="53-go-프로젝트-완전한-설정-예제">5.3 Go 프로젝트 완전한 설정 예제<a href="#53-go-프로젝트-완전한-설정-예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>디렉토리 구조</strong>:</p>
+<pre tabindex="0"><code>~/.claude/
+├── CLAUDE.md
+├── skills/
+│   ├── go-team-conventions/
+│   │   └── SKILL.md
+│   └── go-error-handling/
+│       └── SKILL.md
+└── agents/
+    └── go-reviewer.md
+
+my-go-service/
+├── CLAUDE.md
+├── CLAUDE.local.md
+└── .claude/
+    ├── settings.json
+    └── skills/
+        └── kafka-patterns/
+            └── SKILL.md
+</code></pre><p><strong>~/.claude/skills/go-team-conventions/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: go-team-conventions
+</span></span><span class="line"><span class="cl">description: Go 팀 코딩 컨벤션. Go 코드 작성 시 자동 활성화.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Go Team Conventions
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 구조 (Hexagonal)
+</span></span></span></code></pre></div><p>cmd/
+├── api/              # REST API 서버
+└── worker/           # 백그라운드 워커</p>
+<p>internal/
+├── domain/           # 도메인 모델, 비즈니스 로직
+├── port/
+│   ├── in/          # 유스케이스 인터페이스
+│   └── out/         # 레포지토리 인터페이스
+├── adapter/
+│   ├── in/          # HTTP 핸들러
+│   └── out/         # DB, 외부 API 구현
+└── config/</p>
+<p>pkg/                  # 외부 공개 패키지</p>
+<pre tabindex="0"><code>
+## 네이밍
+
+| 대상 | 규칙 | 예시 |
+|------|------|------|
+| 패키지 | lowercase, 단수 | `user`, `payment` |
+| 인터페이스 | -er 또는 역할명 | `Reader`, `UserRepository` |
+| 함수 | 동사로 시작, exported는 대문자 | `GetUser`, `processPayment` |
+
+## 에러 처리
+
+```go
+// 에러 코드 형식: {도메인}{숫자}
+var ErrUserNotFound = NewError(&#34;USR001&#34;, &#34;user not found&#34;)
+
+// 래핑 시 컨텍스트 추가
+return fmt.Errorf(&#34;[%s] failed to get user %d: %w&#34;, ErrUserNotFound.Code, id, err)
+</code></pre><pre tabindex="0"><code>
+**my-go-service/CLAUDE.md**:
+
+```markdown
+# User Notification Service
+
+Go 1.22 기반 사용자 알림 서비스
+
+## 빌드 및 테스트
+- 빌드: `go build -o bin/server ./cmd/api`
+- 테스트: `go test ./...`
+- 린트: `golangci-lint run`
+
+## 이 프로젝트 특수 규칙
+
+1. Kafka 토픽 네이밍: `notification.{event-type}.v1`
+2. Redis 키 프리픽스: `notif:`
+3. 외부 API 타임아웃: 5초 (context.WithTimeout)
+
+## 외부 의존성
+- Kafka: localhost:9092
+- Redis: localhost:6379
+- PostgreSQL: localhost:5432
+</code></pre><p><strong>my-go-service/.claude/settings.json</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;Write|Edit&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;command&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;command&#34;</span><span class="p">:</span> <span class="s2">&#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.go ]]; then gofmt -w \&#34;$CLAUDE_FILE_PATH\&#34; &amp;&amp; goimports -w \&#34;$CLAUDE_FILE_PATH\&#34;; fi&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="54-레이어-간-충돌-해결">5.4 레이어 간 충돌 해결<a href="#54-레이어-간-충돌-해결" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>레이어 간 규칙이 충돌할 때의 우선순위:</p>
+<pre tabindex="0"><code>높음  ▲  Hooks (강제 실행, 우회 불가)
+      │  프로젝트 CLAUDE.md
+      │  Custom Skills
+      │  Community Plugins
+낮음  ▼  Claude 기본 지식
+</code></pre><p><strong>충돌 예시와 해결</strong>:</p>
+<pre tabindex="0"><code>Community Plugin (golang-pro): &#34;에러는 errors.New()로 생성&#34;
+Custom Skill (go-team-conventions): &#34;에러는 NewError(code, msg)로 생성&#34;
+
+→ Custom Skill이 우선 적용됨
+→ 팀 규칙에 따라 NewError() 사용
+</code></pre><hr>
+<h2 id="6-팀-협업-워크플로우">6. 팀 협업 워크플로우<a href="#6-팀-협업-워크플로우" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-git으로-설정-공유">6.1 Git으로 설정 공유<a href="#61-git으로-설정-공유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>프로젝트/
+├── CLAUDE.md              # ✓ Git 커밋 (팀 공유)
+├── CLAUDE.local.md        # ✗ .gitignore (개인용)
+└── .claude/
+    ├── settings.json      # ✓ Git 커밋 (Hooks 공유)
+    ├── skills/            # ✓ Git 커밋 (프로젝트 Skills)
+    └── agents/            # ✓ Git 커밋 (프로젝트 Agents)
+</code></pre><p><strong>.gitignore</strong>:</p>
+<pre tabindex="0"><code class="language-gitignore" data-lang="gitignore"># Claude Code 개인 설정
+CLAUDE.local.md
+.claude/settings.local.json
+</code></pre><h3 id="62-pr-리뷰-워크플로우">6.2 PR 리뷰 워크플로우<a href="#62-pr-리뷰-워크플로우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    PR 리뷰 자동화 워크플로우                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. 개발자가 기능 구현                                           │
+│     │                                                          │
+│     ▼                                                          │
+│  2. /conventional-commit 으로 커밋                              │
+│     │                                                          │
+│     ▼                                                          │
+│  3. /pr-create 로 PR 생성                                       │
+│     │                                                          │
+│     ▼                                                          │
+│  4. CI가 code-reviewer subagent 실행 (선택적)                   │
+│     │                                                          │
+│     ▼                                                          │
+│  5. 리뷰 코멘트 자동 생성                                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="63-cicd-통합-github-actions-예시">6.3 CI/CD 통합 (GitHub Actions 예시)<a href="#63-cicd-통합-github-actions-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>.github/workflows/claude-review.yml</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Claude Code Review</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="l">opened, synchronize]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">review</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu-latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Get changed files</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l">changed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          echo &#34;files=$(git diff --name-only origin/main...HEAD | tr &#39;\n&#39; &#39; &#39;)&#34; &gt;&gt; $GITHUB_OUTPUT</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Run Claude Code Review</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">ANTHROPIC_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.ANTHROPIC_API_KEY }}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">          # Claude Code CLI로 리뷰 실행
+</span></span></span><span class="line"><span class="cl"><span class="sd">          claude --print &#34;Review these changed files for code quality and security: ${{ steps.changed.outputs.files }}&#34; &gt; review.md</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Post Review Comment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/github-script@v7</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">            const fs = require(&#39;fs&#39;);
+</span></span></span><span class="line"><span class="cl"><span class="sd">            const review = fs.readFileSync(&#39;review.md&#39;, &#39;utf8&#39;);
+</span></span></span><span class="line"><span class="cl"><span class="sd">            github.rest.issues.createComment({
+</span></span></span><span class="line"><span class="cl"><span class="sd">              owner: context.repo.owner,
+</span></span></span><span class="line"><span class="cl"><span class="sd">              repo: context.repo.repo,
+</span></span></span><span class="line"><span class="cl"><span class="sd">              issue_number: context.issue.number,
+</span></span></span><span class="line"><span class="cl"><span class="sd">              body: review
+</span></span></span><span class="line"><span class="cl"><span class="sd">            });</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<h2 id="7-문제-해결--디버깅">7. 문제 해결 &amp; 디버깅<a href="#7-문제-해결--디버깅" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="71-claude가-지시를-무시할-때">7.1 Claude가 지시를 무시할 때<a href="#71-claude가-지시를-무시할-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    지시 무시 문제 해결                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  증상: Claude가 CLAUDE.md의 규칙을 따르지 않음                   │
+│                                                                 │
+│  체크리스트:                                                    │
+│  □ CLAUDE.md가 너무 길지 않은가? (100줄 이내 권장)              │
+│  □ 규칙이 모호하지 않고 구체적인가?                             │
+│  □ 상충되는 규칙이 있는가?                                      │
+│  □ 강조가 필요한 규칙에 IMPORTANT 키워드를 사용했는가?          │
+│                                                                 │
+│  해결 방법:                                                     │
+│  1. CLAUDE.md 간소화 (Part 2 참조)                             │
+│  2. 중요 규칙에 강조 추가                                       │
+│  3. 세부 규칙은 Skills로 분리 (Part 3 참조)                    │
+│  4. 강제가 필요하면 Hooks 사용                                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="72-플러그인-로딩-오류">7.2 플러그인 로딩 오류<a href="#72-플러그인-로딩-오류" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 플러그인 오류 확인</span>
+</span></span><span class="line"><span class="cl">/plugin
+</span></span><span class="line"><span class="cl"><span class="c1"># → Errors 탭 확인</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 일반적인 오류와 해결:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 1. &#34;Plugin not found&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → Marketplace가 추가되었는지 확인</span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add <span class="o">{</span>org<span class="o">}</span>/<span class="o">{</span>repo<span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. &#34;Invalid plugin.json&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → JSON 문법 오류 확인</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → 필수 필드(name, version) 확인</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. &#34;Skill loading failed&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → SKILL.md의 YAML frontmatter 확인</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → name, description 필드 존재 확인</span>
+</span></span></code></pre></div><h3 id="73-mcp-서버-디버깅">7.3 MCP 서버 디버깅<a href="#73-mcp-서버-디버깅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># MCP 디버그 모드 실행</span>
+</span></span><span class="line"><span class="cl">claude --mcp-debug
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 로그 확인</span>
+</span></span><span class="line"><span class="cl">tail -f ~/.claude/logs/mcp-*.log
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 일반적인 오류:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 1. &#34;Connection refused&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → MCP 서버 프로세스 실행 확인</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → 포트/경로 설정 확인</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. &#34;Authentication failed&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → 환경 변수 설정 확인</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → API 키 유효성 확인</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. &#34;Timeout&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → 네트워크 연결 확인</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    → MCP 서버 응답 시간 확인</span>
+</span></span></code></pre></div><h3 id="74-컨텍스트-윈도우-관리">7.4 컨텍스트 윈도우 관리<a href="#74-컨텍스트-윈도우-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                   컨텍스트 관리 팁                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  문제: 긴 대화 후 Claude가 이전 내용을 잊음                      │
+│                                                                 │
+│  해결:                                                          │
+│  1. /compact 명령으로 대화 압축                                 │
+│     → 중요 내용만 요약하여 컨텍스트 확보                        │
+│                                                                 │
+│  2. 대규모 분석은 Subagent에 위임                               │
+│     → 메인 컨텍스트 오염 방지                                   │
+│                                                                 │
+│  3. 긴 파일은 부분만 참조                                       │
+│     → &#34;UserService.kt의 createUser 메서드만 봐줘&#34;              │
+│                                                                 │
+│  4. 주기적으로 새 대화 시작                                     │
+│     → CLAUDE.md가 있으면 컨텍스트 자동 복원                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="75-성능-최적화">7.5 성능 최적화<a href="#75-성능-최적화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    성능 최적화 팁                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Skills 최적화                                               │
+│     - description을 명확하게 작성                               │
+│     - 불필요한 Skill 비활성화                                   │
+│     - disable-model-invocation으로 자동 호출 제한              │
+│                                                                 │
+│  2. 대규모 코드베이스                                           │
+│     - .claudeignore로 불필요한 파일 제외                        │
+│     - node_modules, build/, .git/ 등                           │
+│                                                                 │
+│  3. Subagent 효율적 사용                                        │
+│     - 병렬 실행 시 적절한 수 유지 (5개 이하 권장)               │
+│     - 각 Subagent에 명확한 범위 지정                            │
+│                                                                 │
+│  4. Hook 최적화                                                 │
+│     - matcher를 구체적으로 설정                                 │
+│     - 빠른 명령만 Hook에 사용                                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="8-정리-claude-code-마스터-체크리스트">8. 정리: Claude Code 마스터 체크리스트<a href="#8-정리-claude-code-마스터-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="81-설정-체크리스트">8.1 설정 체크리스트<a href="#81-설정-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>□ CLAUDE.md
+  □ 프로젝트 루트에 CLAUDE.md 생성
+  □ 빌드/테스트 명령어 포함
+  □ 핵심 규칙만 간결하게 (100줄 이내)
+  □ 중요 규칙에 IMPORTANT 강조
+
+□ Skills
+  □ 반복되는 상세 규칙은 Skills로 분리
+  □ description에 트리거 조건 명시
+  □ 팀 공통 Skills는 ~/.claude/skills/
+
+□ Plugins
+  □ 유용한 커뮤니티 플러그인 설치
+  □ 팀 Marketplace 구축 (필요시)
+
+□ Hooks
+  □ 자동 포맷팅 Hook 설정
+  □ 위험 파일 보호 Hook 설정
+
+□ 팀 협업
+  □ CLAUDE.md Git 커밋
+  □ CLAUDE.local.md .gitignore
+  □ .claude/settings.json Git 커밋
+</code></pre><h3 id="82-일일-워크플로우">8.2 일일 워크플로우<a href="#82-일일-워크플로우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>1. 프로젝트 시작
+   claude
+
+2. 작업 수행
+   - Claude가 CLAUDE.md, Skills 자동 로드
+   - Hooks가 자동으로 포맷팅/검증
+
+3. 대규모 분석 필요 시
+   &#34;Explore subagent로 분석해줘&#34;
+
+4. 커밋
+   /conventional-commit
+
+5. PR 생성
+   /pr-create
+</code></pre><h3 id="83-주간-유지보수">8.3 주간 유지보수<a href="#83-주간-유지보수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>□ CLAUDE.md가 너무 커지지 않았는지 확인
+□ 새로운 팀 규칙을 Skills로 추가
+□ 플러그인 업데이트 확인
+□ 불필요한 Skills/Plugins 정리
+</code></pre><hr>
+<h2 id="9-최종-정리">9. 최종 정리<a href="#9-최종-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="이-가이드에서-배운-것">이 가이드에서 배운 것<a href="#이-가이드에서-배운-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>Part</th>
+          <th>핵심 내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Part 1</strong></td>
+          <td>CLAUDE.md 기초, 계층적 구조, 기본 템플릿</td>
+      </tr>
+      <tr>
+          <td><strong>Part 2</strong></td>
+          <td>CLAUDE.md 최적화, 토큰 절약, 강조 기법</td>
+      </tr>
+      <tr>
+          <td><strong>Part 3</strong></td>
+          <td>Skills 시스템, Progressive Disclosure, Skills vs Subagents</td>
+      </tr>
+      <tr>
+          <td><strong>Part 4</strong></td>
+          <td>Plugins &amp; Marketplace, 3-Layer Stacking</td>
+      </tr>
+      <tr>
+          <td><strong>Part 5</strong></td>
+          <td>Custom Marketplace 구축, 팀 배포</td>
+      </tr>
+      <tr>
+          <td><strong>Part 6</strong></td>
+          <td>Hooks, Subagents 패턴, MCP, 팀 협업, 문제 해결</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="핵심-원칙">핵심 원칙<a href="#핵심-원칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>CLAUDE.md는 간결하게</strong>: 100줄 이내, 핵심만</li>
+<li><strong>상세 규칙은 Skills로</strong>: Progressive Disclosure로 토큰 절약</li>
+<li><strong>강제가 필요하면 Hooks</strong>: CLAUDE.md는 권고, Hooks는 강제</li>
+<li><strong>대규모 작업은 Subagents로</strong>: 컨텍스트 오염 방지</li>
+<li><strong>레이어링으로 조합</strong>: 커뮤니티 + 팀 규칙 + 프로젝트 규칙</li>
+</ol>
+<h3 id="다음-단계">다음 단계<a href="#다음-단계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://code.claude.com/docs">Claude Code 공식 문서</a>에서 최신 기능 확인</li>
+<li><a href="https://anthropic.com/blog">Anthropic 블로그</a>에서 베스트 프랙티스 업데이트 확인</li>
+<li>커뮤니티 Marketplace에서 유용한 플러그인 탐색</li>
+<li>자신만의 Skills와 Plugins 만들어 공유하기</li>
+</ul>
+<hr>
+<h2 id="-참고-자료">📚 참고 자료<a href="#-참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="공식-문서">공식 문서<a href="#공식-문서" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://code.claude.com/docs">Claude Code 공식 문서</a></li>
+<li><a href="https://code.claude.com/docs/en/skills">Skills 공식 문서</a></li>
+<li><a href="https://code.claude.com/docs/en/discover-plugins">Plugins 공식 문서</a></li>
+<li><a href="https://modelcontextprotocol.io">MCP 공식 문서</a></li>
+</ul>
+<h3 id="커뮤니티-리소스">커뮤니티 리소스<a href="#커뮤니티-리소스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent Subagents</a></li>
+<li><a href="https://github.com/anthropics/skills">Anthropic Skills</a></li>
+<li><a href="https://github.com/modelcontextprotocol/servers">MCP Servers</a></li>
+</ul>
+<h3 id="블로그--가이드">블로그 &amp; 가이드<a href="#블로그--가이드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://anthropic.com/engineering">Anthropic Engineering Blog</a></li>
+<li><a href="https://www.anthropic.com/engineering/claude-code-best-practices">Claude Code Best Practices</a></li>
+<li><a href="https://claude.com/blog/skills-explained">Skills Explained</a></li>
+</ul>
+<hr>
+<p><em>이 가이드가 Claude Code 마스터링에 도움이 되었기를 바랍니다. Happy Coding! 🚀</em></p>
+<hr>
+<p><strong>이전</strong>: <a href="./part5-custom-marketplace.md">Part 5: 나만의 Plugin Marketplace 만들기</a>
+<strong>처음으로</strong>: <a href="./part0-overview.md">Part 0: Overview</a></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-05/" class="button inline next">
+         [<span class="button__text">Claude Code 완전 정복 가이드 Part 5: 나만의 Plugin Marketplace 만들기 - 팀/조직 확장</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CLAUDE.md가 비대해질 때 발생하는 LLM 지시 따르기 한계, 다이어트 전략, 계층적 구조 활용법, 지시 강조 기법을 다룹니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라">
+<meta property="og:description" content="CLAUDE.md가 비대해질 때 발생하는 LLM 지시 따르기 한계, 다이어트 전략, 계층적 구조 활용법, 지시 강조 기법을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:20:54 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-02/">Claude Code 완전 정복 가이드 Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 45분
+<strong>난이도</strong>: ⭐⭐
+<strong>사전 요구사항</strong>: Part 1 완료, CLAUDE.md 사용 경험
+<strong>Claude Code 버전</strong>: 2.1.x</p></blockquote>
+<hr>
+<h2 id="1-왜-claudemd는-간결해야-하는가">1. 왜 CLAUDE.md는 간결해야 하는가?<a href="#1-왜-claudemd는-간결해야-하는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-llm의-instruction-following-한계">1.1 LLM의 Instruction-following 한계<a href="#11-llm의-instruction-following-한계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>연구에 따르면 프론티어 LLM도 <strong>약 150-200개의 지시사항</strong>만 일관되게 따를 수 있습니다. Claude Code의 시스템 프롬프트 자체가 이미 ~50개의 지시를 포함하고 있어, CLAUDE.md에 사용할 수 있는 &ldquo;지시 예산&quot;은 제한적입니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    LLM 지시 따르기 용량                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  총 용량: ~150-200개 지시                                       │
+│                                                                 │
+│  ┌──────────────────┐ ┌──────────────────┐ ┌────────────────┐  │
+│  │  Claude Code     │ │    CLAUDE.md     │ │  Skills/Rules  │  │
+│  │  시스템 프롬프트  │ │                  │ │                │  │
+│  │    (~50개)       │ │   (당신의 몫)    │ │   (추가 지시)  │  │
+│  └──────────────────┘ └──────────────────┘ └────────────────┘  │
+│                                                                 │
+│  ⚠️ 초과 시 → 균일하게 모든 지시를 무시하기 시작                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="12-토큰-비용과-context-window">1.2 토큰 비용과 Context Window<a href="#12-토큰-비용과-context-window" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CLAUDE.md는 <strong>모든 대화에서 항상 로드</strong>됩니다. 파일이 커질수록:</p>
+<table>
+  <thead>
+      <tr>
+          <th>문제</th>
+          <th>결과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>토큰 비용 증가</td>
+          <td>매 대화마다 불필요한 비용 발생</td>
+      </tr>
+      <tr>
+          <td>컨텍스트 낭비</td>
+          <td>실제 작업에 사용할 공간 감소</td>
+      </tr>
+      <tr>
+          <td>지시 희석</td>
+          <td>중요한 규칙이 묻힘</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="13-지시를-무시하기-시작하면-파일이-너무-긴-것">1.3 &ldquo;지시를 무시하기 시작하면&rdquo; 파일이 너무 긴 것<a href="#13-지시를-무시하기-시작하면-파일이-너무-긴-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude가 CLAUDE.md의 규칙을 무시하는 것 같다면, 이는 대부분 <strong>파일이 너무 길기 때문</strong>입니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                      증상 체크리스트                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  □ Claude가 코딩 스타일 규칙을 자주 무시한다                     │
+│  □ 테스트 실행 명령어를 틀리게 사용한다                          │
+│  □ 금지한 패턴을 계속 사용한다                                   │
+│  □ CLAUDE.md에 있는 질문을 다시 물어본다                         │
+│                                                                 │
+│  ▶ 2개 이상 해당? → CLAUDE.md가 너무 길 가능성 높음              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="2-claudemd-다이어트-전략">2. CLAUDE.md 다이어트 전략<a href="#2-claudemd-다이어트-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-린터가-할-수-있는-일은-린터에게">2.1 린터가 할 수 있는 일은 린터에게<a href="#21-린터가-할-수-있는-일은-린터에게" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>나쁜 예</strong>: CLAUDE.md에 모든 코드 스타일 규칙 나열</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ❌ 이렇게 하지 마세요
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 코드 스타일 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 들여쓰기는 스페이스 4칸
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 세미콜론 필수
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 문자열은 작은따옴표 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 최대 줄 길이 120자
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 함수 정의 후 빈 줄 1개
+</span></span><span class="line"><span class="cl"><span class="k">-</span> import 순서: 표준 라이브러리 → 외부 패키지 → 내부 모듈
+</span></span><span class="line"><span class="cl"><span class="k">-</span> trailing comma 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 화살표 함수는 한 줄이면 중괄호 생략
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (50줄 더)
+</span></span></code></pre></div><p><strong>좋은 예</strong>: 린터에 위임하고 실행 방법만 알려주기</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ✅ 이렇게 하세요
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 코드 스타일
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">코드 스타일은 ESLint + Prettier로 관리됩니다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트 체크: <span class="sb">`npm run lint`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 자동 포맷팅: <span class="sb">`npm run format`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">작업 완료 후 반드시 <span class="sb">`npm run lint`</span>를 실행하세요.
+</span></span></code></pre></div><h3 id="22-포인터-vs-복사-코드-스니펫-대신-파일-참조">2.2 포인터 vs 복사: 코드 스니펫 대신 파일 참조<a href="#22-포인터-vs-복사-코드-스니펫-대신-파일-참조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>코드 스니펫을 CLAUDE.md에 직접 넣으면 <strong>빠르게 outdated</strong> 됩니다.</p>
+<p><strong>나쁜 예</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ❌ 코드 스니펫 직접 포함
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## API 응답 형식 예시
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>​``<span class="sb">`java
+</span></span></span><span class="line"><span class="cl"><span class="sb">public class ApiResponse&lt;T&gt; {
+</span></span></span><span class="line"><span class="cl"><span class="sb">    private boolean success;
+</span></span></span><span class="line"><span class="cl"><span class="sb">    private T data;
+</span></span></span><span class="line"><span class="cl"><span class="sb">    private ErrorInfo error;
+</span></span></span><span class="line"><span class="cl"><span class="sb">
+</span></span></span><span class="line"><span class="cl"><span class="sb">    // getter, setter...
+</span></span></span><span class="line"><span class="cl"><span class="sb">    // 50줄의 코드
+</span></span></span><span class="line"><span class="cl"><span class="sb">}
+</span></span></span><span class="line"><span class="cl"><span class="sb">​`</span>``
+</span></span></code></pre></div><p><strong>좋은 예</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ✅ 파일 참조 사용
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## API 응답 형식
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">API 응답은 <span class="sb">`ApiResponse&lt;T&gt;`</span>를 사용합니다.
+</span></span><span class="line"><span class="cl">참고: <span class="sb">`src/main/java/com/example/common/ApiResponse.java`</span>
+</span></span></code></pre></div><h3 id="23-pathtofile-문법으로-외부-파일-임포트">2.3 @path/to/file 문법으로 외부 파일 임포트<a href="#23-pathtofile-문법으로-외부-파일-임포트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CLAUDE.md는 <code>@</code> 문법으로 다른 파일을 참조할 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">프로젝트 개요는 <span class="ni">@README</span>.md 참조
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 추가 가이드
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> Git 워크플로우: <span class="ni">@docs/git</span>-workflow.md
+</span></span><span class="line"><span class="cl"><span class="k">-</span> API 설계 규칙: <span class="ni">@docs/api</span>-guidelines.md
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 개인 설정: @~/.claude/my-preferences.md
+</span></span></code></pre></div><p>이렇게 하면:</p>
+<ul>
+<li>CLAUDE.md는 간결하게 유지</li>
+<li>상세 내용은 별도 파일로 관리</li>
+<li>필요한 파일만 참조</li>
+</ul>
+<hr>
+<h2 id="3-프로젝트별-vs-전역-설정-분리">3. 프로젝트별 vs 전역 설정 분리<a href="#3-프로젝트별-vs-전역-설정-분리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-claudeclaudemd-개인-전역-설정">3.1 ~/.claude/CLAUDE.md: 개인 전역 설정<a href="#31-claudeclaudemd-개인-전역-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>모든 프로젝트에 적용할 <strong>개인적인 선호도</strong>를 여기에 작성합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ~/.claude/CLAUDE.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 커뮤니케이션 스타일
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 한국어로 응답
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 코드 변경 시 변경 이유를 간단히 설명
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 불확실한 부분은 먼저 질문
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 개인 개발 습관
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 커밋 전 항상 테스트 실행
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 브랜치명에 날짜 포함 선호: feature/20250123-description
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 선호하는 도구
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 테스트: JUnit 5 (TestNG 사용 금지)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> HTTP Client: OkHttp 선호
+</span></span></code></pre></div><h3 id="32-프로젝트-루트-claudemd-팀-공유용">3.2 프로젝트 루트 CLAUDE.md: 팀 공유용<a href="#32-프로젝트-루트-claudemd-팀-공유용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Git에 커밋하여 팀 전체가 공유하는 규칙:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ./CLAUDE.md (프로젝트 루트)
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 정보
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Payment Gateway Service - 결제 처리 API
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 빌드: <span class="sb">`./gradlew build`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`./gradlew test`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 팀 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> PR은 최소 1명 리뷰 필수
+</span></span><span class="line"><span class="cl"><span class="k">-</span> main 브랜치 직접 푸시 금지
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 커밋 메시지는 Conventional Commits 형식
+</span></span></code></pre></div><h3 id="33-claudelocalmd-개인용-오버라이드">3.3 CLAUDE.local.md: 개인용 오버라이드<a href="#33-claudelocalmd-개인용-오버라이드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>팀 규칙 위에 개인 설정을 덮어쓸 때 사용 (<code>.gitignore</code> 대상):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ./CLAUDE.local.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 로컬 환경 설정
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 로컬 DB: localhost:5432/mydb
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트 시 <span class="sb">`-Dspring.profiles.active=local`</span> 추가
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 개인 작업 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 이 프로젝트에서는 TDD로 진행
+</span></span><span class="line"><span class="cl"><span class="k">-</span> WIP 커밋 허용 (나중에 squash)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># .gitignore에 추가</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;CLAUDE.local.md&#34;</span> &gt;&gt; .gitignore
+</span></span></code></pre></div><h3 id="34-설정-파일-선택-가이드">3.4 설정 파일 선택 가이드<a href="#34-설정-파일-선택-가이드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    어디에 작성해야 할까?                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  &#34;모든 프로젝트에 적용하고 싶다&#34;                                 │
+│      └─▶ ~/.claude/CLAUDE.md (전역)                            │
+│                                                                 │
+│  &#34;이 프로젝트의 모든 팀원이 사용해야 한다&#34;                        │
+│      └─▶ ./CLAUDE.md (프로젝트 루트, Git 커밋)                  │
+│                                                                 │
+│  &#34;나만의 로컬 설정이 필요하다&#34;                                   │
+│      └─▶ ./CLAUDE.local.md (프로젝트, .gitignore)              │
+│                                                                 │
+│  &#34;특정 모듈에서만 적용하고 싶다&#34;                                 │
+│      └─▶ ./src/module/CLAUDE.md (하위 디렉토리)                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="4-monorepo에서의-claudemd-전략">4. Monorepo에서의 CLAUDE.md 전략<a href="#4-monorepo에서의-claudemd-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-루트와-서브-모듈별-구성">4.1 루트와 서브 모듈별 구성<a href="#41-루트와-서브-모듈별-구성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>monorepo/
+├── CLAUDE.md                 # 전체 공통 규칙
+├── apps/
+│   ├── web/
+│   │   └── CLAUDE.md        # 웹 프론트엔드 규칙
+│   └── api/
+│       └── CLAUDE.md        # API 서버 규칙
+├── packages/
+│   ├── ui/
+│   │   └── CLAUDE.md        # UI 컴포넌트 규칙
+│   └── shared/
+│       └── CLAUDE.md        # 공유 유틸리티 규칙
+└── infra/
+    └── CLAUDE.md            # 인프라/DevOps 규칙
+</code></pre><h3 id="42-루트-claudemd-예시">4.2 루트 CLAUDE.md 예시<a href="#42-루트-claudemd-예시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Monorepo CLAUDE.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 전체 구조
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> <span class="sb">`apps/`</span>: 애플리케이션 (web, api)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`packages/`</span>: 공유 패키지
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`infra/`</span>: 인프라 설정
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 공통 명령어
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 전체 빌드: <span class="sb">`pnpm build`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 전체 테스트: <span class="sb">`pnpm test`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 특정 패키지: <span class="sb">`pnpm --filter @repo/web build`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 공통 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 패키지 간 import는 <span class="sb">`@repo/`</span> alias 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 순환 의존성 금지
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 모듈별 상세 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>각 모듈의 CLAUDE.md를 참조하세요.
+</span></span></code></pre></div><h3 id="43-서브-모듈-claudemd-예시-appsapi">4.3 서브 모듈 CLAUDE.md 예시 (apps/api/)<a href="#43-서브-모듈-claudemd-예시-appsapi" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># API Server CLAUDE.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 이 모듈의 역할
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>NestJS 기반 REST API 서버
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 개발 서버: <span class="sb">`pnpm dev`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`pnpm test`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> E2E 테스트: <span class="sb">`pnpm test:e2e`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 모듈 구조
+</span></span></span></code></pre></div><p>src/
+├── modules/       # 기능별 모듈 (users, payments, &hellip;)
+├── common/        # 공통 유틸리티
+└── config/        # 설정</p>
+<pre tabindex="0"><code>
+## API 규칙 (이 모듈 전용)
+- 모든 엔드포인트는 `/api/v1/` 프리픽스
+- DTO는 class-validator로 검증
+- 에러 응답은 ProblemDetails (RFC 7807) 형식
+</code></pre><h3 id="44-동적-로딩-활용">4.4 동적 로딩 활용<a href="#44-동적-로딩-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code는 작업 중인 파일의 위치에 따라 해당 디렉토리의 CLAUDE.md를 <strong>자동으로 로드</strong>합니다.</p>
+<pre tabindex="0"><code>사용자가 apps/web/src/App.tsx 수정 요청
+    │
+    ▼
+Claude Code 자동 로드:
+1. ~/. claude/CLAUDE.md (전역)
+2. /monorepo/CLAUDE.md (루트)
+3. /monorepo/apps/web/CLAUDE.md (해당 모듈) ← 동적 로드
+</code></pre><p>이를 통해 모듈별로 다른 규칙을 적용하면서도 CLAUDE.md 파일 크기를 작게 유지할 수 있습니다.</p>
+<hr>
+<h2 id="5-실습-비대해진-claudemd-리팩토링">5. 실습: 비대해진 CLAUDE.md 리팩토링<a href="#5-실습-비대해진-claudemd-리팩토링" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-before-비대해진-claudemd-300줄">5.1 Before: 비대해진 CLAUDE.md (300줄)<a href="#51-before-비대해진-claudemd-300줄" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Project CLAUDE.md
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 정보
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>Spring Boot 기반 이커머스 플랫폼
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>./gradlew build
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>./gradlew test
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 코드 스타일 규칙 (100줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 들여쓰기 4칸
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 최대 줄 길이 120자
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 클래스명 PascalCase
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 메서드명 camelCase
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 상수 UPPER_SNAKE_CASE
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (95줄 더)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## API 설계 규칙 (80줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> REST 원칙 준수
+</span></span><span class="line"><span class="cl"><span class="k">-</span> URL은 명사 복수형
+</span></span><span class="line"><span class="cl"><span class="k">-</span> HTTP 메서드 적절히 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (77줄 더)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 데이터베이스 규칙 (50줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 테이블명 snake_case
+</span></span><span class="line"><span class="cl"><span class="k">-</span> PK는 bigint auto_increment
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (48줄 더)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Git 규칙 (30줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 브랜치 전략
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 커밋 메시지 형식
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (28줄 더)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트 규칙 (40줄)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 테스트 네이밍
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Mock 사용법
+</span></span><span class="line"><span class="cl"><span class="k">-</span> ... (38줄 더)
+</span></span></code></pre></div><h3 id="52-after-최적화된-claudemd-50줄">5.2 After: 최적화된 CLAUDE.md (50줄)<a href="#52-after-최적화된-claudemd-50줄" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># E-Commerce Platform
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Spring Boot 3.x 기반 이커머스 백엔드 서비스
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 및 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: <span class="sb">`./gradlew build`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`./gradlew test`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 단일 테스트: <span class="sb">`./gradlew test --tests &#34;ClassName&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트: <span class="sb">`./gradlew ktlintCheck`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 포맷: <span class="sb">`./gradlew ktlintFormat`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">IMPORTANT: 코드 변경 후 반드시 <span class="sb">`./gradlew ktlintCheck test`</span> 실행
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 프로젝트 구조
+</span></span></span></code></pre></div><p>src/main/kotlin/com/shop/
+├── api/          # Controllers, DTOs
+├── application/  # Use Cases
+├── domain/       # Entities, Repositories
+└── infra/        # External integrations</p>
+<pre tabindex="0"><code>
+## 핵심 규칙
+
+1. 코드 스타일: ktlint가 관리, 수동 규칙 불필요
+2. 테스트: Given-When-Then 구조, MockK 사용
+3. 커밋: Conventional Commits (`feat:`, `fix:`, ...)
+
+## 상세 가이드 (필요시 참조)
+
+- API 설계: @docs/api-guidelines.md
+- DB 규칙: @docs/database-conventions.md
+- Git 워크플로우: @docs/git-workflow.md
+</code></pre><h3 id="53-분리된-파일들">5.3 분리된 파일들<a href="#53-분리된-파일들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>docs/api-guidelines.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># API 설계 가이드
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## URL 설계
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> 리소스는 명사 복수형: <span class="sb">`/api/v1/users`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 하위 리소스: <span class="sb">`/api/v1/users/{id}/orders`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## HTTP 메서드
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> GET: 조회
+</span></span><span class="line"><span class="cl"><span class="k">-</span> POST: 생성
+</span></span><span class="line"><span class="cl"><span class="k">-</span> PUT: 전체 수정
+</span></span><span class="line"><span class="cl"><span class="k">-</span> PATCH: 부분 수정
+</span></span><span class="line"><span class="cl"><span class="k">-</span> DELETE: 삭제
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 응답 형식
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>(상세 내용...)
+</span></span></code></pre></div><p><strong>docs/database-conventions.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 데이터베이스 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 테이블 명명
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> snake_case
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 복수형: <span class="sb">`users`</span>, <span class="sb">`orders`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 컬럼 명명
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> snake_case
+</span></span><span class="line"><span class="cl"><span class="k">-</span> boolean: <span class="sb">`is_`</span> 프리픽스
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(상세 내용...)
+</span></span></code></pre></div><h3 id="54-리팩토링-체크리스트">5.4 리팩토링 체크리스트<a href="#54-리팩토링-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    CLAUDE.md 다이어트 체크리스트                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  □ 린터로 검사할 수 있는 스타일 규칙을 제거했는가?               │
+│  □ 코드 스니펫 대신 파일 경로 참조로 변경했는가?                 │
+│  □ 상세 가이드를 별도 파일로 분리했는가?                        │
+│  □ 모든 규칙에 대해 &#34;이게 없으면 Claude가 실수할까?&#34;            │
+│    질문을 던져보았는가?                                         │
+│  □ 핵심 규칙에 IMPORTANT 또는 대문자 강조를 추가했는가?         │
+│  □ 최종 파일이 100줄 이내인가?                                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><hr>
+<h2 id="6-지시-강조-기법">6. 지시 강조 기법<a href="#6-지시-강조-기법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-중요한-규칙-강조하기">6.1 중요한 규칙 강조하기<a href="#61-중요한-규칙-강조하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude는 특정 키워드에 더 주의를 기울입니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 강조 기법 예시
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 일반 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> PR 전에 테스트 실행
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 강조된 규칙 (더 잘 따름)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">IMPORTANT: PR 전에 반드시 <span class="sb">`./gradlew test`</span> 실행
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">YOU MUST run tests before creating a PR.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NEVER commit directly to main branch.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ALWAYS use conventional commits format.
+</span></span></code></pre></div><h3 id="62-강조-키워드-목록">6.2 강조 키워드 목록<a href="#62-강조-키워드-목록" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>키워드</th>
+          <th>용도</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>IMPORTANT:</code></td>
+          <td>중요한 규칙 강조</td>
+      </tr>
+      <tr>
+          <td><code>NEVER</code></td>
+          <td>절대 하지 말아야 할 것</td>
+      </tr>
+      <tr>
+          <td><code>ALWAYS</code></td>
+          <td>항상 해야 할 것</td>
+      </tr>
+      <tr>
+          <td><code>YOU MUST</code></td>
+          <td>필수 사항</td>
+      </tr>
+      <tr>
+          <td><code>DO NOT</code></td>
+          <td>금지 사항</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="63-주의사항">6.3 주의사항<a href="#63-주의사항" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>⚠️ 모든 규칙에 강조를 사용하면 효과가 없어집니다. <strong>정말 중요한 2-3개 규칙</strong>에만 사용하세요.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ❌ 과도한 강조 (효과 없음)
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>IMPORTANT: 들여쓰기는 4칸
+</span></span><span class="line"><span class="cl">IMPORTANT: 줄 끝 세미콜론
+</span></span><span class="line"><span class="cl">IMPORTANT: 변수명 camelCase
+</span></span><span class="line"><span class="cl">IMPORTANT: ... (모든 규칙에 강조)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># ✅ 선택적 강조 (효과적)
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="k">-</span> 들여쓰기는 4칸
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 줄 끝 세미콜론
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 변수명 camelCase
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">IMPORTANT: main 브랜치 직접 푸시 금지. 반드시 PR 생성.
+</span></span></code></pre></div><hr>
+<h2 id="7-정리">7. 정리<a href="#7-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="이번-파트에서-배운-것">이번 파트에서 배운 것<a href="#이번-파트에서-배운-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>LLM의 한계</strong>: ~150-200개 지시만 일관되게 따를 수 있음</li>
+<li><strong>다이어트 전략</strong>:
+<ul>
+<li>린터에 위임</li>
+<li>포인터(파일 참조) 사용</li>
+<li><code>@path</code> 문법으로 외부 파일 임포트</li>
+</ul>
+</li>
+<li><strong>계층적 구조</strong>: 전역 → 프로젝트 → 로컬 → 하위 디렉토리</li>
+<li><strong>강조 기법</strong>: 핵심 규칙에만 IMPORTANT, NEVER, ALWAYS 사용</li>
+</ol>
+<h3 id="핵심-질문">핵심 질문<a href="#핵심-질문" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>모든 규칙에 대해 이 질문을 던지세요:</p>
+<blockquote>
+<p><strong>&ldquo;이 줄을 삭제해도 Claude가 실수하지 않을까?&rdquo;</strong></p>
+<p>대답이 &ldquo;아니오&quot;라면, 그 줄은 제거해도 됩니다.</p></blockquote>
+<h3 id="다음-파트-예고">다음 파트 예고<a href="#다음-파트-예고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CLAUDE.md를 간결하게 유지하는 것만으로는 부족합니다. 특정 작업에만 필요한 규칙들은 어떻게 관리할까요? <strong>Part 3</strong>에서는 <strong>Skills 시스템</strong>을 통해 필요할 때만 로드되는 전문 지식을 구성하는 방법을 배웁니다.</p>
+<hr>
+<h2 id="-참고-자료">📚 참고 자료<a href="#-참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md">Writing a Good CLAUDE.md</a></li>
+<li><a href="https://code.claude.com/docs/en/best-practices">Claude Code Best Practices - CLAUDE.md</a></li>
+<li><a href="https://arxiv.org/abs/2310.06770">LLM Instruction Following Research</a></li>
+</ul>
+<hr>
+<p><strong>이전</strong>: <a href="./part1-claude-md-basics.md">Part 1: CLAUDE.md 기초</a>
+<strong>다음</strong>: <a href="./part3-skills-system.md">Part 3: Skills 시스템 - 온디맨드 전문가 활용하기</a></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-03/" class="button inline prev">
+        &lt; [<span class="button__text">Claude Code 완전 정복 가이드 Part 3: Skills 시스템 - 온디맨드 전문가 활용하기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-01/" class="button inline next">
+         [<span class="button__text">Claude Code 완전 정복 가이드 Part 1: CLAUDE.md 기초 - 첫 발을 내딛다</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

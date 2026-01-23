@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code 완전 정복 가이드 Part 0: Overview :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="이 가이드는 Claude Code 초보 사용자가 **CLAUDE.md 파일 하나 만드는 것**에서 시작해서, **Skills와 Plugins를 활용한 고급 워크플로우**까지 단계별로 성장할 수 있도록 구성되어 있습니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260123-claude-code-guide-00/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code 완전 정복 가이드 Part 0: Overview">
+<meta property="og:description" content="이 가이드는 Claude Code 초보 사용자가 **CLAUDE.md 파일 하나 만드는 것**에서 시작해서, **Skills와 Plugins를 활용한 고급 워크플로우**까지 단계별로 성장할 수 있도록 구성되어 있습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260123-claude-code-guide-00/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-23 17:20:48 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-00/">Claude Code 완전 정복 가이드 Part 0: Overview</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>버전</strong>: 2026년 1월 기준 (Claude Code 2.1.17 / Opus 4.5)<br>
+<strong>대상 독자</strong>: Claude Code를 처음 시작하거나, 이미 사용 중이지만 더 효율적으로 활용하고 싶은 개발자</p></blockquote>
+<hr>
+<h2 id="-이-가이드의-목표">🎯 이 가이드의 목표<a href="#-이-가이드의-목표" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 가이드는 Claude Code 초보 사용자가 <strong>CLAUDE.md 파일 하나 만드는 것</strong>에서 시작해서, <strong>Skills와 Plugins를 활용한 고급 워크플로우</strong>까지 단계별로 성장할 수 있도록 구성되어 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;📝 CLAUDE.md&lt;br/&gt;생성&#34;] --&gt; B[&#34;⚡ 최적화&lt;br/&gt;전략&#34;]
+    B --&gt; C[&#34;🧠 Skills&lt;br/&gt;분리&#34;]
+    C --&gt; D[&#34;🔌 Plugins&lt;br/&gt;활용&#34;]
+    D --&gt; E[&#34;🏪 Marketplace&lt;br/&gt;구축&#34;]
+    E --&gt; F[&#34;🎯 고급 패턴&lt;br/&gt;통합&#34;]
+    
+    style A fill:#bbdefb,color:#000000
+    style B fill:#c8e6c9,color:#000000
+    style C fill:#fff9c4,color:#000000
+    style D fill:#ffccbc,color:#000000
+    style E fill:#d1c4e9,color:#000000
+    style F fill:#f8bbd0,color:#000000
+</code></pre><hr>
+<h2 id="-가이드-구성">📚 가이드 구성<a href="#-가이드-구성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="part-1-claudemd-기초---첫-발을-내딛다">Part 1: CLAUDE.md 기초 - 첫 발을 내딛다<a href="#part-1-claudemd-기초---첫-발을-내딛다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 30분 | <strong>난이도</strong>: ⭐</p></blockquote>
+<p>Claude Code의 핵심인 CLAUDE.md 파일을 이해하고 첫 번째 파일을 작성합니다.</p>
+<p><strong>다루는 내용:</strong></p>
+<ul>
+<li>Claude Code와 Agentic Coding의 개념</li>
+<li>CLAUDE.md의 역할과 계층적 동작 원리</li>
+<li><code>/init</code> 명령어로 자동 생성하기</li>
+<li>Java/Kotlin, Go 프로젝트용 기본 템플릿</li>
+</ul>
+<p><strong>이런 분께 추천:</strong></p>
+<ul>
+<li>Claude Code를 처음 설치한 개발자</li>
+<li>CLAUDE.md가 뭔지 모르는 분</li>
+</ul>
+<hr>
+<h3 id="part-2-claudemd-최적화---비대해지는-것을-막아라">Part 2: CLAUDE.md 최적화 - 비대해지는 것을 막아라<a href="#part-2-claudemd-최적화---비대해지는-것을-막아라" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 45분 | <strong>난이도</strong>: ⭐⭐</p></blockquote>
+<p>CLAUDE.md가 너무 커지면 Claude가 지시를 무시하기 시작합니다. 효과적으로 관리하는 방법을 배웁니다.</p>
+<p><strong>다루는 내용:</strong></p>
+<ul>
+<li>LLM의 Instruction-following 한계 이해</li>
+<li>CLAUDE.md 다이어트 전략 (린터 활용, 포인터 vs 복사)</li>
+<li><code>@path/to/file</code> 문법으로 외부 파일 임포트</li>
+<li>전역 설정 vs 프로젝트 설정 분리</li>
+<li>Monorepo 전략</li>
+</ul>
+<p><strong>이런 분께 추천:</strong></p>
+<ul>
+<li>CLAUDE.md가 수백 줄이 넘어가고 있는 분</li>
+<li>Claude가 자꾸 규칙을 무시해서 답답한 분</li>
+</ul>
+<hr>
+<h3 id="part-3-skills-시스템---온디맨드-전문가-활용하기">Part 3: Skills 시스템 - 온디맨드 전문가 활용하기<a href="#part-3-skills-시스템---온디맨드-전문가-활용하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간 | <strong>난이도</strong>: ⭐⭐⭐</p></blockquote>
+<p>특정 작업에 대한 규칙을 Skills로 분리하여 토큰을 절약하고 더 효과적으로 활용합니다.</p>
+<p><strong>다루는 내용:</strong></p>
+<ul>
+<li>Skills vs Subagents 개념 비교</li>
+<li>Progressive Disclosure: 필요할 때만 로드되는 지식</li>
+<li>SKILL.md 작성법과 YAML Frontmatter</li>
+<li>실전 Skills 예제 (테스트, 에러 핸들링, API 설계)</li>
+<li>스크립트와 리소스 번들링</li>
+</ul>
+<p><strong>이런 분께 추천:</strong></p>
+<ul>
+<li>CLAUDE.md에서 특정 규칙들을 분리하고 싶은 분</li>
+<li>토큰 비용이 걱정되는 분</li>
+</ul>
+<hr>
+<h3 id="part-4-plugins--marketplace---재사용-가능한-확장-패키지">Part 4: Plugins &amp; Marketplace - 재사용 가능한 확장 패키지<a href="#part-4-plugins--marketplace---재사용-가능한-확장-패키지" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간 | <strong>난이도</strong>: ⭐⭐⭐</p></blockquote>
+<p>커뮤니티가 만든 플러그인을 활용하고, 나만의 규칙과 조합하는 방법을 배웁니다.</p>
+<p><strong>다루는 내용:</strong></p>
+<ul>
+<li>Skills vs Commands vs Plugins vs Subagents 개념 정리</li>
+<li>Marketplace 시스템 이해와 활용</li>
+<li>유용한 커뮤니티 플러그인 소개</li>
+<li><strong>⭐ 커뮤니티 플러그인 + 나만의 규칙 조합하기 (3-Layer Stacking)</strong></li>
+</ul>
+<p><strong>이런 분께 추천:</strong></p>
+<ul>
+<li>커뮤니티의 좋은 도구들을 활용하고 싶은 분</li>
+<li>플러그인을 설치했는데 커스터마이징 방법을 모르는 분</li>
+</ul>
+<hr>
+<h3 id="part-5-나만의-plugin-marketplace-만들기">Part 5: 나만의 Plugin Marketplace 만들기<a href="#part-5-나만의-plugin-marketplace-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간 30분 | <strong>난이도</strong>: ⭐⭐⭐⭐</p></blockquote>
+<p>자신만의 Skills와 Plugins를 GitHub으로 배포하고 팀과 공유합니다.</p>
+<p><strong>다루는 내용:</strong></p>
+<ul>
+<li>Plugin 구조 설계 (<code>plugin.json</code>, 디렉토리 구성)</li>
+<li>첫 번째 Plugin 만들기</li>
+<li><code>marketplace.json</code> 작성과 GitHub 배포</li>
+<li>Java/Go 개발팀을 위한 Custom Marketplace 구축 실습</li>
+<li>조직 전체 배포 (Enterprise)</li>
+</ul>
+<p><strong>이런 분께 추천:</strong></p>
+<ul>
+<li>팀 전체가 동일한 개발 규칙을 사용하게 하고 싶은 분</li>
+<li>자신의 워크플로우를 오픈소스로 공유하고 싶은 분</li>
+</ul>
+<hr>
+<h3 id="part-6-고급-패턴과-best-practices">Part 6: 고급 패턴과 Best Practices<a href="#part-6-고급-패턴과-best-practices" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<blockquote>
+<p><strong>예상 소요 시간</strong>: 1시간 30분 | <strong>난이도</strong>: ⭐⭐⭐⭐⭐</p></blockquote>
+<p>프로덕션 수준의 Claude Code 활용을 위한 고급 패턴들을 다룹니다.</p>
+<p><strong>다루는 내용:</strong></p>
+<ul>
+<li>Hooks: 예외 없는 자동화 (CLAUDE.md vs Hooks)</li>
+<li>Subagents 활용 패턴 (Master-Clone vs Lead-Specialist)</li>
+<li>MCP (Model Context Protocol) 통합</li>
+<li>대규모 프로젝트에서의 Context 관리</li>
+<li><strong>⭐ 실전 레이어링 아키텍처</strong> (커뮤니티 Subagent + Custom Skill + CLAUDE.md)</li>
+<li>팀 협업 워크플로우와 CI/CD 통합</li>
+<li>문제 해결 &amp; 디버깅</li>
+</ul>
+<p><strong>이런 분께 추천:</strong></p>
+<ul>
+<li>Claude Code를 프로덕션 환경에서 팀과 함께 사용하는 분</li>
+<li>더 복잡한 자동화 워크플로우를 구축하고 싶은 분</li>
+</ul>
+<hr>
+<h2 id="-학습-로드맵">🗺️ 학습 로드맵<a href="#-학습-로드맵" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    Start{&#34;🤔 당신의 현재 상태는?&#34;}
+    
+    Start --&gt; NewUser[&#34;Claude Code&lt;br/&gt;처음 사용&#34;]
+    Start --&gt; ExistingUser[&#34;이미 CLAUDE.md&lt;br/&gt;사용 중&#34;]
+    
+    NewUser --&gt; Part1[&#34;📝 Part 1&lt;br/&gt;시작하기&#34;]
+    
+    ExistingUser --&gt; TooBig{&#34;CLAUDE.md가&lt;br/&gt;너무 커졌나요?&#34;}
+    
+    TooBig --&gt;|Yes| Part2A[&#34;⚡ Part 2&lt;br/&gt;최적화&#34;]
+    TooBig --&gt;|No| Part3Direct[&#34;🧠 Part 3&#34;]
+    
+    Part1 --&gt; Part2B[&#34;⚡ Part 2&lt;br/&gt;최적화&#34;]
+    Part2A --&gt; Part3[&#34;🧠 Part 3&lt;br/&gt;Skills 시스템 학습&#34;]
+    Part2B --&gt; Part3
+    Part3Direct --&gt; Part3
+    
+    Part3 --&gt; Goal{&#34;🎯 목표는?&#34;}
+    
+    Goal --&gt; UseOnly[&#34;커뮤니티 플러그인&lt;br/&gt;활용만 하고 싶다&#34;]
+    Goal --&gt; CreateOwn[&#34;직접 만들어서&lt;br/&gt;배포하고 싶다&#34;]
+    
+    UseOnly --&gt; Part4[&#34;🔌 Part 4&lt;br/&gt;Plugins 활용&#34;]
+    CreateOwn --&gt; Part5[&#34;🏪 Part 5&lt;br/&gt;Marketplace 구축&#34;]
+    
+    Part4 --&gt; Part5
+    Part4 --&gt; Part6[&#34;🚀 Part 6&lt;br/&gt;고급 패턴&#34;]
+    Part5 --&gt; Part6
+    
+    style Start fill:#e3f2fd,color:#000000
+    style NewUser fill:#e1f5fe,color:#000000
+    style ExistingUser fill:#e1f5fe,color:#000000
+    style Part1 fill:#bbdefb,color:#000000
+    style Part2A fill:#c8e6c9,color:#000000
+    style Part2B fill:#c8e6c9,color:#000000
+    style Part3 fill:#fff9c4,color:#000000
+    style Part3Direct fill:#fff9c4,color:#000000
+    style Part4 fill:#ffccbc,color:#000000
+    style Part5 fill:#d1c4e9,color:#000000
+    style Part6 fill:#f8bbd0,color:#000000
+    style Goal fill:#e3f2fd,color:#000000
+    style TooBig fill:#e3f2fd,color:#000000
+    style UseOnly fill:#fce4ec,color:#000000
+    style CreateOwn fill:#fce4ec,color:#000000
+</code></pre><hr>
+<h2 id="-먼저-읽어두면-좋은-리소스">🔗 먼저 읽어두면 좋은 리소스<a href="#-먼저-읽어두면-좋은-리소스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="공식-문서-필독">공식 문서 (필독)<a href="#공식-문서-필독" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>리소스</th>
+          <th>설명</th>
+          <th>링크</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Claude Code 공식 문서</strong></td>
+          <td>Anthropic의 공식 Claude Code 문서</td>
+          <td><a href="https://code.claude.com/docs">code.claude.com/docs</a></td>
+      </tr>
+      <tr>
+          <td><strong>Best Practices 가이드</strong></td>
+          <td>Anthropic이 제공하는 공식 베스트 프랙티스</td>
+          <td><a href="https://code.claude.com/docs/en/best-practices">code.claude.com/docs/en/best-practices</a></td>
+      </tr>
+      <tr>
+          <td><strong>Skills 공식 문서</strong></td>
+          <td>Skills 시스템 상세 설명</td>
+          <td><a href="https://code.claude.com/docs/en/skills">code.claude.com/docs/en/skills</a></td>
+      </tr>
+      <tr>
+          <td><strong>Plugins 문서</strong></td>
+          <td>Plugin 생성 및 배포 방법</td>
+          <td><a href="https://code.claude.com/docs/en/plugins">code.claude.com/docs/en/plugins</a></td>
+      </tr>
+      <tr>
+          <td><strong>Plugin Marketplaces</strong></td>
+          <td>Marketplace 구축 가이드</td>
+          <td><a href="https://code.claude.com/docs/en/plugin-marketplaces">code.claude.com/docs/en/plugin-marketplaces</a></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="anthropic-공식-블로그">Anthropic 공식 블로그<a href="#anthropic-공식-블로그" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>리소스</th>
+          <th>설명</th>
+          <th>링크</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Claude Code Best Practices</strong></td>
+          <td>Anthropic 엔지니어링 팀의 실전 팁</td>
+          <td><a href="https://www.anthropic.com/engineering/claude-code-best-practices">anthropic.com/engineering/claude-code-best-practices</a></td>
+      </tr>
+      <tr>
+          <td><strong>Claude Code Changelog</strong></td>
+          <td>버전별 변경사항</td>
+          <td><a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md">github.com/anthropics/claude-code/blob/main/CHANGELOG.md</a></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="커뮤니티-리소스-추천">커뮤니티 리소스 (추천)<a href="#커뮤니티-리소스-추천" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>리소스</th>
+          <th>설명</th>
+          <th>링크</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Anthropic Skills Repo</strong></td>
+          <td>Anthropic 공식 Skills 저장소 (37.5k⭐)</td>
+          <td><a href="https://github.com/anthropics/skills">github.com/anthropics/skills</a></td>
+      </tr>
+      <tr>
+          <td><strong>Claude Code Repo</strong></td>
+          <td>Claude Code 공식 저장소 (55k⭐)</td>
+          <td><a href="https://github.com/anthropics/claude-code">github.com/anthropics/claude-code</a></td>
+      </tr>
+      <tr>
+          <td><strong>Skills Marketplace (SkillsMP)</strong></td>
+          <td>커뮤니티 Skills 검색</td>
+          <td><a href="https://skillsmp.com/">skillsmp.com</a></td>
+      </tr>
+      <tr>
+          <td><strong>Claude Code Resource List</strong></td>
+          <td>100+ 에이전트, 스킬, 플러그인 큐레이션</td>
+          <td><a href="https://www.scriptbyai.com/claude-code-resource-list/">scriptbyai.com/claude-code-resource-list</a></td>
+      </tr>
+      <tr>
+          <td><strong>ClaudeLog Changelog</strong></td>
+          <td>Claude Code 버전 히스토리</td>
+          <td><a href="https://claudelog.com/claude-code-changelog/">claudelog.com/claude-code-changelog</a></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="심화-학습-블로그">심화 학습 블로그<a href="#심화-학습-블로그" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>리소스</th>
+          <th>설명</th>
+          <th>링크</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Skills vs Commands vs Subagents vs Plugins</strong></td>
+          <td>개념 비교 심층 분석</td>
+          <td><a href="https://www.youngleaders.tech/p/claude-skills-commands-subagents-plugins">youngleaders.tech</a></td>
+      </tr>
+      <tr>
+          <td><strong>Claude Code 2.1 Features</strong></td>
+          <td>2.1 버전 새 기능 분석</td>
+          <td><a href="https://venturebeat.com/orchestration/claude-code-2-1-0-arrives-with-smoother-workflows-and-smarter-agents">VentureBeat</a></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-핵심-개념-한눈에-보기">📊 핵심 개념 한눈에 보기<a href="#-핵심-개념-한눈에-보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="claudemd-vs-skills-vs-subagents-vs-plugins">CLAUDE.md vs Skills vs Subagents vs Plugins<a href="#claudemd-vs-skills-vs-subagents-vs-plugins" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    subgraph System[&#34;Claude Code 확장 시스템&#34;]
+        direction TB
+        
+        subgraph Components[&#34;구성 요소&#34;]
+            direction LR
+            A[&#34;📄 CLAUDE.md&#34;]
+            B[&#34;🧠 Skills&#34;]
+            C[&#34;👥 Subagents&#34;]
+            D[&#34;📦 Plugins&#34;]
+        end
+        
+        subgraph Characteristics[&#34;특징&#34;]
+            direction LR
+            A1[&#34;항상 로드됨&lt;br/&gt;(프로젝트 기본 정보)&#34;]
+            B1[&#34;필요시 로드&lt;br/&gt;(자동 판단)&#34;]
+            C1[&#34;격리 실행&lt;br/&gt;(독립 컨텍스트)&#34;]
+            D1[&#34;배포 패키지&lt;br/&gt;(Skills+Commands&lt;br/&gt;+Agents+Hooks)&#34;]
+        end
+        
+        subgraph Metaphors[&#34;비유&#34;]
+            direction LR
+            A2[&#34;📖 기본 매뉴얼&#34;]
+            B2[&#34;📚 레시피북&#34;]
+            C2[&#34;👨‍💼 전문가 동료&#34;]
+            D2[&#34;🧰 도구 상자&#34;]
+        end
+        
+        A --&gt; A1 --&gt; A2
+        B --&gt; B1 --&gt; B2
+        C --&gt; C1 --&gt; C2
+        D --&gt; D1 --&gt; D2
+    end
+    
+    style A fill:#bbdefb,color:#000000
+    style B fill:#c8e6c9,color:#000000
+    style C fill:#fff9c4,color:#000000
+    style D fill:#ffccbc,color:#000000
+    style A1 fill:#e3f2fd,color:#000000
+    style B1 fill:#e8f5e9,color:#000000
+    style C1 fill:#fffde7,color:#000000
+    style D1 fill:#fbe9e7,color:#000000
+    style A2 fill:#e3f2fd,color:#000000
+    style B2 fill:#e8f5e9,color:#000000
+    style C2 fill:#fffde7,color:#000000
+    style D2 fill:#fbe9e7,color:#000000
+</code></pre><h3 id="토큰-효율성-비교">토큰 효율성 비교<a href="#토큰-효율성-비교" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>구분</th>
+          <th>토큰 사용</th>
+          <th>특징</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>CLAUDE.md</strong></td>
+          <td>항상 전체 로드</td>
+          <td>간결하게 유지해야 함</td>
+      </tr>
+      <tr>
+          <td><strong>Skills</strong></td>
+          <td>메타데이터 ~100 토큰, 활성화 시 &lt;5k</td>
+          <td>Progressive Disclosure</td>
+      </tr>
+      <tr>
+          <td><strong>Subagents</strong></td>
+          <td>별도 컨텍스트 윈도우</td>
+          <td>메인 대화 오염 방지</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="파일-위치-정리">파일 위치 정리<a href="#파일-위치-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>~/.claude/                          # 전역 (모든 프로젝트에 적용)
+├── CLAUDE.md                       # 전역 기본 설정
+├── settings.json                   # Claude Code 설정
+├── skills/                         # 전역 Skills
+│   └── my-skill/
+│       └── SKILL.md
+└── agents/                         # 전역 Subagents
+    └── my-agent.md
+
+./                                  # 프로젝트 루트
+├── CLAUDE.md                       # 프로젝트 설정 (Git 커밋 대상)
+├── CLAUDE.local.md                 # 개인 오버라이드 (.gitignore)
+└── .claude/
+    ├── settings.json               # 프로젝트별 설정
+    ├── skills/                     # 프로젝트 Skills
+    ├── agents/                     # 프로젝트 Subagents
+    └── commands/                   # 프로젝트 Commands (레거시, Skills로 대체됨)
+</code></pre><hr>
+<h2 id="-빠른-시작-5분">⚡ 빠른 시작 (5분)<a href="#-빠른-시작-5분" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Claude Code를 설치했다면, 다음 명령어로 바로 시작할 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 1. 프로젝트 폴더로 이동</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> your-project
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. Claude Code 실행</span>
+</span></span><span class="line"><span class="cl">claude
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 기본 CLAUDE.md 자동 생성</span>
+</span></span><span class="line"><span class="cl">/init
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. 생성된 CLAUDE.md 확인 및 수정</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># (Claude Code가 프로젝트를 분석하여 기본 구조를 만들어줍니다)</span>
+</span></span></code></pre></div><p>이후 Part 1부터 차근차근 따라가면서 CLAUDE.md를 개선하고, Skills와 Plugins로 확장해 나가세요!</p>
+<hr>
+<h2 id="-이-가이드의-표기법">📝 이 가이드의 표기법<a href="#-이-가이드의-표기법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="코드-블록-구분">코드 블록 구분<a href="#코드-블록-구분" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 터미널/Claude Code에서 실행하는 명령어</span>
+</span></span><span class="line"><span class="cl">claude
+</span></span><span class="line"><span class="cl">/init
+</span></span><span class="line"><span class="cl">/plugin marketplace add ...
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md나 SKILL.md 파일 내용
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>---
+</span></span><span class="line"><span class="cl">name: my-skill
+</span></span><span class="line"><span class="cl">description: ...
+</span></span><span class="line"><span class="cl">---
+</span></span></code></pre></div><pre tabindex="0"><code># 디렉토리 구조나 개념 설명
+project/
+├── src/
+└── CLAUDE.md
+</code></pre><h3 id="아이콘-의미">아이콘 의미<a href="#아이콘-의미" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>⭐ : 특히 중요한 내용</li>
+<li>💡 : 팁 또는 Best Practice</li>
+<li>⚠️ : 주의사항</li>
+<li>🔗 : 외부 링크 참조</li>
+</ul>
+<hr>
+<h2 id="-다음-단계">🚀 다음 단계<a href="#-다음-단계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>준비가 되셨다면 **<a href="./part1-claude-md-basics.md">Part 1: CLAUDE.md 기초</a>**로 이동하여 첫 번째 CLAUDE.md 파일을 만들어보세요!</p>
+<hr>
+<p><em>이 가이드는 2026년 1월 기준 (Claude Code 2.1.17)으로 작성되었습니다. Claude Code는 빠르게 발전하고 있으므로, <a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md">공식 Changelog</a>를 함께 참고하시기 바랍니다.</em></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260123-claude-code-guide-01/" class="button inline prev">
+        &lt; [<span class="button__text">Claude Code 완전 정복 가이드 Part 1: CLAUDE.md 기초 - 첫 발을 내딛다</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260122-java-4-new-features/" class="button inline next">
+         [<span class="button__text">Java: JEP 444, 485, 506, 519 설명</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
