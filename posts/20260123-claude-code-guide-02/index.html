@@ -204,21 +204,30 @@
 <h2 id="1-왜-claudemd는-간결해야-하는가">1. 왜 CLAUDE.md는 간결해야 하는가?<a href="#1-왜-claudemd는-간결해야-하는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="11-llm의-instruction-following-한계">1.1 LLM의 Instruction-following 한계<a href="#11-llm의-instruction-following-한계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>연구에 따르면 프론티어 LLM도 <strong>약 150-200개의 지시사항</strong>만 일관되게 따를 수 있습니다. Claude Code의 시스템 프롬프트 자체가 이미 ~50개의 지시를 포함하고 있어, CLAUDE.md에 사용할 수 있는 &ldquo;지시 예산&quot;은 제한적입니다.</p>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                    LLM 지시 따르기 용량                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  총 용량: ~150-200개 지시                                       │
-│                                                                 │
-│  ┌──────────────────┐ ┌──────────────────┐ ┌────────────────┐  │
-│  │  Claude Code     │ │    CLAUDE.md     │ │  Skills/Rules  │  │
-│  │  시스템 프롬프트  │ │                  │ │                │  │
-│  │    (~50개)       │ │   (당신의 몫)    │ │   (추가 지시)  │  │
-│  └──────────────────┘ └──────────────────┘ └────────────────┘  │
-│                                                                 │
-│  ⚠️ 초과 시 → 균일하게 모든 지시를 무시하기 시작                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+<p><img src="/img/claude_code_guide/claude02_01.png" alt="img01"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    subgraph Capacity[&#34;LLM 지시 따르기 용량&#34;]
+        direction TB
+        Title[&#34;📊 총 용량: ~150-200개 지시&#34;]
+
+        subgraph Components[&#34;구성 요소&#34;]
+            direction LR
+            A[&#34;🤖 Claude Code&lt;br/&gt;시스템 프롬프트&lt;br/&gt;(~50개)&#34;]
+            B[&#34;📄 CLAUDE.md&lt;br/&gt;&lt;br/&gt;(당신의 몫)&#34;]
+            C[&#34;🧠 Skills/Rules&lt;br/&gt;&lt;br/&gt;(추가 지시)&#34;]
+        end
+
+        Warning[&#34;⚠️ 초과 시 → 균일하게 모든 지시를 무시하기 시작&#34;]
+    end
+
+    Title --&gt; Components
+    Components --&gt; Warning
+
+    style Title fill:#e3f2fd,color:#000000
+    style A fill:#bbdefb,color:#000000
+    style B fill:#c8e6c9,color:#000000
+    style C fill:#fff9c4,color:#000000
+    style Warning fill:#ffcdd2,color:#000000
 </code></pre><h3 id="12-토큰-비용과-context-window">1.2 토큰 비용과 Context Window<a href="#12-토큰-비용과-context-window" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>CLAUDE.md는 <strong>모든 대화에서 항상 로드</strong>됩니다. 파일이 커질수록:</p>
 <table>
@@ -245,18 +254,24 @@
 </table>
 <h3 id="13-지시를-무시하기-시작하면-파일이-너무-긴-것">1.3 &ldquo;지시를 무시하기 시작하면&rdquo; 파일이 너무 긴 것<a href="#13-지시를-무시하기-시작하면-파일이-너무-긴-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Claude가 CLAUDE.md의 규칙을 무시하는 것 같다면, 이는 대부분 <strong>파일이 너무 길기 때문</strong>입니다.</p>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                      증상 체크리스트                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  □ Claude가 코딩 스타일 규칙을 자주 무시한다                     │
-│  □ 테스트 실행 명령어를 틀리게 사용한다                          │
-│  □ 금지한 패턴을 계속 사용한다                                   │
-│  □ CLAUDE.md에 있는 질문을 다시 물어본다                         │
-│                                                                 │
-│  ▶ 2개 이상 해당? → CLAUDE.md가 너무 길 가능성 높음              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+<p><img src="/img/claude_code_guide/claude02_02.png" alt="img02"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    subgraph Checklist[&#34;📋 증상 체크리스트&#34;]
+        C1[&#34;☐ Claude가 코딩 스타일 규칙을 자주 무시한다&#34;]
+        C2[&#34;☐ 테스트 실행 명령어를 틀리게 사용한다&#34;]
+        C3[&#34;☐ 금지한 패턴을 계속 사용한다&#34;]
+        C4[&#34;☐ CLAUDE.md에 있는 질문을 다시 물어본다&#34;]
+    end
+
+    Checklist --&gt; Result[&#34;▶ 2개 이상 해당?&#34;]
+    Result --&gt; Warning[&#34;⚠️ CLAUDE.md가 너무 길 가능성 높음&#34;]
+
+    style C1 fill:#fff9c4,color:#000000
+    style C2 fill:#fff9c4,color:#000000
+    style C3 fill:#fff9c4,color:#000000
+    style C4 fill:#fff9c4,color:#000000
+    style Result fill:#e3f2fd,color:#000000
+    style Warning fill:#ffcdd2,color:#000000
 </code></pre><hr>
 <h2 id="2-claudemd-다이어트-전략">2. CLAUDE.md 다이어트 전략<a href="#2-claudemd-다이어트-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="21-린터가-할-수-있는-일은-린터에게">2.1 린터가 할 수 있는 일은 린터에게<a href="#21-린터가-할-수-있는-일은-린터에게" class="hanchor" ariaLabel="Anchor">#</a> </h3>
@@ -369,23 +384,28 @@
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># .gitignore에 추가</span>
 </span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;CLAUDE.local.md&#34;</span> &gt;&gt; .gitignore
 </span></span></code></pre></div><h3 id="34-설정-파일-선택-가이드">3.4 설정 파일 선택 가이드<a href="#34-설정-파일-선택-가이드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                    어디에 작성해야 할까?                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  &#34;모든 프로젝트에 적용하고 싶다&#34;                                 │
-│      └─▶ ~/.claude/CLAUDE.md (전역)                            │
-│                                                                 │
-│  &#34;이 프로젝트의 모든 팀원이 사용해야 한다&#34;                        │
-│      └─▶ ./CLAUDE.md (프로젝트 루트, Git 커밋)                  │
-│                                                                 │
-│  &#34;나만의 로컬 설정이 필요하다&#34;                                   │
-│      └─▶ ./CLAUDE.local.md (프로젝트, .gitignore)              │
-│                                                                 │
-│  &#34;특정 모듈에서만 적용하고 싶다&#34;                                 │
-│      └─▶ ./src/module/CLAUDE.md (하위 디렉토리)                 │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+<p><img src="/img/claude_code_guide/claude02_03.png" alt="img03"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    subgraph Guide[&#34;🤔 어디에 작성해야 할까?&#34;]
+        direction TB
+
+        Q1[&#34;모든 프로젝트에&lt;br/&gt;적용하고 싶다&#34;] --&gt; A1[&#34;~/.claude/CLAUDE.md&lt;br/&gt;(전역)&#34;]
+
+        Q2[&#34;이 프로젝트의 모든&lt;br/&gt;팀원이 사용해야 한다&#34;] --&gt; A2[&#34;./CLAUDE.md&lt;br/&gt;(프로젝트 루트, Git 커밋)&#34;]
+
+        Q3[&#34;나만의 로컬 설정이&lt;br/&gt;필요하다&#34;] --&gt; A3[&#34;./CLAUDE.local.md&lt;br/&gt;(프로젝트, .gitignore)&#34;]
+
+        Q4[&#34;특정 모듈에서만&lt;br/&gt;적용하고 싶다&#34;] --&gt; A4[&#34;./src/module/CLAUDE.md&lt;br/&gt;(하위 디렉토리)&#34;]
+    end
+
+    style Q1 fill:#e3f2fd,color:#000000
+    style Q2 fill:#e3f2fd,color:#000000
+    style Q3 fill:#e3f2fd,color:#000000
+    style Q4 fill:#e3f2fd,color:#000000
+    style A1 fill:#c8e6c9,color:#000000
+    style A2 fill:#c8e6c9,color:#000000
+    style A3 fill:#c8e6c9,color:#000000
+    style A4 fill:#c8e6c9,color:#000000
 </code></pre><hr>
 <h2 id="4-monorepo에서의-claudemd-전략">4. Monorepo에서의 CLAUDE.md 전략<a href="#4-monorepo에서의-claudemd-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="41-루트와-서브-모듈별-구성">4.1 루트와 서브 모듈별 구성<a href="#41-루트와-서브-모듈별-구성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
@@ -445,13 +465,27 @@
 - 에러 응답은 ProblemDetails (RFC 7807) 형식
 </code></pre><h3 id="44-동적-로딩-활용">4.4 동적 로딩 활용<a href="#44-동적-로딩-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Claude Code는 작업 중인 파일의 위치에 따라 해당 디렉토리의 CLAUDE.md를 <strong>자동으로 로드</strong>합니다.</p>
-<pre tabindex="0"><code>사용자가 apps/web/src/App.tsx 수정 요청
-    │
-    ▼
-Claude Code 자동 로드:
-1. ~/. claude/CLAUDE.md (전역)
-2. /monorepo/CLAUDE.md (루트)
-3. /monorepo/apps/web/CLAUDE.md (해당 모듈) ← 동적 로드
+<p><img src="/img/claude_code_guide/claude02_04.png" alt="img04"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    Request[&#34;📝 사용자가 apps/web/src/App.tsx 수정 요청&#34;]
+
+    Request --&gt; Load[&#34;🔄 Claude Code 자동 로드&#34;]
+
+    subgraph LoadOrder[&#34;로드 순서&#34;]
+        direction TB
+        L1[&#34;1️⃣ ~/.claude/CLAUDE.md&lt;br/&gt;(전역)&#34;]
+        L2[&#34;2️⃣ /monorepo/CLAUDE.md&lt;br/&gt;(루트)&#34;]
+        L3[&#34;3️⃣ /monorepo/apps/web/CLAUDE.md&lt;br/&gt;(해당 모듈) ⬅️ 동적 로드&#34;]
+        L1 --&gt; L2 --&gt; L3
+    end
+
+    Load --&gt; LoadOrder
+
+    style Request fill:#e3f2fd,color:#000000
+    style Load fill:#fff9c4,color:#000000
+    style L1 fill:#e8f5e9,color:#000000
+    style L2 fill:#c8e6c9,color:#000000
+    style L3 fill:#a5d6a7,color:#000000
 </code></pre><p>이를 통해 모듈별로 다른 규칙을 적용하면서도 CLAUDE.md 파일 크기를 작게 유지할 수 있습니다.</p>
 <hr>
 <h2 id="5-실습-비대해진-claudemd-리팩토링">5. 실습: 비대해진 CLAUDE.md 리팩토링<a href="#5-실습-비대해진-claudemd-리팩토링" class="hanchor" ariaLabel="Anchor">#</a> </h2>
@@ -558,19 +592,24 @@ Claude Code 자동 로드:
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">(상세 내용...)
 </span></span></code></pre></div><h3 id="54-리팩토링-체크리스트">5.4 리팩토링 체크리스트<a href="#54-리팩토링-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                    CLAUDE.md 다이어트 체크리스트                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  □ 린터로 검사할 수 있는 스타일 규칙을 제거했는가?               │
-│  □ 코드 스니펫 대신 파일 경로 참조로 변경했는가?                 │
-│  □ 상세 가이드를 별도 파일로 분리했는가?                        │
-│  □ 모든 규칙에 대해 &#34;이게 없으면 Claude가 실수할까?&#34;            │
-│    질문을 던져보았는가?                                         │
-│  □ 핵심 규칙에 IMPORTANT 또는 대문자 강조를 추가했는가?         │
-│  □ 최종 파일이 100줄 이내인가?                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+<p><img src="/img/claude_code_guide/claude02_05.png" alt="img05"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    subgraph DietChecklist[&#34;✅ CLAUDE.md 다이어트 체크리스트&#34;]
+        direction TB
+        D1[&#34;☐ 린터로 검사할 수 있는 스타일 규칙을 제거했는가?&#34;]
+        D2[&#34;☐ 코드 스니펫 대신 파일 경로 참조로 변경했는가?&#34;]
+        D3[&#34;☐ 상세 가이드를 별도 파일로 분리했는가?&#34;]
+        D4[&#34;☐ 모든 규칙에 대해 &#39;이게 없으면 Claude가 실수할까?&#39;&lt;br/&gt;질문을 던져보았는가?&#34;]
+        D5[&#34;☐ 핵심 규칙에 IMPORTANT 또는 대문자 강조를 추가했는가?&#34;]
+        D6[&#34;☐ 최종 파일이 100줄 이내인가?&#34;]
+    end
+
+    style D1 fill:#e8f5e9,color:#000000
+    style D2 fill:#e8f5e9,color:#000000
+    style D3 fill:#e8f5e9,color:#000000
+    style D4 fill:#e8f5e9,color:#000000
+    style D5 fill:#e8f5e9,color:#000000
+    style D6 fill:#e8f5e9,color:#000000
 </code></pre><hr>
 <h2 id="6-지시-강조-기법">6. 지시 강조 기법<a href="#6-지시-강조-기법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="61-중요한-규칙-강조하기">6.1 중요한 규칙 강조하기<a href="#61-중요한-규칙-강조하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>

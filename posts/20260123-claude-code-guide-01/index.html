@@ -203,23 +203,32 @@
 <h2 id="1-claude-code란-무엇인가">1. Claude Code란 무엇인가?<a href="#1-claude-code란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="11-agentic-coding의-개념">1.1 Agentic Coding의 개념<a href="#11-agentic-coding의-개념" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Claude Code는 단순한 코드 자동완성 도구가 아닙니다. <strong>Agentic Coding Assistant</strong>로서, 터미널에서 직접 코드베이스를 읽고, 파일을 생성/수정하고, 테스트를 실행하고, Git 작업까지 수행할 수 있습니다. 2025년 2월 첫 출시 이후 빠르게 발전하여, 현재 버전 2.1.x에서는 <strong>Opus 4.5</strong> 모델을 지원하며 더욱 강력한 기능을 제공합니다.</p>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                    기존 AI 코딩 도구                             │
-│  ┌─────────┐      ┌─────────┐      ┌─────────┐                 │
-│  │  질문   │ ───▶ │  답변   │ ───▶ │ 복사/   │                 │
-│  │         │      │ (코드)  │      │ 붙여넣기│                 │
-│  └─────────┘      └─────────┘      └─────────┘                 │
-│        사람이 직접 코드를 복사하고 적용해야 함                     │
-└─────────────────────────────────────────────────────────────────┘
+<p><img src="/img/claude_code_guide/claude01_01.png" alt="img01"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    subgraph Traditional[&#34;기존 AI 코딩 도구&#34;]
+        direction LR
+        T1[&#34;❓ 질문&#34;] --&gt; T2[&#34;💬 답변&lt;br/&gt;(코드)&#34;] --&gt; T3[&#34;📋 복사/&lt;br/&gt;붙여넣기&#34;]
+    end
 
-┌─────────────────────────────────────────────────────────────────┐
-│                    Claude Code (Agentic)                        │
-│  ┌─────────┐      ┌─────────┐      ┌─────────┐      ┌────────┐ │
-│  │  지시   │ ───▶ │ 코드    │ ───▶ │ 파일    │ ───▶ │ 테스트 │ │
-│  │         │      │ 분석    │      │ 수정    │      │ 실행   │ │
-│  └─────────┘      └─────────┘      └─────────┘      └────────┘ │
-│        Claude가 직접 코드베이스에서 작업을 수행                    │
-└─────────────────────────────────────────────────────────────────┘
+    subgraph Agentic[&#34;Claude Code (Agentic)&#34;]
+        direction LR
+        A1[&#34;📝 지시&#34;] --&gt; A2[&#34;🔍 코드&lt;br/&gt;분석&#34;] --&gt; A3[&#34;✏️ 파일&lt;br/&gt;수정&#34;] --&gt; A4[&#34;🧪 테스트&lt;br/&gt;실행&#34;]
+    end
+
+    Traditional -.-&gt;|&#34;사람이 직접&lt;br/&gt;코드를 복사하고&lt;br/&gt;적용해야 함&#34;| Note1[&#34; &#34;]
+    Agentic -.-&gt;|&#34;Claude가 직접&lt;br/&gt;코드베이스에서&lt;br/&gt;작업을 수행&#34;| Note2[&#34; &#34;]
+
+    style Traditional fill:#ffcdd2,color:#000000
+    style Agentic fill:#c8e6c9,color:#000000
+    style T1 fill:#ef9a9a,color:#000000
+    style T2 fill:#ef9a9a,color:#000000
+    style T3 fill:#ef9a9a,color:#000000
+    style A1 fill:#a5d6a7,color:#000000
+    style A2 fill:#a5d6a7,color:#000000
+    style A3 fill:#a5d6a7,color:#000000
+    style A4 fill:#a5d6a7,color:#000000
+    style Note1 fill:none,stroke:none
+    style Note2 fill:none,stroke:none
 </code></pre><h3 id="12-claude-code의-핵심-특징">1.2 Claude Code의 핵심 특징<a href="#12-claude-code의-핵심-특징" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <table>
   <thead>
@@ -252,50 +261,83 @@
   </tbody>
 </table>
 <h3 id="13-기존-도구와의-차이점">1.3 기존 도구와의 차이점<a href="#13-기존-도구와의-차이점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<pre tabindex="0"><code>GitHub Copilot     │  현재 파일의 코드 자동완성에 집중
-Cursor             │  IDE 내에서 AI 채팅 + 코드 수정
-───────────────────┼────────────────────────────────────
-Claude Code        │  터미널 기반, 전체 코드베이스 접근,
-                   │  명령 실행, 완전한 자율성
+<p><img src="/img/claude_code_guide/claude01_02.png" alt="img02"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    subgraph Comparison[&#34;AI 코딩 도구 비교&#34;]
+        direction TB
+
+        subgraph Tools[&#34;도구&#34;]
+            direction LR
+            GC[&#34;🤖 GitHub Copilot&#34;]
+            CR[&#34;💻 Cursor&#34;]
+            CC[&#34;⚡ Claude Code&#34;]
+        end
+
+        subgraph Features[&#34;특징&#34;]
+            direction LR
+            GC_F[&#34;현재 파일의&lt;br/&gt;코드 자동완성에 집중&#34;]
+            CR_F[&#34;IDE 내에서&lt;br/&gt;AI 채팅 + 코드 수정&#34;]
+            CC_F[&#34;터미널 기반&lt;br/&gt;전체 코드베이스 접근&lt;br/&gt;명령 실행, 완전한 자율성&#34;]
+        end
+
+        GC --&gt; GC_F
+        CR --&gt; CR_F
+        CC --&gt; CC_F
+    end
+
+    style GC fill:#e3f2fd,color:#000000
+    style CR fill:#e3f2fd,color:#000000
+    style CC fill:#c8e6c9,color:#000000
+    style GC_F fill:#e3f2fd,color:#000000
+    style CR_F fill:#e3f2fd,color:#000000
+    style CC_F fill:#c8e6c9,color:#000000
 </code></pre><p>Claude Code는 &ldquo;주니어 개발자에게 작업을 위임하는 것&quot;과 비슷합니다. 명확한 지시와 컨텍스트를 제공하면 스스로 작업을 완료합니다.</p>
 <hr>
 <h2 id="2-claudemd의-역할과-동작-원리">2. CLAUDE.md의 역할과 동작 원리<a href="#2-claudemd의-역할과-동작-원리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="21-claudemd란">2.1 CLAUDE.md란?<a href="#21-claudemd란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>CLAUDE.md는 Claude Code가 <strong>모든 대화를 시작할 때 자동으로 읽는 특별한 파일</strong>입니다. 프로젝트의 &ldquo;사용 설명서&quot;라고 생각하면 됩니다.</p>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────┐
-│                    Claude Code 시작                          │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│  1. ~/.claude/CLAUDE.md 로드 (전역 설정)                     │
-│  2. 프로젝트 루트 CLAUDE.md 로드                             │
-│  3. 현재 작업 디렉토리의 CLAUDE.md 로드 (있다면)              │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              사용자 대화 시작 (컨텍스트 확보 완료)             │
-└─────────────────────────────────────────────────────────────┘
+<p><img src="/img/claude_code_guide/claude01_03.png" alt="img03"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;🚀 Claude Code 시작&#34;] --&gt; B
+
+    subgraph B[&#34;📁 CLAUDE.md 로드 순서&#34;]
+        direction TB
+        B1[&#34;1️⃣ ~/.claude/CLAUDE.md 로드&lt;br/&gt;(전역 설정)&#34;]
+        B2[&#34;2️⃣ 프로젝트 루트 CLAUDE.md 로드&#34;]
+        B3[&#34;3️⃣ 현재 작업 디렉토리의&lt;br/&gt;CLAUDE.md 로드 (있다면)&#34;]
+        B1 --&gt; B2 --&gt; B3
+    end
+
+    B --&gt; C[&#34;💬 사용자 대화 시작&lt;br/&gt;(컨텍스트 확보 완료)&#34;]
+
+    style A fill:#bbdefb,color:#000000
+    style B fill:#e8f5e9,color:#000000
+    style B1 fill:#c8e6c9,color:#000000
+    style B2 fill:#c8e6c9,color:#000000
+    style B3 fill:#c8e6c9,color:#000000
+    style C fill:#fff9c4,color:#000000
 </code></pre><h3 id="22-계층적-구조-이해">2.2 계층적 구조 이해<a href="#22-계층적-구조-이해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>CLAUDE.md는 여러 위치에 존재할 수 있으며, 모두 병합되어 적용됩니다:</p>
-<pre tabindex="0"><code>우선순위 (낮음 → 높음)
-─────────────────────────────────────────────────────────────
+<p><img src="/img/claude_code_guide/claude01_04.png" alt="img04"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    subgraph Priority[&#34;우선순위 (낮음 → 높음)&#34;]
+        direction TB
 
-1. ~/.claude/CLAUDE.md          # 전역: 모든 프로젝트에 적용
-   │                            # 예: 개인 코딩 스타일, 선호하는 도구
-   │
-   ▼
-2. /project/CLAUDE.md           # 프로젝트: 팀과 공유 (Git 커밋)
-   │                            # 예: 빌드 명령, 테스트 방법, 아키텍처
-   │
-   ▼
-3. /project/CLAUDE.local.md     # 개인 오버라이드 (.gitignore 대상)
-   │                            # 예: 로컬 환경 설정, 개인 API 키
-   │
-   ▼
-4. /project/src/module/CLAUDE.md  # 하위 디렉토리: 해당 모듈 작업 시만
-                                  # 예: 특정 모듈의 규칙
+        P1[&#34;1️⃣ ~/.claude/CLAUDE.md&lt;br/&gt;&lt;b&gt;전역&lt;/b&gt;: 모든 프로젝트에 적용&lt;br/&gt;&lt;i&gt;예: 개인 코딩 스타일, 선호하는 도구&lt;/i&gt;&#34;]
+
+        P2[&#34;2️⃣ /project/CLAUDE.md&lt;br/&gt;&lt;b&gt;프로젝트&lt;/b&gt;: 팀과 공유 (Git 커밋)&lt;br/&gt;&lt;i&gt;예: 빌드 명령, 테스트 방법, 아키텍처&lt;/i&gt;&#34;]
+
+        P3[&#34;3️⃣ /project/CLAUDE.local.md&lt;br/&gt;&lt;b&gt;개인 오버라이드&lt;/b&gt; (.gitignore 대상)&lt;br/&gt;&lt;i&gt;예: 로컬 환경 설정, 개인 API 키&lt;/i&gt;&#34;]
+
+        P4[&#34;4️⃣ /project/src/module/CLAUDE.md&lt;br/&gt;&lt;b&gt;하위 디렉토리&lt;/b&gt;: 해당 모듈 작업 시만&lt;br/&gt;&lt;i&gt;예: 특정 모듈의 규칙&lt;/i&gt;&#34;]
+
+        P1 --&gt; P2 --&gt; P3 --&gt; P4
+    end
+
+    style P1 fill:#e3f2fd,color:#000000
+    style P2 fill:#bbdefb,color:#000000
+    style P3 fill:#90caf9,color:#000000
+    style P4 fill:#64b5f6,color:#000000
 </code></pre><p>💡 <strong>Best Practice</strong>: 하위 디렉토리의 CLAUDE.md는 Claude가 해당 디렉토리의 파일을 작업할 때만 동적으로 로드됩니다.</p>
 <h3 id="23-init-명령어로-자동-생성하기">2.3 /init 명령어로 자동 생성하기<a href="#23-init-명령어로-자동-생성하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Claude Code는 프로젝트를 분석하여 기본 CLAUDE.md를 자동 생성해줍니다:</p>

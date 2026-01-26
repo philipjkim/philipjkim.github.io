@@ -283,7 +283,6 @@
 </span></span></span><span class="line"><span class="cl"><span class="gh"></span>
 </span></span><span class="line"><span class="cl"><span class="gu">## 파일 구조
 </span></span></span><span class="line"><span class="cl"><span class="gu"></span>
-</span></span><span class="line"><span class="cl">```kotlin
 </span></span><span class="line"><span class="cl">// 1. 패키지 선언
 </span></span><span class="line"><span class="cl">package com.example.feature
 </span></span><span class="line"><span class="cl">
@@ -292,358 +291,317 @@
 </span></span><span class="line"><span class="cl">import org.springframework.stereotype.Service
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">// 3. 클래스/함수 정의
-</span></span></code></pre></div><h2 id="네이밍-규칙">네이밍 규칙<a href="#네이밍-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<table>
-  <thead>
-      <tr>
-          <th>대상</th>
-          <th>규칙</th>
-          <th>예시</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>클래스</td>
-          <td>PascalCase</td>
-          <td><code>UserService</code>, <code>PaymentGateway</code></td>
-      </tr>
-      <tr>
-          <td>함수</td>
-          <td>camelCase, 동사로 시작</td>
-          <td><code>createUser</code>, <code>findById</code></td>
-      </tr>
-      <tr>
-          <td>변수</td>
-          <td>camelCase</td>
-          <td><code>userId</code>, <code>isActive</code></td>
-      </tr>
-      <tr>
-          <td>상수</td>
-          <td>SCREAMING_SNAKE_CASE</td>
-          <td><code>MAX_RETRY_COUNT</code></td>
-      </tr>
-      <tr>
-          <td>패키지</td>
-          <td>lowercase</td>
-          <td><code>com.example.userservice</code></td>
-      </tr>
-  </tbody>
-</table>
-<h2 id="함수-작성-규칙">함수 작성 규칙<a href="#함수-작성-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// ✅ 좋은 예: 단일 표현식 함수
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fun</span> <span class="nf">isValid</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="n">String</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">=</span> <span class="n">email</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&#34;@&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// ✅ 좋은 예: 명확한 반환 타입
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fun</span> <span class="nf">findUser</span><span class="p">(</span><span class="n">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">User</span><span class="p">?</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="n">id</span><span class="p">).</span><span class="n">orElse</span><span class="p">(</span><span class="k">null</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 네이밍 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">| 대상 | 규칙 | 예시 |
+</span></span><span class="line"><span class="cl">|------|------|------|
+</span></span><span class="line"><span class="cl">| 클래스 | PascalCase | <span class="sb">`UserService`</span>, <span class="sb">`PaymentGateway`</span> |
+</span></span><span class="line"><span class="cl">| 함수 | camelCase, 동사로 시작 | <span class="sb">`createUser`</span>, <span class="sb">`findById`</span> |
+</span></span><span class="line"><span class="cl">| 변수 | camelCase | <span class="sb">`userId`</span>, <span class="sb">`isActive`</span> |
+</span></span><span class="line"><span class="cl">| 상수 | SCREAMING_SNAKE_CASE | <span class="sb">`MAX_RETRY_COUNT`</span> |
+</span></span><span class="line"><span class="cl">| 패키지 | lowercase | <span class="sb">`com.example.userservice`</span> |
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// ❌ 나쁜 예: 불필요한 Unit 반환
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fun</span> <span class="nf">saveUser</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">):</span> <span class="n">Unit</span> <span class="p">{</span>  <span class="c1">// Unit 생략
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">userRepository</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h2 id="null-처리">Null 처리<a href="#null-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// ✅ Safe call + Elvis
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">user</span><span class="o">?.</span><span class="n">name</span> <span class="o">?:</span> <span class="s2">&#34;Unknown&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 함수 작성 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// ✅ 좋은 예: 단일 표현식 함수
+</span></span><span class="line"><span class="cl">fun isValid(email: String): Boolean = email.contains(&#34;@&#34;)
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// ✅ let으로 null 체크
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">user</span><span class="o">?.</span><span class="n">let</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">sendEmail</span><span class="p">(</span><span class="k">it</span><span class="p">.</span><span class="n">email</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">// ✅ 좋은 예: 명확한 반환 타입
+</span></span><span class="line"><span class="cl">fun findUser(id: Long): User? {
+</span></span><span class="line"><span class="cl">    return userRepository.findById(id).orElse(null)
+</span></span><span class="line"><span class="cl">}
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// ❌ 강제 unwrap 금지 (테스트 제외)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="py">name</span> <span class="p">=</span> <span class="n">user</span><span class="o">!!</span><span class="p">.</span><span class="n">name</span>  <span class="c1">// 프로덕션 코드에서 금지
-</span></span></span></code></pre></div><h2 id="data-class-규칙">Data Class 규칙<a href="#data-class-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// ✅ DTO는 data class
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">data</span> <span class="k">class</span> <span class="nc">UserResponse</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">email</span><span class="p">:</span> <span class="n">String</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">// ❌ 나쁜 예: 불필요한 Unit 반환
+</span></span><span class="line"><span class="cl">fun saveUser(user: User): Unit {  // Unit 생략
+</span></span><span class="line"><span class="cl">    userRepository.save(user)
+</span></span><span class="line"><span class="cl">}
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// ✅ Entity는 일반 class (JPA 프록시 호환)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Entity</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">User</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nd">@Id</span> <span class="nd">@GeneratedValue</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">id</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="m">0</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">var</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">var</span> <span class="py">email</span><span class="p">:</span> <span class="n">String</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span></code></pre></div><h2 id="extension-function">Extension Function<a href="#extension-function" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// 유틸리티성 확장 함수는 Extensions.kt에 모아두기
-</span></span></span><span class="line"><span class="cl"><span class="c1">// com/example/common/Extensions.kt
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">String</span><span class="p">.</span><span class="n">toSlug</span><span class="p">():</span> <span class="n">String</span> <span class="p">=</span>
-</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="n">lowercase</span><span class="p">().</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">,</span> <span class="s2">&#34;-&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## Null 처리
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// ✅ Safe call + Elvis
+</span></span><span class="line"><span class="cl">val name = user?.name ?: &#34;Unknown&#34;
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">List</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;.</span><span class="n">secondOrNull</span><span class="p">():</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span>
-</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="n">getOrNull</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
-</span></span></code></pre></div><pre tabindex="0"><code>
-**skills/test-patterns/SKILL.md**:
-
-```markdown
----
-name: test-patterns
-description: JVM 테스트 작성 패턴. JUnit 5, MockK 기반.
-             &#34;테스트 작성&#34;, &#34;단위 테스트&#34;, &#34;통합 테스트&#34; 요청 시 활성화.
----
-
-# JVM Test Patterns
-
-## 테스트 클래스 구조
-
-```kotlin
-@ExtendWith(MockKExtension::class)
-internal class UserServiceTest {
-
-    @MockK
-    private lateinit var userRepository: UserRepository
-
-    @MockK
-    private lateinit var eventPublisher: EventPublisher
-
-    @InjectMockKs
-    private lateinit var sut: UserService  // System Under Test
-
-    @BeforeEach
-    fun setUp() {
-        // 공통 Mock 설정
-    }
-
-    @Nested
-    @DisplayName(&#34;createUser&#34;)
-    inner class CreateUser {
-
-        @Test
-        fun `should create user when valid input`() {
-            // Given
-            val request = CreateUserRequest(name = &#34;John&#34;, email = &#34;john@test.com&#34;)
-            val savedUser = User(id = 1L, name = &#34;John&#34;, email = &#34;john@test.com&#34;)
-
-            every { userRepository.save(any()) } returns savedUser
-            every { eventPublisher.publish(any()) } just Runs
-
-            // When
-            val result = sut.createUser(request)
-
-            // Then
-            assertThat(result.id).isEqualTo(1L)
-            verify(exactly = 1) { userRepository.save(any()) }
-            verify(exactly = 1) { eventPublisher.publish(match { it is UserCreatedEvent }) }
-        }
-
-        @Test
-        fun `should throw exception when email already exists`() {
-            // Given
-            val request = CreateUserRequest(name = &#34;John&#34;, email = &#34;existing@test.com&#34;)
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            // When &amp; Then
-            assertThrows&lt;DuplicateEmailException&gt; {
-                sut.createUser(request)
-            }
-        }
-    }
-}
-</code></pre><h2 id="네이밍-규칙-1">네이밍 규칙<a href="#네이밍-규칙-1" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// 백틱 사용, should_결과_when_조건 패턴
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="err">`</span><span class="n">should</span> <span class="k">return</span> <span class="n">user</span> <span class="k">when</span> <span class="n">valid</span> <span class="n">id</span> <span class="n">provided</span><span class="err">`</span>
-</span></span><span class="line"><span class="cl"><span class="err">`</span><span class="n">should</span> <span class="k">throw</span> <span class="n">exception</span> <span class="k">when</span> <span class="n">user</span> <span class="n">not</span> <span class="n">found</span><span class="err">`</span>
-</span></span><span class="line"><span class="cl"><span class="err">`</span><span class="n">should</span> <span class="n">send</span> <span class="n">email</span> <span class="k">when</span> <span class="n">user</span> <span class="n">created</span><span class="err">`</span>
-</span></span></code></pre></div><h2 id="mockk-사용법">MockK 사용법<a href="#mockk-사용법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// Stubbing
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">every</span> <span class="p">{</span> <span class="n">repository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span> <span class="p">}</span> <span class="n">returns</span> <span class="n">user</span>
-</span></span><span class="line"><span class="cl"><span class="n">every</span> <span class="p">{</span> <span class="n">repository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="n">any</span><span class="p">())</span> <span class="p">}</span> <span class="n">returns</span> <span class="k">null</span>
-</span></span><span class="line"><span class="cl"><span class="n">every</span> <span class="p">{</span> <span class="n">service</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">any</span><span class="p">())</span> <span class="p">}</span> <span class="n">throws</span> <span class="n">SomeException</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">// ✅ let으로 null 체크
+</span></span><span class="line"><span class="cl">user?.let {
+</span></span><span class="line"><span class="cl">    sendEmail(it.email)
+</span></span><span class="line"><span class="cl">}
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Relaxed mock (모든 메서드 기본값 반환)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@MockK</span><span class="p">(</span><span class="n">relaxed</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="k">private</span> <span class="k">lateinit</span> <span class="k">var</span> <span class="py">logger</span><span class="p">:</span> <span class="n">Logger</span>
+</span></span><span class="line"><span class="cl">// ❌ 강제 unwrap 금지 (테스트 제외)
+</span></span><span class="line"><span class="cl">val name = user!!.name  // 프로덕션 코드에서 금지
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Verification
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">verify</span> <span class="p">{</span> <span class="n">repository</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="n">verify</span><span class="p">(</span><span class="n">exactly</span> <span class="p">=</span> <span class="m">2</span><span class="p">)</span> <span class="p">{</span> <span class="n">service</span><span class="p">.</span><span class="n">notify</span><span class="p">(</span><span class="n">any</span><span class="p">())</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="n">verify</span><span class="p">(</span><span class="n">ordering</span> <span class="p">=</span> <span class="nc">Ordering</span><span class="p">.</span><span class="n">SEQUENCE</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">service</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="n">service</span><span class="p">.</span><span class="n">process</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="n">service</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h2 id="통합-테스트">통합 테스트<a href="#통합-테스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="nd">@SpringBootTest</span>
-</span></span><span class="line"><span class="cl"><span class="nd">@AutoConfigureMockMvc</span>
-</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">UserApiIntegrationTest</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## Data Class 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// ✅ DTO는 data class
+</span></span><span class="line"><span class="cl">data class UserResponse(
+</span></span><span class="line"><span class="cl">    val id: Long,
+</span></span><span class="line"><span class="cl">    val name: String,
+</span></span><span class="line"><span class="cl">    val email: String
+</span></span><span class="line"><span class="cl">)
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
-</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">lateinit</span> <span class="k">var</span> <span class="py">mockMvc</span><span class="p">:</span> <span class="n">MockMvc</span>
+</span></span><span class="line"><span class="cl">// ✅ Entity는 일반 class (JPA 프록시 호환)
+</span></span><span class="line"><span class="cl"><span class="ni">@Entity</span>
+</span></span><span class="line"><span class="cl">class User(
+</span></span><span class="line"><span class="cl">    <span class="ni">@Id</span> <span class="ni">@GeneratedValue</span>
+</span></span><span class="line"><span class="cl">    val id: Long = 0,
+</span></span><span class="line"><span class="cl">    var name: String,
+</span></span><span class="line"><span class="cl">    var email: String
+</span></span><span class="line"><span class="cl">)
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
-</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">lateinit</span> <span class="k">var</span> <span class="py">userRepository</span><span class="p">:</span> <span class="n">UserRepository</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## Extension Function
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// 유틸리티성 확장 함수는 Extensions.kt에 모아두기
+</span></span><span class="line"><span class="cl">// com/example/common/Extensions.kt
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Test</span>
-</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">`POST users should create user and return 201`</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// Given
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="s">&#34;&#34;&#34;
-</span></span></span><span class="line"><span class="cl"><span class="s">            {
-</span></span></span><span class="line"><span class="cl"><span class="s">                &#34;name&#34;: &#34;John&#34;,
-</span></span></span><span class="line"><span class="cl"><span class="s">                &#34;email&#34;: &#34;john@test.com&#34;
-</span></span></span><span class="line"><span class="cl"><span class="s">            }
-</span></span></span><span class="line"><span class="cl"><span class="s">        &#34;&#34;&#34;</span><span class="p">.</span><span class="n">trimIndent</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">fun String.toSlug(): String =
+</span></span><span class="line"><span class="cl">    this.lowercase().replace(&#34; &#34;, &#34;-&#34;)
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// When &amp; Then
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">mockMvc</span><span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&#34;/api/v1/users&#34;</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">contentType</span> <span class="p">=</span> <span class="nc">MediaType</span><span class="p">.</span><span class="n">APPLICATION_JSON</span>
-</span></span><span class="line"><span class="cl">            <span class="n">content</span> <span class="p">=</span> <span class="n">request</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}.</span><span class="n">andExpect</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">status</span> <span class="p">{</span> <span class="n">isCreated</span><span class="p">()</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="n">jsonPath</span><span class="p">(</span><span class="s2">&#34;$.data.name&#34;</span><span class="p">)</span> <span class="p">{</span> <span class="k">value</span><span class="p">(</span><span class="s2">&#34;John&#34;</span><span class="p">)</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">fun <span class="p">&lt;</span><span class="nt">T</span><span class="p">&gt;</span> List<span class="p">&lt;</span><span class="nt">T</span><span class="p">&gt;</span>.secondOrNull(): T? =
+</span></span><span class="line"><span class="cl">    this.getOrNull(1)
+</span></span></code></pre></div><p><strong>skills/test-patterns/SKILL.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: test-patterns
+</span></span><span class="line"><span class="cl">description: JVM 테스트 작성 패턴. JUnit 5, MockK 기반.
+</span></span><span class="line"><span class="cl">             &#34;테스트 작성&#34;, &#34;단위 테스트&#34;, &#34;통합 테스트&#34; 요청 시 활성화.
+</span></span><span class="line"><span class="cl">---
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// DB 검증
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">val</span> <span class="py">saved</span> <span class="p">=</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">findByEmail</span><span class="p">(</span><span class="s2">&#34;john@test.com&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="n">assertThat</span><span class="p">(</span><span class="n">saved</span><span class="p">).</span><span class="n">isNotNull</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h2 id="테스트-데이터-빌더">테스트 데이터 빌더<a href="#테스트-데이터-빌더" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// test/fixtures/UserFixtures.kt
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">object</span> <span class="nc">UserFixtures</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">aUser</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">        <span class="n">id</span><span class="p">:</span> <span class="n">Long</span> <span class="p">=</span> <span class="m">1L</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="n">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;Test User&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="n">email</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;test@example.com&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">)</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span><span class="n">id</span> <span class="p">=</span> <span class="n">id</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span> <span class="p">=</span> <span class="n">email</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="gh"># JVM Test Patterns
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트 클래스 구조
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="ni">@ExtendWith</span>(MockKExtension::class)
+</span></span><span class="line"><span class="cl">internal class UserServiceTest {
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">aCreateUserRequest</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">        <span class="n">name</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;Test User&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="n">email</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="s2">&#34;test@example.com&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">)</span> <span class="p">=</span> <span class="n">CreateUserRequest</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span> <span class="p">=</span> <span class="n">email</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="ni">@MockK</span>
+</span></span><span class="line"><span class="cl">    private lateinit var userRepository: UserRepository
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 사용
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="nc">UserFixtures</span><span class="p">.</span><span class="n">aUser</span><span class="p">(</span><span class="n">name</span> <span class="p">=</span> <span class="s2">&#34;Custom Name&#34;</span><span class="p">)</span>
-</span></span></code></pre></div><pre tabindex="0"><code>
-### 2.5 Command 작성
-
-**commands/conventional-commit.md**:
-
-```markdown
----
-name: conventional-commit
-description: Conventional Commits 형식으로 커밋 메시지를 생성합니다.
----
-
-# Conventional Commit Generator
-
-현재 staged 변경사항을 분석하여 Conventional Commits 형식의 커밋 메시지를 생성합니다.
-
-## 커밋 타입
-
-| 타입 | 설명 | 예시 |
-|------|------|------|
-| feat | 새 기능 | `feat: add user registration` |
-| fix | 버그 수정 | `fix: resolve null pointer in UserService` |
-| refactor | 리팩토링 | `refactor: extract validation logic` |
-| test | 테스트 | `test: add unit tests for PaymentService` |
-| docs | 문서 | `docs: update API documentation` |
-| chore | 빌드/설정 | `chore: update gradle dependencies` |
-| perf | 성능 | `perf: optimize database query` |
-
-## 형식
-</code></pre><p><type>(<scope>): <subject></p>
-<body>
-<footer>
-```
-<h2 id="작업-순서">작업 순서<a href="#작업-순서" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<ol>
-<li><code>git diff --staged</code> 실행하여 변경사항 확인</li>
-<li>변경 내용 분석</li>
-<li>적절한 타입과 scope 선택</li>
-<li>명확한 subject 작성 (50자 이내, 명령형)</li>
-<li>필요시 body에 상세 설명 추가</li>
-</ol>
-<h2 id="예시">예시<a href="#예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<pre tabindex="0"><code>feat(user): add email verification flow
-
-- Add EmailVerificationService
-- Create verification token entity
-- Implement verification endpoint
-
-Closes #123
-</code></pre><pre tabindex="0"><code>
-### 2.6 README.md 작성
-
-```markdown
-# JVM Team Plugin
-
-Java/Kotlin 개발팀을 위한 Claude Code 플러그인입니다.
-
-## 설치
-
-```bash
-/plugin marketplace add your-org/jvm-team-plugin
-/plugin install jvm-team-plugin@your-org
-</code></pre><h2 id="포함된-기능">포함된 기능<a href="#포함된-기능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<h3 id="skills-자동-활성화">Skills (자동 활성화)<a href="#skills-자동-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<table>
-  <thead>
-      <tr>
-          <th>Skill</th>
-          <th>설명</th>
-          <th>트리거</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>kotlin-conventions</code></td>
-          <td>Kotlin 코딩 컨벤션</td>
-          <td>Kotlin 코드 작성 시</td>
-      </tr>
-      <tr>
-          <td><code>test-patterns</code></td>
-          <td>테스트 작성 패턴</td>
-          <td>테스트 작성 요청 시</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="commands-수동-호출">Commands (수동 호출)<a href="#commands-수동-호출" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<table>
-  <thead>
-      <tr>
-          <th>Command</th>
-          <th>설명</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>/conventional-commit</code></td>
-          <td>커밋 메시지 생성</td>
-      </tr>
-  </tbody>
-</table>
-<h2 id="사용-예시">사용 예시<a href="#사용-예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<pre tabindex="0"><code># Kotlin 코드 작성 시 자동으로 컨벤션 적용
-&#34;UserService 클래스 만들어줘&#34;
-
-# 테스트 작성
-&#34;UserService에 대한 단위 테스트 작성해줘&#34;
-
-# 커밋 메시지 생성
-/conventional-commit
-</code></pre><h2 id="기여">기여<a href="#기여" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p>이슈와 PR을 환영합니다!</p>
-<h2 id="라이선스">라이선스<a href="#라이선스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p>MIT</p>
-<pre tabindex="0"><code>
----
-
-## 3. Plugin을 Marketplace로 배포하기
-
-### 3.1 marketplace.json 작성
-
-Marketplace는 여러 Plugin을 묶어서 배포하는 카탈로그입니다.
-
-**저장소 구조**:
-</code></pre><p>my-marketplace/
+</span></span><span class="line"><span class="cl">    <span class="ni">@MockK</span>
+</span></span><span class="line"><span class="cl">    private lateinit var eventPublisher: EventPublisher
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="ni">@InjectMockKs</span>
+</span></span><span class="line"><span class="cl">    private lateinit var sut: UserService  // System Under Test
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="ni">@BeforeEach</span>
+</span></span><span class="line"><span class="cl">    fun setUp() {
+</span></span><span class="line"><span class="cl">        // 공통 Mock 설정
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="ni">@Nested</span>
+</span></span><span class="line"><span class="cl">    <span class="ni">@DisplayName</span>(&#34;createUser&#34;)
+</span></span><span class="line"><span class="cl">    inner class CreateUser {
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="ni">@Test</span>
+</span></span><span class="line"><span class="cl">        fun <span class="sb">`should create user when valid input`</span>() {
+</span></span><span class="line"><span class="cl">            // Given
+</span></span><span class="line"><span class="cl">            val request = CreateUserRequest(name = &#34;John&#34;, email = &#34;john<span class="ni">@test</span>.com&#34;)
+</span></span><span class="line"><span class="cl">            val savedUser = User(id = 1L, name = &#34;John&#34;, email = &#34;john<span class="ni">@test</span>.com&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            every { userRepository.save(any()) } returns savedUser
+</span></span><span class="line"><span class="cl">            every { eventPublisher.publish(any()) } just Runs
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            // When
+</span></span><span class="line"><span class="cl">            val result = sut.createUser(request)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            // Then
+</span></span><span class="line"><span class="cl">            assertThat(result.id).isEqualTo(1L)
+</span></span><span class="line"><span class="cl">            verify(exactly = 1) { userRepository.save(any()) }
+</span></span><span class="line"><span class="cl">            verify(exactly = 1) { eventPublisher.publish(match { it is UserCreatedEvent }) }
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="ni">@Test</span>
+</span></span><span class="line"><span class="cl">        fun <span class="sb">`should throw exception when email already exists`</span>() {
+</span></span><span class="line"><span class="cl">            // Given
+</span></span><span class="line"><span class="cl">            val request = CreateUserRequest(name = &#34;John&#34;, email = &#34;existing<span class="ni">@test</span>.com&#34;)
+</span></span><span class="line"><span class="cl">            every { userRepository.existsByEmail(request.email) } returns true
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            // When <span class="err">&amp;</span> Then
+</span></span><span class="line"><span class="cl">            assertThrows<span class="p">&lt;</span><span class="nt">DuplicateEmailException</span><span class="p">&gt;</span> {
+</span></span><span class="line"><span class="cl">                sut.createUser(request)
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 네이밍 규칙
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// 백틱 사용, should_결과_when_조건 패턴
+</span></span><span class="line"><span class="cl"><span class="sb">`should return user when valid id provided`</span>
+</span></span><span class="line"><span class="cl"><span class="sb">`should throw exception when user not found`</span>
+</span></span><span class="line"><span class="cl"><span class="sb">`should send email when user created`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## MockK 사용법
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// Stubbing
+</span></span><span class="line"><span class="cl">every { repository.findById(1L) } returns user
+</span></span><span class="line"><span class="cl">every { repository.findById(any()) } returns null
+</span></span><span class="line"><span class="cl">every { service.process(any()) } throws SomeException()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Relaxed mock (모든 메서드 기본값 반환)
+</span></span><span class="line"><span class="cl"><span class="ni">@MockK</span>(relaxed = true)
+</span></span><span class="line"><span class="cl">private lateinit var logger: Logger
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Verification
+</span></span><span class="line"><span class="cl">verify { repository.save(user) }
+</span></span><span class="line"><span class="cl">verify(exactly = 2) { service.notify(any()) }
+</span></span><span class="line"><span class="cl">verify(ordering = Ordering.SEQUENCE) {
+</span></span><span class="line"><span class="cl">    service.start()
+</span></span><span class="line"><span class="cl">    service.process()
+</span></span><span class="line"><span class="cl">    service.end()
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 통합 테스트
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="ni">@SpringBootTest</span>
+</span></span><span class="line"><span class="cl"><span class="ni">@AutoConfigureMockMvc</span>
+</span></span><span class="line"><span class="cl"><span class="ni">@Transactional</span>
+</span></span><span class="line"><span class="cl">class UserApiIntegrationTest {
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="ni">@Autowired</span>
+</span></span><span class="line"><span class="cl">    private lateinit var mockMvc: MockMvc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="ni">@Autowired</span>
+</span></span><span class="line"><span class="cl">    private lateinit var userRepository: UserRepository
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="ni">@Test</span>
+</span></span><span class="line"><span class="cl">    fun <span class="sb">`POST users should create user and return 201`</span>() {
+</span></span><span class="line"><span class="cl">        // Given
+</span></span><span class="line"><span class="cl">        val request = &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">            {
+</span></span><span class="line"><span class="cl">                &#34;name&#34;: &#34;John&#34;,
+</span></span><span class="line"><span class="cl">                &#34;email&#34;: &#34;john<span class="ni">@test</span>.com&#34;
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;.trimIndent()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // When <span class="err">&amp;</span> Then
+</span></span><span class="line"><span class="cl">        mockMvc.post(&#34;/api/v1/users&#34;) {
+</span></span><span class="line"><span class="cl">            contentType = MediaType.APPLICATION_JSON
+</span></span><span class="line"><span class="cl">            content = request
+</span></span><span class="line"><span class="cl">        }.andExpect {
+</span></span><span class="line"><span class="cl">            status { isCreated() }
+</span></span><span class="line"><span class="cl">            jsonPath(&#34;$.data.name&#34;) { value(&#34;John&#34;) }
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // DB 검증
+</span></span><span class="line"><span class="cl">        val saved = userRepository.findByEmail(&#34;john<span class="ni">@test</span>.com&#34;)
+</span></span><span class="line"><span class="cl">        assertThat(saved).isNotNull
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트 데이터 빌더
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">// test/fixtures/UserFixtures.kt
+</span></span><span class="line"><span class="cl">object UserFixtures {
+</span></span><span class="line"><span class="cl">    fun aUser(
+</span></span><span class="line"><span class="cl">        id: Long = 1L,
+</span></span><span class="line"><span class="cl">        name: String = &#34;Test User&#34;,
+</span></span><span class="line"><span class="cl">        email: String = &#34;test<span class="ni">@example</span>.com&#34;
+</span></span><span class="line"><span class="cl">    ) = User(id = id, name = name, email = email)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    fun aCreateUserRequest(
+</span></span><span class="line"><span class="cl">        name: String = &#34;Test User&#34;,
+</span></span><span class="line"><span class="cl">        email: String = &#34;test<span class="ni">@example</span>.com&#34;
+</span></span><span class="line"><span class="cl">    ) = CreateUserRequest(name = name, email = email)
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 사용
+</span></span><span class="line"><span class="cl">val user = UserFixtures.aUser(name = &#34;Custom Name&#34;)
+</span></span></code></pre></div><h3 id="25-command-작성">2.5 Command 작성<a href="#25-command-작성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>commands/conventional-commit.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: conventional-commit
+</span></span><span class="line"><span class="cl">description: Conventional Commits 형식으로 커밋 메시지를 생성합니다.
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># Conventional Commit Generator
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">현재 staged 변경사항을 분석하여 Conventional Commits 형식의 커밋 메시지를 생성합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 커밋 타입
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">| 타입 | 설명 | 예시 |
+</span></span><span class="line"><span class="cl">|------|------|------|
+</span></span><span class="line"><span class="cl">| feat | 새 기능 | <span class="sb">`feat: add user registration`</span> |
+</span></span><span class="line"><span class="cl">| fix | 버그 수정 | <span class="sb">`fix: resolve null pointer in UserService`</span> |
+</span></span><span class="line"><span class="cl">| refactor | 리팩토링 | <span class="sb">`refactor: extract validation logic`</span> |
+</span></span><span class="line"><span class="cl">| test | 테스트 | <span class="sb">`test: add unit tests for PaymentService`</span> |
+</span></span><span class="line"><span class="cl">| docs | 문서 | <span class="sb">`docs: update API documentation`</span> |
+</span></span><span class="line"><span class="cl">| chore | 빌드/설정 | <span class="sb">`chore: update gradle dependencies`</span> |
+</span></span><span class="line"><span class="cl">| perf | 성능 | <span class="sb">`perf: optimize database query`</span> |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 형식
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">type</span><span class="p">&gt;</span>(<span class="p">&lt;</span><span class="nt">scope</span><span class="p">&gt;</span>): <span class="p">&lt;</span><span class="nt">subject</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">footer</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 작업 순서
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> <span class="sb">`git diff --staged`</span> 실행하여 변경사항 확인
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> 변경 내용 분석
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> 적절한 타입과 scope 선택
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> 명확한 subject 작성 (50자 이내, 명령형)
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> 필요시 body에 상세 설명 추가
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 예시
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">feat(user): add email verification flow
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Add EmailVerificationService
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Create verification token entity
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Implement verification endpoint
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Closes <span class="ni">#123</span>
+</span></span></code></pre></div><h3 id="26-readmemd-작성">2.6 README.md 작성<a href="#26-readmemd-작성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># JVM Team Plugin
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Java/Kotlin 개발팀을 위한 Claude Code 플러그인입니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 설치
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">/plugin marketplace add your-org/jvm-team-plugin
+</span></span><span class="line"><span class="cl">/plugin install jvm-team-plugin<span class="ni">@your</span>-org
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 포함된 기능
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Skills (자동 활성화)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">| Skill | 설명 | 트리거 |
+</span></span><span class="line"><span class="cl">|-------|------|--------|
+</span></span><span class="line"><span class="cl">| <span class="sb">`kotlin-conventions`</span> | Kotlin 코딩 컨벤션 | Kotlin 코드 작성 시 |
+</span></span><span class="line"><span class="cl">| <span class="sb">`test-patterns`</span> | 테스트 작성 패턴 | 테스트 작성 요청 시 |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Commands (수동 호출)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">| Command | 설명 |
+</span></span><span class="line"><span class="cl">|---------|------|
+</span></span><span class="line"><span class="cl">| <span class="sb">`/conventional-commit`</span> | 커밋 메시지 생성 |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 사용 예시
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gh"># Kotlin 코드 작성 시 자동으로 컨벤션 적용
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>&#34;UserService 클래스 만들어줘&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 테스트 작성
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>&#34;UserService에 대한 단위 테스트 작성해줘&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh"># 커밋 메시지 생성
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>/conventional-commit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 기여
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">이슈와 PR을 환영합니다!
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 라이선스
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">MIT
+</span></span></code></pre></div><hr>
+<h2 id="3-plugin을-marketplace로-배포하기">3. Plugin을 Marketplace로 배포하기<a href="#3-plugin을-marketplace로-배포하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-marketplacejson-작성">3.1 marketplace.json 작성<a href="#31-marketplacejson-작성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Marketplace는 여러 Plugin을 묶어서 배포하는 카탈로그입니다.</p>
+<p><strong>저장소 구조</strong>:</p>
+<pre tabindex="0"><code>my-marketplace/
 ├── .claude-plugin/
 │   └── marketplace.json     # Marketplace 정의
 ├── plugins/
@@ -656,31 +614,28 @@ Marketplace는 여러 Plugin을 묶어서 배포하는 카탈로그입니다.
 │       ├── .claude-plugin/
 │       │   └── plugin.json
 │       └── skills/
-└── README.md</p>
-<pre tabindex="0"><code>
-**.claude-plugin/marketplace.json**:
-
-```json
-{
-  &#34;name&#34;: &#34;my-org-marketplace&#34;,
-  &#34;version&#34;: &#34;1.0.0&#34;,
-  &#34;description&#34;: &#34;우리 조직의 Claude Code 플러그인 모음&#34;,
-  &#34;plugins&#34;: [
-    {
-      &#34;name&#34;: &#34;jvm-team-plugin&#34;,
-      &#34;path&#34;: &#34;plugins/jvm-team-plugin&#34;,
-      &#34;description&#34;: &#34;Java/Kotlin 개발팀용 플러그인&#34;,
-      &#34;skills&#34;: [&#34;./skills&#34;]
-    },
-    {
-      &#34;name&#34;: &#34;go-team-plugin&#34;,
-      &#34;path&#34;: &#34;plugins/go-team-plugin&#34;,
-      &#34;description&#34;: &#34;Go 개발팀용 플러그인&#34;,
-      &#34;skills&#34;: [&#34;./skills&#34;]
-    }
-  ]
-}
-</code></pre><p>⚠️ <strong>중요</strong>: <code>skills</code> 필드를 반드시 포함해야 합니다. 이 필드가 Claude Code에게 SKILL.md 파일이 있는 디렉토리를 알려줍니다.</p>
+└── README.md
+</code></pre><p><strong>.claude-plugin/marketplace.json</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;my-org-marketplace&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;우리 조직의 Claude Code 플러그인 모음&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;plugins&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;jvm-team-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;plugins/jvm-team-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Java/Kotlin 개발팀용 플러그인&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;skills&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;./skills&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;go-team-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;plugins/go-team-plugin&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Go 개발팀용 플러그인&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;skills&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;./skills&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>⚠️ <strong>중요</strong>: <code>skills</code> 필드를 반드시 포함해야 합니다. 이 필드가 Claude Code에게 SKILL.md 파일이 있는 디렉토리를 알려줍니다.</p>
 <h3 id="32-github-repository-구성">3.2 GitHub Repository 구성<a href="#32-github-repository-구성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 1. GitHub repo 생성</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># https://github.com/your-org/claude-plugins</span>
@@ -784,16 +739,17 @@ Marketplace는 여러 Plugin을 묶어서 배포하는 카탈로그입니다.
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><h3 id="43-팀-코딩-컨벤션-skill-예제">4.3 팀 코딩 컨벤션 Skill 예제<a href="#43-팀-코딩-컨벤션-skill-예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><strong>plugins/jvm-standards/skills/spring-patterns/SKILL.md</strong>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
-</span></span><span class="line"><span class="cl">name: spring-patterns
-</span></span><span class="line"><span class="cl">description: Spring Boot 패턴 가이드. Controller, Service, Repository 작성 시 활성화.
-</span></span><span class="line"><span class="cl">             &#34;API 만들어줘&#34;, &#34;서비스 작성&#34;, &#34;레포지토리&#34; 요청 시 사용.
-</span></span><span class="line"><span class="cl">---
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="gh"># Spring Boot Patterns (회사 표준)
-</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
-</span></span><span class="line"><span class="cl"><span class="gu">## 레이어 구조
-</span></span></span></code></pre></div><p>com.company.{service}/
+<pre tabindex="0"><code>---
+name: spring-patterns
+description: Spring Boot 패턴 가이드. Controller, Service, Repository 작성 시 활성화.
+             &#34;API 만들어줘&#34;, &#34;서비스 작성&#34;, &#34;레포지토리&#34; 요청 시 사용.
+---
+
+# Spring Boot Patterns (회사 표준)
+
+## 레이어 구조
+
+com.company.{service}/
 ├── api/                    # Presentation Layer
 │   ├── controller/         # REST Controllers
 │   ├── dto/               # Request/Response DTOs
@@ -805,13 +761,12 @@ Marketplace는 여러 Plugin을 묶어서 배포하는 카탈로그입니다.
 │   ├── repository/        # Repository Interfaces
 │   └── event/             # Domain Events
 └── infrastructure/        # Infrastructure Layer
-├── persistence/       # Repository Implementations
-├── client/           # External API Clients
-└── config/           # Configurations</p>
-<pre tabindex="0"><code>
+    ├── persistence/       # Repository Implementations
+    ├── client/           # External API Clients
+    └── config/           # Configurations
+
 ## Controller 패턴
 
-```kotlin
 @RestController
 @RequestMapping(&#34;/api/v1/users&#34;)
 class UserController(
@@ -844,242 +799,229 @@ class UserController(
         userService.deleteUser(id)
     }
 }
-</code></pre><h2 id="service-패턴">Service 패턴<a href="#service-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="nd">@Service</span>
-</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="p">(</span><span class="n">readOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">UserService</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">val</span> <span class="py">userRepository</span><span class="p">:</span> <span class="n">UserRepository</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="k">val</span> <span class="py">eventPublisher</span><span class="p">:</span> <span class="n">ApplicationEventPublisher</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">getUser</span><span class="p">(</span><span class="n">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">UserResponse</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">findById</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">orElseThrow</span> <span class="p">{</span> <span class="n">UserNotFoundException</span><span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nc">UserResponse</span><span class="p">.</span><span class="n">from</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+
+## Service 패턴
+
+@Service
+@Transactional(readOnly = true)
+class UserService(
+    private val userRepository: UserRepository,
+    private val eventPublisher: ApplicationEventPublisher
+) {
+    fun getUser(id: Long): UserResponse {
+        val user = userRepository.findById(id)
+            .orElseThrow { UserNotFoundException(id) }
+        return UserResponse.from(user)
+    }
+
+    @Transactional
+    fun createUser(request: CreateUserRequest): UserResponse {
+        // 검증
+        require(!userRepository.existsByEmail(request.email)) {
+            throw DuplicateEmailException(request.email)
+        }
+
+        // 생성
+        val user = User(
+            name = request.name,
+            email = request.email
+        )
+        val savedUser = userRepository.save(user)
+
+        // 이벤트 발행
+        eventPublisher.publishEvent(UserCreatedEvent(savedUser.id))
+
+        return UserResponse.from(savedUser)
+    }
+}
+
+## 공통 응답 형식
+
+data class ApiResponse&lt;T&gt;(
+    val success: Boolean,
+    val data: T? = null,
+    val error: ErrorInfo? = null,
+    val meta: MetaInfo = MetaInfo()
+) {
+    companion object {
+        fun &lt;T&gt; success(data: T): ApiResponse&lt;T&gt; =
+            ApiResponse(success = true, data = data)
+
+        fun &lt;T&gt; error(error: ErrorInfo): ApiResponse&lt;T&gt; =
+            ApiResponse(success = false, error = error)
+    }
+}
+
+data class ErrorInfo(
+    val code: String,
+    val message: String,
+    val details: List&lt;FieldError&gt;? = null
+)
+
+data class MetaInfo(
+    val requestId: String = UUID.randomUUID().toString(),
+    val timestamp: Instant = Instant.now()
+)
+
+## 예외 처리
+
+// 비즈니스 예외 기본 클래스
+sealed class BusinessException(
+    val errorCode: String,
+    override val message: String,
+    val status: HttpStatus = HttpStatus.BAD_REQUEST
+) : RuntimeException(message)
+
+// 구체적인 예외들
+class UserNotFoundException(id: Long) :
+    BusinessException(&#34;USER_NOT_FOUND&#34;, &#34;User not found: $id&#34;, HttpStatus.NOT_FOUND)
+
+class DuplicateEmailException(email: String) :
+    BusinessException(&#34;DUPLICATE_EMAIL&#34;, &#34;Email already exists: $email&#34;, HttpStatus.CONFLICT)
+
+// GlobalExceptionHandler
+@RestControllerAdvice
+class GlobalExceptionHandler {
+
+    @ExceptionHandler(BusinessException::class)
+    fun handleBusinessException(e: BusinessException): ResponseEntity&lt;ApiResponse&lt;Nothing&gt;&gt; {
+        return ResponseEntity
+            .status(e.status)
+            .body(ApiResponse.error(ErrorInfo(e.errorCode, e.message)))
+    }
+}
+</code></pre><h3 id="44-배포-파이프라인-자동화-command">4.4 배포 파이프라인 자동화 Command<a href="#44-배포-파이프라인-자동화-command" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>plugins/shared-workflows/commands/pr-create.md</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">name: pr-create
+</span></span><span class="line"><span class="cl">description: 현재 브랜치의 변경사항으로 Pull Request를 생성합니다.
+</span></span><span class="line"><span class="cl">             GitHub CLI(gh)를 사용합니다.
+</span></span><span class="line"><span class="cl">---
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@Transactional</span>
-</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">createUser</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">CreateUserRequest</span><span class="p">):</span> <span class="n">UserResponse</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// 검증
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">require</span><span class="p">(!</span><span class="n">userRepository</span><span class="p">.</span><span class="n">existsByEmail</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">email</span><span class="p">))</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">throw</span> <span class="n">DuplicateEmailException</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">email</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="gh"># PR Create Command
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 사전 조건 확인
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> <span class="sb">`gh auth status`</span>로 GitHub 인증 확인
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> 현재 브랜치가 main/master가 아닌지 확인
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> 커밋되지 않은 변경사항이 없는지 확인
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 생성
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">val</span> <span class="py">user</span> <span class="p">=</span> <span class="n">User</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">            <span class="n">name</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="n">email</span> <span class="p">=</span> <span class="n">request</span><span class="p">.</span><span class="n">email</span>
-</span></span><span class="line"><span class="cl">        <span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="py">savedUser</span> <span class="p">=</span> <span class="n">userRepository</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 작업 순서
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> 현재 브랜치명 확인
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> <span class="sb">`git log main..HEAD --oneline`</span>으로 커밋 목록 확인
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> 변경된 파일 목록 확인
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> PR 제목 생성 (브랜치명 기반)
+</span></span><span class="line"><span class="cl"><span class="k">5.</span> PR 본문 생성:
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> 변경 사항 요약
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> 관련 이슈 링크
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> 테스트 방법
+</span></span><span class="line"><span class="cl">   <span class="k">-</span> 체크리스트
+</span></span><span class="line"><span class="cl"><span class="k">6.</span> <span class="sb">`gh pr create`</span> 실행
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 이벤트 발행
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">eventPublisher</span><span class="p">.</span><span class="n">publishEvent</span><span class="p">(</span><span class="n">UserCreatedEvent</span><span class="p">(</span><span class="n">savedUser</span><span class="p">.</span><span class="n">id</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## PR 본문 템플릿
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 📋 Summary
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="c">&lt;!-- 변경 사항 요약 --&gt;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nc">UserResponse</span><span class="p">.</span><span class="n">from</span><span class="p">(</span><span class="n">savedUser</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h2 id="공통-응답-형식">공통 응답 형식<a href="#공통-응답-형식" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">data</span> <span class="k">class</span> <span class="nc">ApiResponse</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">success</span><span class="p">:</span> <span class="n">Boolean</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">data</span><span class="p">:</span> <span class="n">T</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">error</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">meta</span><span class="p">:</span> <span class="n">MetaInfo</span> <span class="p">=</span> <span class="n">MetaInfo</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">companion</span> <span class="k">object</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">success</span><span class="p">(</span><span class="k">data</span><span class="p">:</span> <span class="n">T</span><span class="p">):</span> <span class="n">ApiResponse</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span>
-</span></span><span class="line"><span class="cl">            <span class="n">ApiResponse</span><span class="p">(</span><span class="n">success</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="k">data</span> <span class="p">=</span> <span class="k">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 🔗 Related Issues
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="c">&lt;!-- 관련 이슈: closes </span><span class="ni">#123</span><span class="c"> --&gt;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">error</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span> <span class="n">ApiResponse</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">=</span>
-</span></span><span class="line"><span class="cl">            <span class="n">ApiResponse</span><span class="p">(</span><span class="n">success</span> <span class="p">=</span> <span class="k">false</span><span class="p">,</span> <span class="n">error</span> <span class="p">=</span> <span class="n">error</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## 🧪 Test Plan
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="c">&lt;!-- 테스트 방법 --&gt;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">data</span> <span class="k">class</span> <span class="nc">ErrorInfo</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">code</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">message</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">details</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">FieldError</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="gu">## ✅ Checklist
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">- [ ]</span> 테스트 코드 작성/수정
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 문서 업데이트
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 린트 통과
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 빌드 성공
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">data</span> <span class="k">class</span> <span class="nc">MetaInfo</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">requestId</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="nc">UUID</span><span class="p">.</span><span class="n">randomUUID</span><span class="p">().</span><span class="n">toString</span><span class="p">(),</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">timestamp</span><span class="p">:</span> <span class="n">Instant</span> <span class="p">=</span> <span class="nc">Instant</span><span class="p">.</span><span class="n">now</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span></code></pre></div><h2 id="예외-처리">예외 처리<a href="#예외-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// 비즈니스 예외 기본 클래스
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">sealed</span> <span class="k">class</span> <span class="nc">BusinessException</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">errorCode</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">override</span> <span class="k">val</span> <span class="py">message</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">status</span><span class="p">:</span> <span class="n">HttpStatus</span> <span class="p">=</span> <span class="nc">HttpStatus</span><span class="p">.</span><span class="n">BAD_REQUEST</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">:</span> <span class="n">RuntimeException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 구체적인 예외들
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">UserNotFoundException</span><span class="p">(</span><span class="n">id</span><span class="p">:</span> <span class="n">Long</span><span class="p">)</span> <span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">BusinessException</span><span class="p">(</span><span class="s2">&#34;USER_NOT_FOUND&#34;</span><span class="p">,</span> <span class="s2">&#34;User not found: </span><span class="si">$id</span><span class="s2">&#34;</span><span class="p">,</span> <span class="nc">HttpStatus</span><span class="p">.</span><span class="n">NOT_FOUND</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">DuplicateEmailException</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">BusinessException</span><span class="p">(</span><span class="s2">&#34;DUPLICATE_EMAIL&#34;</span><span class="p">,</span> <span class="s2">&#34;Email already exists: </span><span class="si">$email</span><span class="s2">&#34;</span><span class="p">,</span> <span class="nc">HttpStatus</span><span class="p">.</span><span class="n">CONFLICT</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// GlobalExceptionHandler
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@RestControllerAdvice</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">GlobalExceptionHandler</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@ExceptionHandler</span><span class="p">(</span><span class="n">BusinessException</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">fun</span> <span class="nf">handleBusinessException</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">BusinessException</span><span class="p">):</span> <span class="n">ResponseEntity</span><span class="p">&lt;</span><span class="n">ApiResponse</span><span class="p">&lt;</span><span class="n">Nothing</span><span class="p">&gt;&gt;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ResponseEntity</span>
-</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">status</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">body</span><span class="p">(</span><span class="nc">ApiResponse</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="n">ErrorInfo</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">errorCode</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="n">message</span><span class="p">)))</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><pre tabindex="0"><code>
-### 4.4 배포 파이프라인 자동화 Command
+</span></span><span class="line"><span class="cl"><span class="gu">## 명령어 예시
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">gh pr create \
+</span></span><span class="line"><span class="cl">  --title &#34;feat(user): add email verification&#34; \
+</span></span><span class="line"><span class="cl">  --body &#34;$(cat pr-body.md)&#34; \
+</span></span><span class="line"><span class="cl">  --base main \
+</span></span><span class="line"><span class="cl">  --reviewer &#34;<span class="ni">@team/backend</span>&#34;
+</span></span></code></pre></div><hr>
+<h2 id="5-조직-전체-배포-enterprise">5. 조직 전체 배포 (Enterprise)<a href="#5-조직-전체-배포-enterprise" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-managed-settings를-통한-배포">5.1 Managed Settings를 통한 배포<a href="#51-managed-settings를-통한-배포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Enterprise 환경에서는 관리자가 조직 전체에 Skills와 Plugins를 배포할 수 있습니다.</p>
+<p><img src="/img/claude_code_guide/claude05_01.png" alt="img01"></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    subgraph Enterprise[&#34;🏢 Enterprise 배포 구조&#34;]
+        direction TB
 
-**plugins/shared-workflows/commands/pr-create.md**:
+        subgraph Admin[&#34;👔 Organization Admin&#34;]
+            AdminTask[&#34;Managed Settings에서 필수 플러그인 지정&lt;br/&gt;• company-standards@our-marketplace&lt;br/&gt;• security-guidelines@our-marketplace&#34;]
+        end
 
-```markdown
----
-name: pr-create
-description: 현재 브랜치의 변경사항으로 Pull Request를 생성합니다.
-             GitHub CLI(gh)를 사용합니다.
----
+        Admin --&gt;|&#34;자동 배포&#34;| DevA
+        Admin --&gt;|&#34;자동 배포&#34;| DevB
+        Admin --&gt;|&#34;자동 배포&#34;| DevC
 
-# PR Create Command
+        subgraph Developers[&#34;개발자들&#34;]
+            direction LR
+            DevA[&#34;👨‍💻 개발자 A&lt;br/&gt;&lt;br/&gt;Claude Code&lt;br/&gt;시작 시&lt;br/&gt;자동 설치됨&#34;]
+            DevB[&#34;👩‍💻 개발자 B&lt;br/&gt;&lt;br/&gt;Claude Code&lt;br/&gt;시작 시&lt;br/&gt;자동 설치됨&#34;]
+            DevC[&#34;👨‍💻 개발자 C&lt;br/&gt;&lt;br/&gt;Claude Code&lt;br/&gt;시작 시&lt;br/&gt;자동 설치됨&#34;]
+        end
+    end
 
-## 사전 조건 확인
+    style Admin fill:#bbdefb,color:#000000
+    style AdminTask fill:#e3f2fd,color:#000000
+    style DevA fill:#c8e6c9,color:#000000
+    style DevB fill:#c8e6c9,color:#000000
+    style DevC fill:#c8e6c9,color:#000000
+</code></pre><h3 id="52-보안-고려사항">5.2 보안 고려사항<a href="#52-보안-고려사항" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> 모든 플러그인은 내부 검토를 거쳤는가?</li>
+<li><input disabled="" type="checkbox"> Skills에 민감한 정보(API 키, 비밀번호)가 포함되지 않았는가?</li>
+<li><input disabled="" type="checkbox"> 스크립트는 필요한 최소 권한만 요청하는가?</li>
+<li><input disabled="" type="checkbox"> 외부 의존성의 보안을 검토했는가?</li>
+<li><input disabled="" type="checkbox"> 정기적인 보안 업데이트 프로세스가 있는가?</li>
+</ul>
+<p>⚠️ <strong>주의</strong>: Skills와 Plugins는 사용자 머신에서 코드를 실행할 수 있습니다. 신뢰할 수 있는 소스의 플러그인만 사용하세요.</p>
+<hr>
+<h2 id="6-marketplace-유지보수">6. Marketplace 유지보수<a href="#6-marketplace-유지보수" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-버전-관리-전략">6.1 버전 관리 전략<a href="#61-버전-관리-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>Semantic Versioning 적용</strong>:</p>
+<pre tabindex="0"><code>MAJOR.MINOR.PATCH
 
-1. `gh auth status`로 GitHub 인증 확인
-2. 현재 브랜치가 main/master가 아닌지 확인
-3. 커밋되지 않은 변경사항이 없는지 확인
-
-## 작업 순서
-
-1. 현재 브랜치명 확인
-2. `git log main..HEAD --oneline`으로 커밋 목록 확인
-3. 변경된 파일 목록 확인
-4. PR 제목 생성 (브랜치명 기반)
-5. PR 본문 생성:
-   - 변경 사항 요약
-   - 관련 이슈 링크
-   - 테스트 방법
-   - 체크리스트
-6. `gh pr create` 실행
-
-## PR 본문 템플릿
-
-```markdown
-## 📋 Summary
-&lt;!-- 변경 사항 요약 --&gt;
-
-## 🔗 Related Issues
-&lt;!-- 관련 이슈: closes #123 --&gt;
-
-## 🧪 Test Plan
-&lt;!-- 테스트 방법 --&gt;
-
-## ✅ Checklist
-- [ ] 테스트 코드 작성/수정
-- [ ] 문서 업데이트
-- [ ] 린트 통과
-- [ ] 빌드 성공
-</code></pre><h2 id="명령어-예시">명령어 예시<a href="#명령어-예시" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gh pr create <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --title <span class="s2">&#34;feat(user): add email verification&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --body <span class="s2">&#34;</span><span class="k">$(</span>cat pr-body.md<span class="k">)</span><span class="s2">&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --base main <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --reviewer <span class="s2">&#34;@team/backend&#34;</span>
-</span></span></code></pre></div><pre tabindex="0"><code>
----
-
-## 5. 조직 전체 배포 (Enterprise)
-
-### 5.1 Managed Settings를 통한 배포
-
-Enterprise 환경에서는 관리자가 조직 전체에 Skills와 Plugins를 배포할 수 있습니다.
-</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
-│                    Enterprise 배포 구조                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                   Organization Admin                     │   │
-│  │                                                         │   │
-│  │  Managed Settings에서 필수 플러그인 지정                 │   │
-│  │  - company-standards@our-marketplace                    │   │
-│  │  - security-guidelines@our-marketplace                  │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                              │                                  │
-│                              ▼ 자동 배포                        │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐           │
-│  │   개발자 A   │ │   개발자 B   │ │   개발자 C   │           │
-│  │              │ │              │ │              │           │
-│  │ Claude Code  │ │ Claude Code  │ │ Claude Code  │           │
-│  │ 시작 시      │ │ 시작 시      │ │ 시작 시      │           │
-│  │ 자동 설치됨  │ │ 자동 설치됨  │ │ 자동 설치됨  │           │
-│  └──────────────┘ └──────────────┘ └──────────────┘           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘</p>
-<pre tabindex="0"><code>
-### 5.2 보안 고려사항
-</code></pre><p>┌─────────────────────────────────────────────────────────────────┐
-│                      보안 체크리스트                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  □ 모든 플러그인은 내부 검토를 거쳤는가?                        │
-│  □ Skills에 민감한 정보(API 키, 비밀번호)가 포함되지 않았는가?  │
-│  □ 스크립트는 필요한 최소 권한만 요청하는가?                    │
-│  □ 외부 의존성의 보안을 검토했는가?                             │
-│  □ 정기적인 보안 업데이트 프로세스가 있는가?                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘</p>
-<pre tabindex="0"><code>
-⚠️ **주의**: Skills와 Plugins는 사용자 머신에서 코드를 실행할 수 있습니다. 신뢰할 수 있는 소스의 플러그인만 사용하세요.
-
----
-
-## 6. Marketplace 유지보수
-
-### 6.1 버전 관리 전략
-
-**Semantic Versioning 적용**:
-</code></pre><p>MAJOR.MINOR.PATCH</p>
-<p>MAJOR: 호환성이 깨지는 변경 (Skills 제거, 이름 변경)
+MAJOR: 호환성이 깨지는 변경 (Skills 제거, 이름 변경)
 MINOR: 새 기능 추가 (새 Skill, 새 Command)
-PATCH: 버그 수정, 문서 업데이트</p>
-<pre tabindex="0"><code>
-**CHANGELOG.md 유지**:
-
-```markdown
-# Changelog
-
-## [2.1.0] - 2025-01-23
-
-### Added
-- `spring-security` skill 추가
-
-### Changed
-- `kotlin-conventions` skill에 coroutine 패턴 추가
-
-### Fixed
-- `test-patterns` skill의 MockK 예제 오류 수정
-
-## [2.0.0] - 2025-01-15
-
-### Breaking Changes
-- `java-style` skill을 `kotlin-conventions`로 통합
-- 기존 `java-style` 사용자는 마이그레이션 필요
-</code></pre><h3 id="62-플러그인-품질-검증">6.2 플러그인 품질 검증<a href="#62-플러그인-품질-검증" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+PATCH: 버그 수정, 문서 업데이트
+</code></pre><p><strong>CHANGELOG.md 유지</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Changelog
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">## [2.1.0] - 2025-01-23
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Added
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> <span class="sb">`spring-security`</span> skill 추가
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Changed
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> <span class="sb">`kotlin-conventions`</span> skill에 coroutine 패턴 추가
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Fixed
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> <span class="sb">`test-patterns`</span> skill의 MockK 예제 오류 수정
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## [2.0.0] - 2025-01-15
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="gu">### Breaking Changes
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">-</span> <span class="sb">`java-style`</span> skill을 <span class="sb">`kotlin-conventions`</span>로 통합
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 기존 <span class="sb">`java-style`</span> 사용자는 마이그레이션 필요
+</span></span></code></pre></div><h3 id="62-플러그인-품질-검증">6.2 플러그인 품질 검증<a href="#62-플러그인-품질-검증" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>배포 전 체크리스트:</p>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                    배포 전 품질 검증                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  □ plugin.json이 올바른 형식인가?                               │
-│  □ 모든 SKILL.md에 name과 description이 있는가?                │
-│  □ description이 명확하고 트리거 조건을 설명하는가?             │
-│  □ 실제 프로젝트에서 테스트했는가?                              │
-│  □ README.md가 최신 상태인가?                                   │
-│  □ 버전 번호를 올렸는가?                                        │
-│  □ CHANGELOG.md를 업데이트했는가?                               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-</code></pre><h3 id="63-커뮤니티-기여-받기">6.3 커뮤니티 기여 받기<a href="#63-커뮤니티-기여-받기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> plugin.json이 올바른 형식인가?</li>
+<li><input disabled="" type="checkbox"> 모든 SKILL.md에 name과 description이 있는가?</li>
+<li><input disabled="" type="checkbox"> description이 명확하고 트리거 조건을 설명하는가?</li>
+<li><input disabled="" type="checkbox"> 실제 프로젝트에서 테스트했는가?</li>
+<li><input disabled="" type="checkbox"> README.md가 최신 상태인가?</li>
+<li><input disabled="" type="checkbox"> 버전 번호를 올렸는가?</li>
+<li><input disabled="" type="checkbox"> CHANGELOG.md를 업데이트했는가?</li>
+</ul>
+<h3 id="63-커뮤니티-기여-받기">6.3 커뮤니티 기여 받기<a href="#63-커뮤니티-기여-받기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>오픈소스 Marketplace 운영 시:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CONTRIBUTING.md
 </span></span></span><span class="line"><span class="cl"><span class="gh"></span>
