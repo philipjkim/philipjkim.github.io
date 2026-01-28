@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Mermaid 다이어그램 가이드 Part 4: State Diagram :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="시스템의 상태와 전이를 명확하게 표현하는 상태 다이어그램을 마스터합니다." />
+<meta name="keywords" content="dev, diagram, mermaid" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Mermaid 다이어그램 가이드 Part 4: State Diagram">
+<meta property="og:description" content="시스템의 상태와 전이를 명확하게 표현하는 상태 다이어그램을 마스터합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-28 10:37:39 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-04/">Mermaid 다이어그램 가이드 Part 4: State Diagram</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-28</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/diagram/">diagram</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/mermaid/">mermaid</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="state-diagram이란">State Diagram이란?<a href="#state-diagram이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>상태 다이어그램(State Diagram)은 시스템이나 객체가 가질 수 있는 상태(State)와 상태 간의 전이(Transition)를 시각화합니다. 주문 처리, 사용자 인증, TCP 연결 등 유한 상태 기계(Finite State Machine)를 표현할 때 필수적인 도구입니다.</p>
+<h2 id="기본-문법">기본 문법<a href="#기본-문법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Idle
+    Idle --&gt; Processing
+    Processing --&gt; Completed
+    Completed --&gt; [*]
+</code></pre><p><code>stateDiagram-v2</code>를 사용하면 최신 렌더러로 그려집니다. 구버전 <code>stateDiagram</code>도 여전히 사용 가능합니다.</p>
+<h2 id="상태state-정의">상태(State) 정의<a href="#상태state-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="기본-상태">기본 상태<a href="#기본-상태" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 단순한 형태로 상태 이름만 지정합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    Idle
+    Running
+    Stopped
+</code></pre><h3 id="설명이-있는-상태">설명이 있는 상태<a href="#설명이-있는-상태" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>state</code> 키워드로 ID와 표시 텍스트를 분리할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    state &#34;대기 상태&#34; as Idle
+    state &#34;실행 중&#34; as Running
+    state &#34;정지됨&#34; as Stopped
+
+    Idle --&gt; Running
+    Running --&gt; Stopped
+</code></pre><h3 id="콜론을-사용한-설명">콜론을 사용한 설명<a href="#콜론을-사용한-설명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    Idle: 대기 상태
+    Running: 실행 중
+    Stopped: 정지됨
+
+    Idle --&gt; Running
+    Running --&gt; Stopped
+</code></pre><h2 id="전이transition">전이(Transition)<a href="#전이transition" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="기본-전이">기본 전이<a href="#기본-전이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    StateA --&gt; StateB
+</code></pre><h3 id="전이-설명transition-label">전이 설명(Transition Label)<a href="#전이-설명transition-label" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>상태 전이의 조건이나 이벤트를 설명합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    Idle --&gt; Running: start()
+    Running --&gt; Paused: pause()
+    Paused --&gt; Running: resume()
+    Running --&gt; Stopped: stop()
+    Paused --&gt; Stopped: stop()
+</code></pre><h2 id="시작과-종료-상태">시작과 종료 상태<a href="#시작과-종료-상태" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>[*]</code>는 시작점 또는 종료점을 나타냅니다. 전이 방향에 따라 의미가 결정됩니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Created: 생성
+    Created --&gt; Active: 활성화
+    Active --&gt; Inactive: 비활성화
+    Inactive --&gt; Active: 재활성화
+    Active --&gt; Deleted: 삭제
+    Inactive --&gt; Deleted: 삭제
+    Deleted --&gt; [*]
+</code></pre><h2 id="복합-상태composite-state">복합 상태(Composite State)<a href="#복합-상태composite-state" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>상태 안에 하위 상태를 포함할 수 있습니다. 복잡한 상태를 계층적으로 표현할 때 유용합니다.</p>
+<h3 id="기본-복합-상태">기본 복합 상태<a href="#기본-복합-상태" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Active
+
+    state Active {
+        [*] --&gt; Idle
+        Idle --&gt; Processing
+        Processing --&gt; Idle
+    }
+
+    Active --&gt; Inactive
+    Inactive --&gt; Active
+    Inactive --&gt; [*]
+</code></pre><h3 id="중첩-복합-상태">중첩 복합 상태<a href="#중첩-복합-상태" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>복합 상태는 여러 레벨로 중첩할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Application
+
+    state Application {
+        [*] --&gt; Running
+
+        state Running {
+            [*] --&gt; Foreground
+            Foreground --&gt; Background: minimize
+            Background --&gt; Foreground: restore
+        }
+
+        Running --&gt; Paused: pause
+        Paused --&gt; Running: resume
+    }
+
+    Application --&gt; Terminated
+    Terminated --&gt; [*]
+</code></pre><h3 id="복합-상태-간-전이">복합 상태 간 전이<a href="#복합-상태-간-전이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    state &#34;주문 처리&#34; as OrderProcess {
+        [*] --&gt; 결제대기
+        결제대기 --&gt; 결제완료
+    }
+
+    state &#34;배송 처리&#34; as ShippingProcess {
+        [*] --&gt; 배송준비
+        배송준비 --&gt; 배송중
+        배송중 --&gt; 배송완료
+    }
+
+    [*] --&gt; OrderProcess
+    OrderProcess --&gt; ShippingProcess
+    ShippingProcess --&gt; [*]
+</code></pre><h2 id="분기choice">분기(Choice)<a href="#분기choice" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>조건에 따른 분기를 표현합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    state check_stock &lt;&lt;choice&gt;&gt;
+
+    [*] --&gt; Ordered
+    Ordered --&gt; check_stock
+    check_stock --&gt; InStock: 재고 있음
+    check_stock --&gt; OutOfStock: 재고 없음
+    InStock --&gt; Shipped
+    OutOfStock --&gt; Backordered
+    Shipped --&gt; [*]
+    Backordered --&gt; Ordered: 재입고
+</code></pre><h2 id="fork와-join">Fork와 Join<a href="#fork와-join" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>병렬 처리의 시작(Fork)과 합류(Join)를 표현합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    state fork_state &lt;&lt;fork&gt;&gt;
+    state join_state &lt;&lt;join&gt;&gt;
+
+    [*] --&gt; fork_state
+    fork_state --&gt; Task1
+    fork_state --&gt; Task2
+    fork_state --&gt; Task3
+
+    Task1 --&gt; join_state
+    Task2 --&gt; join_state
+    Task3 --&gt; join_state
+
+    join_state --&gt; Completed
+    Completed --&gt; [*]
+</code></pre><h2 id="병행-상태concurrency">병행 상태(Concurrency)<a href="#병행-상태concurrency" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>--</code> 구분자로 동시에 존재하는 병렬 상태를 표현합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Active
+
+    state Active {
+        [*] --&gt; NetworkState
+        [*] --&gt; UIState
+        --
+        state NetworkState {
+            [*] --&gt; Connected
+            Connected --&gt; Disconnected
+            Disconnected --&gt; Connected
+        }
+        --
+        state UIState {
+            [*] --&gt; Visible
+            Visible --&gt; Hidden
+            Hidden --&gt; Visible
+        }
+    }
+
+    Active --&gt; [*]
+</code></pre><h2 id="노트notes">노트(Notes)<a href="#노트notes" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>상태에 대한 추가 설명을 붙일 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Pending
+    Pending --&gt; Processing
+    Processing --&gt; Completed
+    Processing --&gt; Failed
+    Completed --&gt; [*]
+    Failed --&gt; [*]
+
+    note right of Pending: 요청이 대기열에 추가됨
+    note left of Processing
+        비동기 작업 수행 중
+        타임아웃: 30초
+    end note
+    note right of Failed: 3회 재시도 후 실패 처리
+</code></pre><h2 id="방향-설정">방향 설정<a href="#방향-설정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>direction</code> 키워드로 다이어그램의 방향을 설정합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    direction LR
+
+    [*] --&gt; A
+    A --&gt; B
+    B --&gt; C
+    C --&gt; [*]
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>방향</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>TB</code></td>
+          <td>위에서 아래로 (기본값)</td>
+      </tr>
+      <tr>
+          <td><code>LR</code></td>
+          <td>왼쪽에서 오른쪽으로</td>
+      </tr>
+      <tr>
+          <td><code>BT</code></td>
+          <td>아래에서 위로</td>
+      </tr>
+      <tr>
+          <td><code>RL</code></td>
+          <td>오른쪽에서 왼쪽으로</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="스타일링-classdef">스타일링 (classDef)<a href="#스타일링-classdef" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>상태에 스타일을 적용할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    classDef success fill:#10B981,color:white
+    classDef error fill:#EF4444,color:white
+    classDef pending fill:#F59E0B,color:black
+
+    [*] --&gt; Pending
+    Pending --&gt; Processing
+    Processing --&gt; Completed
+    Processing --&gt; Failed
+    Completed --&gt; [*]
+    Failed --&gt; [*]
+
+    class Pending pending
+    class Completed success
+    class Failed error
+</code></pre><h3 id="인라인-스타일-적용">인라인 스타일 적용<a href="#인라인-스타일-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    [*] --&gt; Active
+    Active --&gt; Inactive
+    Inactive --&gt; [*]
+
+    Active:::activeStyle
+    Inactive:::inactiveStyle
+
+    classDef activeStyle fill:#22C55E,color:white
+    classDef inactiveStyle fill:#6B7280,color:white
+</code></pre><h2 id="주석">주석<a href="#주석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>%%</code>로 주석을 작성할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    %% 이것은 주석입니다
+    [*] --&gt; State1
+    State1 --&gt; State2
+    %% State2에서 State3로의 전이
+    State2 --&gt; State3
+    State3 --&gt; [*]
+</code></pre><h2 id="실전-예제-주문-상태-관리">실전 예제: 주문 상태 관리<a href="#실전-예제-주문-상태-관리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    classDef success fill:#10B981,color:white
+    classDef error fill:#EF4444,color:white
+    classDef warning fill:#F59E0B,color:black
+    classDef info fill:#3B82F6,color:white
+
+    [*] --&gt; Created: 주문 생성
+
+    state &#34;결제 처리&#34; as PaymentProcess {
+        [*] --&gt; PaymentPending
+        PaymentPending --&gt; PaymentProcessing: 결제 시도
+        PaymentProcessing --&gt; PaymentCompleted: 승인
+        PaymentProcessing --&gt; PaymentFailed: 거절
+        PaymentFailed --&gt; PaymentPending: 재시도
+    }
+
+    Created --&gt; PaymentProcess: 결제 요청
+
+    state payment_check &lt;&lt;choice&gt;&gt;
+    PaymentProcess --&gt; payment_check
+    payment_check --&gt; Confirmed: 결제 성공
+    payment_check --&gt; Cancelled: 결제 실패 (3회)
+
+    state &#34;배송 처리&#34; as ShippingProcess {
+        [*] --&gt; Preparing
+        Preparing --&gt; ReadyToShip: 포장 완료
+        ReadyToShip --&gt; InTransit: 발송
+        InTransit --&gt; OutForDelivery: 배송 중
+        OutForDelivery --&gt; Delivered: 배송 완료
+    }
+
+    Confirmed --&gt; ShippingProcess
+    ShippingProcess --&gt; Completed: 수령 확인
+
+    Completed --&gt; [*]
+    Cancelled --&gt; [*]
+
+    note right of Created: 고객이 주문 생성
+    note right of Confirmed: 재고 확보됨
+    note left of Completed: 반품 가능 (7일)
+
+    class PaymentCompleted,Confirmed,Delivered,Completed success
+    class PaymentFailed,Cancelled error
+    class PaymentPending,Preparing warning
+    class PaymentProcessing,InTransit info
+</code></pre><h2 id="실전-예제-tcp-연결-상태">실전 예제: TCP 연결 상태<a href="#실전-예제-tcp-연결-상태" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    direction LR
+
+    [*] --&gt; CLOSED
+
+    CLOSED --&gt; LISTEN: passive open
+    CLOSED --&gt; SYN_SENT: active open / SYN
+
+    LISTEN --&gt; SYN_RCVD: SYN / SYN+ACK
+    LISTEN --&gt; CLOSED: close
+
+    SYN_SENT --&gt; ESTABLISHED: SYN+ACK / ACK
+    SYN_SENT --&gt; CLOSED: timeout / RST
+
+    SYN_RCVD --&gt; ESTABLISHED: ACK
+    SYN_RCVD --&gt; CLOSED: timeout / RST
+
+    ESTABLISHED --&gt; FIN_WAIT_1: close / FIN
+    ESTABLISHED --&gt; CLOSE_WAIT: FIN / ACK
+
+    FIN_WAIT_1 --&gt; FIN_WAIT_2: ACK
+    FIN_WAIT_1 --&gt; CLOSING: FIN / ACK
+    FIN_WAIT_1 --&gt; TIME_WAIT: FIN+ACK / ACK
+
+    FIN_WAIT_2 --&gt; TIME_WAIT: FIN / ACK
+
+    CLOSING --&gt; TIME_WAIT: ACK
+
+    CLOSE_WAIT --&gt; LAST_ACK: close / FIN
+
+    LAST_ACK --&gt; CLOSED: ACK
+
+    TIME_WAIT --&gt; CLOSED: 2MSL timeout
+</code></pre><h2 id="실전-예제-사용자-인증-상태">실전 예제: 사용자 인증 상태<a href="#실전-예제-사용자-인증-상태" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    classDef authenticated fill:#22C55E,color:white
+    classDef unauthenticated fill:#9CA3AF,color:white
+    classDef locked fill:#EF4444,color:white
+
+    [*] --&gt; Anonymous
+
+    state &#34;로그인 시도&#34; as LoginAttempt {
+        [*] --&gt; ValidatingCredentials
+        ValidatingCredentials --&gt; CheckingMFA: 비밀번호 일치
+        ValidatingCredentials --&gt; CredentialError: 비밀번호 불일치
+
+        state mfa_check &lt;&lt;choice&gt;&gt;
+        CheckingMFA --&gt; mfa_check
+        mfa_check --&gt; MFAVerified: MFA 성공
+        mfa_check --&gt; MFAFailed: MFA 실패
+    }
+
+    Anonymous --&gt; LoginAttempt: 로그인 요청
+
+    state attempt_result &lt;&lt;choice&gt;&gt;
+    LoginAttempt --&gt; attempt_result
+
+    attempt_result --&gt; Authenticated: 인증 성공
+    attempt_result --&gt; Anonymous: 인증 실패 (재시도 가능)
+    attempt_result --&gt; Locked: 5회 실패
+
+    state Authenticated {
+        [*] --&gt; Active
+        Active --&gt; Idle: 비활동 10분
+        Idle --&gt; Active: 활동 감지
+        Idle --&gt; SessionExpired: 비활동 30분
+    }
+
+    Authenticated --&gt; Anonymous: 로그아웃
+    SessionExpired --&gt; Anonymous
+
+    Locked --&gt; Anonymous: 30분 후 해제
+    Locked --&gt; Anonymous: 관리자 해제
+
+    Anonymous --&gt; [*]
+
+    class Authenticated,Active authenticated
+    class Anonymous,Idle unauthenticated
+    class Locked locked
+
+    note right of Authenticated: 토큰 기반 세션 유지
+    note left of Locked
+        보안 정책에 따른
+        계정 잠금
+    end note
+</code></pre><h2 id="실전-예제-cicd-파이프라인-상태">실전 예제: CI/CD 파이프라인 상태<a href="#실전-예제-cicd-파이프라인-상태" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    direction LR
+
+    classDef success fill:#22C55E,color:white
+    classDef running fill:#3B82F6,color:white
+    classDef failed fill:#EF4444,color:white
+    classDef pending fill:#F59E0B,color:black
+
+    [*] --&gt; Queued: PR 생성
+
+    state &#34;빌드 단계&#34; as BuildStage {
+        [*] --&gt; Checkout
+        Checkout --&gt; Dependencies: 코드 체크아웃
+        Dependencies --&gt; Compile: 의존성 설치
+        Compile --&gt; [*]: 빌드 성공
+    }
+
+    state &#34;테스트 단계&#34; as TestStage {
+        state fork_test &lt;&lt;fork&gt;&gt;
+        state join_test &lt;&lt;join&gt;&gt;
+
+        [*] --&gt; fork_test
+        fork_test --&gt; UnitTest
+        fork_test --&gt; IntegrationTest
+        fork_test --&gt; E2ETest
+
+        UnitTest --&gt; join_test
+        IntegrationTest --&gt; join_test
+        E2ETest --&gt; join_test
+        join_test --&gt; [*]
+    }
+
+    state &#34;배포 단계&#34; as DeployStage {
+        [*] --&gt; DeployStaging
+        DeployStaging --&gt; SmokeTest
+        SmokeTest --&gt; DeployProduction: 승인
+        DeployProduction --&gt; [*]
+    }
+
+    Queued --&gt; BuildStage: 워커 할당
+
+    state build_result &lt;&lt;choice&gt;&gt;
+    BuildStage --&gt; build_result
+    build_result --&gt; TestStage: 빌드 성공
+    build_result --&gt; BuildFailed: 빌드 실패
+
+    state test_result &lt;&lt;choice&gt;&gt;
+    TestStage --&gt; test_result
+    test_result --&gt; DeployStage: 테스트 통과
+    test_result --&gt; TestFailed: 테스트 실패
+
+    DeployStage --&gt; Deployed: 배포 완료
+
+    BuildFailed --&gt; [*]
+    TestFailed --&gt; [*]
+    Deployed --&gt; [*]
+
+    class Queued pending
+    class BuildStage,TestStage,DeployStage running
+    class Deployed success
+    class BuildFailed,TestFailed failed
+</code></pre><h2 id="상태-다이어그램-작성-팁">상태 다이어그램 작성 팁<a href="#상태-다이어그램-작성-팁" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-명확한-상태-이름">1. 명확한 상태 이름<a href="#1-명확한-상태-이름" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
+    %% 좋은 예: 명확하고 동사나 형용사 사용
+    [*] --&gt; PaymentPending
+    PaymentPending --&gt; PaymentProcessing
+    PaymentProcessing --&gt; PaymentCompleted
+</code></pre><h3 id="2-전이-레이블-활용">2. 전이 레이블 활용<a href="#2-전이-레이블-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>상태 전이의 트리거(이벤트)와 조건을 명시합니다.</p>
+<pre tabindex="0"><code>StatA --&gt; StateB: 이벤트 [조건] / 액션
+</code></pre><h3 id="3-복합-상태로-복잡성-관리">3. 복합 상태로 복잡성 관리<a href="#3-복합-상태로-복잡성-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>관련된 상태들을 그룹화하여 다이어그램을 읽기 쉽게 만듭니다.</p>
+<h3 id="4-색상으로-상태-구분">4. 색상으로 상태 구분<a href="#4-색상으로-상태-구분" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>성공/완료 상태: 초록색</li>
+<li>실패/에러 상태: 빨간색</li>
+<li>대기/진행 중: 노란색/파란색</li>
+<li>중립/비활성: 회색</li>
+</ul>
+<hr>
+<h2 id="시리즈-마무리">시리즈 마무리<a href="#시리즈-마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 4부작 시리즈를 통해 Mermaid의 핵심 다이어그램인 Flowchart, Sequence Diagram, State Diagram을 모두 다뤘습니다.</p>
+<h3 id="각-다이어그램-사용-시나리오">각 다이어그램 사용 시나리오<a href="#각-다이어그램-사용-시나리오" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>다이어그램</th>
+          <th>사용 시나리오</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Flowchart</strong></td>
+          <td>프로세스 흐름, 알고리즘, 시스템 아키텍처, 의사결정 흐름</td>
+      </tr>
+      <tr>
+          <td><strong>Sequence Diagram</strong></td>
+          <td>API 호출 흐름, 시스템 간 통신, 인증 과정, 트랜잭션 처리</td>
+      </tr>
+      <tr>
+          <td><strong>State Diagram</strong></td>
+          <td>주문/결제 상태, 워크플로우, FSM, 연결 상태, 라이프사이클</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="더-알아보기">더 알아보기<a href="#더-알아보기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Mermaid는 이 외에도 다양한 다이어그램을 지원합니다:</p>
+<ul>
+<li>Class Diagram (클래스 관계)</li>
+<li>Entity Relationship Diagram (데이터 모델)</li>
+<li>Gantt Chart (프로젝트 일정)</li>
+<li>Git Graph (브랜치 전략)</li>
+<li>Mindmap (마인드맵)</li>
+<li>Pie Chart (파이 차트)</li>
+</ul>
+<p>공식 문서: <a href="https://mermaid.js.org/">https://mermaid.js.org/</a></p>
+<h3 id="에디터-추천">에디터 추천<a href="#에디터-추천" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>Mermaid Live Editor</strong>: <a href="https://mermaid.live/">https://mermaid.live/</a> (실시간 미리보기)</li>
+<li><strong>VS Code Extension</strong>: Markdown Preview Mermaid Support</li>
+<li><strong>Obsidian</strong>: 기본 지원</li>
+<li><strong>GitHub/GitLab</strong>: 마크다운에서 기본 지원</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-03/" class="button inline next">
+         [<span class="button__text">Mermaid 다이어그램 가이드 Part 3: Sequence Diagram</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

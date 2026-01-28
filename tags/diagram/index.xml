@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Diagram on philipjkim</title>
+    <link>https://philipjkim.github.io/tags/diagram/</link>
+    <description>Recent content in Diagram on philipjkim</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 28 Jan 2026 10:37:39 +0900</lastBuildDate>
+    <atom:link href="https://philipjkim.github.io/tags/diagram/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mermaid 다이어그램 가이드 Part 4: State Diagram</title>
+      <link>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-04/</link>
+      <pubDate>Wed, 28 Jan 2026 10:37:39 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-04/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;state-diagram이란&#34;&gt;State Diagram이란?&lt;/h2&gt;&#xA;&lt;p&gt;상태 다이어그램(State Diagram)은 시스템이나 객체가 가질 수 있는 상태(State)와 상태 간의 전이(Transition)를 시각화합니다. 주문 처리, 사용자 인증, TCP 연결 등 유한 상태 기계(Finite State Machine)를 표현할 때 필수적인 도구입니다.&lt;/p&gt;&#xA;&lt;h2 id=&#34;기본-문법&#34;&gt;기본 문법&lt;/h2&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;stateDiagram-v2&#xA;    [*] --&amp;gt; Idle&#xA;    Idle --&amp;gt; Processing&#xA;    Processing --&amp;gt; Completed&#xA;    Completed --&amp;gt; [*]&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;stateDiagram-v2&lt;/code&gt;를 사용하면 최신 렌더러로 그려집니다. 구버전 &lt;code&gt;stateDiagram&lt;/code&gt;도 여전히 사용 가능합니다.&lt;/p&gt;&#xA;&lt;h2 id=&#34;상태state-정의&#34;&gt;상태(State) 정의&lt;/h2&gt;&#xA;&lt;h3 id=&#34;기본-상태&#34;&gt;기본 상태&lt;/h3&gt;&#xA;&lt;p&gt;가장 단순한 형태로 상태 이름만 지정합니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Mermaid 다이어그램 가이드 Part 3: Sequence Diagram</title>
+      <link>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-03/</link>
+      <pubDate>Wed, 28 Jan 2026 10:37:36 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-03/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;sequence-diagram이란&#34;&gt;Sequence Diagram이란?&lt;/h2&gt;&#xA;&lt;p&gt;시퀀스 다이어그램은 객체들 간의 메시지 교환을 시간 순서에 따라 보여주는 다이어그램입니다. API 호출 흐름, 인증 과정, 트랜잭션 처리 등을 문서화할 때 특히 유용합니다.&lt;/p&gt;&#xA;&lt;h2 id=&#34;기본-문법&#34;&gt;기본 문법&lt;/h2&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;sequenceDiagram&#xA;    participant A as 클라이언트&#xA;    participant B as 서버&#xA;    A-&amp;gt;&amp;gt;B: 요청&#xA;    B--&amp;gt;&amp;gt;A: 응답&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;participant-정의&#34;&gt;Participant 정의&lt;/h2&gt;&#xA;&lt;h3 id=&#34;자동-정의&#34;&gt;자동 정의&lt;/h3&gt;&#xA;&lt;p&gt;메시지에서 처음 등장하는 이름이 자동으로 participant가 됩니다.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;sequenceDiagram&#xA;    Alice-&amp;gt;&amp;gt;Bob: 안녕하세요!&#xA;    Bob--&amp;gt;&amp;gt;Alice: 안녕하세요!&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;명시적-정의와-순서-지정&#34;&gt;명시적 정의와 순서 지정&lt;/h3&gt;&#xA;&lt;p&gt;&lt;code&gt;participant&lt;/code&gt; 키워드로 명시적으로 정의하면 원하는 순서로 배치할 수 있습니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Mermaid 다이어그램 가이드 Part 2: Flowchart 심화 - Subgraph와 레이아웃 제어</title>
+      <link>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-02/</link>
+      <pubDate>Wed, 28 Jan 2026 10:37:33 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-02/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;subgraph-기본&#34;&gt;Subgraph 기본&lt;/h2&gt;&#xA;&lt;p&gt;Subgraph는 관련된 노드들을 논리적으로 그룹화하는 기능입니다. 시스템의 계층 구조나 도메인 영역을 시각적으로 구분할 때 유용합니다.&lt;/p&gt;&#xA;&lt;h3 id=&#34;기본-문법&#34;&gt;기본 문법&lt;/h3&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;flowchart TB&#xA;    subgraph 그룹명&#xA;        A --&amp;gt; B&#xA;    end&#xA;    C --&amp;gt; A&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;id와-제목-분리&#34;&gt;ID와 제목 분리&lt;/h3&gt;&#xA;&lt;p&gt;Subgraph에 별도의 ID를 지정하면 참조가 쉬워집니다.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;flowchart TB&#xA;    subgraph api[API Layer]&#xA;        A[Controller]&#xA;        B[Service]&#xA;    end&#xA;    subgraph db[Data Layer]&#xA;        C[(MySQL)]&#xA;        D[(Redis)]&#xA;    end&#xA;    A --&amp;gt; B&#xA;    B --&amp;gt; C&#xA;    B --&amp;gt; D&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;subgraph-방향-제어&#34;&gt;Subgraph 방향 제어&lt;/h2&gt;&#xA;&lt;p&gt;이것이 Mermaid 레이아웃의 핵심입니다. &lt;code&gt;direction&lt;/code&gt; 키워드로 각 subgraph 내부의 배치 방향을 개별적으로 지정할 수 있습니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Mermaid 다이어그램 가이드 Part 1: Flowchart 기본</title>
+      <link>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-01/</link>
+      <pubDate>Wed, 28 Jan 2026 10:37:30 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-01/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;mermaid란&#34;&gt;Mermaid란?&lt;/h2&gt;&#xA;&lt;p&gt;Mermaid는 마크다운 스타일의 텍스트로 다이어그램을 생성하는 JavaScript 기반 도구입니다. 별도의 드로잉 도구 없이도 Git에서 버전 관리가 가능한 다이어그램을 작성할 수 있어, 개발 문서화에 특히 유용합니다.&lt;/p&gt;&#xA;&lt;p&gt;GitHub, GitLab, Notion, Obsidian 등 다양한 플랫폼에서 기본 지원되며, VS Code 확장 프로그램을 통해 실시간 미리보기도 가능합니다.&lt;/p&gt;&#xA;&lt;h2 id=&#34;flowchart-기본-문법&#34;&gt;Flowchart 기본 문법&lt;/h2&gt;&#xA;&lt;p&gt;Flowchart는 프로세스의 흐름을 시각화하는 가장 기본적인 다이어그램입니다. 노드(Node)와 엣지(Edge)로 구성됩니다.&lt;/p&gt;&#xA;&lt;h3 id=&#34;다이어그램-선언&#34;&gt;다이어그램 선언&lt;/h3&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;flowchart TD&#xA;    A --&amp;gt; B&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;flowchart&lt;/code&gt; 키워드로 시작하며, 바로 뒤에 방향을 지정합니다. &lt;code&gt;graph&lt;/code&gt; 키워드도 사용 가능하지만 &lt;code&gt;flowchart&lt;/code&gt;가 더 많은 기능을 지원합니다.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

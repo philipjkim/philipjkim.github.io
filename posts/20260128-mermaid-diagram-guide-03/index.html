@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Mermaid 다이어그램 가이드 Part 3: Sequence Diagram :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="시스템 간 상호작용을 시간 순서대로 명확하게 표현하는 시퀀스 다이어그램을 마스터합니다." />
+<meta name="keywords" content="dev, diagram, mermaid" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Mermaid 다이어그램 가이드 Part 3: Sequence Diagram">
+<meta property="og:description" content="시스템 간 상호작용을 시간 순서대로 명확하게 표현하는 시퀀스 다이어그램을 마스터합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-01-28 10:37:36 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-03/">Mermaid 다이어그램 가이드 Part 3: Sequence Diagram</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-01-28</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/diagram/">diagram</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/mermaid/">mermaid</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="sequence-diagram이란">Sequence Diagram이란?<a href="#sequence-diagram이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>시퀀스 다이어그램은 객체들 간의 메시지 교환을 시간 순서에 따라 보여주는 다이어그램입니다. API 호출 흐름, 인증 과정, 트랜잭션 처리 등을 문서화할 때 특히 유용합니다.</p>
+<h2 id="기본-문법">기본 문법<a href="#기본-문법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant A as 클라이언트
+    participant B as 서버
+    A-&gt;&gt;B: 요청
+    B--&gt;&gt;A: 응답
+</code></pre><h2 id="participant-정의">Participant 정의<a href="#participant-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="자동-정의">자동 정의<a href="#자동-정의" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>메시지에서 처음 등장하는 이름이 자동으로 participant가 됩니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    Alice-&gt;&gt;Bob: 안녕하세요!
+    Bob--&gt;&gt;Alice: 안녕하세요!
+</code></pre><h3 id="명시적-정의와-순서-지정">명시적 정의와 순서 지정<a href="#명시적-정의와-순서-지정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>participant</code> 키워드로 명시적으로 정의하면 원하는 순서로 배치할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant C as Client
+    participant G as API Gateway
+    participant S as Service
+    participant D as Database
+
+    C-&gt;&gt;G: HTTP Request
+    G-&gt;&gt;S: Forward Request
+    S-&gt;&gt;D: Query
+    D--&gt;&gt;S: Result
+    S--&gt;&gt;G: Response
+    G--&gt;&gt;C: HTTP Response
+</code></pre><h3 id="actor-심볼">Actor 심볼<a href="#actor-심볼" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>actor</code> 키워드를 사용하면 사람 모양 아이콘으로 표시됩니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    actor User as 사용자
+    participant App as 모바일 앱
+    participant Server as 백엔드 서버
+
+    User-&gt;&gt;App: 로그인 버튼 클릭
+    App-&gt;&gt;Server: 인증 요청
+    Server--&gt;&gt;App: 토큰 발급
+    App--&gt;&gt;User: 홈 화면 표시
+</code></pre><h3 id="다양한-participant-유형-v10">다양한 Participant 유형 (v10+)<a href="#다양한-participant-유형-v10" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    actor User as 사용자
+    participant App as Application
+    participant API as API Server
+    participant DB as Database
+    participant Cache as Redis Cache
+    participant Queue as Message Queue
+
+    User-&gt;&gt;App: 요청
+    App-&gt;&gt;Cache: 캐시 조회
+    Cache--&gt;&gt;App: 캐시 미스
+    App-&gt;&gt;API: API 호출
+    API-&gt;&gt;DB: 쿼리
+    DB--&gt;&gt;API: 결과
+    API-&gt;&gt;Cache: 캐시 저장
+    API--&gt;&gt;App: 응답
+    App-&gt;&gt;Queue: 이벤트 발행
+</code></pre><h2 id="메시지-유형">메시지 유형<a href="#메시지-유형" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="화살표-종류">화살표 종류<a href="#화살표-종류" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant A
+    participant B
+
+    A-&gt;B: 실선, 화살표 없음
+    A--&gt;B: 점선, 화살표 없음
+    A-&gt;&gt;B: 실선, 화살표
+    A--&gt;&gt;B: 점선, 화살표
+    A-xB: 실선, X 표시 (실패/거부)
+    A--xB: 점선, X 표시
+    A-)B: 실선, 비동기 (열린 화살표)
+    A--)B: 점선, 비동기
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>문법</th>
+          <th>설명</th>
+          <th>용도</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>-&gt;</code></td>
+          <td>실선</td>
+          <td>일반 메시지</td>
+      </tr>
+      <tr>
+          <td><code>--&gt;</code></td>
+          <td>점선</td>
+          <td>응답/반환</td>
+      </tr>
+      <tr>
+          <td><code>-&gt;&gt;</code></td>
+          <td>실선 + 화살표</td>
+          <td>동기 호출</td>
+      </tr>
+      <tr>
+          <td><code>--&gt;&gt;</code></td>
+          <td>점선 + 화살표</td>
+          <td>동기 응답</td>
+      </tr>
+      <tr>
+          <td><code>-x</code></td>
+          <td>실선 + X</td>
+          <td>실패/거부</td>
+      </tr>
+      <tr>
+          <td><code>-)</code></td>
+          <td>실선 + 열린 화살표</td>
+          <td>비동기 메시지</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="양방향-화살표-v1100">양방향 화살표 (v11.0.0+)<a href="#양방향-화살표-v1100" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant A
+    participant B
+
+    A&lt;&lt;-&gt;&gt;B: 양방향 실선
+    A&lt;&lt;--&gt;&gt;B: 양방향 점선
+</code></pre><h2 id="activation-활성화-박스">Activation (활성화 박스)<a href="#activation-활성화-박스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>객체가 활성 상태임을 나타내는 박스를 표시합니다.</p>
+<h3 id="명시적-활성화">명시적 활성화<a href="#명시적-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant C as Client
+    participant S as Server
+
+    C-&gt;&gt;S: 요청
+    activate S
+    S-&gt;&gt;S: 처리 중...
+    S--&gt;&gt;C: 응답
+    deactivate S
+</code></pre><h3 id="축약-문법--">축약 문법 (+/-)<a href="#축약-문법--" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>+</code>와 <code>-</code>를 화살표 끝에 붙여 간단하게 표현할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant D as Database
+
+    C-&gt;&gt;+S: 요청
+    S-&gt;&gt;+D: 쿼리
+    D--&gt;&gt;-S: 결과
+    S--&gt;&gt;-C: 응답
+</code></pre><h3 id="중첩-활성화">중첩 활성화<a href="#중첩-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant C as Client
+    participant S as Server
+
+    C-&gt;&gt;+S: 외부 요청
+    S-&gt;&gt;+S: 내부 처리 1
+    S-&gt;&gt;+S: 내부 처리 2
+    S--&gt;&gt;-S: 완료 2
+    S--&gt;&gt;-S: 완료 1
+    S--&gt;&gt;-C: 응답
+</code></pre><h2 id="notes-노트">Notes (노트)<a href="#notes-노트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="기본-노트">기본 노트<a href="#기본-노트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant A
+    participant B
+
+    Note left of A: 왼쪽 노트
+    A-&gt;&gt;B: 메시지
+    Note right of B: 오른쪽 노트
+    Note over A: A 위 노트
+    Note over A,B: A와 B 사이 노트
+</code></pre><h3 id="실전-활용">실전 활용<a href="#실전-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant Client
+    participant Auth as Auth Server
+    participant API as API Server
+
+    Note over Client,API: OAuth 2.0 인증 흐름
+
+    Client-&gt;&gt;Auth: 인증 요청 (client_id, redirect_uri)
+    Note right of Auth: 사용자 인증 처리
+    Auth--&gt;&gt;Client: Authorization Code
+
+    Client-&gt;&gt;Auth: Token 요청 (code, client_secret)
+    Auth--&gt;&gt;Client: Access Token + Refresh Token
+
+    Note over Client: 토큰 저장
+
+    Client-&gt;&gt;API: API 요청 (Bearer Token)
+    API--&gt;&gt;Client: 응답 데이터
+</code></pre><h2 id="제어-구조">제어 구조<a href="#제어-구조" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="loop-반복">Loop (반복)<a href="#loop-반복" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant Client
+    participant Server
+    participant DB
+
+    Client-&gt;&gt;Server: 배치 처리 요청
+
+    loop 각 아이템에 대해
+        Server-&gt;&gt;DB: 아이템 처리
+        DB--&gt;&gt;Server: 결과
+    end
+
+    Server--&gt;&gt;Client: 완료
+</code></pre><h3 id="altelse-조건-분기">Alt/Else (조건 분기)<a href="#altelse-조건-분기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant User
+    participant App
+    participant Auth
+
+    User-&gt;&gt;App: 로그인 시도
+    App-&gt;&gt;Auth: 인증 확인
+
+    alt 인증 성공
+        Auth--&gt;&gt;App: 토큰 발급
+        App--&gt;&gt;User: 홈 화면
+    else 비밀번호 오류
+        Auth--&gt;&gt;App: 401 Unauthorized
+        App--&gt;&gt;User: 비밀번호 오류 메시지
+    else 계정 잠금
+        Auth--&gt;&gt;App: 403 Forbidden
+        App--&gt;&gt;User: 계정 잠금 메시지
+    end
+</code></pre><h3 id="opt-선택적">Opt (선택적)<a href="#opt-선택적" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>조건이 참일 때만 실행되는 블록입니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+
+    App-&gt;&gt;Cache: 캐시 조회
+
+    opt 캐시 미스
+        App-&gt;&gt;DB: DB 조회
+        DB--&gt;&gt;App: 데이터
+        App-&gt;&gt;Cache: 캐시 저장
+    end
+
+    Cache--&gt;&gt;App: 데이터 반환
+</code></pre><h3 id="par-병렬-처리">Par (병렬 처리)<a href="#par-병렬-처리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant Client
+    participant OrderSvc as Order Service
+    participant PaymentSvc as Payment Service
+    participant InventorySvc as Inventory Service
+    participant NotifySvc as Notification
+
+    Client-&gt;&gt;OrderSvc: 주문 생성
+
+    par 결제 처리
+        OrderSvc-&gt;&gt;PaymentSvc: 결제 요청
+        PaymentSvc--&gt;&gt;OrderSvc: 결제 완료
+    and 재고 처리
+        OrderSvc-&gt;&gt;InventorySvc: 재고 차감
+        InventorySvc--&gt;&gt;OrderSvc: 차감 완료
+    and 알림 발송
+        OrderSvc-&gt;&gt;NotifySvc: 알림 요청
+        NotifySvc--&gt;&gt;OrderSvc: 발송 완료
+    end
+
+    OrderSvc--&gt;&gt;Client: 주문 완료
+</code></pre><h3 id="critical-크리티컬-섹션">Critical (크리티컬 섹션)<a href="#critical-크리티컬-섹션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>반드시 실행되어야 하는 중요 작업을 표시합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant App
+    participant Payment
+    participant DB
+
+    App-&gt;&gt;Payment: 결제 시작
+
+    critical 트랜잭션 영역
+        Payment-&gt;&gt;DB: 잔액 차감
+        Payment-&gt;&gt;DB: 결제 기록 저장
+    option 네트워크 오류
+        Payment--&gt;&gt;App: 재시도 요청
+    option DB 오류
+        Payment--&gt;&gt;App: 롤백 완료
+    end
+
+    Payment--&gt;&gt;App: 결제 완료
+</code></pre><h3 id="break-중단">Break (중단)<a href="#break-중단" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>예외 상황에서 흐름이 중단됨을 표현합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant Client
+    participant Server
+    participant Auth
+
+    Client-&gt;&gt;Server: API 요청
+    Server-&gt;&gt;Auth: 토큰 검증
+
+    break 토큰 만료
+        Auth--&gt;&gt;Server: 401 Token Expired
+        Server--&gt;&gt;Client: 재로그인 필요
+    end
+
+    Auth--&gt;&gt;Server: 토큰 유효
+    Server--&gt;&gt;Client: 응답 데이터
+</code></pre><h2 id="배경-하이라이트">배경 하이라이트<a href="#배경-하이라이트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>rect</code>로 특정 영역에 배경색을 지정할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant Client
+    participant Gateway
+    participant Service
+    participant DB
+
+    rect rgb(191, 223, 255)
+        Note over Client,Gateway: 인증 단계
+        Client-&gt;&gt;Gateway: 요청 + Token
+        Gateway-&gt;&gt;Gateway: Token 검증
+    end
+
+    rect rgb(200, 255, 200)
+        Note over Gateway,DB: 비즈니스 로직
+        Gateway-&gt;&gt;Service: 요청 전달
+        Service-&gt;&gt;DB: 쿼리
+        DB--&gt;&gt;Service: 결과
+        Service--&gt;&gt;Gateway: 응답
+    end
+
+    Gateway--&gt;&gt;Client: 최종 응답
+</code></pre><h2 id="actor-생성과-소멸-v1030">Actor 생성과 소멸 (v10.3.0+)<a href="#actor-생성과-소멸-v1030" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>동적으로 객체가 생성되고 소멸되는 것을 표현할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant Main
+
+    Main-&gt;&gt;+Worker: 작업 요청
+    create participant TempProcess
+    Worker-&gt;&gt;TempProcess: 임시 프로세스 생성
+    TempProcess-&gt;&gt;TempProcess: 작업 수행
+    TempProcess--&gt;&gt;Worker: 결과 반환
+    destroy TempProcess
+    Worker--&gt;&gt;-Main: 완료
+</code></pre><h2 id="box-그룹핑">Box (그룹핑)<a href="#box-그룹핑" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>관련된 participant들을 박스로 그룹화할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    box Blue 클라이언트 영역
+        actor User
+        participant App
+    end
+
+    box Green 서버 영역
+        participant API
+        participant Auth
+        participant DB
+    end
+
+    User-&gt;&gt;App: 로그인 요청
+    App-&gt;&gt;API: 인증 요청
+    API-&gt;&gt;Auth: 토큰 발급
+    Auth-&gt;&gt;DB: 사용자 조회
+    DB--&gt;&gt;Auth: 사용자 정보
+    Auth--&gt;&gt;API: 토큰
+    API--&gt;&gt;App: 응답
+    App--&gt;&gt;User: 로그인 완료
+</code></pre><h2 id="시퀀스-번호">시퀀스 번호<a href="#시퀀스-번호" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>메시지에 자동으로 번호를 매길 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    autonumber
+
+    participant Client
+    participant Server
+    participant DB
+
+    Client-&gt;&gt;Server: 요청 1
+    Server-&gt;&gt;DB: 쿼리
+    DB--&gt;&gt;Server: 결과
+    Server--&gt;&gt;Client: 응답 1
+    Client-&gt;&gt;Server: 요청 2
+    Server--&gt;&gt;Client: 응답 2
+</code></pre><h2 id="줄바꿈">줄바꿈<a href="#줄바꿈" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>메시지와 노트에서 <code>&lt;br/&gt;</code>로 줄바꿈할 수 있습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    participant A
+    participant B
+
+    A-&gt;&gt;B: 첫 번째 줄&lt;br/&gt;두 번째 줄
+    Note over B: 긴 설명을&lt;br/&gt;여러 줄로&lt;br/&gt;작성할 수 있습니다
+</code></pre><h2 id="실전-예제-jwt-인증-흐름">실전 예제: JWT 인증 흐름<a href="#실전-예제-jwt-인증-흐름" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    autonumber
+
+    actor User as 사용자
+    participant App as 클라이언트
+    participant Auth as 인증 서버
+    participant API as API 서버
+    participant DB as 데이터베이스
+
+    Note over User,DB: 로그인 프로세스
+
+    User-&gt;&gt;App: 로그인 (email, password)
+    App-&gt;&gt;+Auth: POST /auth/login
+    Auth-&gt;&gt;DB: 사용자 조회
+    DB--&gt;&gt;Auth: 사용자 정보
+
+    alt 인증 성공
+        Auth-&gt;&gt;Auth: JWT 토큰 생성
+        Note right of Auth: Access Token: 15분&lt;br/&gt;Refresh Token: 7일
+        Auth--&gt;&gt;-App: 200 OK + Tokens
+        App-&gt;&gt;App: 토큰 저장 (메모리/스토리지)
+        App--&gt;&gt;User: 로그인 성공
+    else 인증 실패
+        Auth--&gt;&gt;App: 401 Unauthorized
+        App--&gt;&gt;User: 로그인 실패
+    end
+
+    Note over User,DB: API 호출
+
+    User-&gt;&gt;App: 데이터 요청
+    App-&gt;&gt;+API: GET /api/data (Bearer Token)
+
+    API-&gt;&gt;API: 토큰 검증
+
+    alt 토큰 유효
+        API-&gt;&gt;DB: 데이터 조회
+        DB--&gt;&gt;API: 데이터
+        API--&gt;&gt;-App: 200 OK + Data
+        App--&gt;&gt;User: 데이터 표시
+    else 토큰 만료
+        API--&gt;&gt;App: 401 Token Expired
+
+        rect rgb(255, 240, 200)
+            Note over App,Auth: 토큰 갱신
+            App-&gt;&gt;Auth: POST /auth/refresh
+            Auth--&gt;&gt;App: 새 Access Token
+        end
+
+        App-&gt;&gt;API: 재요청 (새 Token)
+        API--&gt;&gt;App: 200 OK + Data
+        App--&gt;&gt;User: 데이터 표시
+    end
+</code></pre><h2 id="실전-예제-결제-처리">실전 예제: 결제 처리<a href="#실전-예제-결제-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+    autonumber
+
+    participant Client
+    participant OrderSvc as Order Service
+    participant PaymentSvc as Payment Service
+    participant PG as Payment Gateway
+    participant EventBus as Event Bus
+
+    Client-&gt;&gt;+OrderSvc: 주문 생성 요청
+    OrderSvc-&gt;&gt;OrderSvc: 주문 검증
+    OrderSvc--&gt;&gt;Client: 주문 ID 반환
+
+    Client-&gt;&gt;+PaymentSvc: 결제 요청 (주문 ID)
+
+    critical 결제 트랜잭션
+        PaymentSvc-&gt;&gt;+PG: 결제 승인 요청
+
+        alt 결제 성공
+            PG--&gt;&gt;-PaymentSvc: 승인 완료
+            PaymentSvc-&gt;&gt;EventBus: PaymentCompleted 이벤트
+            PaymentSvc--&gt;&gt;-Client: 결제 성공
+
+            par 후처리
+                EventBus-)OrderSvc: 주문 상태 업데이트
+            and
+                EventBus-)Client: 결제 완료 알림
+            end
+
+        else 결제 실패
+            PG--&gt;&gt;PaymentSvc: 승인 거절
+            PaymentSvc-&gt;&gt;EventBus: PaymentFailed 이벤트
+            PaymentSvc--&gt;&gt;Client: 결제 실패
+        end
+    end
+
+    deactivate OrderSvc
+</code></pre>
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-04/" class="button inline prev">
+        &lt; [<span class="button__text">Mermaid 다이어그램 가이드 Part 4: State Diagram</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260128-mermaid-diagram-guide-02/" class="button inline next">
+         [<span class="button__text">Mermaid 다이어그램 가이드 Part 2: Flowchart 심화 - Subgraph와 레이아웃 제어</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
