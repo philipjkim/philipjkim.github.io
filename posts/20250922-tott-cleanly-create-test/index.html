@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -197,7 +197,7 @@
 <p>테스트를 작성할 때, 우리는 종종 테스트 대상 코드가 소비할 객체들을 만들어야 합니다. 이 객체들은 진짜 객체일 수도 있고, 페이크(fake)나 목(mock) 객체일 수도 있습니다. 이러한 객체들을 생성하는 코드는 빠르게 지저분해지고, 테스트의 가독성을 해치며, 유지보수를 어렵게 만들 수 있습니다.</p>
 <p>다음 예제를 살펴보겠습니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testWriteSecureMessage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testWriteSecureMessage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 테스트를 위한 설정</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Message</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">message</span><span class="p">.</span><span class="na">setId</span><span class="p">(</span><span class="s">&#34;42&#34;</span><span class="p">);</span><span class="w">
@@ -213,12 +213,12 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 상태 검증</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;Sent secure message with signature 1a2b3c4d5e&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">.</span><span class="na">getInfo</span><span class="p">());</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이 테스트에서 객체 생성은 꽤 장황합니다. 테스트의 핵심 로직을 이해하기 어렵게 만들고, 테스트가 실제로 무엇을 검증하려는지 불분명하게 만듭니다.</p>
 <p>이런 문제는 <strong>테스트 데이터 빌더(Test Data Builder)</strong> 를 사용하여 해결할 수 있습니다. 빌더는 객체 생성을 캡슐화하는 간단한 클래스입니다. 일반적으로 빌더는 객체의 각 필드에 대해 <code>withFieldName()</code> 형태의 메서드를 가지며, 최종적으로 객체를 생성하는 <code>build()</code> 메서드를 가집니다.</p>
 <p>이제 테스트 데이터 빌더를 사용한 동일한 테스트를 보겠습니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testWriteSecureMessage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testWriteSecureMessage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 테스트를 위한 설정</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aMessage</span><span class="p">()</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">withSignature</span><span class="p">(</span><span class="s">&#34;1a2b3c4d5e&#34;</span><span class="p">)</span><span class="w">
@@ -230,7 +230,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 상태 검증</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;Sent secure message with signature 1a2b3c4d5e&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">logger</span><span class="p">.</span><span class="na">getInfo</span><span class="p">());</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>빌더를 사용하면 테스트에 필요한 필드만 지정하면 되므로 객체 생성 코드가 훨씬 간결해집니다. 빌더는 나머지 필드들을 합리적인 기본값으로 채워줍니다. 이제 이 테스트는 메시지의 서명(<code>signature</code>)이 중요하다는 것을 명확하게 보여줍니다.</p>
 <p>빌더는 또한 <strong>중복을 줄이는 데 도움</strong>이 됩니다. 여러 테스트에서 동일하거나 유사한 객체를 생성해야 할 때, 빌더는 생성 로직을 한곳에 모아줍니다. 만약 객체의 생성 방식이 변경되면(예를 들어, 생성자에 새로운 필수 파라미터가 추가될 때), 여러 테스트를 수정하는 대신 빌더만 업데이트하면 됩니다.</p>
 <p>좋은 테스트 데이터 빌더는 다음과 같은 특징을 가집니다.</p>

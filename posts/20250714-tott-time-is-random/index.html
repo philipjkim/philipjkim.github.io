@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -196,13 +196,13 @@
 <hr>
 <p>메서드의 입력값을 명확하게 식별할 수 없을 때 어떻게 제대로 테스트할 수 있을까요? 다음 Java 메서드를 살펴보세요.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/** 현재 시간으로부터 다음 분의 시작을 나타내는 Date 객체를 반환합니다. */</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="nf">nextMinuteFromNow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="nf">nextMinuteFromNow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kt">long</span><span class="w"> </span><span class="n">nowAsMillis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Date</span><span class="w"> </span><span class="n">then</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Date</span><span class="p">(</span><span class="n">nowAsMillis</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">60000</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">then</span><span class="p">.</span><span class="na">setSeconds</span><span class="p">(</span><span class="n">0</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">then</span><span class="p">.</span><span class="na">setMilliseconds</span><span class="p">(</span><span class="n">0</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">then</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이 메서드를 효과적으로 테스트하는 데에는 두 가지 장벽이 있습니다.</p>
 <ol>
 <li>코너 케이스<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>를 테스트하기 쉽지 않습니다. 시스템 클럭이 입력 조건을 제공하는 데에 좌우됩니다.</li>
@@ -214,18 +214,18 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">then</span><span class="p">.</span><span class="na">setSeconds</span><span class="p">(</span><span class="n">0</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">then</span><span class="p">.</span><span class="na">setMilliseconds</span><span class="p">(</span><span class="n">0</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">then</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 원래 기능 유지</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Deprecated</span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="nf">nextMinuteFromNow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 원래 기능 유지</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Deprecated</span><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="nf">nextMinuteFromNow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">minuteAfter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Date</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">()));</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p><code>minuteAfter()</code> 에 대한 테스트를 작성하는 것은 <code>nextMinuteFromNow()</code> 에 대한 테스트를 작성하는 것보다 훨씬 쉬운 작업입니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testMinuteAfter</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Date</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringToDate</span><span class="p">(</span><span class="s">&#34;2012-12-22 11:59:59.999PM&#34;</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Date</span><span class="w"> </span><span class="n">then</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minuteAfter</span><span class="p">(</span><span class="n">now</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;2012-12-23 12:00:00.000AM&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">dateToString</span><span class="p">(</span><span class="n">then</span><span class="p">));</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이것은 이 문제를 해결하는 한 가지 방법일 뿐입니다. 의존성 주입(Dependency Injection)과 변경 가능한 싱글턴(mutable Singletons)도 사용될 수 있습니다.</p>
 <div class="footnotes" role="doc-endnotes">
 <hr>

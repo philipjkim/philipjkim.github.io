@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -196,7 +196,7 @@
 <hr>
 <p>이 테스트에서 어떤 라인을 안전하게 제거할 수 있을까요?</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addPermissionToDatabase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addPermissionToDatabase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">UserAuthorizer</span><span class="p">(</span><span class="n">mockUserService</span><span class="p">,</span><span class="w"> </span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">grantPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 이 메서드 중 하나라도 호출되지 않으면 테스트는 실패합니다.</span><span class="w">
@@ -204,7 +204,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">getPermissions</span><span class="p">(</span><span class="n">USER</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">isValidPermission</span><span class="p">(</span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">addPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>정답은 <strong>상태를 변경하지 않는 메서드</strong>를 검증하는 호출들을 제거할 수 있다는 것입니다.</p>
 <p>다른 객체에 대한 메서드 호출은 다음 두 가지 범주 중 하나에 속합니다.</p>
 <ul>
@@ -222,12 +222,12 @@
 <p>상태를 변경하지 않는 메서드 호출을 검증하는 것은 검증할 다른 출력이 없을 때 유용할 수 있습니다. 예를 들어, 코드가 RPC 결과를 캐싱해야 한다면, RPC를 호출하는 메서드가 한 번만 호출되었는지 검증할 수 있습니다.</p>
 <p>불필요한 검증을 제거하면 테스트는 이렇게 보입니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addPermissionToDatabase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">addPermissionToDatabase</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">UserAuthorizer</span><span class="p">(</span><span class="n">mockUserService</span><span class="p">,</span><span class="w"> </span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">grantPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 상태를 변경하는 메서드만 검증합니다.</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">verify</span><span class="p">(</span><span class="n">mockPermissionDb</span><span class="p">).</span><span class="na">addPermission</span><span class="p">(</span><span class="n">USER</span><span class="p">,</span><span class="w"> </span><span class="n">READ_ACCESS</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>훨씬 간단해졌죠! 하지만 기억하세요. 메서드가 호출되었는지 검증하기 위해 목(mock)을 사용하는 대신, <strong>실제 객체나 페이크(fake) 객체를 사용하여 메서드를 실제로 실행하고 그것이 제대로 작동하는지 확인하는 것이 훨씬 더 좋습니다.</strong> 예를 들어, 위 테스트는 <code>addPermission()</code>이 호출되었는지 검증하는 대신, 페이크 데이터베이스를 사용하여 데이터베이스에 권한이 존재하는지 확인할 수 있습니다.</p>
 
       </div></div>

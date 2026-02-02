@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -229,78 +229,78 @@
 <li><code>TodoItem</code>: 할 일 아이템 하나 (리스트에 추가될 조각)</li>
 </ol>
 <!-- end list -->
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// view.templ</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 전체 페이지 레이아웃</span>
-</span></span><span class="line"><span class="cl"><span class="nx">templ</span> <span class="nf">Page</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;!</span><span class="nx">DOCTYPE</span> <span class="nx">html</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">html</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">head</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">title</span><span class="p">&gt;</span><span class="nx">GOTH</span> <span class="nx">Todo</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">title</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="p">=</span><span class="s">&#34;https://unpkg.com/htmx.org@1.9.10&#34;</span><span class="p">&gt;&lt;</span><span class="o">/</span><span class="nx">script</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">style</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">			<span class="nx">body</span> <span class="p">{</span> <span class="nx">font</span><span class="o">-</span><span class="nx">family</span><span class="p">:</span> <span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="p">;</span> <span class="nx">padding</span><span class="p">:</span> <span class="mi">20</span><span class="nx">px</span><span class="p">;</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">			<span class="p">.</span><span class="nx">todo</span> <span class="p">{</span> <span class="nx">margin</span><span class="p">:</span> <span class="mi">5</span><span class="nx">px</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">padding</span><span class="p">:</span> <span class="mi">5</span><span class="nx">px</span><span class="p">;</span> <span class="nx">border</span><span class="o">-</span><span class="nx">bottom</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span> <span class="nx">solid</span> <span class="err">#</span><span class="nx">eee</span><span class="p">;</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="o">/</span><span class="nx">style</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">head</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">body</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">h1</span><span class="p">&gt;</span><span class="nx">GOTH</span> <span class="nx">Todo</span> <span class="nx">List</span> <span class="err">✅</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">h1</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">form</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">post</span><span class="p">=</span><span class="s">&#34;/add&#34;</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">target</span><span class="p">=</span><span class="s">&#34;#todo-list&#34;</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">swap</span><span class="p">=</span><span class="s">&#34;beforeend&#34;</span> <span class="nx">hx</span><span class="o">-</span><span class="nx">on</span><span class="p">::</span><span class="nx">after</span><span class="o">-</span><span class="nx">request</span><span class="p">=</span><span class="s">&#34;this.reset()&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">			<span class="p">&lt;</span><span class="nx">input</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;text&#34;</span> <span class="nx">name</span><span class="p">=</span><span class="s">&#34;content&#34;</span> <span class="nx">placeholder</span><span class="p">=</span><span class="s">&#34;할 일을 입력하세요...&#34;</span> <span class="nx">required</span> <span class="o">/</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">			<span class="p">&lt;</span><span class="nx">button</span> <span class="kd">type</span><span class="p">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span><span class="nx">추가</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">button</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="o">/</span><span class="nx">form</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">		<span class="p">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="p">=</span><span class="s">&#34;todo-list&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">			<span class="p">&lt;</span><span class="o">/</span><span class="nx">div</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">body</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">html</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 할 일 아이템 하나 (서버가 응답할 HTML 조각)</span>
-</span></span><span class="line"><span class="cl"><span class="nx">templ</span> <span class="nf">TodoItem</span><span class="p">(</span><span class="nx">content</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nx">div</span> <span class="nx">class</span><span class="p">=</span><span class="s">&#34;todo&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">{</span> <span class="nx">content</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="o">/</span><span class="nx">div</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>💡 포인트:</strong> HTML 속성(<code>hx-...</code>) 몇 개만으로 &ldquo;폼을 제출하면, 서버에 데이터를 보내고, 돌아온 HTML 조각을 리스트 끝에 붙인다&quot;는 로직이 완성되었습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// view.templ</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 전체 페이지 레이아웃</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">templ</span><span class="w"> </span><span class="nf">Page</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;!</span><span class="nx">DOCTYPE</span><span class="w"> </span><span class="nx">html</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="nx">html</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="nx">head</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="nx">title</span><span class="p">&gt;</span><span class="nx">GOTH</span><span class="w"> </span><span class="nx">Todo</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">title</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="nx">script</span><span class="w"> </span><span class="nx">src</span><span class="p">=</span><span class="s">&#34;https://unpkg.com/htmx.org@1.9.10&#34;</span><span class="p">&gt;&lt;</span><span class="o">/</span><span class="nx">script</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="nx">style</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">body</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">font</span><span class="o">-</span><span class="nx">family</span><span class="p">:</span><span class="w"> </span><span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="p">;</span><span class="w"> </span><span class="nx">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="nx">px</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">.</span><span class="nx">todo</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="nx">px</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="nx">px</span><span class="p">;</span><span class="w"> </span><span class="nx">border</span><span class="o">-</span><span class="nx">bottom</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="nx">px</span><span class="w"> </span><span class="nx">solid</span><span class="w"> </span><span class="err">#</span><span class="nx">eee</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">style</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">head</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="nx">body</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="nx">h1</span><span class="p">&gt;</span><span class="nx">GOTH</span><span class="w"> </span><span class="nx">Todo</span><span class="w"> </span><span class="nx">List</span><span class="w"> </span><span class="err">✅</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">h1</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="nx">form</span><span class="w"> </span><span class="nx">hx</span><span class="o">-</span><span class="nx">post</span><span class="p">=</span><span class="s">&#34;/add&#34;</span><span class="w"> </span><span class="nx">hx</span><span class="o">-</span><span class="nx">target</span><span class="p">=</span><span class="s">&#34;#todo-list&#34;</span><span class="w"> </span><span class="nx">hx</span><span class="o">-</span><span class="nx">swap</span><span class="p">=</span><span class="s">&#34;beforeend&#34;</span><span class="w"> </span><span class="nx">hx</span><span class="o">-</span><span class="nx">on</span><span class="p">::</span><span class="nx">after</span><span class="o">-</span><span class="nx">request</span><span class="p">=</span><span class="s">&#34;this.reset()&#34;</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">&lt;</span><span class="nx">input</span><span class="w"> </span><span class="kd">type</span><span class="p">=</span><span class="s">&#34;text&#34;</span><span class="w"> </span><span class="nx">name</span><span class="p">=</span><span class="s">&#34;content&#34;</span><span class="w"> </span><span class="nx">placeholder</span><span class="p">=</span><span class="s">&#34;할 일을 입력하세요...&#34;</span><span class="w"> </span><span class="nx">required</span><span class="w"> </span><span class="o">/</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">&lt;</span><span class="nx">button</span><span class="w"> </span><span class="kd">type</span><span class="p">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span><span class="nx">추가</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">button</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">form</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">&lt;</span><span class="nx">div</span><span class="w"> </span><span class="nx">id</span><span class="p">=</span><span class="s">&#34;todo-list&#34;</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">div</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">body</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">html</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 할 일 아이템 하나 (서버가 응답할 HTML 조각)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">templ</span><span class="w"> </span><span class="nf">TodoItem</span><span class="p">(</span><span class="nx">content</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="nx">div</span><span class="w"> </span><span class="nx">class</span><span class="p">=</span><span class="s">&#34;todo&#34;</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">{</span><span class="w"> </span><span class="nx">content</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">div</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>💡 포인트:</strong> HTML 속성(<code>hx-...</code>) 몇 개만으로 &ldquo;폼을 제출하면, 서버에 데이터를 보내고, 돌아온 HTML 조각을 리스트 끝에 붙인다&quot;는 로직이 완성되었습니다.</p>
 <p>이제 터미널에서 <code>templ</code> 명령어로 이 파일을 Go 코드로 변환합니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">templ generate
 </span></span></code></pre></div><p>이 명령을 실행하면 <code>view_templ.go</code> 파일이 자동으로 생성됩니다. (이 파일은 직접 수정하지 않습니다.)</p>
 <hr>
 <h2 id="3-서버-구현하기-maingo">3. 서버 구현하기: <code>main.go</code><a href="#3-서버-구현하기-maingo" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>이제 Go 서버를 만듭니다. Go 1.22부터 강력해진 표준 라이브러리 <code>net/http</code>를 사용합니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
-</span></span><span class="line"><span class="cl">	
-</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/a-h/templ&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="c1">// 1. 메인 페이지 핸들러 (GET /)</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;GET /&#34;</span><span class="p">,</span> <span class="nx">templ</span><span class="p">.</span><span class="nf">Handler</span><span class="p">(</span><span class="nf">Page</span><span class="p">()))</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// 2. 할 일 추가 핸들러 (POST /add)</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;POST /add&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="c1">// 폼 데이터 파싱</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">content</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">FormValue</span><span class="p">(</span><span class="s">&#34;content&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">		<span class="c1">// DB에 저장하는 로직이 들어갈 자리 (여기선 생략)</span>
-</span></span><span class="line"><span class="cl">		
-</span></span><span class="line"><span class="cl">		<span class="c1">// 핵심: 전체 페이지가 아니라 &#34;새로 추가된 아이템 HTML 조각&#34;만 응답함</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">component</span> <span class="o">:=</span> <span class="nf">TodoItem</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">component</span><span class="p">.</span><span class="nf">Render</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nf">Context</span><span class="p">(),</span> <span class="nx">w</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="p">})</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// 서버 시작</span>
-</span></span><span class="line"><span class="cl">	<span class="nb">println</span><span class="p">(</span><span class="s">&#34;Listening on http://localhost:8080&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>💡 포인트:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;net/http&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/a-h/templ&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 1. 메인 페이지 핸들러 (GET /)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;GET /&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">templ</span><span class="p">.</span><span class="nf">Handler</span><span class="p">(</span><span class="nf">Page</span><span class="p">()))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 2. 할 일 추가 핸들러 (POST /add)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;POST /add&#34;</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 폼 데이터 파싱</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">content</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nf">FormValue</span><span class="p">(</span><span class="s">&#34;content&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// DB에 저장하는 로직이 들어갈 자리 (여기선 생략)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 핵심: 전체 페이지가 아니라 &#34;새로 추가된 아이템 HTML 조각&#34;만 응답함</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">component</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">TodoItem</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">component</span><span class="p">.</span><span class="nf">Render</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nf">Context</span><span class="p">(),</span><span class="w"> </span><span class="nx">w</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 서버 시작</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nb">println</span><span class="p">(</span><span class="s">&#34;Listening on http://localhost:8080&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>💡 포인트:</strong></p>
 <ul>
 <li><code>templ.Handler(Page())</code>: Templ 컴포넌트는 그 자체로 <code>http.Handler</code>가 될 수 있습니다.</li>
 <li><code>POST /add</code>: JSON을 리턴하지 않습니다. <code>TodoItem</code>이라는 <strong>HTML 조각(Fragment)</strong> 을 렌더링해서 클라이언트로 보냅니다. HTMX는 이 조각을 받아서 DOM에 끼워 넣습니다.</li>

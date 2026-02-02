@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -212,37 +212,37 @@
 <p>보호 구문(Guard Clause)은 화살표 코드 문제에 대한 가장 확실한 해결책으로 제시됩니다. [1, 8, 9, 10] 이 기법의 핵심 원리는 &ldquo;사전 조건 검사&rdquo; 패턴으로 요약할 수 있습니다. 모든 예외적인 조건, 유효성 검사, 또는 특수 사례들을 메서드의 가장 앞부분에서 처리하는 것입니다. 만약 특정 조건이 충족되면, 메서드는 즉시 값을 반환하거나 예외를 던져 실행을 종료합니다. [1, 10] 이 접근 방식은 견고한 &ldquo;빠른 실패(fail-fast)&rdquo; 원칙을 구현하며, 유효하지 않은 데이터가 시스템 깊숙이 전파되는 것을 방지합니다. [10]</p>
 <p>아래의 &ldquo;Before&quot;와 &ldquo;After&rdquo; 예제는 <code>getPayAmount</code> 메서드를 통해 중첩되고 읽기 어려운 코드가 어떻게 평탄하고 순차적인 구조로 변환되는지를 명확하게 보여줍니다. [1]</p>
 <p><strong>Before: 중첩된 조건문 (화살표 코드)</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">Employee</span><span class="p">)</span> <span class="nf">getPayAmount</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">result</span> <span class="kt">float64</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">isDead</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">result</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">deadAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">isSeparated</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">result</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">separatedAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">isRetired</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nx">result</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">retiredAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nx">result</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">normalPayAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">result</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>After: 보호 구문 적용</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">Employee</span><span class="p">)</span> <span class="nf">getPayAmount</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">isDead</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nf">deadAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">isSeparated</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nf">separatedAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nx">isRetired</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nf">retiredAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nf">normalPayAmount</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>이러한 시각적 변환은 이 기법의 강력함을 이해하는 데 핵심적입니다. 한편, 메서드 내 &ldquo;단일 출구점(single exit point)&rdquo; 규칙에 대한 오랜 논쟁이 있습니다. 이 규칙은 좋은 의도에서 비롯되었지만, 교조적으로 적용될 경우 오히려 생산성을 저해할 수 있습니다. 보호 구문의 맥락에서, 여러 개의 조기 <code>return</code> 문은 예외 케이스와 핵심 로직을 깔끔하게 분리함으로써 명확성과 가독성을 크게 향상시킵니다. 이는 현대 프로그래밍 실무에서 널리 지지받는 관점입니다. [2, 7, 8]</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="w"> </span><span class="o">*</span><span class="nx">Employee</span><span class="p">)</span><span class="w"> </span><span class="nf">getPayAmount</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="kt">float64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isDead</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">deadAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isSeparated</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">separatedAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isRetired</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nx">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">retiredAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nx">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">normalPayAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After: 보호 구문 적용</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="w"> </span><span class="o">*</span><span class="nx">Employee</span><span class="p">)</span><span class="w"> </span><span class="nf">getPayAmount</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isDead</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">deadAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isSeparated</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">separatedAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isRetired</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">retiredAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">normalPayAmount</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이러한 시각적 변환은 이 기법의 강력함을 이해하는 데 핵심적입니다. 한편, 메서드 내 &ldquo;단일 출구점(single exit point)&rdquo; 규칙에 대한 오랜 논쟁이 있습니다. 이 규칙은 좋은 의도에서 비롯되었지만, 교조적으로 적용될 경우 오히려 생산성을 저해할 수 있습니다. 보호 구문의 맥락에서, 여러 개의 조기 <code>return</code> 문은 예외 케이스와 핵심 로직을 깔끔하게 분리함으로써 명확성과 가독성을 크게 향상시킵니다. 이는 현대 프로그래밍 실무에서 널리 지지받는 관점입니다. [2, 7, 8]</p>
 <p>보호 구문은 단순히 서식을 정리하는 기법을 넘어, 단일 메서드 내에서 관심사의 분리(Separation of Concerns)를 강제하는 마이크로 아키텍처 패턴입니다. 이는 사전 조건 유효성 검사와 핵심 비즈니스 로직 사이에 명확한 경계를 생성합니다. 메서드의 첫 부분은 오직 사전 조건 검증의 책임만을 가지며, 그 뒤에 오는 주된 부분은 핵심 로직 실행의 책임만을 가집니다. 이러한 분리는 핵심 로직이 항상 유효한 입력을 가정하고 작성될 수 있게 하여, 구현을 극적으로 단순화하고 개발자의 인지 부하를 줄여줍니다. 이는 단순히 들여쓰기를 줄이는 것보다 훨씬 더 심오한 이점입니다.</p>
 <h3 id="13-복잡한-불리언-표현식-분해">1.3. 복잡한 불리언 표현식 분해<a href="#13-복잡한-불리언-표현식-분해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>관련된 문제로, 단일 <code>if</code> 문이 지나치게 복잡한 불리언 표현식을 포함하는 경우가 있습니다 (예: <code>if (conditionA &amp;&amp; conditionB || (conditionC &amp;&amp; !conditionD))</code>).</p>
@@ -262,53 +262,53 @@
 <p>이에 대한 주요 대안은 딕셔너리, 맵, 또는 해시맵과 같은 데이터 구조를 사용하여 조건과 결과 사이에 직접적인 매핑을 생성하는 것입니다. [11, 12, 13, 14]</p>
 <p>아래의 &ldquo;Before&quot;와 &ldquo;After&rdquo; 코드 예제는 이러한 로직 변환을 명확하게 보여줍니다. 맵의 &ldquo;값&quot;은 단순한 데이터 타입일 수도 있고, 설정 객체일 수도 있으며, 가장 강력하게는 수행할 작업을 캡슐화하는 함수 객체(예: 람다, 델리게이트, 함수 포인터)일 수 있습니다. [11, 13]</p>
 <p><strong>Before: <code>if-else</code>를 사용한 명령어 처리</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">processCommandIf</span><span class="p">(</span><span class="nx">command</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">command</span> <span class="o">==</span> <span class="s">&#34;create&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Creating item...&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">command</span> <span class="o">==</span> <span class="s">&#34;delete&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Deleting item...&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">command</span> <span class="o">==</span> <span class="s">&#34;update&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Updating item...&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Unknown command.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>After: 맵을 사용한 명령어 처리</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">createItem</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Creating item...&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">deleteItem</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Deleting item...&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">updateItem</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Updating item...&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">unknownCommand</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Unknown command.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">commandActions</span> <span class="p">=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">func</span><span class="p">(){</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;create&#34;</span><span class="p">:</span> <span class="nx">createItem</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;delete&#34;</span><span class="p">:</span> <span class="nx">deleteItem</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;update&#34;</span><span class="p">:</span> <span class="nx">updateItem</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">processCommandMap</span><span class="p">(</span><span class="nx">command</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">action</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">commandActions</span><span class="p">[</span><span class="nx">command</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">action</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">unknownCommand</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>이점은 명확합니다. 조회는 평균적으로 O(1) 연산이 되며, 코드는 훨씬 더 깔끔하고 확장 가능해집니다. 새로운 케이스를 추가하는 것은 단순히 맵에 새로운 항목을 추가하는 것으로 끝나며, 실행 로직은 전혀 건드릴 필요가 없는 경우가 많습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">processCommandIf</span><span class="p">(</span><span class="nx">command</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;create&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Creating item...&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;delete&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Deleting item...&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;update&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Updating item...&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Unknown command.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After: 맵을 사용한 명령어 처리</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">createItem</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Creating item...&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">deleteItem</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Deleting item...&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">updateItem</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Updating item...&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">unknownCommand</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Unknown command.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">commandActions</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">func</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;create&#34;</span><span class="p">:</span><span class="w"> </span><span class="nx">createItem</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;delete&#34;</span><span class="p">:</span><span class="w"> </span><span class="nx">deleteItem</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;update&#34;</span><span class="p">:</span><span class="w"> </span><span class="nx">updateItem</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">processCommandMap</span><span class="p">(</span><span class="nx">command</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">commandActions</span><span class="p">[</span><span class="nx">command</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nf">action</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nf">unknownCommand</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이점은 명확합니다. 조회는 평균적으로 O(1) 연산이 되며, 코드는 훨씬 더 깔끔하고 확장 가능해집니다. 새로운 케이스를 추가하는 것은 단순히 맵에 새로운 항목을 추가하는 것으로 끝나며, 실행 로직은 전혀 건드릴 필요가 없는 경우가 많습니다.</p>
 <p>이러한 접근 방식은 <code>if-else</code> 체인을 맵으로 대체하는 근본적인 패러다임 전환을 의미합니다. 이는 <em>명령형(imperative)</em> 프로그래밍에서 <em>선언형(declarative)</em> 프로그래밍으로의 전환입니다. <code>if-else</code> 체인은 명령형입니다. 즉, 컴퓨터에게 &ldquo;먼저 이것을 확인해라. 만약 거짓이면, 다음 것을 확인해라&hellip;&ldquo;와 같은 일련의 지시입니다. [11] 반면, 딕셔너리는 선언형입니다. 이는 입력과 출력 간의 관계를 <em>선언</em>하는 데이터 구조입니다: &ldquo;여기에 명령어와 그에 해당하는 핸들러의 완전한 매핑이 있다&rdquo;. [11, 13] 실행 로직은 일반화됩니다: &ldquo;맵에서 입력을 찾아 그 결과를 실행하라.&rdquo; 이러한 &ldquo;무엇(what)&ldquo;과 &ldquo;어떻게(how)&ldquo;의 분리는 아키텍처적으로 매우 중요합니다. 이는 로직(맵의 내용)이 데이터처럼 관리될 수 있음을 의미합니다. 즉, 컴파일된 실행 코드를 변경하지 않고도 설정 파일에서 로드하거나, 동적으로 구축하거나, 심지어 런타임에 수정할 수도 있습니다. 이는 시스템을 훨씬 더 유연하게 만듭니다.</p>
 <h3 id="23-고급-적용-규칙-엔진-패턴">2.3. 고급 적용: 규칙 엔진 패턴<a href="#23-고급-적용-규칙-엔진-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>규칙 엔진(Rules Engine) 패턴은 딕셔너리 접근 방식의 보다 공식화되고 강력한 진화 형태로, 복잡한 비즈니스 로직에 적합합니다. [15] 이 패턴은 &ldquo;규칙&rdquo; 객체들의 컬렉션을 생성하는 것을 포함하는데, 각 규칙은 조건(<code>shouldRun</code>)과 행동(<code>run</code>)을 캡슐화합니다. 그런 다음 엔진은 입력을 받아 규칙들을 순회하며 일치하는 모든 규칙의 행동을 실행합니다. 이는 규칙을 엔진으로부터 분리하여 매우 동적이고 설정 가능한 시스템을 가능하게 합니다.</p>
@@ -320,227 +320,227 @@
 <p>다형성의 핵심 원리는 &ldquo;묻지 말고, 시켜라(Tell, Don&rsquo;t Ask)&ldquo;로 요약될 수 있습니다. 객체에게 타입을 물어본 다음 무엇을 할지 결정하는 대신, 우리는 객체에게 행동을 수행하라고 <em>시키고</em>, 해당 객체의 구체적인 구현이 그 행동을 올바르게 수행하는 <em>방법</em>을 알고 있을 것이라고 신뢰합니다. [16, 18]</p>
 <p><code>Bird</code> 속도 계산 예제는 이 변환 과정을 명확하게 보여줍니다. &ldquo;Before&rdquo; 코드는 <code>type</code> 필드에 대한 거대한 <code>switch</code> 문을 가진 단일 <code>Bird</code> 구조체를 보여줍니다. &ldquo;After&rdquo; 코드는 <code>GetSpeed()</code> 메서드를 가진 <code>Bird</code> 인터페이스와, 각각 고유한 구현을 제공하는 구체적인 구조체들(<code>European</code>, <code>African</code> 등)을 보여줍니다. [16]</p>
 <p><strong>Before: <code>switch</code> 문을 사용한 타입 코드 기반 분기</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;errors&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">European</span>     <span class="p">=</span> <span class="s">&#34;EUROPEAN&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">African</span>      <span class="p">=</span> <span class="s">&#34;AFRICAN&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">NorwegianBlue</span> <span class="p">=</span> <span class="s">&#34;NORWEGIAN_BLUE&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Bird</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Type</span>             <span class="kt">string</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">NumberOfCoconuts</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">IsNailed</span>         <span class="kt">bool</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Voltage</span>          <span class="kt">float64</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Bird</span><span class="p">)</span> <span class="nf">GetSpeed</span><span class="p">()</span> <span class="p">(</span><span class="kt">float64</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="nx">b</span><span class="p">.</span><span class="nx">Type</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nx">European</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">b</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">(),</span> <span class="kc">nil</span>
-</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nx">African</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">b</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">()</span> <span class="o">-</span> <span class="nx">b</span><span class="p">.</span><span class="nf">getLoadFactor</span><span class="p">()</span><span class="o">*</span><span class="nb">float64</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">NumberOfCoconuts</span><span class="p">),</span> <span class="kc">nil</span>
-</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nx">NorwegianBlue</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">b</span><span class="p">.</span><span class="nx">IsNailed</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">nil</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">b</span><span class="p">.</span><span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">Voltage</span><span class="p">),</span> <span class="kc">nil</span>
-</span></span><span class="line"><span class="cl">    <span class="k">default</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Unknown bird type&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Helper methods</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Bird</span><span class="p">)</span> <span class="nf">getBaseSpeed</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span> <span class="k">return</span> <span class="mf">10.0</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Bird</span><span class="p">)</span> <span class="nf">getLoadFactor</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span> <span class="k">return</span> <span class="mf">2.0</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">Bird</span><span class="p">)</span> <span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">voltage</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span> <span class="k">return</span> <span class="mf">10.0</span> <span class="o">+</span> <span class="nx">voltage</span><span class="o">*</span><span class="mf">0.1</span> <span class="p">}</span>
-</span></span></code></pre></div><p><strong>After: 다형성을 사용한 동적 디스패치</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 1. Bird 인터페이스 정의</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Bird</span> <span class="kd">interface</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">GetSpeed</span><span class="p">()</span> <span class="kt">float64</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 2. 공통 기능을 위한 기본 구조체 (선택적)</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">BirdBase</span> <span class="kd">struct</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">BirdBase</span><span class="p">)</span> <span class="nf">getBaseSpeed</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span> <span class="k">return</span> <span class="mf">10.0</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 3. 구체적인 Bird 타입들</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">European</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">BirdBase</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">European</span><span class="p">)</span> <span class="nf">GetSpeed</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">African</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">BirdBase</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">NumberOfCoconuts</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">African</span><span class="p">)</span> <span class="nf">getLoadFactor</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span> <span class="k">return</span> <span class="mf">2.0</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">African</span><span class="p">)</span> <span class="nf">GetSpeed</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">()</span> <span class="o">-</span> <span class="nx">a</span><span class="p">.</span><span class="nf">getLoadFactor</span><span class="p">()</span><span class="o">*</span><span class="nb">float64</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">NumberOfCoconuts</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">NorwegianBlue</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">BirdBase</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">IsNailed</span> <span class="kt">bool</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Voltage</span>  <span class="kt">float64</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">n</span> <span class="o">*</span><span class="nx">NorwegianBlue</span><span class="p">)</span> <span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">voltage</span> <span class="kt">float64</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span> <span class="k">return</span> <span class="mf">10.0</span> <span class="o">+</span> <span class="nx">voltage</span><span class="o">*</span><span class="mf">0.1</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">n</span> <span class="o">*</span><span class="nx">NorwegianBlue</span><span class="p">)</span> <span class="nf">GetSpeed</span><span class="p">()</span> <span class="kt">float64</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">n</span><span class="p">.</span><span class="nx">IsNailed</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">n</span><span class="p">.</span><span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">n</span><span class="p">.</span><span class="nx">Voltage</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 클라이언트 코드</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// var bird Bird = &amp;European{}</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// speed := bird.GetSpeed() // 올바른 구현이 자동으로 호출됨</span>
-</span></span></code></pre></div><p>이 리팩토링이 어떻게 자연스럽게 개방-폐쇄 원칙을 준수하는지가 핵심적인 교훈입니다. 새로운 종류의 새를 추가하는 것은 단지 새로운 구조체를 추가하고 인터페이스를 구현하는 것만으로 충분하며, 기존 코드는 전혀 수정할 필요가 없습니다. 이는 시스템을 견고하고 확장 가능하게 만듭니다. [4, 16]</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;errors&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">European</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="s">&#34;EUROPEAN&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">African</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="s">&#34;AFRICAN&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">NorwegianBlue</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#34;NORWEGIAN_BLUE&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Bird</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Type</span><span class="w">             </span><span class="kt">string</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">NumberOfCoconuts</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">IsNailed</span><span class="w">         </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Voltage</span><span class="w">          </span><span class="kt">float64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="w"> </span><span class="o">*</span><span class="nx">Bird</span><span class="p">)</span><span class="w"> </span><span class="nf">GetSpeed</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="kt">float64</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Type</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">European</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">(),</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">African</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nf">getLoadFactor</span><span class="p">()</span><span class="o">*</span><span class="nb">float64</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">NumberOfCoconuts</span><span class="p">),</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">NorwegianBlue</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">IsNailed</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">Voltage</span><span class="p">),</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">default</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Unknown bird type&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Helper methods</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="w"> </span><span class="o">*</span><span class="nx">Bird</span><span class="p">)</span><span class="w"> </span><span class="nf">getBaseSpeed</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">10.0</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="w"> </span><span class="o">*</span><span class="nx">Bird</span><span class="p">)</span><span class="w"> </span><span class="nf">getLoadFactor</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="w"> </span><span class="o">*</span><span class="nx">Bird</span><span class="p">)</span><span class="w"> </span><span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">voltage</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">10.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">voltage</span><span class="o">*</span><span class="mf">0.1</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After: 다형성을 사용한 동적 디스패치</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 1. Bird 인터페이스 정의</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Bird</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">GetSpeed</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 2. 공통 기능을 위한 기본 구조체 (선택적)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">BirdBase</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="w"> </span><span class="o">*</span><span class="nx">BirdBase</span><span class="p">)</span><span class="w"> </span><span class="nf">getBaseSpeed</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">10.0</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 3. 구체적인 Bird 타입들</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">European</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">BirdBase</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="w"> </span><span class="o">*</span><span class="nx">European</span><span class="p">)</span><span class="w"> </span><span class="nf">GetSpeed</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">African</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">BirdBase</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">NumberOfCoconuts</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="w"> </span><span class="o">*</span><span class="nx">African</span><span class="p">)</span><span class="w"> </span><span class="nf">getLoadFactor</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="w"> </span><span class="o">*</span><span class="nx">African</span><span class="p">)</span><span class="w"> </span><span class="nf">GetSpeed</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nf">getBaseSpeed</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nf">getLoadFactor</span><span class="p">()</span><span class="o">*</span><span class="nb">float64</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">NumberOfCoconuts</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">NorwegianBlue</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">BirdBase</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">IsNailed</span><span class="w"> </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Voltage</span><span class="w">  </span><span class="kt">float64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">n</span><span class="w"> </span><span class="o">*</span><span class="nx">NorwegianBlue</span><span class="p">)</span><span class="w"> </span><span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">voltage</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">10.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">voltage</span><span class="o">*</span><span class="mf">0.1</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">n</span><span class="w"> </span><span class="o">*</span><span class="nx">NorwegianBlue</span><span class="p">)</span><span class="w"> </span><span class="nf">GetSpeed</span><span class="p">()</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">n</span><span class="p">.</span><span class="nx">IsNailed</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">n</span><span class="p">.</span><span class="nf">getBaseSpeedWithVoltage</span><span class="p">(</span><span class="nx">n</span><span class="p">.</span><span class="nx">Voltage</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 클라이언트 코드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// var bird Bird = &amp;European{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// speed := bird.GetSpeed() // 올바른 구현이 자동으로 호출됨</span><span class="w">
+</span></span></span></code></pre></div><p>이 리팩토링이 어떻게 자연스럽게 개방-폐쇄 원칙을 준수하는지가 핵심적인 교훈입니다. 새로운 종류의 새를 추가하는 것은 단지 새로운 구조체를 추가하고 인터페이스를 구현하는 것만으로 충분하며, 기존 코드는 전혀 수정할 필요가 없습니다. 이는 시스템을 견고하고 확장 가능하게 만듭니다. [4, 16]</p>
 <h3 id="32-전략-패턴-교체-가능한-알고리즘-캡슐화">3.2. 전략 패턴: 교체 가능한 알고리즘 캡슐화<a href="#32-전략-패턴-교체-가능한-알고리즘-캡슐화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>전략 패턴(Strategy Pattern)은 행위 패턴의 일종으로, 알고리즘군을 정의하고 각 알고리즘을 별도의 객체에 캡슐화하여 런타임에 교체할 수 있도록 합니다. [5, 6, 19]</p>
 <p>이 패턴의 주된 사용 사례는 하나의 클래스 내에서 특정 작업을 여러 다른 방식으로 수행하는 거대한 조건문을 대체하는 것입니다. 패턴은 이러한 다양한 &ldquo;방식&rdquo;(알고리즘)을 각각의 &ldquo;전략&rdquo; 객체로 추출합니다. [19]</p>
 <p><strong>Before: <code>if-else</code>를 사용한 결제 처리</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ShoppingCart</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">//... other fields</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">sc</span> <span class="o">*</span><span class="nx">ShoppingCart</span><span class="p">)</span> <span class="nf">Pay</span><span class="p">(</span><span class="nx">method</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">amount</span> <span class="kt">float64</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">method</span> <span class="o">==</span> <span class="s">&#34;creditcard&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using Credit Card\n&#34;</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// 신용카드 결제 로직</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">method</span> <span class="o">==</span> <span class="s">&#34;paypal&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using PayPal\n&#34;</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// 페이팔 결제 로직</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Unsupported payment method&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>After: 전략 패턴 적용</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 1. 전략 인터페이스</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PaymentStrategy</span> <span class="kd">interface</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">float64</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 2. 구체적인 전략들</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">CreditCardStrategy</span> <span class="kd">struct</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">ccs</span> <span class="o">*</span><span class="nx">CreditCardStrategy</span><span class="p">)</span> <span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">float64</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using Credit Card\n&#34;</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 신용카드 결제 로직</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PayPalStrategy</span> <span class="kd">struct</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">pps</span> <span class="o">*</span><span class="nx">PayPalStrategy</span><span class="p">)</span> <span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">float64</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using PayPal\n&#34;</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 페이팔 결제 로직</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 3. 컨텍스트</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PaymentContext</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">strategy</span> <span class="nx">PaymentStrategy</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">pc</span> <span class="o">*</span><span class="nx">PaymentContext</span><span class="p">)</span> <span class="nf">SetStrategy</span><span class="p">(</span><span class="nx">strategy</span> <span class="nx">PaymentStrategy</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">pc</span><span class="p">.</span><span class="nx">strategy</span> <span class="p">=</span> <span class="nx">strategy</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">pc</span> <span class="o">*</span><span class="nx">PaymentContext</span><span class="p">)</span> <span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">float64</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">pc</span><span class="p">.</span><span class="nx">strategy</span><span class="p">.</span><span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 클라이언트 코드</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// context := &amp;PaymentContext{}</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// context.SetStrategy(&amp;CreditCardStrategy{})</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// context.Pay(100.0)</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// context.SetStrategy(&amp;PayPalStrategy{})</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// context.Pay(200.0)</span>
-</span></span></code></pre></div><h3 id="33-상태-패턴-상태-의존적-행위-관리">3.3. 상태 패턴: 상태 의존적 행위 관리<a href="#33-상태-패턴-상태-의존적-행위-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">ShoppingCart</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cp">//... other fields</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">sc</span><span class="w"> </span><span class="o">*</span><span class="nx">ShoppingCart</span><span class="p">)</span><span class="w"> </span><span class="nf">Pay</span><span class="p">(</span><span class="nx">method</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">amount</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;creditcard&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using Credit Card\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">amount</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 신용카드 결제 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;paypal&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using PayPal\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">amount</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 페이팔 결제 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Unsupported payment method&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After: 전략 패턴 적용</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 1. 전략 인터페이스</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PaymentStrategy</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 2. 구체적인 전략들</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">CreditCardStrategy</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">ccs</span><span class="w"> </span><span class="o">*</span><span class="nx">CreditCardStrategy</span><span class="p">)</span><span class="w"> </span><span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using Credit Card\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">amount</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 신용카드 결제 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PayPalStrategy</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">pps</span><span class="w"> </span><span class="o">*</span><span class="nx">PayPalStrategy</span><span class="p">)</span><span class="w"> </span><span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Paying %.2f using PayPal\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">amount</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 페이팔 결제 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 3. 컨텍스트</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PaymentContext</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">strategy</span><span class="w"> </span><span class="nx">PaymentStrategy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">pc</span><span class="w"> </span><span class="o">*</span><span class="nx">PaymentContext</span><span class="p">)</span><span class="w"> </span><span class="nf">SetStrategy</span><span class="p">(</span><span class="nx">strategy</span><span class="w"> </span><span class="nx">PaymentStrategy</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">pc</span><span class="p">.</span><span class="nx">strategy</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">strategy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">pc</span><span class="w"> </span><span class="o">*</span><span class="nx">PaymentContext</span><span class="p">)</span><span class="w"> </span><span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">pc</span><span class="p">.</span><span class="nx">strategy</span><span class="p">.</span><span class="nf">Pay</span><span class="p">(</span><span class="nx">amount</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 클라이언트 코드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// context := &amp;PaymentContext{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// context.SetStrategy(&amp;CreditCardStrategy{})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// context.Pay(100.0)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// context.SetStrategy(&amp;PayPalStrategy{})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// context.Pay(200.0)</span><span class="w">
+</span></span></span></code></pre></div><h3 id="33-상태-패턴-상태-의존적-행위-관리">3.3. 상태 패턴: 상태 의존적 행위 관리<a href="#33-상태-패턴-상태-의존적-행위-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>상태 패턴(State Pattern)은 객체의 내부 상태가 변경될 때 그 행위를 변경할 수 있도록 하는 행위 패턴입니다. 그 효과는 매우 심오하여, 마치 객체가 자신의 클래스를 바꾸는 것처럼 보이게 만듭니다. [20, 21]</p>
 <p>이 패턴의 주된 사용 사례는 유한 상태 기계(finite-state machine)처럼 동작하는 객체를 모델링하는 것입니다. 예를 들어, <code>Document</code> 객체가 <code>Draft</code>, <code>InReview</code>, <code>Published</code>와 같은 상태를 가질 수 있고, 각 상태에 따라 메서드의 로직이 크게 달라지는 경우에 적합합니다. [21]</p>
 <p><strong>Before: <code>switch</code> 문을 사용한 상태 관리</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Document</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">state</span> <span class="kt">string</span> <span class="c1">// &#34;Draft&#34;, &#34;Moderation&#34;, &#34;Published&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">//...</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><span class="nx">Document</span><span class="p">)</span> <span class="nf">Publish</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="nx">d</span><span class="p">.</span><span class="nx">state</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s">&#34;Draft&#34;</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Draft to Moderation.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">d</span><span class="p">.</span><span class="nx">state</span> <span class="p">=</span> <span class="s">&#34;Moderation&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s">&#34;Moderation&#34;</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Moderation to Published.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">d</span><span class="p">.</span><span class="nx">state</span> <span class="p">=</span> <span class="s">&#34;Published&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s">&#34;Published&#34;</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Already published. No action taken.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>After: 상태 패턴 적용</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 1. 상태 인터페이스</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">DocumentState</span> <span class="kd">interface</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">Publish</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 2. 컨텍스트 (Document)</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">DocumentContext</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">state</span> <span class="nx">DocumentState</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewDocument</span><span class="p">()</span> <span class="o">*</span><span class="nx">DocumentContext</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">doc</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">DocumentContext</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 초기 상태 설정</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">doc</span><span class="p">.</span><span class="nx">state</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">DraftState</span><span class="p">{</span><span class="nx">doc</span><span class="p">:</span> <span class="nx">doc</span><span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">doc</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><span class="nx">DocumentContext</span><span class="p">)</span> <span class="nf">SetState</span><span class="p">(</span><span class="nx">state</span> <span class="nx">DocumentState</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">d</span><span class="p">.</span><span class="nx">state</span> <span class="p">=</span> <span class="nx">state</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><span class="nx">DocumentContext</span><span class="p">)</span> <span class="nf">Publish</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">d</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nf">Publish</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 3. 구체적인 상태들</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">DraftState</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">doc</span> <span class="o">*</span><span class="nx">DocumentContext</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">DraftState</span><span class="p">)</span> <span class="nf">Publish</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Draft to Moderation.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">.</span><span class="nf">SetState</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">ModerationState</span><span class="p">{</span><span class="nx">doc</span><span class="p">:</span> <span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">})</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ModerationState</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">doc</span> <span class="o">*</span><span class="nx">DocumentContext</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">ModerationState</span><span class="p">)</span> <span class="nf">Publish</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Moderation to Published.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">.</span><span class="nf">SetState</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">PublishedState</span><span class="p">{</span><span class="nx">doc</span><span class="p">:</span> <span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">})</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PublishedState</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">doc</span> <span class="o">*</span><span class="nx">DocumentContext</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">PublishedState</span><span class="p">)</span> <span class="nf">Publish</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Already published. No action taken.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 클라이언트 코드</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// doc := NewDocument()</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// doc.Publish() // Draft -&gt; Moderation</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// doc.Publish() // Moderation -&gt; Published</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// doc.Publish() // Already published</span>
-</span></span></code></pre></div><h3 id="34-비판적-비교-전략-패턴-vs-상태-패턴">3.4. 비판적 비교: 전략 패턴 vs. 상태 패턴<a href="#34-비판적-비교-전략-패턴-vs-상태-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Document</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">state</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="c1">// &#34;Draft&#34;, &#34;Moderation&#34;, &#34;Published&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cp">//...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">d</span><span class="w"> </span><span class="o">*</span><span class="nx">Document</span><span class="p">)</span><span class="w"> </span><span class="nf">Publish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">d</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s">&#34;Draft&#34;</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Draft to Moderation.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">d</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#34;Moderation&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s">&#34;Moderation&#34;</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Moderation to Published.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">d</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#34;Published&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s">&#34;Published&#34;</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Already published. No action taken.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After: 상태 패턴 적용</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 1. 상태 인터페이스</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">DocumentState</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">Publish</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 2. 컨텍스트 (Document)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">DocumentContext</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">state</span><span class="w"> </span><span class="nx">DocumentState</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewDocument</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="nx">DocumentContext</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">doc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">DocumentContext</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 초기 상태 설정</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">doc</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">DraftState</span><span class="p">{</span><span class="nx">doc</span><span class="p">:</span><span class="w"> </span><span class="nx">doc</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">doc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">d</span><span class="w"> </span><span class="o">*</span><span class="nx">DocumentContext</span><span class="p">)</span><span class="w"> </span><span class="nf">SetState</span><span class="p">(</span><span class="nx">state</span><span class="w"> </span><span class="nx">DocumentState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">d</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">state</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">d</span><span class="w"> </span><span class="o">*</span><span class="nx">DocumentContext</span><span class="p">)</span><span class="w"> </span><span class="nf">Publish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">d</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nf">Publish</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 3. 구체적인 상태들</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">DraftState</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">doc</span><span class="w"> </span><span class="o">*</span><span class="nx">DocumentContext</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">DraftState</span><span class="p">)</span><span class="w"> </span><span class="nf">Publish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Draft to Moderation.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">.</span><span class="nf">SetState</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">ModerationState</span><span class="p">{</span><span class="nx">doc</span><span class="p">:</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">ModerationState</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">doc</span><span class="w"> </span><span class="o">*</span><span class="nx">DocumentContext</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">ModerationState</span><span class="p">)</span><span class="w"> </span><span class="nf">Publish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Moving from Moderation to Published.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">.</span><span class="nf">SetState</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">PublishedState</span><span class="p">{</span><span class="nx">doc</span><span class="p">:</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">doc</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PublishedState</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">doc</span><span class="w"> </span><span class="o">*</span><span class="nx">DocumentContext</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">PublishedState</span><span class="p">)</span><span class="w"> </span><span class="nf">Publish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Already published. No action taken.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 클라이언트 코드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// doc := NewDocument()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// doc.Publish() // Draft -&gt; Moderation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// doc.Publish() // Moderation -&gt; Published</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// doc.Publish() // Already published</span><span class="w">
+</span></span></span></code></pre></div><h3 id="34-비판적-비교-전략-패턴-vs-상태-패턴">3.4. 비판적 비교: 전략 패턴 vs. 상태 패턴<a href="#34-비판적-비교-전략-패턴-vs-상태-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>이 하위 섹션에서는 구조적으로 유사하여 종종 혼동을 일으키는 이 두 패턴을 직접적으로 비교합니다. 두 패턴 모두 컴포지션과 위임에 의존하지만, 그들의 <em>의도</em>는 다릅니다. [17, 19]</p>
 <ul>
 <li><strong>전략 패턴</strong>: 객체가 작업을 <em>어떻게</em> 수행하는지에 초점을 맞춥니다. 다양한 전략들은 교체 가능한 알고리즘입니다. 일반적으로 클라이언트 코드가 전략을 선택하여 컨텍스트에 제공하는 책임을 집니다. 전략은 보통 상태가 없으며(stateless) 서로를 인식하지 못합니다. [19, 22]</li>
@@ -555,67 +555,67 @@
 <p>널 객체 패턴(Null Object Pattern)이 이에 대한 해결책으로 제시됩니다. 객체의 부재를 나타내기 위해 <code>nil</code>을 반환하는 대신, 메서드는 필요한 인터페이스를 따르지만 기본적으로 &ldquo;아무것도 하지 않는&rdquo; 구현을 제공하는 구체적인 구조체(struct)를 반환합니다. [23, 25, 26]</p>
 <p>로깅이 비활성화될 수 있는 로깅 시스템과 같은 간단한 &ldquo;Before&quot;와 &ldquo;After&rdquo; 예제를 사용할 수 있습니다. &ldquo;Before&rdquo; 코드는 <code>if logger!= nil</code> 검사로 가득 차 있습니다. &ldquo;After&rdquo; 코드는 (비어있는 <code>Info()</code> 메서드를 가진) <code>NullLogger</code>를 사용하고 모든 <code>nil</code> 검사를 제거하여 클라이언트 코드를 극적으로 단순화합니다. [24, 27]</p>
 <p><strong>Before: 반복적인 <code>nil</code> 검사</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Logger</span> <span class="kd">interface</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">Info</span><span class="p">(</span><span class="nx">message</span> <span class="kt">string</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ConsoleLogger</span> <span class="kd">struct</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">ConsoleLogger</span><span class="p">)</span> <span class="nf">Info</span><span class="p">(</span><span class="nx">message</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">OrderProcessor</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">logger</span> <span class="nx">Logger</span> <span class="c1">// logger는 nil일 수 있음</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">OrderProcessor</span><span class="p">)</span> <span class="nf">ProcessOrder</span><span class="p">(</span><span class="nx">orderID</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Starting to process order: &#34;</span> <span class="o">+</span> <span class="nx">orderID</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">//... 처리 로직...</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Finished processing order: &#34;</span> <span class="o">+</span> <span class="nx">orderID</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><strong>After: 널 객체 패턴 적용</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Logger</span> <span class="kd">interface</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">Info</span><span class="p">(</span><span class="nx">message</span> <span class="kt">string</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ConsoleLogger</span> <span class="kd">struct</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">ConsoleLogger</span><span class="p">)</span> <span class="nf">Info</span><span class="p">(</span><span class="nx">message</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 널 객체 구현</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">NullLogger</span> <span class="kd">struct</span><span class="p">{}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">NullLogger</span><span class="p">)</span> <span class="nf">Info</span><span class="p">(</span><span class="nx">message</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 아무것도 하지 않음</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">OrderProcessor</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">logger</span> <span class="nx">Logger</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewOrderProcessor</span><span class="p">(</span><span class="nx">logger</span> <span class="nx">Logger</span><span class="p">)</span> <span class="o">*</span><span class="nx">OrderProcessor</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// logger가 nil이면 NullLogger를 사용하도록 보장</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">logger</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">&amp;</span><span class="nx">OrderProcessor</span><span class="p">{</span><span class="nx">logger</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">NullLogger</span><span class="p">{}}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">OrderProcessor</span><span class="p">{</span><span class="nx">logger</span><span class="p">:</span> <span class="nx">logger</span><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">OrderProcessor</span><span class="p">)</span> <span class="nf">ProcessOrder</span><span class="p">(</span><span class="nx">orderID</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// nil 검사 필요 없음!</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Starting to process order: &#34;</span> <span class="o">+</span> <span class="nx">orderID</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">//... 처리 로직...</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Finished processing order: &#34;</span> <span class="o">+</span> <span class="nx">orderID</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>이 패턴의 장단점도 논의되어야 합니다. 실제 객체가 예상되었지만 널 객체가 제공된 경우, 이 패턴은 의도치 않게 진짜 오류를 가릴 수 있습니다. 따라서 &ldquo;아무것도 하지 않음&quot;이 유효하고 예상되는 행위인 시나리오에 가장 적합합니다. [26]</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Logger</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">Info</span><span class="p">(</span><span class="nx">message</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">ConsoleLogger</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">ConsoleLogger</span><span class="p">)</span><span class="w"> </span><span class="nf">Info</span><span class="p">(</span><span class="nx">message</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">OrderProcessor</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">logger</span><span class="w"> </span><span class="nx">Logger</span><span class="w"> </span><span class="c1">// logger는 nil일 수 있음</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">OrderProcessor</span><span class="p">)</span><span class="w"> </span><span class="nf">ProcessOrder</span><span class="p">(</span><span class="nx">orderID</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Starting to process order: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">orderID</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cp">//... 처리 로직...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Finished processing order: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">orderID</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After: 널 객체 패턴 적용</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Logger</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">Info</span><span class="p">(</span><span class="nx">message</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">ConsoleLogger</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">ConsoleLogger</span><span class="p">)</span><span class="w"> </span><span class="nf">Info</span><span class="p">(</span><span class="nx">message</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 널 객체 구현</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">NullLogger</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">NullLogger</span><span class="p">)</span><span class="w"> </span><span class="nf">Info</span><span class="p">(</span><span class="nx">message</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 아무것도 하지 않음</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">OrderProcessor</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">logger</span><span class="w"> </span><span class="nx">Logger</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewOrderProcessor</span><span class="p">(</span><span class="nx">logger</span><span class="w"> </span><span class="nx">Logger</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">OrderProcessor</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// logger가 nil이면 NullLogger를 사용하도록 보장</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">logger</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">OrderProcessor</span><span class="p">{</span><span class="nx">logger</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">NullLogger</span><span class="p">{}}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">OrderProcessor</span><span class="p">{</span><span class="nx">logger</span><span class="p">:</span><span class="w"> </span><span class="nx">logger</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">OrderProcessor</span><span class="p">)</span><span class="w"> </span><span class="nf">ProcessOrder</span><span class="p">(</span><span class="nx">orderID</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// nil 검사 필요 없음!</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Starting to process order: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">orderID</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cp">//... 처리 로직...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">p</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;Finished processing order: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">orderID</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 패턴의 장단점도 논의되어야 합니다. 실제 객체가 예상되었지만 널 객체가 제공된 경우, 이 패턴은 의도치 않게 진짜 오류를 가릴 수 있습니다. 따라서 &ldquo;아무것도 하지 않음&quot;이 유효하고 예상되는 행위인 시나리오에 가장 적합합니다. [26]</p>
 <p>널 객체 패턴은 암시적 상태를 명시적으로 만드는 강력한 예시입니다. 이는 언어 수준의 개념(<code>nil</code>)을 애플리케이션 수준의, 도메인 특화된 객체로 변환합니다. <code>nil</code> 값은 암시적 상태입니다. 이는 &ldquo;부재&quot;를 의미하지만, 애플리케이션의 타입 시스템 외부에 존재하며 다형성을 깨뜨립니다(<code>nil</code> 인터페이스 값에 대해 메서드를 호출할 수 없음). 이는 클라이언트 코드가 이 암시적 상태를 끊임없이 확인하도록 강요합니다. 널 객체 패턴은 이 상태를 명시적으로 만듭니다. <code>GuestUser</code>나 <code>DisabledLogger</code>와 같이 부재 상태를 나타내는 도메인 내의 일급 시민(first-class citizen)을 생성합니다. 이 새로운 구조체는 공통 인터페이스를 따르기 때문에 시스템의 다형적 행위에 완전히 참여하며, 이로써 클라이언트가 특별한 검사를 수행할 필요성을 제거합니다. 특수 케이스 플래그나 값을 명시적 객체로 변환하는 이 원칙은 광범하게 적용 가능한 강력한 디자인 기법입니다.</p>
 <hr>
 <h2 id="섹션-5-의사결정의-기술-올바른-접근법-선택을-위한-프레임워크">섹션 5: 의사결정의 기술: 올바른 접근법 선택을 위한 프레임워크<a href="#섹션-5-의사결정의-기술-올바른-접근법-선택을-위한-프레임워크" class="hanchor" ariaLabel="Anchor">#</a> </h2>

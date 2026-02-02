@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -217,7 +217,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}).</span><span class="na">collect</span><span class="p">(</span><span class="n">Collectors</span><span class="p">.</span><span class="na">toList</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><h2 id="구조화된-동시성을-사용한-invokeall">구조화된 동시성을 사용한 <code>invokeAll</code><a href="#구조화된-동시성을-사용한-invokeall" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>구조화된 동시성 (structured concurrency) 은 Java 에서 스레드의 수명을 관리하는 새로운 방법입니다. 수명은 <code>StructuredTaskScope</code> 를 통해 제어됩니다. 주로 <code>invokeAny</code> 동작과 <code>invokeAll</code> 동작을 가진 두 가지 Scope 가 있습니다. 이 글에서는 <code>invokeAll</code> 을 구현할 것입니다. 모든 스레드가 실행을 마칠 때까지 기다리는 <code>StructuredTaskScope</code> 를 만들려면 <code>ShutdownOnFailure</code> 메서드를 호출해야 합니다.</p>
 <p>Scope 가 실행할 작업을 추가하려면 <code>fork</code> 메서드를 호출해야 합니다. 7행의 <code>scope.join()</code> 메서드 호출은 모든 스레드가 완료될 때까지 차단됩니다. 10행에서 결과를 얻기 전에 예외가 발생했는지 확인합니다.</p>
@@ -235,7 +235,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">&#34;result: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">futureA</span><span class="p">.</span><span class="na">resultNow</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34; &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">futureB</span><span class="p">.</span><span class="na">resultNow</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><h2 id="플랫폼-스레드를-사용한-invokeall">플랫폼 스레드를 사용한 <code>invokeAll</code><a href="#플랫폼-스레드를-사용한-invokeall" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>플랫폼 스레드 (platform threads) 는 이전 Java 버전에서 우리가 알고 있는 스레드입니다. 이 스레드는 운영 체제에서 관리되는 스레드와 밀접하게 연결되어 있습니다. 아래 예제는 <code>ExecutorService</code> 를 사용하기 때문에 가상 스레드를 사용하는 첫 번째 예제와 유사합니다. 이번에 사용하는 <code>ExecutorService</code> 는 <code>CachedThreadPool</code> 입니다. 이 풀은 필요할 때 새 스레드를 생성하지만 이미 작업을 마친 스레드를 재사용합니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">static</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">invokeAllWithPlatformThreads</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">ExecutionException</span><span class="p">,</span><span class="w"> </span><span class="n">InterruptedException</span><span class="w"> </span><span class="p">{</span><span class="w">

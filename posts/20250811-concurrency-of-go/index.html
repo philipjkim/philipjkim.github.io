@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -201,7 +201,8 @@
 <h2 id="go의-동시성-철학-메모리를-공유하여-소통하지-말고-소통하여-메모리를-공유하라">Go의 동시성 철학: &ldquo;메모리를 공유하여 소통하지 말고, 소통하여 메모리를 공유하라&rdquo;<a href="#go의-동시성-철학-메모리를-공유하여-소통하지-말고-소통하여-메모리를-공유하라" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>Go의 동시성 모델은 롭 파이크(Rob Pike)의 유명한 격언으로 요약됩니다.</p>
 <blockquote>
-<p>Don&rsquo;t communicate by sharing memory; instead, share memory by communicating.</p></blockquote>
+<p>Don&rsquo;t communicate by sharing memory; instead, share memory by communicating.</p>
+</blockquote>
 <p>이는 전통적인 동시성 모델에 대한 직접적인 반박입니다. 다수의 언어는 여러 스레드가 공유 메모리(Shared Memory)에 접근하고, 이 과정에서 데이터의 일관성을 지키기 위해 뮤텍스(Mutex)나 세마포어(Semaphore) 같은 잠금(Locking) 메커니즘을 사용합니다. 이 방식은 매우 강력하지만, 데드락(Deadlock)이나 경쟁 상태(Race Condition)와 같은 복잡하고 미묘한 버그를 유발하기 쉽습니다.</p>
 <p>Go는 정반대의 접근법을 제안합니다. <strong>채널(Channels)</strong> 이라는 통로를 만들어 독립적으로 실행되는 <strong>고루틴(Goroutines)</strong> 간에 데이터를 안전하게 전달하는 방식을 기본으로 삼습니다. 데이터의 소유권이 채널을 통해 명시적으로 전달되므로, 여러 고루틴이 동시에 같은 메모리에 접근할 필요성 자체가 줄어듭니다.</p>
 <ul>
@@ -217,52 +218,52 @@
 <p>동일한 작업을 각 언어의 동시성 모델로 구현하며 차이점을 살펴보겠습니다. 작업은 간단합니다: 숫자 리스트를 여러 워커(Worker)에 분배하여 각각 제곱한 뒤, 그 결과를 다시 모으는 것입니다.</p>
 <h3 id="go">Go<a href="#go" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>고루틴과 채널을 사용하여 직관적으로 구현합니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">	<span class="s">&#34;sync&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">jobs</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">results</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// 3개의 워커 고루틴 생성</span>
-</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">w</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">w</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">w</span><span class="o">++</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">id</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">			<span class="k">defer</span> <span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">jobs</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;워커 %d, 작업 %d 시작\n&#34;</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">j</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">				<span class="nx">results</span> <span class="o">&lt;-</span> <span class="nx">j</span> <span class="o">*</span> <span class="nx">j</span> <span class="c1">// 결과를 results 채널에 보냄</span>
-</span></span><span class="line"><span class="cl">			<span class="p">}</span>
-</span></span><span class="line"><span class="cl">		<span class="p">}(</span><span class="nx">w</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// 5개의 작업을 jobs 채널에 보냄</span>
-</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">jobs</span> <span class="o">&lt;-</span> <span class="nx">j</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl">	<span class="nb">close</span><span class="p">(</span><span class="nx">jobs</span><span class="p">)</span> <span class="c1">// 작업 전송이 끝났음을 알림</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span> <span class="c1">// 모든 워커가 끝날 때까지 대기</span>
-</span></span><span class="line"><span class="cl">	<span class="nb">close</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="c1">// 결과 수집</span>
-</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">r</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">results</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;결과: %d\n&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><code>jobs</code>와 <code>results</code>라는 두 개의 채널이 작업 분배와 결과 수집을 명확히 담당하며, 별도의 잠금 없이 동기화가 이루어집니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;sync&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">jobs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">results</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">wg</span><span class="w"> </span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 3개의 워커 고루틴 생성</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">w</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">w</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="nx">w</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">go</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">defer</span><span class="w"> </span><span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">for</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">jobs</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;워커 %d, 작업 %d 시작\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="c1">// 결과를 results 채널에 보냄</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}(</span><span class="nx">w</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 5개의 작업을 jobs 채널에 보냄</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">jobs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nx">j</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nb">close</span><span class="p">(</span><span class="nx">jobs</span><span class="p">)</span><span class="w"> </span><span class="c1">// 작업 전송이 끝났음을 알림</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span><span class="w"> </span><span class="c1">// 모든 워커가 끝날 때까지 대기</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nb">close</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 결과 수집</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;결과: %d\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>jobs</code>와 <code>results</code>라는 두 개의 채널이 작업 분배와 결과 수집을 명확히 담당하며, 별도의 잠금 없이 동기화가 이루어집니다.</p>
 <h3 id="java">Java<a href="#java" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Java는 성숙하고 강력한 <code>java.util.concurrent</code> 패키지를 제공합니다. <code>ExecutorService</code>와 <code>Future</code>를 사용하는 것이 일반적입니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.ArrayList</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.concurrent.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.concurrent.*</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ConcurrencyTest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ConcurrencyTest</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ExecutorService</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Executors</span><span class="p">.</span><span class="na">newFixedThreadPool</span><span class="p">(</span><span class="n">3</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">futures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
@@ -282,7 +283,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">executor</span><span class="p">.</span><span class="na">shutdown</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>Java의 접근법은 매우 유연하고 다양한 제어 기능을 제공합니다. 하지만 코드가 상대적으로 길고, <code>Future.get()</code>을 통해 결과를 동기적으로 기다리거나 콜백을 사용하는 등 동기화 방식을 개발자가 직접 선택하고 관리해야 합니다.</p>
 <h3 id="kotlin">Kotlin<a href="#kotlin" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Kotlin은 Go의 영향을 받은 코루틴(Coroutines)과 채널(Channel)을 라이브러리 수준에서 제공하며, 구조화된 동시성(Structured Concurrency)이라는 강력한 개념을 도입했습니다.</p>
@@ -294,15 +295,15 @@
 </span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="py">results</span> <span class="p">=</span> <span class="n">Channel</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;()</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">// 5개의 작업을 비동기적으로 보냄
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">launch</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1.</span><span class="p">.</span><span class="m">5</span><span class="p">)</span> <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">launch</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="n">jobs</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">        <span class="n">jobs</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">// 3개의 워커 코루틴
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">repeat</span><span class="p">(</span><span class="m">3</span><span class="p">)</span> <span class="p">{</span> <span class="n">id</span> <span class="o">-&gt;</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">repeat</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="p">{</span> <span class="n">id</span> <span class="o">-&gt;</span>
 </span></span><span class="line"><span class="cl">        <span class="n">launch</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="k">in</span> <span class="n">jobs</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">                <span class="n">println</span><span class="p">(</span><span class="s2">&#34;워커 </span><span class="si">$id</span><span class="s2">, 작업 </span><span class="si">$j</span><span class="s2"> 시작&#34;</span><span class="p">)</span>
@@ -312,11 +313,11 @@
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">    <span class="c1">// 결과 5개를 수집 후 종료
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">repeat</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">repeat</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="n">println</span><span class="p">(</span><span class="s2">&#34;결과: </span><span class="si">${results.receive()}</span><span class="s2">&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="n">coroutineContext</span><span class="p">.</span><span class="n">cancelChildren</span><span class="p">()</span> <span class="c1">// 모든 자식 코루틴 정리
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>Kotlin의 코드는 Go와 매우 유사하지만, <code>coroutineScope</code>와 <code>launch</code> 빌더를 통해 코루틴의 생명주기를 부모 스코프에 종속시키는 구조화된 동시성을 제공하여 &lsquo;코루틴 누수&rsquo;를 방지하는 데 강점이 있습니다.</p>
 <h3 id="javascript-nodejs">JavaScript (Node.js)<a href="#javascript-nodejs" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Node.js는 기본적으로 싱글 스레드 이벤트 루프 모델을 사용하며 <code>async/await</code>로 비동기 I/O 작업을 처리합니다. CPU 집약적인 병렬 작업을 위해서는 <code>worker_threads</code> 모듈을 사용해야 합니다.</p>
@@ -341,7 +342,7 @@
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// 워커 스레드
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">parentPort</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">job</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl">    <span class="nx">parentPort</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">job</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`워커, 작업 </span><span class="si">${</span><span class="nx">job</span><span class="si">}</span><span class="sb"> 시작`</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="nx">parentPort</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">(</span><span class="nx">job</span> <span class="o">*</span> <span class="nx">job</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">});</span>
@@ -352,42 +353,42 @@
 <h3 id="rust">Rust<a href="#rust" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Rust는 &ldquo;두려움 없는 동시성(Fearless Concurrency)&ldquo;을 모토로, 컴파일 시점에 데이터 경쟁을 원천적으로 차단하는 소유권(Ownership) 시스템을 갖추고 있습니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="p">{</span><span class="n">mpsc</span><span class="p">,</span><span class="w"> </span><span class="n">Arc</span><span class="p">,</span><span class="w"> </span><span class="n">Mutex</span><span class="p">};</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">thread</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">thread</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// Rust의 표준 라이브러리인 mpsc(multiple producer, single consumer) 채널의 특성 반영
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Rust의 표준 라이브러리인 mpsc(multiple producer, single consumer) 채널의 특성 반영
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 작업(jobs)과 결과(results)를 위한 두 개의 채널 생성
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">jobs_tx</span><span class="p">,</span><span class="w"> </span><span class="n">jobs_rx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpsc</span>::<span class="n">channel</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">jobs_tx</span><span class="p">,</span><span class="w"> </span><span class="n">jobs_rx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpsc</span>::<span class="n">channel</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">results_tx</span><span class="p">,</span><span class="w"> </span><span class="n">results_rx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpsc</span>::<span class="n">channel</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 여러 워커 스레드가 &#39;jobs_rx&#39;를 공유하기 위해 Arc&lt;Mutex&lt;&gt;&gt;로 감싼다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">jobs_rx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">Mutex</span>::<span class="n">new</span><span class="p">(</span><span class="n">jobs_rx</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">jobs_rx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">Mutex</span>::<span class="n">new</span><span class="p">(</span><span class="n">jobs_rx</span><span class="p">));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">handles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[];</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 3개의 워커 스레드를 생성
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="mi">3</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="mi">3</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 각 스레드가 채널의 소유권을 가질 수 있도록 복제
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">jobs_rx_clone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">jobs_rx</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">jobs_rx_clone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">jobs_rx</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">results_tx_clone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results_tx</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thread</span>::<span class="n">spawn</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// Mutex를 잠그고(lock) 채널에서 작업을 하나 수신(recv)한다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                </span><span class="c1">// Mutex는 한 번에 하나의 스레드만 jobs_rx에 접근하도록 보장한다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">job_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jobs_rx_clone</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">recv</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// Mutex는 한 번에 하나의 스레드만 jobs_rx에 접근하도록 보장한다.
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">job_result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jobs_rx_clone</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">recv</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">match</span><span class="w"> </span><span class="n">job_result</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// 작업 수신에 성공한 경우
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">job</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">job</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;워커 </span><span class="si">{}</span><span class="s">, 작업 </span><span class="si">{}</span><span class="s"> 시작&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">job</span><span class="p">;</span><span class="w"> </span><span class="c1">// 작업 수행 (제곱)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                        </span><span class="n">results_tx_clone</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span><span class="w"> </span><span class="c1">// 결과를 results 채널로 전송
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="n">results_tx_clone</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span><span class="w"> </span><span class="c1">// 결과를 results 채널로 전송
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// 채널이 닫혀 더 이상 받을 작업이 없는 경우
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                    </span><span class="nb">Err</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nb">Err</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;워커 </span><span class="si">{}</span><span class="s">, 종료&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="k">break</span><span class="p">;</span><span class="w"> </span><span class="c1">// 루프를 종료하여 스레드를 끝낸다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">});</span><span class="w">
@@ -395,30 +396,30 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 메인 스레드에서 더 이상 results_tx를 사용하지 않으므로 소유권을 포기한다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// 모든 워커 스레드의 results_tx_clone이 drop되어야 results_rx가 종료될 수 있다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="nb">drop</span><span class="p">(</span><span class="n">results_tx</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 모든 워커 스레드의 results_tx_clone이 drop되어야 results_rx가 종료될 수 있다.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">drop</span><span class="p">(</span><span class="n">results_tx</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 5개의 작업을 jobs 채널에 보낸다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">inputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">];</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">inputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">];</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">inputs</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">jobs_tx</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">job</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 모든 작업을 보낸 후 jobs_tx의 소유권을 포기한다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// 송신자(tx)가 모두 사라지면 수신자(rx)는 에러(Err)를 반환받게 된다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// 이것이 워커 스레드에게 작업이 끝났음을 알리는 신호가 된다.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="nb">drop</span><span class="p">(</span><span class="n">jobs_tx</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 송신자(tx)가 모두 사라지면 수신자(rx)는 에러(Err)를 반환받게 된다.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 이것이 워커 스레드에게 작업이 끝났음을 알리는 신호가 된다.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">drop</span><span class="p">(</span><span class="n">jobs_tx</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 결과 수집
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">results_rx</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">results_rx</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;결과: </span><span class="si">{}</span><span class="s">&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">received</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 모든 워커 스레드가 작업을 마칠 때까지 대기
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">handles</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">handles</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">handle</span><span class="p">.</span><span class="n">join</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>Rust는 Go와 유사하게 채널을 사용하지만, 가장 큰 차이점은 컴파일러(Borrow Checker)가 여러 스레드 간의 데이터 접근 규칙을 엄격하게 강제하여 런타임에 발생할 수 있는 많은 동시성 버그를 예방한다는 것입니다. 이는 최고 수준의 안정성을 제공하지만, 가파른 학습 곡선을 요구합니다.</p>
 <hr>
 <h2 id="go-동시성의-장점과-트레이드오프">Go 동시성의 장점과 트레이드오프<a href="#go-동시성의-장점과-트레이드오프" class="hanchor" ariaLabel="Anchor">#</a> </h2>

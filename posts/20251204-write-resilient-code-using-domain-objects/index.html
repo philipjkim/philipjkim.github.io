@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -199,7 +199,7 @@
 <h4 id="bad">Bad<a href="#bad" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">DeliveryService</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deliverPizza</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pizza</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pizzas</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이것은 처음에는 잘 작동하겠지만, 만약 gPizza가 다른 음식으로 메뉴를 확장한다면 어떻게 될까요?</p>
 <p>새로운 메서드를 추가할 수도 있습니다:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deliverWithDrinks</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Pizza</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pizzas</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Drink</span><span class="o">&gt;</span><span class="w"> </span><span class="n">drinks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">
@@ -230,10 +230,10 @@
 <p>도메인 객체는 유용한 일반화가 될 수 있습니다. 하지만 너무 포괄적인 객체를 선택하는 것은 피하세요. 유지보수성 향상과 코드가 더 복잡하고 모호해지는 것 사이에는 트레이드오프가 있기 때문입니다. 일반적으로 모든 가능한 유스케이스가 아니라, <strong>계획된 유스케이스</strong>만 지원하는 것을 목표로 하세요 (<a href="https://martinfowler.com/bliki/Yagni.html">YAGNI 원칙</a> 참조).</p>
 <h4 id="good">Good<a href="#good" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// GOOD: 우리가 무엇을 배달하는지 명확합니다.</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deliver</span><span class="p">(</span><span class="n">FoodOrder</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deliver</span><span class="p">(</span><span class="n">FoodOrder</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
 </span></span></span></code></pre></div><h4 id="bad-1">Bad<a href="#bad-1" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// BAD: 가구 배달은 지원하지 마세요. (너무 포괄적임)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deliver</span><span class="p">(</span><span class="n">DeliveryList</span><span class="w"> </span><span class="n">items</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deliver</span><span class="p">(</span><span class="n">DeliveryList</span><span class="w"> </span><span class="n">items</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
 </span></span></span></code></pre></div><p><em>도메인 객체와 더 심화된 주제인 도메인 주도 설계(Domain-Driven Design)에 대해 더 알고 싶다면 Eric Evans의 책 <a href="https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215">Domain-Driven Design</a>을 참고하세요.</em></p>
 
       </div></div>

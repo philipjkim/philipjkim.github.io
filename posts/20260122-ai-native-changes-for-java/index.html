@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -267,16 +267,16 @@
 <h4 id="221-코드-예시-슬라이딩-윈도우-구현">2.2.1 코드 예시: 슬라이딩 윈도우 구현<a href="#221-코드-예시-슬라이딩-윈도우-구현" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <p><strong>Java 24 이전 (외부 라이브러리 의존 또는 복잡한 구현):</strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 구아바(Guava)나 커스텀 로직 필요</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">windows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">windows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">windowSize</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">windowSize</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">windows</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">list</span><span class="p">.</span><span class="na">subList</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">windowSize</span><span class="p">));</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이 방식은 스트림 파이프라인을 끊고 명령형 루프를 사용해야 하거나, 비효율적인 리스트 복사를 수행해야 했습니다.</p>
 <p><strong>Java 25 (Stream Gatherers 활용):</strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.stream.Gatherers</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">slidingWindows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorData</span><span class="p">.</span><span class="na">stream</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">slidingWindows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorData</span><span class="p">.</span><span class="na">stream</span><span class="p">()</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">.</span><span class="na">gather</span><span class="p">(</span><span class="n">Gatherers</span><span class="p">.</span><span class="na">windowSliding</span><span class="p">(</span><span class="n">5</span><span class="p">))</span><span class="w"> </span><span class="c1">// 내장된 슬라이딩 윈도우 기능</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">.</span><span class="na">toList</span><span class="p">();</span><span class="w">
 </span></span></span></code></pre></div><p>이러한 선언적 코드는 AI 에이전트가 의도를 파악하기 훨씬 쉽습니다. <code>windowSliding(5)</code>라는 메서드 호출만으로 &ldquo;5개의 데이터 포인트를 묶어서 처리하라&quot;는 의도가 명확히 전달됩니다. 또한, <code>Gatherers.mapConcurrent</code>를 사용하면 가상 스레드를 활용하여 스트림 내부의 작업을 병렬로 처리할 수 있어, AI 모델 추론과 같은 고비용 작업을 효율적으로 수행할 수 있습니다.</p>
@@ -286,14 +286,14 @@
 <p>Project Lombok은 Java의 보일러플레이트를 줄여주는 일등공신이었지만, AI 에이전트에게는 &ldquo;투명하지 않은 마법&quot;입니다. <code>@Data</code> 어노테이션이 붙은 클래스는 소스 코드 상에 getter/setter가 존재하지 않으므로, 정적 분석 도구나 단순한 텍스트 기반의 AI 모델이 코드 구조를 파악하는 데 어려움을 겪을 수 있습니다.</p>
 <p>Java 25의 <strong>Record</strong>와 향상된 패턴 매칭은 Lombok의 필요성을 대부분 제거합니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Lombok @Data (암시적)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Data</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UserDTO</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UserDTO</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// Java Record (명시적, 불변)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">UserDTO</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Java Record (명시적, 불변)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">UserDTO</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
 </span></span></span></code></pre></div><p>Record는 컴파일러 수준에서 명시적인 API를 제공하며, AI가 생성하고 이해하기에 훨씬 안전합니다. 또한 <code>if (obj instanceof UserDTO(String n, int a))</code>와 같은 패턴 매칭을 통해 타입 캐스팅 코드 없이도 내부 데이터에 접근할 수 있어 코드가 간결해집니다.</p>
 <h4 id="232-apache-commons--guava의-제거">2.3.2 Apache Commons / Guava의 제거<a href="#232-apache-commons--guava의-제거" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <p>문자열 처리나 I/O 작업을 위해 습관적으로 사용하던 Apache Commons Lang이나 Commons IO 라이브러리 역시 제거 대상입니다.</p>
@@ -318,12 +318,12 @@
 <h4 id="321-구현-비교-어노테이션-vs-함수형">3.2.1 구현 비교: 어노테이션 vs 함수형<a href="#321-구현-비교-어노테이션-vs-함수형" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <p><strong>기존 방식 (암시적, Reflection 기반):</strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PaymentService</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PaymentService</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Autowired</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">AccountRepository</span><span class="w"> </span><span class="n">accountRepo</span><span class="p">;</span><span class="w"> </span><span class="c1">// 의존성 주입이 숨겨짐</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//...</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이 방식은 컴포넌트 스캔(Component Scan)에 의존하며, 어떤 구현체가 주입될지 런타임까지 알 수 없습니다.</p>
 <p><strong>Functional 방식 (명시적, Java 코드 기반):</strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">AppConfig</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">ApplicationContextInitializer</span><span class="o">&lt;</span><span class="n">GenericApplicationContext</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -337,7 +337,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">context</span><span class="p">.</span><span class="na">getBean</span><span class="p">(</span><span class="n">AccountRepository</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><h4 id="322-ai-native-관점에서의-이점">3.2.2 AI-Native 관점에서의 이점<a href="#322-ai-native-관점에서의-이점" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <ol>
 <li><strong>정적 분석 가능:</strong> 의존성 그래프가 <code>initialize</code> 메서드 내에 명확히 드러납니다. AI 에이전트는 이 코드를 읽고 &ldquo;PaymentService는 JdbcAccountRepository를 사용한다&quot;는 사실을 확정적으로 인지할 수 있습니다.</li>
@@ -402,14 +402,14 @@
 <h4 id="432-spring-ai를-이용한-mcp-server-구현">4.3.2 Spring AI를 이용한 MCP Server 구현<a href="#432-spring-ai를-이용한-mcp-server-구현" class="hanchor" ariaLabel="Anchor">#</a> </h4>
 <p>Spring AI 프로젝트는 <code>spring-ai-mcp-server-spring-boot-starter</code>를 통해 Spring Boot 애플리케이션을 손쉽게 MCP 서버로 변환해줍니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">McpConfig</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">McpConfig</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ToolCallbackProvider</span><span class="w"> </span><span class="nf">weatherTools</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">MethodToolCallbackProvider</span><span class="p">.</span><span class="na">builder</span><span class="p">()</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="p">.</span><span class="na">toolObjects</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">WeatherService</span><span class="p">())</span><span class="w"> </span><span class="c1">// AI가 호출할 수 있는 도구 노출</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이렇게 설정된 앱은 Claude Desktop이나 IDE의 AI 플러그인과 연결되어, AI가 직접 내부 상태를 조회(<code>List Tools</code>)하거나 로그를 구독할 수 있게 됩니다. 이는 &ldquo;블랙박스&quot;였던 애플리케이션 내부를 AI에게 투명하게 공개하는 혁신적인 접근입니다.</p>
 <hr>
 <h2 id="5장-에이전트를-위한-컨텍스트-엔지니어링과-spring-modulith">5장. 에이전트를 위한 컨텍스트 엔지니어링과 Spring Modulith<a href="#5장-에이전트를-위한-컨텍스트-엔지니어링과-spring-modulith" class="hanchor" ariaLabel="Anchor">#</a> </h2>

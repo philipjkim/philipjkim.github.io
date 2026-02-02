@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -239,13 +239,13 @@
 <p><strong>Go는 <code>go</code> 키워드 하나로 함수를 비동기적으로 실행하고, 채널(<code>chan</code>)을 통해 명시적으로 데이터를 주고받습니다.</strong></p>
 <ul>
 <li><strong>근거:</strong> &ldquo;A와 B 작업을 동시에 실행하고, 둘 다 끝나면 결과를 알려줘&quot;라는 자연어 &lsquo;바이브&rsquo;를 코드로 옮길 때, Go는 매우 직관적인 코드를 생성할 수 있습니다.
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Pseudo-code that an LLM could easily generate</span>
-</span></span><span class="line"><span class="cl"><span class="nx">done</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">bool</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="k">go</span> <span class="nf">doA</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="k">go</span> <span class="nf">doB</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="o">&lt;-</span><span class="nx">done</span> <span class="c1">// Wait for one</span>
-</span></span><span class="line"><span class="cl"><span class="o">&lt;-</span><span class="nx">done</span> <span class="c1">// Wait for the other</span>
-</span></span></code></pre></div>이처럼 <strong>자연어 명령과 Go의 동시성 코드 구조 간의 매핑이 다른 언어에 비해 훨씬 직접적</strong>입니다. 스레드 풀 관리나 콜백 지옥(callback hell) 같은 복잡한 패턴을 생성할 필요 없이, <code>go</code>와 <code>chan</code>이라는 단순한 문법만으로 강력한 동시성 로직을 구성할 수 있어 LLM이 더 정확한 코드를 생성하게 돕습니다.</li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Pseudo-code that an LLM could easily generate</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">done</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="kt">bool</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">go</span><span class="w"> </span><span class="nf">doA</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">go</span><span class="w"> </span><span class="nf">doB</span><span class="p">(</span><span class="nx">done</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="o">&lt;-</span><span class="nx">done</span><span class="w"> </span><span class="c1">// Wait for one</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="o">&lt;-</span><span class="nx">done</span><span class="w"> </span><span class="c1">// Wait for the other</span><span class="w">
+</span></span></span></code></pre></div>이처럼 <strong>자연어 명령과 Go의 동시성 코드 구조 간의 매핑이 다른 언어에 비해 훨씬 직접적</strong>입니다. 스레드 풀 관리나 콜백 지옥(callback hell) 같은 복잡한 패턴을 생성할 필요 없이, <code>go</code>와 <code>chan</code>이라는 단순한 문법만으로 강력한 동시성 로직을 구성할 수 있어 LLM이 더 정확한 코드를 생성하게 돕습니다.</li>
 </ul>
 
       </div></div>

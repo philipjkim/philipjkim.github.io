@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -197,7 +197,7 @@
 <p>메서드를 작성한 후 메서드가 수행하는 모든 작업을 확인하는 테스트를 하나만 작성하기 쉽습니다. <strong>그러나 테스트와 public 메서드가 1:1 관계를 가져야 한다고 생각하는 것은 해로울 수 있습니다.</strong> 우리가 정말로 테스트하고 싶은 것은 동작이며, 단일 메서드가 여러 동작을 나타낼 수 있고, 단일 동작이 때로는 여러 메서드에 걸쳐 있을 수도 있습니다.</p>
 <p>전체 메서드를 확인하는 나쁜 테스트를 살펴보겠습니다.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcessTransaction</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcessTransaction</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newUserWithBalance</span><span class="p">(</span><span class="n">LOW_BALANCE_THRESHOLD</span><span class="p">.</span><span class="na">plus</span><span class="p">(</span><span class="n">dollars</span><span class="p">(</span><span class="n">2</span><span class="p">)));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">transactionProcessor</span><span class="p">.</span><span class="na">processTransaction</span><span class="p">(</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">user</span><span class="p">,</span><span class="w">
@@ -205,25 +205,25 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertContains</span><span class="p">(</span><span class="s">&#34;You bought a Pile of Beanie Babies&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="na">getText</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="na">getEmails</span><span class="p">().</span><span class="na">size</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;Your balance is low&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="na">getEmails</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">0</span><span class="p">).</span><span class="na">getSubject</span><span class="p">());</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>구매한 품목의 이름을 표시하고 잔액이 부족하다는 이메일을 보내는 것은 두 가지 별개의 동작이지만, 이 테스트는 동일한 메서드에 의해 트리거된다는 이유만으로 이 두 동작을 함께 살펴봅니다. <strong>이러한 테스트는 추가 동작이 계속 추가됨에 따라 시간이 지남에 따라 매우 커지고 유지 관리가 어려워지는 경우가 많습니다.</strong> 결국에는 어떤 입력 부분이 어떤 단정(assertion)에 대한 책임이 있는지 파악하기가 매우 어려워질 것입니다. 테스트 이름이 메서드 이름을 직접적으로 반영한다는 사실 자체가 나쁜 징조입니다.</p>
 <p><strong>별도의 동작을 확인하기 위해 별도의 테스트를 사용하는 것이 훨씬 더 좋습니다.</strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcessTransaction_displaysNotification</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcessTransaction_displaysNotification</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">transactionProcessor</span><span class="p">.</span><span class="na">processTransaction</span><span class="p">(</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">User</span><span class="p">(),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transaction</span><span class="p">(</span><span class="s">&#34;Pile of Beanie Babies&#34;</span><span class="p">));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertContains</span><span class="p">(</span><span class="s">&#34;You bought a Pile of Beanie Babies&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="na">getText</span><span class="p">());</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcessTransaction_sendsEmailWhenBalanceIsLow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testProcessTransaction_sendsEmailWhenBalanceIsLow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newUserWithBalance</span><span class="p">(</span><span class="n">LOW_BALANCE_THRESHOLD</span><span class="p">.</span><span class="na">plus</span><span class="p">(</span><span class="n">dollars</span><span class="p">(</span><span class="n">2</span><span class="p">)));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">transactionProcessor</span><span class="p">.</span><span class="na">processTransaction</span><span class="p">(</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">user</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">Transaction</span><span class="p">(</span><span class="n">dollars</span><span class="p">(</span><span class="n">3</span><span class="p">)));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="na">getEmails</span><span class="p">().</span><span class="na">size</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">&#34;Your balance is low&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="na">getEmails</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">0</span><span class="p">).</span><span class="na">getSubject</span><span class="p">());</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>이제 누군가 새로운 동작을 추가하면 해당 동작에 대한 새로운 테스트를 작성할 것입니다. 각 테스트는 아무리 많은 동작이 추가되더라도 계속해서 집중적이고 이해하기 쉬울 것입니다. <strong>이렇게 하면 새 동작을 추가해도 기존 테스트가 깨질 가능성이 적고, 각 테스트가 하나의 동작만 실행하는 코드를 포함하므로 테스트가 더 명확해져 테스트의 탄력성이 높아집니다.</strong></p>
 
       </div></div>

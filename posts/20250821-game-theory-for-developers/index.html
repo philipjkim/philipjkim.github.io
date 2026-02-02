@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -279,33 +279,33 @@
 <h3 id="22-보수-행렬-payoff-matrix의-이해와-go를-이용한-표현">2.2. 보수 행렬 (Payoff Matrix)의 이해와 Go를 이용한 표현<a href="#22-보수-행렬-payoff-matrix의-이해와-go를-이용한-표현" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>보수 행렬은 2인 동시 게임(simultaneous game)의 결과를 표현하는 가장 기본적인 도구이다.[12, 14] 행은 플레이어 A의 전략을, 열은 플레이어 B의 전략을 나타내며, 각 셀에는 해당 전략 조합에 따른 두 플레이어의 보수가 기록된다.[15]</p>
 <p>이러한 추상적인 행렬은 Go 언어의 데이터 구조를 통해 구체적으로 표현할 수 있다. 이는 개발자가 이론적 개념을 즉시 실용적으로 이해하는 데 도움을 준다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Payoff는 두 플레이어의 결과를 나타내는 구조체입니다.</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Payoff</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">PlayerA</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">PlayerB</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// PayoffMatrix는 게임의 결과를 나타내는 2차원 슬라이스입니다.</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// 첫 번째 인덱스는 플레이어 A의 전략, 두 번째 인덱스는 플레이어 B의 전략을 나타냅니다.</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PayoffMatrix</span> <span class="p">[][]</span><span class="nx">Payoff</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 예시: 죄수의 딜레마 보수 행렬</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 전략 0: 협력(Cooperate), 전략 1: 배신(Defect)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">prisonersDilemma</span> <span class="o">:=</span> <span class="nx">PayoffMatrix</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// B가 협력할 때 (A의 선택: 협력, 배신)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">PlayerB</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">PlayerB</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">}},</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// B가 배신할 때 (A의 선택: 협력, 배신)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="nx">PlayerB</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="nx">PlayerB</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}},</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    
-</span></span><span class="line"><span class="cl">    <span class="c1">// 플레이어 A가 협력하고(0), 플레이어 B가 배신할 때(1)의 보수</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 이 경우, A의 보수는 -3, B의 보수는 0이 됩니다.</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">_</span> <span class="p">=</span> <span class="nx">prisonersDilemma</span> 
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h3 id="23-완전-정보-게임-vs-불완전-정보-게임-perfect-vs-imperfect-information">2.3. 완전 정보 게임 vs. 불완전 정보 게임 (Perfect vs. Imperfect Information)<a href="#23-완전-정보-게임-vs-불완전-정보-게임-perfect-vs-imperfect-information" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Payoff는 두 플레이어의 결과를 나타내는 구조체입니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Payoff</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">PlayerA</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">PlayerB</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// PayoffMatrix는 게임의 결과를 나타내는 2차원 슬라이스입니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 첫 번째 인덱스는 플레이어 A의 전략, 두 번째 인덱스는 플레이어 B의 전략을 나타냅니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PayoffMatrix</span><span class="w"> </span><span class="p">[][]</span><span class="nx">Payoff</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 예시: 죄수의 딜레마 보수 행렬</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 전략 0: 협력(Cooperate), 전략 1: 배신(Defect)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">prisonersDilemma</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">PayoffMatrix</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// B가 협력할 때 (A의 선택: 협력, 배신)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">PlayerB</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">},</span><span class="w"> </span><span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nx">PlayerB</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">}},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// B가 배신할 때 (A의 선택: 협력, 배신)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nx">PlayerB</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="nx">Payoff</span><span class="p">{</span><span class="nx">PlayerA</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nx">PlayerB</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="p">}},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 플레이어 A가 협력하고(0), 플레이어 B가 배신할 때(1)의 보수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 이 경우, A의 보수는 -3, B의 보수는 0이 됩니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">prisonersDilemma</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="23-완전-정보-게임-vs-불완전-정보-게임-perfect-vs-imperfect-information">2.3. 완전 정보 게임 vs. 불완전 정보 게임 (Perfect vs. Imperfect Information)<a href="#23-완전-정보-게임-vs-불완전-정보-게임-perfect-vs-imperfect-information" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <ul>
 <li>
 <p><strong>완전 정보 게임 (Perfect Information Game):</strong> 모든 플레이어가 게임의 모든 이전 사건을 완벽하게 알고 있는 게임이다.[16, 17] 체스가 대표적인 예로, 양측 플레이어는 항상 보드 위의 모든 말의 위치를 볼 수 있다.[18]</p>
@@ -341,46 +341,46 @@
 <li><strong>내쉬 균형 (Nash Equilibrium):</strong> 모든 플레이어가 현재 자신의 전략을 바꿀 유인이 없는 상태이다.</li>
 </ul>
 <p>우월 전략을 찾는 논리는 알고리즘으로 간단하게 표현할 수 있다. 이는 보수 행렬을 순회하며 각 전략의 우월성을 검사하는 과정이다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// findDominantStrategy는 플레이어 A의 우월 전략을 찾는 개념적 함수입니다.</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// 실제 구현은 더 복잡할 수 있습니다.</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findDominantStrategyForA</span><span class="p">(</span><span class="nx">matrix</span> <span class="nx">PayoffMatrix</span><span class="p">)</span> <span class="p">(</span><span class="nx">strategyIndex</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">isDominant</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">numStrategiesA</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">matrix</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">numStrategiesA</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">false</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">numStrategiesB</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">matrix</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// A의 각 전략(i)에 대해 우월 전략인지 검사</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">numStrategiesA</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">isCurrentStrategyDominant</span> <span class="o">:=</span> <span class="kc">true</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// A의 다른 모든 전략(k)과 비교</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="nx">k</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">k</span> <span class="p">&lt;</span> <span class="nx">numStrategiesA</span><span class="p">;</span> <span class="nx">k</span><span class="o">++</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="nx">i</span> <span class="o">==</span> <span class="nx">k</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="k">continue</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// B가 어떤 전략(j)을 선택하더라도, 전략 i가 전략 k보다 나은지 확인</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// 한 번이라도 전략 k가 더 나은 경우가 있다면, 전략 i는 우월 전략이 아님</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">isBetterInAllCases</span> <span class="o">:=</span> <span class="kc">true</span>
-</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">numStrategiesB</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">matrix</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">].</span><span class="nx">PlayerA</span> <span class="o">&lt;=</span> <span class="nx">matrix</span><span class="p">[</span><span class="nx">k</span><span class="p">][</span><span class="nx">j</span><span class="p">].</span><span class="nx">PlayerA</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                    <span class="nx">isBetterInAllCases</span> <span class="p">=</span> <span class="kc">false</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">break</span>
-</span></span><span class="line"><span class="cl">                <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="p">!</span><span class="nx">isBetterInAllCases</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nx">isCurrentStrategyDominant</span> <span class="p">=</span> <span class="kc">false</span>
-</span></span><span class="line"><span class="cl">                <span class="k">break</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">isCurrentStrategyDominant</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="nx">i</span><span class="p">,</span> <span class="kc">true</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">false</span> <span class="c1">// 우월 전략 없음</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>이처럼 게임 이론은 개발자가 이미 다루고 있는 문제들에 대해 공식적인 언어와 분석 도구를 제공한다. API 계약, 비율 제한(rate limiting), 합의 알고리즘(consensus algorithms) 등은 모두 비협력적 환경에서 &lsquo;게임의 규칙&rsquo;을 정의하고 &lsquo;협력적&rsquo; 행동을 유도하려는 시도이다. 게임 이론의 프레임워크를 통해 개발자는 직관적인 설계를 넘어, 시스템의 인센티브 구조가 안정적이고 바람직한 균형으로 이어질지, 아니면 경쟁 상태(race condition)나 &lsquo;공유지의 비극&rsquo;과 같은 바람직하지 않은 결과로 이어질지를 보다 엄밀하게 분석할 수 있다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// findDominantStrategy는 플레이어 A의 우월 전략을 찾는 개념적 함수입니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 실제 구현은 더 복잡할 수 있습니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">findDominantStrategyForA</span><span class="p">(</span><span class="nx">matrix</span><span class="w"> </span><span class="nx">PayoffMatrix</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">strategyIndex</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">isDominant</span><span class="w"> </span><span class="kt">bool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">numStrategiesA</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">matrix</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">numStrategiesA</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">numStrategiesB</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">matrix</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// A의 각 전략(i)에 대해 우월 전략인지 검사</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">numStrategiesA</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">isCurrentStrategyDominant</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// A의 다른 모든 전략(k)과 비교</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">numStrategiesA</span><span class="p">;</span><span class="w"> </span><span class="nx">k</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// B가 어떤 전략(j)을 선택하더라도, 전략 i가 전략 k보다 나은지 확인</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 한 번이라도 전략 k가 더 나은 경우가 있다면, 전략 i는 우월 전략이 아님</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">isBetterInAllCases</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">numStrategiesB</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nx">matrix</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">].</span><span class="nx">PlayerA</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">matrix</span><span class="p">[</span><span class="nx">k</span><span class="p">][</span><span class="nx">j</span><span class="p">].</span><span class="nx">PlayerA</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="nx">isBetterInAllCases</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">break</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">!</span><span class="nx">isBetterInAllCases</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nx">isCurrentStrategyDominant</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">break</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">isCurrentStrategyDominant</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// 우월 전략 없음</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이처럼 게임 이론은 개발자가 이미 다루고 있는 문제들에 대해 공식적인 언어와 분석 도구를 제공한다. API 계약, 비율 제한(rate limiting), 합의 알고리즘(consensus algorithms) 등은 모두 비협력적 환경에서 &lsquo;게임의 규칙&rsquo;을 정의하고 &lsquo;협력적&rsquo; 행동을 유도하려는 시도이다. 게임 이론의 프레임워크를 통해 개발자는 직관적인 설계를 넘어, 시스템의 인센티브 구조가 안정적이고 바람직한 균형으로 이어질지, 아니면 경쟁 상태(race condition)나 &lsquo;공유지의 비극&rsquo;과 같은 바람직하지 않은 결과로 이어질지를 보다 엄밀하게 분석할 수 있다.</p>
 <h2 id="3-게임-이론의-고전적-예시-분석">3. 게임 이론의 고전적 예시 분석<a href="#3-게임-이론의-고전적-예시-분석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>앞서 다룬 핵심 개념들은 고전적인 게임 예시들을 통해 더 명확하게 이해할 수 있다. 이 예시들은 복잡성이 점진적으로 증가하며, 각각 소프트웨어 시스템에서 발견되는 근본적인 상호작용 모델을 나타낸다. 체스는 결정론적 상태 시스템을, 죄수의 딜레마는 자원 공유의 협력과 갈등을, 가위바위보는 보안 및 경쟁적 자원 접근에서의 예측 불가능성의 필요성을 모델링한다.</p>
 <h3 id="31-예시-1-체스---완전-정보-게임의-세계">3.1. 예시 1: 체스 - 완전 정보 게임의 세계<a href="#31-예시-1-체스---완전-정보-게임의-세계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
@@ -429,77 +429,77 @@
 <li><strong>프로그래밍 비유:</strong> 데이터베이스 락(lock)을 얻기 위해 경쟁하는 두 개의 클라이언트를 생각해보자. 두 클라이언트는 &lsquo;협력&rsquo;하여 정중하게 지수 백오프(exponential backoff) 후 재시도할 수도 있고, &lsquo;배신&rsquo;하여 즉시 공격적으로 재시도할 수도 있다. 만약 둘 다 배신하면 시스템에 과부하를 일으켜(thundering herd) 둘 다 손해를 본다. 한쪽만 배신하면 그 클라이언트가 자원을 먼저 차지한다. 이는 전형적인 죄수의 딜레마 상황이며, 개발자들은 지수 백오프와 같은 규칙을 강제하여 협력을 유도한다.</li>
 </ul>
 <p>Go 코드로 죄수의 딜레마 한 라운드를 시뮬레이션하면 다음과 같다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Cooperate</span> <span class="p">=</span> <span class="mi">0</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Defect</span>    <span class="p">=</span> <span class="mi">1</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Payoff는 형량을 나타냅니다 (음수로 표현, 0에 가까울수록 좋음).</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Payoff</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">PlayerA</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">PlayerB</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">dilemmaMatrix</span> <span class="p">=</span><span class="nx">Payoff</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="nx">Payoff</span><span class="p">{</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">}},</span> <span class="c1">// A: Cooperate, B: Cooperate / Defect</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">},</span> <span class="nx">Payoff</span><span class="p">{</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">}},</span> <span class="c1">// A: Defect,    B: Cooperate / Defect</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">playPrisonersDilemma</span><span class="p">(</span><span class="nx">strategyA</span><span class="p">,</span> <span class="nx">strategyB</span> <span class="kt">int</span><span class="p">)</span> <span class="nx">Payoff</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">dilemmaMatrix</span><span class="p">[</span><span class="nx">strategyA</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 두 플레이어 모두 배신(Defect)하는 내쉬 균형 상황</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">nashEquilibrium</span> <span class="o">:=</span> <span class="nf">playPrisonersDilemma</span><span class="p">(</span><span class="nx">Defect</span><span class="p">,</span> <span class="nx">Defect</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;내쉬 균형 결과: 플레이어 A: %d년, 플레이어 B: %d년\n&#34;</span><span class="p">,</span> <span class="o">-</span><span class="nx">nashEquilibrium</span><span class="p">.</span><span class="nx">PlayerA</span><span class="p">,</span> <span class="o">-</span><span class="nx">nashEquilibrium</span><span class="p">.</span><span class="nx">PlayerB</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 두 플레이어 모두 협력(Cooperate)하는 집단 최적 상황</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">collectiveOptimum</span> <span class="o">:=</span> <span class="nf">playPrisonersDilemma</span><span class="p">(</span><span class="nx">Cooperate</span><span class="p">,</span> <span class="nx">Cooperate</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;집단 최적 결과: 플레이어 A: %d년, 플레이어 B: %d년\n&#34;</span><span class="p">,</span> <span class="o">-</span><span class="nx">collectiveOptimum</span><span class="p">.</span><span class="nx">PlayerA</span><span class="p">,</span> <span class="o">-</span><span class="nx">collectiveOptimum</span><span class="p">.</span><span class="nx">PlayerB</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h3 id="33-예시-3-가위바위보---예측-불가능성을-위한-혼합-전략-mixed-strategy">3.3. 예시 3: 가위바위보 - 예측 불가능성을 위한 혼합 전략 (Mixed Strategy)<a href="#33-예시-3-가위바위보---예측-불가능성을-위한-혼합-전략-mixed-strategy" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Cooperate</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Defect</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Payoff는 형량을 나타냅니다 (음수로 표현, 0에 가까울수록 좋음).</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Payoff</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">PlayerA</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">PlayerB</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">dilemmaMatrix</span><span class="w"> </span><span class="p">=</span><span class="nx">Payoff</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">},</span><span class="w"> </span><span class="nx">Payoff</span><span class="p">{</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">}},</span><span class="w"> </span><span class="c1">// A: Cooperate, B: Cooperate / Defect</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">{</span><span class="nx">Payoff</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="nx">Payoff</span><span class="p">{</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="p">}},</span><span class="w"> </span><span class="c1">// A: Defect,    B: Cooperate / Defect</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">playPrisonersDilemma</span><span class="p">(</span><span class="nx">strategyA</span><span class="p">,</span><span class="w"> </span><span class="nx">strategyB</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="nx">Payoff</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">dilemmaMatrix</span><span class="p">[</span><span class="nx">strategyA</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 두 플레이어 모두 배신(Defect)하는 내쉬 균형 상황</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">nashEquilibrium</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">playPrisonersDilemma</span><span class="p">(</span><span class="nx">Defect</span><span class="p">,</span><span class="w"> </span><span class="nx">Defect</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;내쉬 균형 결과: 플레이어 A: %d년, 플레이어 B: %d년\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="nx">nashEquilibrium</span><span class="p">.</span><span class="nx">PlayerA</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="nx">nashEquilibrium</span><span class="p">.</span><span class="nx">PlayerB</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 두 플레이어 모두 협력(Cooperate)하는 집단 최적 상황</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">collectiveOptimum</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">playPrisonersDilemma</span><span class="p">(</span><span class="nx">Cooperate</span><span class="p">,</span><span class="w"> </span><span class="nx">Cooperate</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;집단 최적 결과: 플레이어 A: %d년, 플레이어 B: %d년\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="nx">collectiveOptimum</span><span class="p">.</span><span class="nx">PlayerA</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="nx">collectiveOptimum</span><span class="p">.</span><span class="nx">PlayerB</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="33-예시-3-가위바위보---예측-불가능성을-위한-혼합-전략-mixed-strategy">3.3. 예시 3: 가위바위보 - 예측 불가능성을 위한 혼합 전략 (Mixed Strategy)<a href="#33-예시-3-가위바위보---예측-불가능성을-위한-혼합-전략-mixed-strategy" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>가위바위보는 순수 전략 내쉬 균형이 존재하지 않는 게임의 좋은 예시다.[8] 만약 한 플레이어가 &ldquo;항상 바위를 내겠다&quot;는 순수 전략을 사용한다면, 상대방은 &ldquo;항상 보를 내겠다&quot;는 전략으로 쉽게 이길 수 있다. 그러면 원래 플레이어는 다시 &ldquo;항상 가위를 내겠다&quot;로 전략을 바꿔야 하고, 이러한 순환이 무한히 반복된다.[8]</p>
 <p>이 게임의 해법은 &lsquo;혼합 전략&rsquo;을 사용하는 것이다. 즉, 각 선택지를 특정 확률로 무작위로 선택하는 것이다.[24] 가위바위보의 유일한 내쉬 균형은 각 플레이어가 가위, 바위, 보를 각각 $1/3$의 확률로 선택하는 것이다.[24, 25] 이 상태에서는 어느 플레이어도 상대방의 전략을 예측할 수 없으며, 자신의 전략을 단독으로 변경해도 장기적인 기대 수익을 높일 수 없다. 예측 불가능성 자체가 최적의 전략이 되는 것이다.</p>
 <ul>
 <li><strong>프로그래밍 비유:</strong> 중앙 집중식 메시지 큐를 폴링(polling)하는 여러 워커 노드를 생각해보자. 만약 모든 워커가 정확히 같은 시간 간격으로(순수 전략) 큐를 폴링한다면, 예측 가능한 스파이크성 부하가 발생한다. 더 나은 접근 방식은 각 워커의 폴링 간격에 약간의 무작위 지연(jitter)을 추가하는 것이다. 이는 중앙 서버의 부하를 분산시키는 혼합 전략으로, 전체 시스템의 효율성을 높인다. 예측 가능한 행동은 시스템의 내재적 속성에 의해 &lsquo;이용&rsquo;당할 수 있다는 점에서 게임 이론의 원리가 적용된다.</li>
 </ul>
 <p>Go의 <code>math/rand</code> 패키지를 사용하여 이 혼합 전략을 간단히 구현할 수 있다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;math/rand&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Move</span> <span class="kt">int</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Rock</span> <span class="nx">Move</span> <span class="p">=</span> <span class="kc">iota</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Paper</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Scissors</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="nx">Move</span><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">returnstring</span><span class="p">{</span><span class="s">&#34;바위&#34;</span><span class="p">,</span> <span class="s">&#34;보&#34;</span><span class="p">,</span> <span class="s">&#34;가위&#34;</span><span class="p">}[</span><span class="nx">m</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// playMixedStrategy는 1/3 확률로 가위, 바위, 보 중 하나를 선택합니다.</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">playMixedStrategy</span><span class="p">()</span> <span class="nx">Move</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">rand</span><span class="p">.</span><span class="nf">Seed</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">Move</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nf">Intn</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">player1Move</span> <span class="o">:=</span> <span class="nf">playMixedStrategy</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;플레이어 1의 선택: %s\n&#34;</span><span class="p">,</span> <span class="nx">player1Move</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h2 id="4-심층-분석-포커-전략의-진화와-게임-이론-최적화-gto">4. 심층 분석: 포커 전략의 진화와 게임 이론 최적화 (GTO)<a href="#4-심층-분석-포커-전략의-진화와-게임-이론-최적화-gto" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;math/rand&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;time&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Move</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Rock</span><span class="w"> </span><span class="nx">Move</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Paper</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Scissors</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="nx">Move</span><span class="p">)</span><span class="w"> </span><span class="nf">String</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">returnstring</span><span class="p">{</span><span class="s">&#34;바위&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;보&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;가위&#34;</span><span class="p">}[</span><span class="nx">m</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// playMixedStrategy는 1/3 확률로 가위, 바위, 보 중 하나를 선택합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">playMixedStrategy</span><span class="p">()</span><span class="w"> </span><span class="nx">Move</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">rand</span><span class="p">.</span><span class="nf">Seed</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nf">Move</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nf">Intn</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">player1Move</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">playMixedStrategy</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;플레이어 1의 선택: %s\n&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">player1Move</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="4-심층-분석-포커-전략의-진화와-게임-이론-최적화-gto">4. 심층 분석: 포커 전략의 진화와 게임 이론 최적화 (GTO)<a href="#4-심층-분석-포커-전략의-진화와-게임-이론-최적화-gto" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>포커 전략의 변천사는 직관과 경험에 의존하던 분야가 데이터와 계산 능력의 발달로 어떻게 수학적 최적화의 과학으로 변모할 수 있는지를 보여주는 대표적인 사례이다. 포커 플레이어의 역할은 심리학자에서 데이터 과학자로 진화했으며, 이는 알고리즘적 의사결정이 가져오는 파괴적 영향을 보여주는 강력한 실세계 연구 사례이다.</p>
 <h3 id="41-초기-포커-전략-심리와-직관의-시대">4.1. 초기 포커 전략: 심리와 직관의 시대<a href="#41-초기-포커-전략-심리와-직관의-시대" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>2000년대 초반까지 포커는 주로 심리 게임으로 인식되었다. 뛰어난 플레이어는 상대방의 표정, 몸짓, 베팅 패턴 등 &lsquo;텔(tell)&lsquo;을 읽어내는 능력이 뛰어난 사람들이었다.[26, 27] 전략의 핵심은 &ldquo;카드가 아닌 사람을 상대하는 것&quot;이었으며, 경험에 기반한 직관과 규칙이 주를 이뤘다.[26] 데이비드 스클란스키(David Sklansky)의 &ldquo;포커의 기본 정리(The Fundamental Theorem of Poker)&ldquo;와 같은 분석적인 접근도 있었지만, 이는 주로 상대방을 속여 실수를 유도하는 &lsquo;기만(deception)&lsquo;에 초점을 맞춘 것이었다.[28, 29]</p>

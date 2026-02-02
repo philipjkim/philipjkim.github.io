@@ -45,19 +45,19 @@
   <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.775ac2af004d44c22a6d000fbd1d9af529642f5cef27399d0280d180af2c2e9b.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.310d32205bdedd6f43144e3c3273c9deecd238eba5f9108db5ea96ca0cfbe377.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.ad50c7f4d00e7975918f37fc74c6029e1959a40d66fb5b2c6564a8715e985573.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
 
   
-  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.e9ab635cf918bc84b901eb65c0b2caa74c9544245e3647c1af5c129896ef276e.css">
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
 
   
   <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
@@ -199,7 +199,8 @@
 <p><strong>예상 소요 시간</strong>: 1시간
 <strong>난이도</strong>: ⭐⭐⭐
 <strong>사전 요구사항</strong>: Part 1, 2, 3 완료
-<strong>Claude Code 버전</strong>: 2.1.x (VSCode Native Plugin Management 지원)</p></blockquote>
+<strong>Claude Code 버전</strong>: 2.1.x (VSCode Native Plugin Management 지원)</p>
+</blockquote>
 <hr>
 <h2 id="1-plugin이란-무엇인가">1. Plugin이란 무엇인가?<a href="#1-plugin이란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="11-skills-vs-commands-vs-plugins-vs-subagents-개념-정리">1.1 Skills vs Commands vs Plugins vs Subagents 개념 정리<a href="#11-skills-vs-commands-vs-plugins-vs-subagents-개념-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
@@ -656,14 +657,14 @@
 </span></span><span class="line"><span class="cl">---
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="gh"># 우리 팀의 Go 코딩 컨벤션
-</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">이 Skill은 golang-pro의 일반적인 베스트 프랙티스 위에
 </span></span><span class="line"><span class="cl">우리 팀만의 규칙을 추가합니다.
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="gu">## 네이밍 컨벤션 (팀 규칙)
-</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="gu">### 패키지 명명
-</span></span></span><span class="line"><span class="cl"><span class="gu"></span>```go
+</span></span></span><span class="line"><span class="cl">```go
 </span></span><span class="line"><span class="cl">// ✅ 좋은 예
 </span></span><span class="line"><span class="cl">package userservice
 </span></span><span class="line"><span class="cl">package paymentgateway
@@ -672,34 +673,34 @@
 </span></span><span class="line"><span class="cl">package user_service    // 언더스코어 금지
 </span></span><span class="line"><span class="cl">package userService     // camelCase 금지
 </span></span></code></pre></div><h3 id="인터페이스-명명">인터페이스 명명<a href="#인터페이스-명명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 단일 메서드 인터페이스: -er 접미사</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Reader</span> <span class="kd">interface</span> <span class="p">{</span> <span class="nf">Read</span><span class="p">()</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Processor</span> <span class="kd">interface</span> <span class="p">{</span> <span class="nf">Process</span><span class="p">()</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 다중 메서드 인터페이스: 역할을 나타내는 명사</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">UserRepository</span> <span class="kd">interface</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">PaymentGateway</span> <span class="kd">interface</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
-</span></span></code></pre></div><h3 id="변수-명명">변수 명명<a href="#변수-명명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 로컬 변수: 짧고 명확하게</span>
-</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">u</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">users</span> <span class="p">{</span> <span class="p">}</span>  <span class="c1">// u for user</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 패키지 변수: 명확하게</span>
-</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">DefaultTimeout</span> <span class="p">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span>
-</span></span></code></pre></div><h2 id="에러-처리-팀-규칙">에러 처리 (팀 규칙)<a href="#에러-처리-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 단일 메서드 인터페이스: -er 접미사</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Reader</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nf">Read</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Processor</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nf">Process</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 다중 메서드 인터페이스: 역할을 나타내는 명사</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">UserRepository</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PaymentGateway</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="변수-명명">변수 명명<a href="#변수-명명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 로컬 변수: 짧고 명확하게</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">u</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">users</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// u for user</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 패키지 변수: 명확하게</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">DefaultTimeout</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="w">
+</span></span></span></code></pre></div><h2 id="에러-처리-팀-규칙">에러 처리 (팀 규칙)<a href="#에러-처리-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="에러-코드-체계">에러 코드 체계<a href="#에러-코드-체계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 우리 팀의 에러 코드 형식: {도메인}{숫자}</span>
-</span></span><span class="line"><span class="cl"><span class="c1">// USR001 - 사용자 도메인, 001번 에러</span>
-</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ErrUserNotFound</span>     <span class="p">=</span> <span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;USR001&#34;</span><span class="p">,</span> <span class="s">&#34;user not found&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ErrInvalidEmail</span>     <span class="p">=</span> <span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;USR002&#34;</span><span class="p">,</span> <span class="s">&#34;invalid email format&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ErrPaymentFailed</span>    <span class="p">=</span> <span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;PAY001&#34;</span><span class="p">,</span> <span class="s">&#34;payment processing failed&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span></code></pre></div><h3 id="에러-래핑-규칙">에러 래핑 규칙<a href="#에러-래핑-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 항상 컨텍스트 추가 + 에러 코드 포함</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;[USR001] failed to get user %d: %w&#34;</span><span class="p">,</span> <span class="nx">userID</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><h2 id="프로젝트-구조-팀-규칙">프로젝트 구조 (팀 규칙)<a href="#프로젝트-구조-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 우리 팀의 에러 코드 형식: {도메인}{숫자}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// USR001 - 사용자 도메인, 001번 에러</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">ErrUserNotFound</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;USR001&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;user not found&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">ErrInvalidEmail</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;USR002&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;invalid email format&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">ErrPaymentFailed</span><span class="w">    </span><span class="p">=</span><span class="w"> </span><span class="nf">NewError</span><span class="p">(</span><span class="s">&#34;PAY001&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;payment processing failed&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><h3 id="에러-래핑-규칙">에러 래핑 규칙<a href="#에러-래핑-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 항상 컨텍스트 추가 + 에러 코드 포함</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;[USR001] failed to get user %d: %w&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">userID</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="프로젝트-구조-팀-규칙">프로젝트 구조 (팀 규칙)<a href="#프로젝트-구조-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <pre tabindex="0"><code>cmd/
 ├── api/            # REST API 서버
 └── worker/         # 백그라운드 워커
@@ -717,38 +718,38 @@ internal/
 pkg/                # 외부 공개 패키지 (재사용 가능)
 </code></pre><h2 id="gin-프레임워크-규칙-팀-규칙">Gin 프레임워크 규칙 (팀 규칙)<a href="#gin-프레임워크-규칙-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="핸들러-구조">핸들러 구조<a href="#핸들러-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 핸들러는 adapter/in/http/ 에 위치</span>
-</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">UserHandler</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">userService</span> <span class="nx">port</span><span class="p">.</span><span class="nx">UserService</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewUserHandler</span><span class="p">(</span><span class="nx">us</span> <span class="nx">port</span><span class="p">.</span><span class="nx">UserService</span><span class="p">)</span> <span class="o">*</span><span class="nx">UserHandler</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">UserHandler</span><span class="p">{</span><span class="nx">userService</span><span class="p">:</span> <span class="nx">us</span><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 메서드명: HTTP메서드 + 리소스</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">UserHandler</span><span class="p">)</span> <span class="nf">GetUser</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">UserHandler</span><span class="p">)</span> <span class="nf">CreateUser</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
-</span></span></code></pre></div><h3 id="응답-형식">응답 형식<a href="#응답-형식" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 성공 응답</span>
-</span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusOK</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;success&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;data&#34;</span><span class="p">:</span>    <span class="nx">result</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl"><span class="p">})</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 에러 응답</span>
-</span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;success&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;error&#34;</span><span class="p">:</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="s">&#34;code&#34;</span><span class="p">:</span>    <span class="s">&#34;USR001&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="s">&#34;message&#34;</span><span class="p">:</span> <span class="s">&#34;user not found&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="p">},</span>
-</span></span><span class="line"><span class="cl"><span class="p">})</span>
-</span></span></code></pre></div><h2 id="테스트-규칙-팀-규칙">테스트 규칙 (팀 규칙)<a href="#테스트-규칙-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 핸들러는 adapter/in/http/ 에 위치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">UserHandler</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">userService</span><span class="w"> </span><span class="nx">port</span><span class="p">.</span><span class="nx">UserService</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewUserHandler</span><span class="p">(</span><span class="nx">us</span><span class="w"> </span><span class="nx">port</span><span class="p">.</span><span class="nx">UserService</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">UserHandler</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">UserHandler</span><span class="p">{</span><span class="nx">userService</span><span class="p">:</span><span class="w"> </span><span class="nx">us</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 메서드명: HTTP메서드 + 리소스</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">UserHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">GetUser</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">UserHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">CreateUser</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="응답-형식">응답 형식<a href="#응답-형식" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 성공 응답</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusOK</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;success&#34;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;data&#34;</span><span class="p">:</span><span class="w">    </span><span class="nx">result</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 에러 응답</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;success&#34;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;error&#34;</span><span class="p">:</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;code&#34;</span><span class="p">:</span><span class="w">    </span><span class="s">&#34;USR001&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;message&#34;</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;user not found&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span></code></pre></div><h2 id="테스트-규칙-팀-규칙">테스트 규칙 (팀 규칙)<a href="#테스트-규칙-팀-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="mock-생성">Mock 생성<a href="#mock-생성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mockgen 사용</span>
 </span></span><span class="line"><span class="cl">mockgen -source<span class="o">=</span>internal/port/out/user_repository.go <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        -destination<span class="o">=</span>internal/port/out/mock/user_repository_mock.go
+</span></span></span><span class="line"><span class="cl">        -destination<span class="o">=</span>internal/port/out/mock/user_repository_mock.go
 </span></span></code></pre></div><h3 id="테스트-파일-위치">테스트 파일 위치<a href="#테스트-파일-위치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <ul>
 <li>유닛 테스트: 같은 패키지에 <code>_test.go</code></li>
@@ -902,7 +903,8 @@ Claude의 동작:
 </ol>
 <h3 id="핵심-전략">핵심 전략<a href="#핵심-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <blockquote>
-<p><strong>커뮤니티 플러그인을 기반으로, 팀 규칙을 Skill로, 프로젝트 규칙을 CLAUDE.md로 레이어링하세요.</strong></p></blockquote>
+<p><strong>커뮤니티 플러그인을 기반으로, 팀 규칙을 Skill로, 프로젝트 규칙을 CLAUDE.md로 레이어링하세요.</strong></p>
+</blockquote>
 <h3 id="다음-파트-예고">다음 파트 예고<a href="#다음-파트-예고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>이제 나만의 Plugin을 만들어 GitHub으로 배포하는 방법을 배웁니다. <strong>Part 5</strong>에서는 Custom Marketplace를 구축합니다.</p>
 <hr>
