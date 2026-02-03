@@ -948,7 +948,6 @@ class GlobalExceptionHandler {
 <h2 id="5-조직-전체-배포-enterprise">5. 조직 전체 배포 (Enterprise)<a href="#5-조직-전체-배포-enterprise" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="51-managed-settings를-통한-배포">5.1 Managed Settings를 통한 배포<a href="#51-managed-settings를-통한-배포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Enterprise 환경에서는 관리자가 조직 전체에 Skills와 Plugins를 배포할 수 있습니다.</p>
-<p><img src="/img/claude_code_guide/claude05_01.png" alt="img01"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Enterprise[&#34;🏢 Enterprise 배포 구조&#34;]
         direction TB
@@ -1145,6 +1144,34 @@ PATCH: 버그 수정, 문서 업데이트
 
 
 <script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
 
 
 

@@ -202,7 +202,6 @@
 <hr>
 <h2 id="-이-가이드의-목표">🎯 이 가이드의 목표<a href="#-이-가이드의-목표" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>이 가이드는 Claude Code 초보 사용자가 <strong>CLAUDE.md 파일 하나 만드는 것</strong>에서 시작해서, <strong>Skills와 Plugins를 활용한 고급 워크플로우</strong>까지 단계별로 성장할 수 있도록 구성되어 있습니다.</p>
-<p><img src="/img/claude_code_guide/claude00_01.png" alt="img01"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A[&#34;📝 CLAUDE.md&lt;br/&gt;생성&#34;] --&gt; B[&#34;⚡ 최적화&lt;br/&gt;전략&#34;]
     B --&gt; C[&#34;🧠 Skills&lt;br/&gt;분리&#34;]
@@ -333,7 +332,6 @@
 </ul>
 <hr>
 <h2 id="-학습-로드맵">🗺️ 학습 로드맵<a href="#-학습-로드맵" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p><img src="/img/claude_code_guide/claude00_02.png" alt="img02"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     Start{&#34;🤔 당신의 현재 상태는?&#34;}
     
@@ -502,7 +500,6 @@
 <hr>
 <h2 id="-핵심-개념-한눈에-보기">📊 핵심 개념 한눈에 보기<a href="#-핵심-개념-한눈에-보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="claudemd-vs-skills-vs-subagents-vs-plugins">CLAUDE.md vs Skills vs Subagents vs Plugins<a href="#claudemd-vs-skills-vs-subagents-vs-plugins" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude00_03.png" alt="img03"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph System[&#34;Claude Code 확장 시스템&#34;]
         direction TB
@@ -700,6 +697,34 @@ project/
 
 
 <script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
 
 
 

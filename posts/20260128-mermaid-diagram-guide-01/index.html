@@ -200,7 +200,9 @@
 <h3 id="다이어그램-선언">다이어그램 선언<a href="#다이어그램-선언" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A --&gt; B
-</code></pre><p><code>flowchart</code> 키워드로 시작하며, 바로 뒤에 방향을 지정합니다. <code>graph</code> 키워드도 사용 가능하지만 <code>flowchart</code>가 더 많은 기능을 지원합니다.</p>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">    A --&gt; B
+</span></span></code></pre></div><p><code>flowchart</code> 키워드로 시작하며, 바로 뒤에 방향을 지정합니다. <code>graph</code> 키워드도 사용 가능하지만 <code>flowchart</code>가 더 많은 기능을 지원합니다.</p>
 <h3 id="방향direction-설정">방향(Direction) 설정<a href="#방향direction-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <table>
   <thead>
@@ -240,14 +242,20 @@
 </table>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     시작 --&gt; 처리 --&gt; 종료
-</code></pre><pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    시작 --&gt; 처리 --&gt; 종료
+</span></span></code></pre></div><pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     시작 --&gt; 처리 --&gt; 종료
-</code></pre><h2 id="노드node-정의">노드(Node) 정의<a href="#노드node-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TB
+</span></span><span class="line"><span class="cl">    시작 --&gt; 처리 --&gt; 종료
+</span></span></code></pre></div><h2 id="노드node-정의">노드(Node) 정의<a href="#노드node-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="기본-노드">기본 노드<a href="#기본-노드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>가장 단순한 형태로, ID만 지정하면 ID가 곧 노드에 표시되는 텍스트가 됩니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     NodeA
-</code></pre><h3 id="텍스트가-있는-노드">텍스트가 있는 노드<a href="#텍스트가-있는-노드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    NodeA
+</span></span></code></pre></div><h3 id="텍스트가-있는-노드">텍스트가 있는 노드<a href="#텍스트가-있는-노드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>ID와 표시 텍스트를 분리할 수 있습니다. 같은 노드를 여러 번 참조할 때 ID를 짧게 유지하면서 긴 텍스트를 표시할 수 있어 유용합니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     id1[사각형 노드]
@@ -256,7 +264,14 @@
     id4[[서브루틴]]
     id5[(데이터베이스)]
     id6((원형))
-</code></pre><h3 id="노드-모양-총정리">노드 모양 총정리<a href="#노드-모양-총정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    id1[사각형 노드]
+</span></span><span class="line"><span class="cl">    id2(둥근 모서리 노드)
+</span></span><span class="line"><span class="cl">    id3([스타디움 형태])
+</span></span><span class="line"><span class="cl">    id4[[서브루틴]]
+</span></span><span class="line"><span class="cl">    id5[(데이터베이스)]
+</span></span><span class="line"><span class="cl">    id6((원형))
+</span></span></code></pre></div><h3 id="노드-모양-총정리">노드 모양 총정리<a href="#노드-모양-총정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <table>
   <thead>
       <tr>
@@ -346,14 +361,26 @@
     C --&gt;|No| E[/에러 출력/]
     D --&gt; F([종료])
     E --&gt; F
-</code></pre><h3 id="v1130-새로운-shape-문법">v11.3.0+ 새로운 Shape 문법<a href="#v1130-새로운-shape-문법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">    A([시작]) --&gt; B[프로세스 실행]
+</span></span><span class="line"><span class="cl">    B --&gt; C{조건 확인}
+</span></span><span class="line"><span class="cl">    C --&gt;|Yes| D[(DB 저장)]
+</span></span><span class="line"><span class="cl">    C --&gt;|No| E[/에러 출력/]
+</span></span><span class="line"><span class="cl">    D --&gt; F([종료])
+</span></span><span class="line"><span class="cl">    E --&gt; F
+</span></span></code></pre></div><h3 id="v1130-새로운-shape-문법">v11.3.0+ 새로운 Shape 문법<a href="#v1130-새로운-shape-문법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Mermaid v11.3.0부터는 더 명시적인 shape 정의 문법을 지원합니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     A@{ shape: rect, label: &#34;사각형&#34; }
     B@{ shape: diamond, label: &#34;다이아몬드&#34; }
     C@{ shape: circle, label: &#34;원&#34; }
     D@{ shape: cyl, label: &#34;실린더&#34; }
-</code></pre><p>주요 shape 이름:</p>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A@{ shape: rect, label: &#34;사각형&#34; }
+</span></span><span class="line"><span class="cl">    B@{ shape: diamond, label: &#34;다이아몬드&#34; }
+</span></span><span class="line"><span class="cl">    C@{ shape: circle, label: &#34;원&#34; }
+</span></span><span class="line"><span class="cl">    D@{ shape: cyl, label: &#34;실린더&#34; }
+</span></span></code></pre></div><p>주요 shape 이름:</p>
 <table>
   <thead>
       <tr>
@@ -423,7 +450,12 @@
     C --- D
     E -.-&gt; F
     G ==&gt; H
-</code></pre><table>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A --&gt; B
+</span></span><span class="line"><span class="cl">    C --- D
+</span></span><span class="line"><span class="cl">    E -.-&gt; F
+</span></span><span class="line"><span class="cl">    G ==&gt; H
+</span></span></code></pre></div><table>
   <thead>
       <tr>
           <th>문법</th>
@@ -463,7 +495,12 @@
     C -- 텍스트 --&gt; D
     E -.텍스트.-&gt; F
     G ==텍스트==&gt; H
-</code></pre><p>두 가지 문법 모두 동일하게 동작합니다:</p>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A --&gt;|텍스트| B
+</span></span><span class="line"><span class="cl">    C -- 텍스트 --&gt; D
+</span></span><span class="line"><span class="cl">    E -.텍스트.-&gt; F
+</span></span><span class="line"><span class="cl">    G ==텍스트==&gt; H
+</span></span></code></pre></div><p>두 가지 문법 모두 동일하게 동작합니다:</p>
 <ul>
 <li><code>A --&gt;|텍스트| B</code></li>
 <li><code>A -- 텍스트 --&gt; B</code></li>
@@ -475,7 +512,13 @@
     E o--o F
     G &lt;--&gt; H
     I x--x J
-</code></pre><table>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A --o B
+</span></span><span class="line"><span class="cl">    C --x D
+</span></span><span class="line"><span class="cl">    E o--o F
+</span></span><span class="line"><span class="cl">    G &lt;--&gt; H
+</span></span><span class="line"><span class="cl">    I x--x J
+</span></span></code></pre></div><table>
   <thead>
       <tr>
           <th>문법</th>
@@ -511,7 +554,11 @@
     A --&gt; B
     A ---&gt; C
     A ----&gt; D
-</code></pre><table>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">    A --&gt; B
+</span></span><span class="line"><span class="cl">    A ---&gt; C
+</span></span><span class="line"><span class="cl">    A ----&gt; D
+</span></span></code></pre></div><table>
   <thead>
       <tr>
           <th>길이</th>
@@ -550,10 +597,15 @@
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     A --&gt; B --&gt; C --&gt; D
     E --&gt; F &amp; G --&gt; H
-</code></pre><p><code>&amp;</code> 연산자를 사용하면 여러 노드를 동시에 연결할 수 있습니다.</p>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A --&gt; B --&gt; C --&gt; D
+</span></span><span class="line"><span class="cl">    E --&gt; F &amp; G --&gt; H
+</span></span></code></pre></div><p><code>&amp;</code> 연산자를 사용하면 여러 노드를 동시에 연결할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A --&gt; B &amp; C &amp; D --&gt; E
-</code></pre><p>위 코드는 아래와 동일합니다:</p>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">    A --&gt; B &amp; C &amp; D --&gt; E
+</span></span></code></pre></div><p>위 코드는 아래와 동일합니다:</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A --&gt; B
     A --&gt; C
@@ -561,7 +613,14 @@
     B --&gt; E
     C --&gt; E
     D --&gt; E
-</code></pre><h2 id="실전-예제-api-요청-처리-흐름">실전 예제: API 요청 처리 흐름<a href="#실전-예제-api-요청-처리-흐름" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">    A --&gt; B
+</span></span><span class="line"><span class="cl">    A --&gt; C
+</span></span><span class="line"><span class="cl">    A --&gt; D
+</span></span><span class="line"><span class="cl">    B --&gt; E
+</span></span><span class="line"><span class="cl">    C --&gt; E
+</span></span><span class="line"><span class="cl">    D --&gt; E
+</span></span></code></pre></div><h2 id="실전-예제-api-요청-처리-흐름">실전 예제: API 요청 처리 흐름<a href="#실전-예제-api-요청-처리-흐름" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A([클라이언트 요청]) --&gt; B{인증 확인}
     B --&gt;|성공| C[권한 검증]
@@ -575,7 +634,20 @@
     F --&gt; J
     H --&gt; J
     I --&gt; J
-</code></pre><h2 id="마크다운-텍스트-지원">마크다운 텍스트 지원<a href="#마크다운-텍스트-지원" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">    A([클라이언트 요청]) --&gt; B{인증 확인}
+</span></span><span class="line"><span class="cl">    B --&gt;|성공| C[권한 검증]
+</span></span><span class="line"><span class="cl">    B --&gt;|실패| D[/401 Unauthorized/]
+</span></span><span class="line"><span class="cl">    C --&gt;|허용| E[(데이터베이스 조회)]
+</span></span><span class="line"><span class="cl">    C --&gt;|거부| F[/403 Forbidden/]
+</span></span><span class="line"><span class="cl">    E --&gt; G{데이터 존재?}
+</span></span><span class="line"><span class="cl">    G --&gt;|Yes| H[200 OK + 데이터]
+</span></span><span class="line"><span class="cl">    G --&gt;|No| I[/404 Not Found/]
+</span></span><span class="line"><span class="cl">    D --&gt; J([응답 반환])
+</span></span><span class="line"><span class="cl">    F --&gt; J
+</span></span><span class="line"><span class="cl">    H --&gt; J
+</span></span><span class="line"><span class="cl">    I --&gt; J
+</span></span></code></pre></div><h2 id="마크다운-텍스트-지원">마크다운 텍스트 지원<a href="#마크다운-텍스트-지원" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>노드 내에서 마크다운 서식을 사용할 수 있습니다. 큰따옴표와 백틱을 함께 사용합니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     A[&#34;`**굵은 텍스트**
@@ -584,20 +656,36 @@
     B[&#34;`코드: **Redis**
     포트: *6379*`&#34;]
     A --&gt; B
-</code></pre><h2 id="주석comments">주석(Comments)<a href="#주석comments" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A[&#34;`**굵은 텍스트**
+</span></span><span class="line"><span class="cl">    일반 텍스트
+</span></span><span class="line"><span class="cl">    *이탤릭*`&#34;]
+</span></span><span class="line"><span class="cl">    B[&#34;`코드: **Redis**
+</span></span><span class="line"><span class="cl">    포트: *6379*`&#34;]
+</span></span><span class="line"><span class="cl">    A --&gt; B
+</span></span></code></pre></div><h2 id="주석comments">주석(Comments)<a href="#주석comments" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p><code>%%</code>로 시작하는 줄은 주석으로 처리되어 렌더링되지 않습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     %% 이것은 주석입니다
     A --&gt; B
     %% B에서 C로의 연결
     B --&gt; C
-</code></pre><h2 id="특수-문자-처리">특수 문자 처리<a href="#특수-문자-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    %% 이것은 주석입니다
+</span></span><span class="line"><span class="cl">    A --&gt; B
+</span></span><span class="line"><span class="cl">    %% B에서 C로의 연결
+</span></span><span class="line"><span class="cl">    B --&gt; C
+</span></span></code></pre></div><h2 id="특수-문자-처리">특수 문자 처리<a href="#특수-문자-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>특수 문자가 포함된 텍스트는 따옴표로 감싸거나 HTML 엔티티를 사용합니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     A[&#34;따옴표가 필요한 텍스트 (괄호)&#34;]
     B[&#34;화살표 텍스트: A -&gt; B&#34;]
     C[&#34;#35; 해시 기호&#34;]
-</code></pre><table>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A[&#34;따옴표가 필요한 텍스트 (괄호)&#34;]
+</span></span><span class="line"><span class="cl">    B[&#34;화살표 텍스트: A -&gt; B&#34;]
+</span></span><span class="line"><span class="cl">    C[&#34;#35; 해시 기호&#34;]
+</span></span></code></pre></div><table>
   <thead>
       <tr>
           <th>문자</th>
@@ -624,7 +712,10 @@
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     A[&#34;시작 🚀&#34;] --&gt; B[&#34;처리 중...&#34;]
     B --&gt; C[&#34;완료 ✅&#34;]
-</code></pre>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    A[&#34;시작 🚀&#34;] --&gt; B[&#34;처리 중...&#34;]
+</span></span><span class="line"><span class="cl">    B --&gt; C[&#34;완료 ✅&#34;]
+</span></span></code></pre></div>
       </div></div>
 
   
@@ -687,6 +778,34 @@
 
 
 <script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
 
 
 

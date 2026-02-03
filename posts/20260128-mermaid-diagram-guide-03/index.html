@@ -200,13 +200,21 @@
     participant B as 서버
     A-&gt;&gt;B: 요청
     B--&gt;&gt;A: 응답
-</code></pre><h2 id="participant-정의">Participant 정의<a href="#participant-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant A as 클라이언트
+</span></span><span class="line"><span class="cl">    participant B as 서버
+</span></span><span class="line"><span class="cl">    A-&gt;&gt;B: 요청
+</span></span><span class="line"><span class="cl">    B--&gt;&gt;A: 응답
+</span></span></code></pre></div><h2 id="participant-정의">Participant 정의<a href="#participant-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="자동-정의">자동 정의<a href="#자동-정의" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>메시지에서 처음 등장하는 이름이 자동으로 participant가 됩니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     Alice-&gt;&gt;Bob: 안녕하세요!
     Bob--&gt;&gt;Alice: 안녕하세요!
-</code></pre><h3 id="명시적-정의와-순서-지정">명시적 정의와 순서 지정<a href="#명시적-정의와-순서-지정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    Alice-&gt;&gt;Bob: 안녕하세요!
+</span></span><span class="line"><span class="cl">    Bob--&gt;&gt;Alice: 안녕하세요!
+</span></span></code></pre></div><h3 id="명시적-정의와-순서-지정">명시적 정의와 순서 지정<a href="#명시적-정의와-순서-지정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><code>participant</code> 키워드로 명시적으로 정의하면 원하는 순서로 배치할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant C as Client
@@ -220,7 +228,19 @@
     D--&gt;&gt;S: Result
     S--&gt;&gt;G: Response
     G--&gt;&gt;C: HTTP Response
-</code></pre><h3 id="actor-심볼">Actor 심볼<a href="#actor-심볼" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant C as Client
+</span></span><span class="line"><span class="cl">    participant G as API Gateway
+</span></span><span class="line"><span class="cl">    participant S as Service
+</span></span><span class="line"><span class="cl">    participant D as Database
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    C-&gt;&gt;G: HTTP Request
+</span></span><span class="line"><span class="cl">    G-&gt;&gt;S: Forward Request
+</span></span><span class="line"><span class="cl">    S-&gt;&gt;D: Query
+</span></span><span class="line"><span class="cl">    D--&gt;&gt;S: Result
+</span></span><span class="line"><span class="cl">    S--&gt;&gt;G: Response
+</span></span><span class="line"><span class="cl">    G--&gt;&gt;C: HTTP Response
+</span></span></code></pre></div><h3 id="actor-심볼">Actor 심볼<a href="#actor-심볼" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><code>actor</code> 키워드를 사용하면 사람 모양 아이콘으로 표시됩니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     actor User as 사용자
@@ -231,7 +251,16 @@
     App-&gt;&gt;Server: 인증 요청
     Server--&gt;&gt;App: 토큰 발급
     App--&gt;&gt;User: 홈 화면 표시
-</code></pre><h3 id="다양한-participant-유형-v10">다양한 Participant 유형 (v10+)<a href="#다양한-participant-유형-v10" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    actor User as 사용자
+</span></span><span class="line"><span class="cl">    participant App as 모바일 앱
+</span></span><span class="line"><span class="cl">    participant Server as 백엔드 서버
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    User-&gt;&gt;App: 로그인 버튼 클릭
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;Server: 인증 요청
+</span></span><span class="line"><span class="cl">    Server--&gt;&gt;App: 토큰 발급
+</span></span><span class="line"><span class="cl">    App--&gt;&gt;User: 홈 화면 표시
+</span></span></code></pre></div><h3 id="다양한-participant-유형-v10">다양한 Participant 유형 (v10+)<a href="#다양한-participant-유형-v10" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     actor User as 사용자
     participant App as Application
@@ -249,7 +278,24 @@
     API-&gt;&gt;Cache: 캐시 저장
     API--&gt;&gt;App: 응답
     App-&gt;&gt;Queue: 이벤트 발행
-</code></pre><h2 id="메시지-유형">메시지 유형<a href="#메시지-유형" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    actor User as 사용자
+</span></span><span class="line"><span class="cl">    participant App as Application
+</span></span><span class="line"><span class="cl">    participant API as API Server
+</span></span><span class="line"><span class="cl">    participant DB as Database
+</span></span><span class="line"><span class="cl">    participant Cache as Redis Cache
+</span></span><span class="line"><span class="cl">    participant Queue as Message Queue
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    User-&gt;&gt;App: 요청
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;Cache: 캐시 조회
+</span></span><span class="line"><span class="cl">    Cache--&gt;&gt;App: 캐시 미스
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;API: API 호출
+</span></span><span class="line"><span class="cl">    API-&gt;&gt;DB: 쿼리
+</span></span><span class="line"><span class="cl">    DB--&gt;&gt;API: 결과
+</span></span><span class="line"><span class="cl">    API-&gt;&gt;Cache: 캐시 저장
+</span></span><span class="line"><span class="cl">    API--&gt;&gt;App: 응답
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;Queue: 이벤트 발행
+</span></span></code></pre></div><h2 id="메시지-유형">메시지 유형<a href="#메시지-유형" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="화살표-종류">화살표 종류<a href="#화살표-종류" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant A
@@ -263,7 +309,19 @@
     A--xB: 점선, X 표시
     A-)B: 실선, 비동기 (열린 화살표)
     A--)B: 점선, 비동기
-</code></pre><table>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant A
+</span></span><span class="line"><span class="cl">    participant B
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    A-&gt;B: 실선, 화살표 없음
+</span></span><span class="line"><span class="cl">    A--&gt;B: 점선, 화살표 없음
+</span></span><span class="line"><span class="cl">    A-&gt;&gt;B: 실선, 화살표
+</span></span><span class="line"><span class="cl">    A--&gt;&gt;B: 점선, 화살표
+</span></span><span class="line"><span class="cl">    A-xB: 실선, X 표시 (실패/거부)
+</span></span><span class="line"><span class="cl">    A--xB: 점선, X 표시
+</span></span><span class="line"><span class="cl">    A-)B: 실선, 비동기 (열린 화살표)
+</span></span><span class="line"><span class="cl">    A--)B: 점선, 비동기
+</span></span></code></pre></div><table>
   <thead>
       <tr>
           <th>문법</th>
@@ -311,7 +369,13 @@
 
     A&lt;&lt;-&gt;&gt;B: 양방향 실선
     A&lt;&lt;--&gt;&gt;B: 양방향 점선
-</code></pre><h2 id="activation-활성화-박스">Activation (활성화 박스)<a href="#activation-활성화-박스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant A
+</span></span><span class="line"><span class="cl">    participant B
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    A&lt;&lt;-&gt;&gt;B: 양방향 실선
+</span></span><span class="line"><span class="cl">    A&lt;&lt;--&gt;&gt;B: 양방향 점선
+</span></span></code></pre></div><h2 id="activation-활성화-박스">Activation (활성화 박스)<a href="#activation-활성화-박스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>객체가 활성 상태임을 나타내는 박스를 표시합니다.</p>
 <h3 id="명시적-활성화">명시적 활성화<a href="#명시적-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
@@ -323,7 +387,16 @@
     S-&gt;&gt;S: 처리 중...
     S--&gt;&gt;C: 응답
     deactivate S
-</code></pre><h3 id="축약-문법--">축약 문법 (+/-)<a href="#축약-문법--" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant C as Client
+</span></span><span class="line"><span class="cl">    participant S as Server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    C-&gt;&gt;S: 요청
+</span></span><span class="line"><span class="cl">    activate S
+</span></span><span class="line"><span class="cl">    S-&gt;&gt;S: 처리 중...
+</span></span><span class="line"><span class="cl">    S--&gt;&gt;C: 응답
+</span></span><span class="line"><span class="cl">    deactivate S
+</span></span></code></pre></div><h3 id="축약-문법--">축약 문법 (+/-)<a href="#축약-문법--" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><code>+</code>와 <code>-</code>를 화살표 끝에 붙여 간단하게 표현할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant C as Client
@@ -334,7 +407,16 @@
     S-&gt;&gt;+D: 쿼리
     D--&gt;&gt;-S: 결과
     S--&gt;&gt;-C: 응답
-</code></pre><h3 id="중첩-활성화">중첩 활성화<a href="#중첩-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant C as Client
+</span></span><span class="line"><span class="cl">    participant S as Server
+</span></span><span class="line"><span class="cl">    participant D as Database
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    C-&gt;&gt;+S: 요청
+</span></span><span class="line"><span class="cl">    S-&gt;&gt;+D: 쿼리
+</span></span><span class="line"><span class="cl">    D--&gt;&gt;-S: 결과
+</span></span><span class="line"><span class="cl">    S--&gt;&gt;-C: 응답
+</span></span></code></pre></div><h3 id="중첩-활성화">중첩 활성화<a href="#중첩-활성화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant C as Client
     participant S as Server
@@ -345,7 +427,17 @@
     S--&gt;&gt;-S: 완료 2
     S--&gt;&gt;-S: 완료 1
     S--&gt;&gt;-C: 응답
-</code></pre><h2 id="notes-노트">Notes (노트)<a href="#notes-노트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant C as Client
+</span></span><span class="line"><span class="cl">    participant S as Server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    C-&gt;&gt;+S: 외부 요청
+</span></span><span class="line"><span class="cl">    S-&gt;&gt;+S: 내부 처리 1
+</span></span><span class="line"><span class="cl">    S-&gt;&gt;+S: 내부 처리 2
+</span></span><span class="line"><span class="cl">    S--&gt;&gt;-S: 완료 2
+</span></span><span class="line"><span class="cl">    S--&gt;&gt;-S: 완료 1
+</span></span><span class="line"><span class="cl">    S--&gt;&gt;-C: 응답
+</span></span></code></pre></div><h2 id="notes-노트">Notes (노트)<a href="#notes-노트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="기본-노트">기본 노트<a href="#기본-노트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant A
@@ -356,7 +448,16 @@
     Note right of B: 오른쪽 노트
     Note over A: A 위 노트
     Note over A,B: A와 B 사이 노트
-</code></pre><h3 id="실전-활용">실전 활용<a href="#실전-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant A
+</span></span><span class="line"><span class="cl">    participant B
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Note left of A: 왼쪽 노트
+</span></span><span class="line"><span class="cl">    A-&gt;&gt;B: 메시지
+</span></span><span class="line"><span class="cl">    Note right of B: 오른쪽 노트
+</span></span><span class="line"><span class="cl">    Note over A: A 위 노트
+</span></span><span class="line"><span class="cl">    Note over A,B: A와 B 사이 노트
+</span></span></code></pre></div><h3 id="실전-활용">실전 활용<a href="#실전-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant Client
     participant Auth as Auth Server
@@ -375,7 +476,25 @@
 
     Client-&gt;&gt;API: API 요청 (Bearer Token)
     API--&gt;&gt;Client: 응답 데이터
-</code></pre><h2 id="제어-구조">제어 구조<a href="#제어-구조" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant Auth as Auth Server
+</span></span><span class="line"><span class="cl">    participant API as API Server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Note over Client,API: OAuth 2.0 인증 흐름
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;Auth: 인증 요청 (client_id, redirect_uri)
+</span></span><span class="line"><span class="cl">    Note right of Auth: 사용자 인증 처리
+</span></span><span class="line"><span class="cl">    Auth--&gt;&gt;Client: Authorization Code
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;Auth: Token 요청 (code, client_secret)
+</span></span><span class="line"><span class="cl">    Auth--&gt;&gt;Client: Access Token + Refresh Token
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Note over Client: 토큰 저장
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;API: API 요청 (Bearer Token)
+</span></span><span class="line"><span class="cl">    API--&gt;&gt;Client: 응답 데이터
+</span></span></code></pre></div><h2 id="제어-구조">제어 구조<a href="#제어-구조" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="loop-반복">Loop (반복)<a href="#loop-반복" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant Client
@@ -390,7 +509,20 @@
     end
 
     Server--&gt;&gt;Client: 완료
-</code></pre><h3 id="altelse-조건-분기">Alt/Else (조건 분기)<a href="#altelse-조건-분기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant Server
+</span></span><span class="line"><span class="cl">    participant DB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;Server: 배치 처리 요청
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    loop 각 아이템에 대해
+</span></span><span class="line"><span class="cl">        Server-&gt;&gt;DB: 아이템 처리
+</span></span><span class="line"><span class="cl">        DB--&gt;&gt;Server: 결과
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Server--&gt;&gt;Client: 완료
+</span></span></code></pre></div><h3 id="altelse-조건-분기">Alt/Else (조건 분기)<a href="#altelse-조건-분기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant User
     participant App
@@ -409,7 +541,25 @@
         Auth--&gt;&gt;App: 403 Forbidden
         App--&gt;&gt;User: 계정 잠금 메시지
     end
-</code></pre><h3 id="opt-선택적">Opt (선택적)<a href="#opt-선택적" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant User
+</span></span><span class="line"><span class="cl">    participant App
+</span></span><span class="line"><span class="cl">    participant Auth
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    User-&gt;&gt;App: 로그인 시도
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;Auth: 인증 확인
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    alt 인증 성공
+</span></span><span class="line"><span class="cl">        Auth--&gt;&gt;App: 토큰 발급
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 홈 화면
+</span></span><span class="line"><span class="cl">    else 비밀번호 오류
+</span></span><span class="line"><span class="cl">        Auth--&gt;&gt;App: 401 Unauthorized
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 비밀번호 오류 메시지
+</span></span><span class="line"><span class="cl">    else 계정 잠금
+</span></span><span class="line"><span class="cl">        Auth--&gt;&gt;App: 403 Forbidden
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 계정 잠금 메시지
+</span></span><span class="line"><span class="cl">    end
+</span></span></code></pre></div><h3 id="opt-선택적">Opt (선택적)<a href="#opt-선택적" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>조건이 참일 때만 실행되는 블록입니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant App
@@ -425,7 +575,21 @@
     end
 
     Cache--&gt;&gt;App: 데이터 반환
-</code></pre><h3 id="par-병렬-처리">Par (병렬 처리)<a href="#par-병렬-처리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant App
+</span></span><span class="line"><span class="cl">    participant Cache
+</span></span><span class="line"><span class="cl">    participant DB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;Cache: 캐시 조회
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    opt 캐시 미스
+</span></span><span class="line"><span class="cl">        App-&gt;&gt;DB: DB 조회
+</span></span><span class="line"><span class="cl">        DB--&gt;&gt;App: 데이터
+</span></span><span class="line"><span class="cl">        App-&gt;&gt;Cache: 캐시 저장
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Cache--&gt;&gt;App: 데이터 반환
+</span></span></code></pre></div><h3 id="par-병렬-처리">Par (병렬 처리)<a href="#par-병렬-처리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant Client
     participant OrderSvc as Order Service
@@ -447,7 +611,28 @@
     end
 
     OrderSvc--&gt;&gt;Client: 주문 완료
-</code></pre><h3 id="critical-크리티컬-섹션">Critical (크리티컬 섹션)<a href="#critical-크리티컬-섹션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant OrderSvc as Order Service
+</span></span><span class="line"><span class="cl">    participant PaymentSvc as Payment Service
+</span></span><span class="line"><span class="cl">    participant InventorySvc as Inventory Service
+</span></span><span class="line"><span class="cl">    participant NotifySvc as Notification
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;OrderSvc: 주문 생성
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    par 결제 처리
+</span></span><span class="line"><span class="cl">        OrderSvc-&gt;&gt;PaymentSvc: 결제 요청
+</span></span><span class="line"><span class="cl">        PaymentSvc--&gt;&gt;OrderSvc: 결제 완료
+</span></span><span class="line"><span class="cl">    and 재고 처리
+</span></span><span class="line"><span class="cl">        OrderSvc-&gt;&gt;InventorySvc: 재고 차감
+</span></span><span class="line"><span class="cl">        InventorySvc--&gt;&gt;OrderSvc: 차감 완료
+</span></span><span class="line"><span class="cl">    and 알림 발송
+</span></span><span class="line"><span class="cl">        OrderSvc-&gt;&gt;NotifySvc: 알림 요청
+</span></span><span class="line"><span class="cl">        NotifySvc--&gt;&gt;OrderSvc: 발송 완료
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    OrderSvc--&gt;&gt;Client: 주문 완료
+</span></span></code></pre></div><h3 id="critical-크리티컬-섹션">Critical (크리티컬 섹션)<a href="#critical-크리티컬-섹션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>반드시 실행되어야 하는 중요 작업을 표시합니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant App
@@ -466,7 +651,24 @@
     end
 
     Payment--&gt;&gt;App: 결제 완료
-</code></pre><h3 id="break-중단">Break (중단)<a href="#break-중단" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant App
+</span></span><span class="line"><span class="cl">    participant Payment
+</span></span><span class="line"><span class="cl">    participant DB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;Payment: 결제 시작
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    critical 트랜잭션 영역
+</span></span><span class="line"><span class="cl">        Payment-&gt;&gt;DB: 잔액 차감
+</span></span><span class="line"><span class="cl">        Payment-&gt;&gt;DB: 결제 기록 저장
+</span></span><span class="line"><span class="cl">    option 네트워크 오류
+</span></span><span class="line"><span class="cl">        Payment--&gt;&gt;App: 재시도 요청
+</span></span><span class="line"><span class="cl">    option DB 오류
+</span></span><span class="line"><span class="cl">        Payment--&gt;&gt;App: 롤백 완료
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Payment--&gt;&gt;App: 결제 완료
+</span></span></code></pre></div><h3 id="break-중단">Break (중단)<a href="#break-중단" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>예외 상황에서 흐름이 중단됨을 표현합니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant Client
@@ -483,7 +685,22 @@
 
     Auth--&gt;&gt;Server: 토큰 유효
     Server--&gt;&gt;Client: 응답 데이터
-</code></pre><h2 id="배경-하이라이트">배경 하이라이트<a href="#배경-하이라이트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant Server
+</span></span><span class="line"><span class="cl">    participant Auth
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;Server: API 요청
+</span></span><span class="line"><span class="cl">    Server-&gt;&gt;Auth: 토큰 검증
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    break 토큰 만료
+</span></span><span class="line"><span class="cl">        Auth--&gt;&gt;Server: 401 Token Expired
+</span></span><span class="line"><span class="cl">        Server--&gt;&gt;Client: 재로그인 필요
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Auth--&gt;&gt;Server: 토큰 유효
+</span></span><span class="line"><span class="cl">    Server--&gt;&gt;Client: 응답 데이터
+</span></span></code></pre></div><h2 id="배경-하이라이트">배경 하이라이트<a href="#배경-하이라이트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p><code>rect</code>로 특정 영역에 배경색을 지정할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant Client
@@ -506,7 +723,28 @@
     end
 
     Gateway--&gt;&gt;Client: 최종 응답
-</code></pre><h2 id="actor-생성과-소멸-v1030">Actor 생성과 소멸 (v10.3.0+)<a href="#actor-생성과-소멸-v1030" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant Gateway
+</span></span><span class="line"><span class="cl">    participant Service
+</span></span><span class="line"><span class="cl">    participant DB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    rect rgb(191, 223, 255)
+</span></span><span class="line"><span class="cl">        Note over Client,Gateway: 인증 단계
+</span></span><span class="line"><span class="cl">        Client-&gt;&gt;Gateway: 요청 + Token
+</span></span><span class="line"><span class="cl">        Gateway-&gt;&gt;Gateway: Token 검증
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    rect rgb(200, 255, 200)
+</span></span><span class="line"><span class="cl">        Note over Gateway,DB: 비즈니스 로직
+</span></span><span class="line"><span class="cl">        Gateway-&gt;&gt;Service: 요청 전달
+</span></span><span class="line"><span class="cl">        Service-&gt;&gt;DB: 쿼리
+</span></span><span class="line"><span class="cl">        DB--&gt;&gt;Service: 결과
+</span></span><span class="line"><span class="cl">        Service--&gt;&gt;Gateway: 응답
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Gateway--&gt;&gt;Client: 최종 응답
+</span></span></code></pre></div><h2 id="actor-생성과-소멸-v1030">Actor 생성과 소멸 (v10.3.0+)<a href="#actor-생성과-소멸-v1030" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>동적으로 객체가 생성되고 소멸되는 것을 표현할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant Main
@@ -518,7 +756,17 @@
     TempProcess--&gt;&gt;Worker: 결과 반환
     destroy TempProcess
     Worker--&gt;&gt;-Main: 완료
-</code></pre><h2 id="box-그룹핑">Box (그룹핑)<a href="#box-그룹핑" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant Main
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Main-&gt;&gt;+Worker: 작업 요청
+</span></span><span class="line"><span class="cl">    create participant TempProcess
+</span></span><span class="line"><span class="cl">    Worker-&gt;&gt;TempProcess: 임시 프로세스 생성
+</span></span><span class="line"><span class="cl">    TempProcess-&gt;&gt;TempProcess: 작업 수행
+</span></span><span class="line"><span class="cl">    TempProcess--&gt;&gt;Worker: 결과 반환
+</span></span><span class="line"><span class="cl">    destroy TempProcess
+</span></span><span class="line"><span class="cl">    Worker--&gt;&gt;-Main: 완료
+</span></span></code></pre></div><h2 id="box-그룹핑">Box (그룹핑)<a href="#box-그룹핑" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>관련된 participant들을 박스로 그룹화할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     box Blue 클라이언트 영역
@@ -540,7 +788,27 @@
     Auth--&gt;&gt;API: 토큰
     API--&gt;&gt;App: 응답
     App--&gt;&gt;User: 로그인 완료
-</code></pre><h2 id="시퀀스-번호">시퀀스 번호<a href="#시퀀스-번호" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    box Blue 클라이언트 영역
+</span></span><span class="line"><span class="cl">        actor User
+</span></span><span class="line"><span class="cl">        participant App
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    box Green 서버 영역
+</span></span><span class="line"><span class="cl">        participant API
+</span></span><span class="line"><span class="cl">        participant Auth
+</span></span><span class="line"><span class="cl">        participant DB
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    User-&gt;&gt;App: 로그인 요청
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;API: 인증 요청
+</span></span><span class="line"><span class="cl">    API-&gt;&gt;Auth: 토큰 발급
+</span></span><span class="line"><span class="cl">    Auth-&gt;&gt;DB: 사용자 조회
+</span></span><span class="line"><span class="cl">    DB--&gt;&gt;Auth: 사용자 정보
+</span></span><span class="line"><span class="cl">    Auth--&gt;&gt;API: 토큰
+</span></span><span class="line"><span class="cl">    API--&gt;&gt;App: 응답
+</span></span><span class="line"><span class="cl">    App--&gt;&gt;User: 로그인 완료
+</span></span></code></pre></div><h2 id="시퀀스-번호">시퀀스 번호<a href="#시퀀스-번호" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>메시지에 자동으로 번호를 매길 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     autonumber
@@ -555,7 +823,20 @@
     Server--&gt;&gt;Client: 응답 1
     Client-&gt;&gt;Server: 요청 2
     Server--&gt;&gt;Client: 응답 2
-</code></pre><h2 id="줄바꿈">줄바꿈<a href="#줄바꿈" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    autonumber
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant Server
+</span></span><span class="line"><span class="cl">    participant DB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;Server: 요청 1
+</span></span><span class="line"><span class="cl">    Server-&gt;&gt;DB: 쿼리
+</span></span><span class="line"><span class="cl">    DB--&gt;&gt;Server: 결과
+</span></span><span class="line"><span class="cl">    Server--&gt;&gt;Client: 응답 1
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;Server: 요청 2
+</span></span><span class="line"><span class="cl">    Server--&gt;&gt;Client: 응답 2
+</span></span></code></pre></div><h2 id="줄바꿈">줄바꿈<a href="#줄바꿈" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>메시지와 노트에서 <code>&lt;br/&gt;</code>로 줄바꿈할 수 있습니다.</p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant A
@@ -563,7 +844,13 @@
 
     A-&gt;&gt;B: 첫 번째 줄&lt;br/&gt;두 번째 줄
     Note over B: 긴 설명을&lt;br/&gt;여러 줄로&lt;br/&gt;작성할 수 있습니다
-</code></pre><h2 id="실전-예제-jwt-인증-흐름">실전 예제: JWT 인증 흐름<a href="#실전-예제-jwt-인증-흐름" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    participant A
+</span></span><span class="line"><span class="cl">    participant B
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    A-&gt;&gt;B: 첫 번째 줄&lt;br/&gt;두 번째 줄
+</span></span><span class="line"><span class="cl">    Note over B: 긴 설명을&lt;br/&gt;여러 줄로&lt;br/&gt;작성할 수 있습니다
+</span></span></code></pre></div><h2 id="실전-예제-jwt-인증-흐름">실전 예제: JWT 인증 흐름<a href="#실전-예제-jwt-인증-흐름" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     autonumber
 
@@ -616,7 +903,59 @@
         API--&gt;&gt;App: 200 OK + Data
         App--&gt;&gt;User: 데이터 표시
     end
-</code></pre><h2 id="실전-예제-결제-처리">실전 예제: 결제 처리<a href="#실전-예제-결제-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    autonumber
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    actor User as 사용자
+</span></span><span class="line"><span class="cl">    participant App as 클라이언트
+</span></span><span class="line"><span class="cl">    participant Auth as 인증 서버
+</span></span><span class="line"><span class="cl">    participant API as API 서버
+</span></span><span class="line"><span class="cl">    participant DB as 데이터베이스
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Note over User,DB: 로그인 프로세스
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    User-&gt;&gt;App: 로그인 (email, password)
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;+Auth: POST /auth/login
+</span></span><span class="line"><span class="cl">    Auth-&gt;&gt;DB: 사용자 조회
+</span></span><span class="line"><span class="cl">    DB--&gt;&gt;Auth: 사용자 정보
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    alt 인증 성공
+</span></span><span class="line"><span class="cl">        Auth-&gt;&gt;Auth: JWT 토큰 생성
+</span></span><span class="line"><span class="cl">        Note right of Auth: Access Token: 15분&lt;br/&gt;Refresh Token: 7일
+</span></span><span class="line"><span class="cl">        Auth--&gt;&gt;-App: 200 OK + Tokens
+</span></span><span class="line"><span class="cl">        App-&gt;&gt;App: 토큰 저장 (메모리/스토리지)
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 로그인 성공
+</span></span><span class="line"><span class="cl">    else 인증 실패
+</span></span><span class="line"><span class="cl">        Auth--&gt;&gt;App: 401 Unauthorized
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 로그인 실패
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Note over User,DB: API 호출
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    User-&gt;&gt;App: 데이터 요청
+</span></span><span class="line"><span class="cl">    App-&gt;&gt;+API: GET /api/data (Bearer Token)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    API-&gt;&gt;API: 토큰 검증
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    alt 토큰 유효
+</span></span><span class="line"><span class="cl">        API-&gt;&gt;DB: 데이터 조회
+</span></span><span class="line"><span class="cl">        DB--&gt;&gt;API: 데이터
+</span></span><span class="line"><span class="cl">        API--&gt;&gt;-App: 200 OK + Data
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 데이터 표시
+</span></span><span class="line"><span class="cl">    else 토큰 만료
+</span></span><span class="line"><span class="cl">        API--&gt;&gt;App: 401 Token Expired
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        rect rgb(255, 240, 200)
+</span></span><span class="line"><span class="cl">            Note over App,Auth: 토큰 갱신
+</span></span><span class="line"><span class="cl">            App-&gt;&gt;Auth: POST /auth/refresh
+</span></span><span class="line"><span class="cl">            Auth--&gt;&gt;App: 새 Access Token
+</span></span><span class="line"><span class="cl">        end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        App-&gt;&gt;API: 재요청 (새 Token)
+</span></span><span class="line"><span class="cl">        API--&gt;&gt;App: 200 OK + Data
+</span></span><span class="line"><span class="cl">        App--&gt;&gt;User: 데이터 표시
+</span></span><span class="line"><span class="cl">    end
+</span></span></code></pre></div><h2 id="실전-예제-결제-처리">실전 예제: 결제 처리<a href="#실전-예제-결제-처리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     autonumber
 
@@ -654,7 +993,44 @@
     end
 
     deactivate OrderSvc
-</code></pre>
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sequenceDiagram
+</span></span><span class="line"><span class="cl">    autonumber
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    participant Client
+</span></span><span class="line"><span class="cl">    participant OrderSvc as Order Service
+</span></span><span class="line"><span class="cl">    participant PaymentSvc as Payment Service
+</span></span><span class="line"><span class="cl">    participant PG as Payment Gateway
+</span></span><span class="line"><span class="cl">    participant EventBus as Event Bus
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;+OrderSvc: 주문 생성 요청
+</span></span><span class="line"><span class="cl">    OrderSvc-&gt;&gt;OrderSvc: 주문 검증
+</span></span><span class="line"><span class="cl">    OrderSvc--&gt;&gt;Client: 주문 ID 반환
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Client-&gt;&gt;+PaymentSvc: 결제 요청 (주문 ID)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    critical 결제 트랜잭션
+</span></span><span class="line"><span class="cl">        PaymentSvc-&gt;&gt;+PG: 결제 승인 요청
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        alt 결제 성공
+</span></span><span class="line"><span class="cl">            PG--&gt;&gt;-PaymentSvc: 승인 완료
+</span></span><span class="line"><span class="cl">            PaymentSvc-&gt;&gt;EventBus: PaymentCompleted 이벤트
+</span></span><span class="line"><span class="cl">            PaymentSvc--&gt;&gt;-Client: 결제 성공
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            par 후처리
+</span></span><span class="line"><span class="cl">                EventBus-)OrderSvc: 주문 상태 업데이트
+</span></span><span class="line"><span class="cl">            and
+</span></span><span class="line"><span class="cl">                EventBus-)Client: 결제 완료 알림
+</span></span><span class="line"><span class="cl">            end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        else 결제 실패
+</span></span><span class="line"><span class="cl">            PG--&gt;&gt;PaymentSvc: 승인 거절
+</span></span><span class="line"><span class="cl">            PaymentSvc-&gt;&gt;EventBus: PaymentFailed 이벤트
+</span></span><span class="line"><span class="cl">            PaymentSvc--&gt;&gt;Client: 결제 실패
+</span></span><span class="line"><span class="cl">        end
+</span></span><span class="line"><span class="cl">    end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    deactivate OrderSvc
+</span></span></code></pre></div>
       </div></div>
 
   
@@ -717,6 +1093,34 @@
 
 
 <script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
 
 
 

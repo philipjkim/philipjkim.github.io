@@ -249,7 +249,6 @@
 <hr>
 <h2 id="1-hooks-예외-없는-강제-자동화">1. Hooks: 예외 없는 강제 자동화<a href="#1-hooks-예외-없는-강제-자동화" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="11-claudemd-vs-hooks의-근본적-차이">1.1 CLAUDE.md vs Hooks의 근본적 차이<a href="#11-claudemd-vs-hooks의-근본적-차이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude06_01.png" alt="img01"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Comparison[&#34;CLAUDE.md vs Hooks&#34;]
         direction TB
@@ -400,17 +399,11 @@
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><h3 id="15-hook-vs-claudemd-선택-기준">1.5 Hook vs CLAUDE.md 선택 기준<a href="#15-hook-vs-claudemd-선택-기준" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude06_02.png" alt="img02"></p>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Choice[&#34;🤔 언제 무엇을 사용할까?&#34;]
-        direction TB
-
         Q1[&#34;&#39;이 규칙은 절대로&lt;br/&gt;예외가 없어야 한다&#39;&#34;] --&gt; A1[&#34;⚡ Hook 사용 (강제)&lt;br/&gt;예: 프로덕션 파일 보호, 자동 포맷팅&#34;]
-
         Q2[&#34;&#39;이 규칙은 가이드라인이고,&lt;br/&gt;상황에 따라 유연해도 된다&#39;&#34;] --&gt; A2[&#34;📄 CLAUDE.md 사용 (권고)&lt;br/&gt;예: 코딩 스타일 선호, 커밋 메시지 형식&#34;]
-
         Q3[&#34;&#39;특정 작업 후 자동으로&lt;br/&gt;무언가를 실행해야 한다&#39;&#34;] --&gt; A3[&#34;⚡ Hook 사용&lt;br/&gt;예: 파일 저장 후 린트, 테스트 자동 실행&#34;]
-
         Q4[&#34;&#39;Claude에게 컨텍스트나&lt;br/&gt;지식을 제공해야 한다&#39;&#34;] --&gt; A4[&#34;📄 CLAUDE.md 또는 Skill 사용&lt;br/&gt;예: 프로젝트 구조 설명, API 패턴&#34;]
     end
 
@@ -426,7 +419,6 @@
 <h2 id="2-subagents-활용-패턴">2. Subagents 활용 패턴<a href="#2-subagents-활용-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="21-subagent의-핵심-가치">2.1 Subagent의 핵심 가치<a href="#21-subagent의-핵심-가치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Subagents는 <strong>격리된 컨텍스트 윈도우</strong>에서 작업합니다. 이것이 중요한 이유:</p>
-<p><img src="/img/claude_code_guide/claude06_03.png" alt="img03"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Problem[&#34;❌ 메인 대화만 사용할 때&#34;]
         direction TB
@@ -548,7 +540,6 @@
 </span></span><span class="line"><span class="cl">---
 </span></span></code></pre></div><h3 id="24-subagent-아키텍처-패턴">2.4 Subagent 아키텍처 패턴<a href="#24-subagent-아키텍처-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><strong>패턴 1: Master-Clone (동일 작업 병렬화)</strong></p>
-<p><img src="/img/claude_code_guide/claude06_04.png" alt="img04"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph MasterClone[&#34;🔄 Master-Clone 패턴&#34;]
         direction TB
@@ -577,7 +568,6 @@
     style Clone3 fill:#c8e6c9,color:#000000
     style Benefits fill:#f5f5f5,color:#000000
 </code></pre><p><strong>패턴 2: Lead-Specialist (전문가 분업)</strong></p>
-<p><img src="/img/claude_code_guide/claude06_05.png" alt="img05"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph LeadSpecialist[&#34;👔 Lead-Specialist 패턴&#34;]
         direction TB
@@ -622,7 +612,6 @@
 <h2 id="3-mcp-model-context-protocol-통합">3. MCP (Model Context Protocol) 통합<a href="#3-mcp-model-context-protocol-통합" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="31-mcp란">3.1 MCP란?<a href="#31-mcp란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>MCP는 Claude Code를 <strong>외부 시스템과 연결</strong>하는 프로토콜입니다.</p>
-<p><img src="/img/claude_code_guide/claude06_06.png" alt="img06"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph MCPOverview[&#34;🔌 MCP 개요&#34;]
         direction TB
@@ -722,7 +711,6 @@
 <h2 id="35-session-teleportation-21-신기능">3.5. Session Teleportation (2.1+ 신기능)<a href="#35-session-teleportation-21-신기능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="351-세션-이동이란">3.5.1 세션 이동이란?<a href="#351-세션-이동이란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Claude Code 2.1에서 추가된 <strong>Session Teleportation</strong>을 사용하면 로컬 터미널 세션을 클라우드(claude.ai/code)로 이동하거나, 그 반대로 이동할 수 있습니다.</p>
-<p><img src="/img/claude_code_guide/claude06_07.png" alt="img07"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     subgraph Teleportation[&#34;🚀 Session Teleportation&#34;]
         direction TB
@@ -825,7 +813,6 @@ Claude: plan.md를 확인했습니다. Phase 2의 첫 번째 작업인
 <h2 id="5--실전-레이어링-아키텍처">5. ⭐ 실전 레이어링 아키텍처<a href="#5--실전-레이어링-아키텍처" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="51-전체-구조-복습">5.1 전체 구조 복습<a href="#51-전체-구조-복습" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Part 4에서 배운 3-Layer Stacking을 실전 예제와 함께 정리합니다:</p>
-<p><img src="/img/claude_code_guide/claude06_08.png" alt="img08"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Layering[&#34;🏗️ 실전 레이어링 아키텍처&#34;]
         direction TB
@@ -1069,7 +1056,6 @@ Custom Skill (go-team-conventions): &#34;에러는 NewError(code, msg)로 생성
 CLAUDE.local.md
 .claude/settings.local.json
 </code></pre><h3 id="62-pr-리뷰-워크플로우">6.2 PR 리뷰 워크플로우<a href="#62-pr-리뷰-워크플로우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude06_09.png" alt="img09"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     subgraph PRWorkflow[&#34;🔄 PR 리뷰 자동화 워크플로우&#34;]
         direction TB
@@ -1130,7 +1116,6 @@ CLAUDE.local.md
 </span></span></span></code></pre></div><hr>
 <h2 id="7-문제-해결--디버깅">7. 문제 해결 &amp; 디버깅<a href="#7-문제-해결--디버깅" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="71-claude가-지시를-무시할-때">7.1 Claude가 지시를 무시할 때<a href="#71-claude가-지시를-무시할-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude06_10.png" alt="img10"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Troubleshoot[&#34;🔧 지시 무시 문제 해결&#34;]
         direction TB
@@ -1202,8 +1187,7 @@ CLAUDE.local.md
 </span></span><span class="line"><span class="cl"><span class="c1">#    → 네트워크 연결 확인</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#    → MCP 서버 응답 시간 확인</span>
 </span></span></code></pre></div><h3 id="74-컨텍스트-윈도우-관리">7.4 컨텍스트 윈도우 관리<a href="#74-컨텍스트-윈도우-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude06_11.png" alt="img11"></p>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     subgraph Context[&#34;🧠 컨텍스트 관리 팁&#34;]
         Problem[&#34;😰 문제: 긴 대화 후 Claude가 이전 내용을 잊음&#34;]
 
@@ -1237,7 +1221,6 @@ CLAUDE.local.md
     style S4 fill:#a5d6a7,color:#000000
     style S4D fill:#e8f5e9,color:#000000
 </code></pre><h3 id="75-성능-최적화">7.5 성능 최적화<a href="#75-성능-최적화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude06_12.png" alt="img12"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Performance[&#34;⚡ 성능 최적화 팁&#34;]
         subgraph Skill[&#34;1️⃣ Skills 최적화&#34;]
@@ -1468,6 +1451,34 @@ CLAUDE.local.md
 
 
 <script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
 
 
 

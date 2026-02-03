@@ -204,7 +204,6 @@
 <h2 id="1-claude-code란-무엇인가">1. Claude Code란 무엇인가?<a href="#1-claude-code란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="11-agentic-coding의-개념">1.1 Agentic Coding의 개념<a href="#11-agentic-coding의-개념" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Claude Code는 단순한 코드 자동완성 도구가 아닙니다. <strong>Agentic Coding Assistant</strong>로서, 터미널에서 직접 코드베이스를 읽고, 파일을 생성/수정하고, 테스트를 실행하고, Git 작업까지 수행할 수 있습니다. 2025년 2월 첫 출시 이후 빠르게 발전하여, 현재 버전 2.1.x에서는 <strong>Opus 4.5</strong> 모델을 지원하며 더욱 강력한 기능을 제공합니다.</p>
-<p><img src="/img/claude_code_guide/claude01_01.png" alt="img01"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
     subgraph Traditional[&#34;기존 AI 코딩 도구&#34;]
         direction LR
@@ -262,7 +261,6 @@
   </tbody>
 </table>
 <h3 id="13-기존-도구와의-차이점">1.3 기존 도구와의 차이점<a href="#13-기존-도구와의-차이점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><img src="/img/claude_code_guide/claude01_02.png" alt="img02"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Comparison[&#34;AI 코딩 도구 비교&#34;]
         direction TB
@@ -297,7 +295,6 @@
 <h2 id="2-claudemd의-역할과-동작-원리">2. CLAUDE.md의 역할과 동작 원리<a href="#2-claudemd의-역할과-동작-원리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <h3 id="21-claudemd란">2.1 CLAUDE.md란?<a href="#21-claudemd란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>CLAUDE.md는 Claude Code가 <strong>모든 대화를 시작할 때 자동으로 읽는 특별한 파일</strong>입니다. 프로젝트의 &ldquo;사용 설명서&quot;라고 생각하면 됩니다.</p>
-<p><img src="/img/claude_code_guide/claude01_03.png" alt="img03"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A[&#34;🚀 Claude Code 시작&#34;] --&gt; B
 
@@ -319,7 +316,6 @@
     style C fill:#fff9c4,color:#000000
 </code></pre><h3 id="22-계층적-구조-이해">2.2 계층적 구조 이해<a href="#22-계층적-구조-이해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>CLAUDE.md는 여러 위치에 존재할 수 있으며, 모두 병합되어 적용됩니다:</p>
-<p><img src="/img/claude_code_guide/claude01_04.png" alt="img04"></p>
 <pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
     subgraph Priority[&#34;우선순위 (낮음 → 높음)&#34;]
         direction TB
@@ -729,6 +725,34 @@ cd ~/projects/my-spring-app
 
 
 <script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
 
 
 
