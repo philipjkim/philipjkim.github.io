@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Claude Code Compaction 가이드 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code를 하루 종일 사용하다 보면 어느 순간 &#34;Compacting our conversation...&#34; 메시지와 함께 작업 흐름이 끊기는 경험을 하게 됩니다. 이 글에서는 Compaction이 무엇인지, 왜 자주 발생하는지, 그리고 어떻게 줄일 수 있는지 실전 전략을 공유합니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260204-about-claude-code-compaction/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Claude Code Compaction 가이드">
+<meta property="og:description" content="Claude Code를 하루 종일 사용하다 보면 어느 순간 &#34;Compacting our conversation...&#34; 메시지와 함께 작업 흐름이 끊기는 경험을 하게 됩니다. 이 글에서는 Compaction이 무엇인지, 왜 자주 발생하는지, 그리고 어떻게 줄일 수 있는지 실전 전략을 공유합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260204-about-claude-code-compaction/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-02-04 19:28:33 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260204-about-claude-code-compaction/">Claude Code Compaction 가이드</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-02-04</time></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p>Claude Code를 하루 종일 사용하다 보면 어느 순간 &ldquo;Compacting our conversation&hellip;&rdquo; 메시지와 함께 작업 흐름이 끊기는 경험을 하게 됩니다. 이 글에서는 Compaction이 무엇인지, 왜 자주 발생하는지, 그리고 어떻게 줄일 수 있는지 실전 전략을 공유합니다.</p>
+</blockquote>
+<hr>
+<h2 id="compaction이란">Compaction이란?<a href="#compaction이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Claude Code는 대화 내용, 읽은 파일, 명령어 출력 등을 <strong>Context Window</strong>라는 제한된 공간에 저장합니다. 이 공간이 가득 차면 Claude는 더 이상 새로운 정보를 처리할 수 없게 됩니다.</p>
+<p><strong>Compaction</strong>은 이 문제를 해결하기 위해 기존 대화를 요약하고 압축하는 과정입니다. Auto-compact는 보통 Context Window의 75-95% 지점에서 자동으로 트리거됩니다.</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Context Window 생명주기                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [시작] ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0%              │
+│         ↓ 대화, 파일 읽기, 명령어 실행                          │
+│  [작업] ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 40%             │
+│         ↓ 계속 작업                                             │
+│  [경고] █████████████████████░░░░░░░░░░░░░░░░░ 70% ⚠️ 최적 compact 시점 │
+│         ↓ 계속 작업                                             │
+│  [위험] ██████████████████████████████████░░░░ 90% 🔴 성능 저하 시작 │
+│         ↓ Auto-compact 트리거                                   │
+│  [압축] ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 40% (요약 후)    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h3 id="compaction의-문제점">Compaction의 문제점<a href="#compaction의-문제점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Compaction 자체는 필요한 기능이지만, 몇 가지 문제가 있습니다:</p>
+<ol>
+<li><strong>작업 흐름 중단</strong>: 복잡한 디버깅 중에 갑자기 트리거되면 맥락을 잃을 수 있음</li>
+<li><strong>정보 손실</strong>: 요약 과정에서 중요한 세부사항이 누락될 수 있음</li>
+<li><strong>성능 저하</strong>: 80% 이상에서는 Compaction 전에도 이미 품질이 떨어지기 시작</li>
+</ol>
+<hr>
+<h2 id="일반적인-compaction-빈도는">일반적인 Compaction 빈도는?<a href="#일반적인-compaction-빈도는" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>하루 8시간 Claude Code 사용 기준으로 예상되는 Compaction 횟수입니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th>작업 유형</th>
+          <th>예상 횟수</th>
+          <th>특징</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>가벼운 작업</strong></td>
+          <td>1-2회</td>
+          <td>코드 리뷰, 간단한 수정, 짧은 대화</td>
+      </tr>
+      <tr>
+          <td><strong>일반적인 개발</strong></td>
+          <td>2-4회</td>
+          <td>기능 구현, 버그 픽스, 일반적인 PR 작업</td>
+      </tr>
+      <tr>
+          <td><strong>집중적인 작업</strong></td>
+          <td>4-6회</td>
+          <td>대규모 리팩토링, 여러 파일 수정</td>
+      </tr>
+      <tr>
+          <td><strong>탐색 위주 작업</strong></td>
+          <td>6회 이상</td>
+          <td>코드베이스 분석, 복잡한 디버깅, 레거시 코드 파악</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>하루 5-6회 이상</strong> Compaction이 발생한다면, 작업 패턴을 점검해볼 필요가 있습니다. 아래 전략들을 적용하면 <strong>2-3회 수준</strong>으로 줄일 수 있습니다.</p>
+<hr>
+<h2 id="compaction-줄이기-전략">Compaction 줄이기 전략<a href="#compaction-줄이기-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>난이도별로 정리했습니다. 쉬운 것부터 적용해보세요.</p>
+<h3 id="-level-1-즉시-적용-5분">🟢 Level 1: 즉시 적용 (5분)<a href="#-level-1-즉시-적용-5분" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="11-작업-단위로-세션-분리하기">1.1 작업 단위로 세션 분리하기<a href="#11-작업-단위로-세션-분리하기" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>하나의 세션에서 모든 작업을 처리하려 하지 마세요. 논리적 단위로 세션을 분리하면 Context가 깔끔하게 유지됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 기능 A 구현 완료 후</span>
+</span></span><span class="line"><span class="cl">/clear
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 기능 B 시작 (새로운 깨끗한 Context)</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;UserService에 이메일 검증 로직 추가해줘&#34;</span>
+</span></span></code></pre></div><p><strong>적용 시점</strong>:</p>
+<ul>
+<li>PR의 각 커밋 단위 작업 완료 후</li>
+<li>관련 없는 새 작업 시작 시</li>
+<li>디버깅 → 구현 → 테스트 단계 전환 시</li>
+</ul>
+<h4 id="12-범위를-명확하게-지정하기">1.2 범위를 명확하게 지정하기<a href="#12-범위를-명확하게-지정하기" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude에게 전체를 보여주지 말고, 필요한 부분만 요청하세요.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># ❌ 피해야 할 요청</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;이 프로젝트 구조 분석해줘&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;전체 코드베이스에서 결제 관련 코드 찾아줘&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ✅ 권장하는 요청</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;src/payment/PaymentService.kt의 processPayment 메서드만 봐줘&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;build.gradle.kts의 dependencies 블록만 확인해줘&#34;</span>
+</span></span></code></pre></div><h4 id="13-현재-상태-모니터링-습관화">1.3 현재 상태 모니터링 습관화<a href="#13-현재-상태-모니터링-습관화" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/context  <span class="c1"># Context 사용량 확인 (% 표시)</span>
+</span></span><span class="line"><span class="cl">/status   <span class="c1"># 전체 상태 확인</span>
+</span></span></code></pre></div><p><strong>70%를 넘기 전에</strong> 다음 레벨의 전략을 적용하세요.</p>
+<hr>
+<h3 id="-level-2-설정-최적화-15분">🟡 Level 2: 설정 최적화 (15분)<a href="#-level-2-설정-최적화-15분" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="21-claudemd-다이어트">2.1 CLAUDE.md 다이어트<a href="#21-claudemd-다이어트" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>CLAUDE.md는 <strong>매 대화마다 로드</strong>됩니다. 크기가 클수록 사용 가능한 Context가 줄어듭니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 현재 크기 확인</span>
+</span></span><span class="line"><span class="cl">cat ~/.claude/CLAUDE.md ./CLAUDE.md ./.claude/CLAUDE.md 2&gt;/dev/null <span class="p">|</span> wc -w
+</span></span></code></pre></div><table>
+  <thead>
+      <tr>
+          <th>크기</th>
+          <th>상태</th>
+          <th>권장 조치</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>~1000 words</td>
+          <td>✅ 최적</td>
+          <td>유지</td>
+      </tr>
+      <tr>
+          <td>1000-2500 words</td>
+          <td>⚠️ 주의</td>
+          <td>정리 권장</td>
+      </tr>
+      <tr>
+          <td>2500-4000 words</td>
+          <td>🔴 과다</td>
+          <td>반드시 정리</td>
+      </tr>
+      <tr>
+          <td>4000+ words</td>
+          <td>💀 위험</td>
+          <td>20-30% 성능 저하 보고됨</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>정리 원칙</strong>:</p>
+<ul>
+<li>빌드/테스트 명령어만 유지</li>
+<li>절대적인 규칙만 남기기</li>
+<li>상세 가이드는 Skills로 분리</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md (권장 예시 - 50줄 이내)
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 빌드 &amp; 테스트
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드: <span class="sb">`./gradlew build`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트: <span class="sb">`./gradlew test`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 린트: <span class="sb">`./gradlew ktlintCheck`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 핵심 규칙
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 결제 금액: BigDecimal 필수 (Double 금지)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> API 응답: CommonResponse&lt;T&gt; 래퍼 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 로깅: SLF4J + 구조화된 로깅
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 브랜치 전략
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> feature/* → develop → main
+</span></span></code></pre></div><h4 id="22-mcp-서버-정리">2.2 MCP 서버 정리<a href="#22-mcp-서버-정리" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>MCP(Model Context Protocol) 서버의 도구 정의는 <strong>40-55K 토큰</strong>을 소비할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 활성화된 MCP 서버 확인</span>
+</span></span><span class="line"><span class="cl">/mcp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 사용하지 않는 서버 비활성화</span>
+</span></span><span class="line"><span class="cl">/mcp disable postgres
+</span></span><span class="line"><span class="cl">/mcp disable slack
+</span></span></code></pre></div><h4 id="23-mcp-tool-search-활성화-v217">2.3 MCP Tool Search 활성화 (v2.1.7+)<a href="#23-mcp-tool-search-활성화-v217" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>모든 MCP 도구를 미리 로드하는 대신, 필요할 때만 로드하도록 설정합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// .claude/settings.json
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpToolSearch&#34;</span><span class="p">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><strong>효과</strong>: MCP 오버헤드 <strong>55K → 8.7K 토큰</strong> (85% 감소)</p>
+<hr>
+<h3 id="-level-3-워크플로우-개선-30분">🟠 Level 3: 워크플로우 개선 (30분)<a href="#-level-3-워크플로우-개선-30분" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="31-선제적-수동-compact">3.1 선제적 수동 Compact<a href="#31-선제적-수동-compact" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Auto-compact를 기다리지 마세요. <strong>70%에 도달하기 전</strong>, 논리적 구간에서 직접 compact하세요.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 기능 구현 완료 후</span>
+</span></span><span class="line"><span class="cl">/compact 수정한 파일 목록과 현재 TODO만 유지해줘
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 디버깅 완료 후</span>
+</span></span><span class="line"><span class="cl">/compact 해결한 버그와 적용한 수정사항만 유지해줘
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 일반적인 정리</span>
+</span></span><span class="line"><span class="cl">/compact 핵심 결정사항과 다음 작업만 유지해줘
+</span></span></code></pre></div><p><strong>권장 주기</strong>:</p>
+<ul>
+<li>60-90분마다, 또는</li>
+<li>25-30개 메시지마다, 또는</li>
+<li>각 기능/버그 완료 시점</li>
+</ul>
+<h4 id="32-compaction-규칙을-claudemd에-명시">3.2 Compaction 규칙을 CLAUDE.md에 명시<a href="#32-compaction-규칙을-claudemd에-명시" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Compaction 규칙
+</span></span></span><span class="line"><span class="cl">When compacting, always preserve:
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 수정한 파일 전체 목록
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 현재 진행 중인 작업과 TODO
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 중요한 기술적 결정사항
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트 실행 명령어
+</span></span></code></pre></div><h4 id="33-단계별-요청으로-context-효율화">3.3 단계별 요청으로 Context 효율화<a href="#33-단계별-요청으로-context-효율화" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>한 번에 큰 작업을 요청하면 Claude가 많은 파일을 읽게 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># ❌ 비효율적</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;이 PR 전체 리뷰해줘&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ✅ 효율적 (단계별)</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;이 PR의 변경된 파일 목록만 보여줘&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># → 결과 확인 후</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;그 중에서 PaymentService.kt만 자세히 봐줘&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># → 리뷰 후</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;다음으로 PaymentRepositoryTest.kt 봐줘&#34;</span>
+</span></span></code></pre></div><hr>
+<h3 id="-level-4-고급-아키텍처-1시간">🔴 Level 4: 고급 아키텍처 (1시간+)<a href="#-level-4-고급-아키텍처-1시간" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="41-subagent로-탐색-작업-위임">4.1 Subagent로 탐색 작업 위임<a href="#41-subagent로-탐색-작업-위임" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Subagent는 <strong>별도의 Context Window</strong>를 사용합니다. 대규모 탐색 작업을 위임하면 메인 Context가 오염되지 않습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 메인 Context를 사용하지 않고 탐색</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;Explore subagent를 사용해서 결제 관련 코드를 모두 찾아줘&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 결과만 메인 Context로 전달됨</span>
+</span></span></code></pre></div><pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Subagent 아키텍처                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐         ┌─────────────────┐              │
+│  │   Main Claude   │         │ Explore Subagent│              │
+│  │   (작업 수행)    │ ──────▶ │  (탐색 전담)     │              │
+│  │                 │         │                 │              │
+│  │  Context: 40%   │         │  Context: 80%   │              │
+│  │  (깨끗하게 유지) │ ◀────── │  (요약만 반환)   │              │
+│  └─────────────────┘         └─────────────────┘              │
+│                                                                 │
+│  장점: 메인 Context 오염 방지                                    │
+│  적합: 코드베이스 분석, 패턴 검색, 영향 범위 파악                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre><h4 id="42-phase-기반-세션-분리">4.2 Phase 기반 세션 분리<a href="#42-phase-기반-세션-분리" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>복잡한 작업은 여러 세션으로 나누어 진행합니다.</p>
+<pre tabindex="0"><code>Phase 1: 분석 (Session 1)
+├── 요구사항 파악
+├── 영향 받는 코드 탐색
+├── 설계 결정
+└── 📝 progress.md에 요약 저장 → /quit
+
+Phase 2: 구현 (Session 2)
+├── progress.md 읽고 시작
+├── 코드 작성
+├── 커밋
+└── 📝 progress.md 업데이트 → /quit
+
+Phase 3: 테스트 &amp; 리뷰 (Session 3)
+├── progress.md 읽고 시작
+├── 테스트 작성
+├── 셀프 리뷰
+└── PR 생성
+</code></pre><h4 id="43-외부-상태-파일-활용">4.3 외부 상태 파일 활용<a href="#43-외부-상태-파일-활용" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Context 외부에 진행 상황을 저장하면, 새 세션에서도 이어서 작업할 수 있습니다.</p>
+<p><strong>.claude/progress.md</strong> (Claude가 직접 관리):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># 현재 작업: 결제 시스템 리팩토링
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 완료된 작업
+</span></span></span><span class="line"><span class="cl"><span class="k">- [x]</span> PaymentService 인터페이스 분리
+</span></span><span class="line"><span class="cl"><span class="k">- [x]</span> CardPaymentProcessor 구현
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 진행 중
+</span></span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> BankTransferProcessor 구현
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 테스트 코드 작성
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 수정한 파일
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> src/payment/PaymentService.kt
+</span></span><span class="line"><span class="cl"><span class="k">-</span> src/payment/CardPaymentProcessor.kt
+</span></span><span class="line"><span class="cl"><span class="k">-</span> src/payment/PaymentProcessor.kt (신규)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 기술적 결정
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> Circuit Breaker: Resilience4j 사용
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 타임아웃: 외부 API 호출 5초
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 새 세션에서 이어서 작업</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;@.claude/progress.md 읽고 BankTransferProcessor 구현 이어서 해줘&#34;</span>
+</span></span></code></pre></div><h4 id="44-git-기반-context-복원">4.4 Git 기반 Context 복원<a href="#44-git-기반-context-복원" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Git 히스토리를 활용하면 별도 파일 없이도 맥락을 복원할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 세션 종료 전: 진행 상황 커밋</span>
+</span></span><span class="line"><span class="cl">git add -A <span class="o">&amp;&amp;</span> git commit -m <span class="s2">&#34;WIP: Payment 리팩토링 - CardProcessor 완료&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 새 세션 시작 시</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;git log --oneline -5와 git diff HEAD~1 확인하고,
+</span></span></span><span class="line"><span class="cl"><span class="s2"> 마지막 작업 이어서 진행해줘&#34;</span>
+</span></span></code></pre></div><hr>
+<h2 id="즉시-적용-체크리스트">즉시 적용 체크리스트<a href="#즉시-적용-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>오늘 바로 적용할 수 있는 액션 아이템입니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 1. 현재 상태 확인</span>
+</span></span><span class="line"><span class="cl">/context
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. CLAUDE.md 크기 확인 (4000 words 이하로 유지)</span>
+</span></span><span class="line"><span class="cl">cat ~/.claude/CLAUDE.md ./CLAUDE.md ./.claude/CLAUDE.md 2&gt;/dev/null <span class="p">|</span> wc -w
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. MCP 서버 확인 및 정리</span>
+</span></span><span class="line"><span class="cl">/mcp
+</span></span><span class="line"><span class="cl">/mcp disable &lt;사용하지않는서버&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. Tool Search 활성화 확인</span>
+</span></span><span class="line"><span class="cl">cat .claude/settings.json <span class="p">|</span> grep mcpToolSearch
+</span></span></code></pre></div><h2 id="핵심-정리">핵심 정리<a href="#핵심-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>전략</th>
+          <th>효과</th>
+          <th>적용 난이도</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>작업 단위 <code>/clear</code></td>
+          <td>⭐⭐⭐⭐⭐</td>
+          <td>🟢 쉬움</td>
+      </tr>
+      <tr>
+          <td>70%에서 선제적 <code>/compact</code></td>
+          <td>⭐⭐⭐⭐⭐</td>
+          <td>🟢 쉬움</td>
+      </tr>
+      <tr>
+          <td>CLAUDE.md 다이어트</td>
+          <td>⭐⭐⭐⭐</td>
+          <td>🟡 보통</td>
+      </tr>
+      <tr>
+          <td>MCP 서버 정리</td>
+          <td>⭐⭐⭐⭐</td>
+          <td>🟡 보통</td>
+      </tr>
+      <tr>
+          <td>Subagent 활용</td>
+          <td>⭐⭐⭐⭐⭐</td>
+          <td>🔴 어려움</td>
+      </tr>
+      <tr>
+          <td>Phase 기반 세션 분리</td>
+          <td>⭐⭐⭐⭐</td>
+          <td>🔴 어려움</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>가장 효과적인 조합</strong>:</p>
+<ol>
+<li>작업 완료마다 <code>/clear</code></li>
+<li>70%에서 선제적 <code>/compact</code></li>
+<li>CLAUDE.md 4000 words 이하 유지</li>
+<li>사용하지 않는 MCP 비활성화</li>
+</ol>
+<p>이 네 가지만 적용해도 Compaction 빈도를 <strong>절반 이하로</strong> 줄일 수 있습니다.</p>
+<hr>
+<h2 id="참고-자료">참고 자료<a href="#참고-자료" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/best-practices">Claude Code Best Practices</a> - 공식 문서</li>
+<li><a href="https://platform.claude.com/docs/en/build-with-claude/context-editing">Context Editing API</a> - API 레벨 컨텍스트 관리</li>
+<li><a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md">Claude Code Changelog</a> - 버전별 변경사항</li>
+</ul>
+<hr>
+<p><em>이 글은 Claude Code 2.1.x 버전 기준으로 작성되었습니다. 버전에 따라 일부 기능이나 설정이 다를 수 있습니다.</em></p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260202-bass-comparison-4-vs-5-strings/" class="button inline next">
+         [<span class="button__text">일렉트릭 베이스 4현과 5현의 구조적, 음향학적, 연주적 특성 비교</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
