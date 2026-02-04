@@ -202,21 +202,18 @@
 <h2 id="compaction이란">Compaction이란?<a href="#compaction이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>Claude Code는 대화 내용, 읽은 파일, 명령어 출력 등을 <strong>Context Window</strong>라는 제한된 공간에 저장합니다. 이 공간이 가득 차면 Claude는 더 이상 새로운 정보를 처리할 수 없게 됩니다.</p>
 <p><strong>Compaction</strong>은 이 문제를 해결하기 위해 기존 대화를 요약하고 압축하는 과정입니다. Auto-compact는 보통 Context Window의 75-95% 지점에서 자동으로 트리거됩니다.</p>
-<pre tabindex="0"><code>┌─────────────────────────────────────────────────────────────────┐
-│                    Context Window 생명주기                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  [시작] ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0%              │
-│         ↓ 대화, 파일 읽기, 명령어 실행                          │
-│  [작업] ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 40%             │
-│         ↓ 계속 작업                                             │
-│  [경고] █████████████████████░░░░░░░░░░░░░░░░░ 70% ⚠️ 최적 compact 시점 │
-│         ↓ 계속 작업                                             │
-│  [위험] ██████████████████████████████████░░░░ 90% 🔴 성능 저하 시작 │
-│         ↓ Auto-compact 트리거                                   │
-│  [압축] ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 40% (요약 후)    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;🟢 시작 (0%)&#34;] --&gt;|&#34;대화, 파일 읽기, 명령어 실행&#34;| B[&#34;🔵 작업 (40%)&#34;]
+    B --&gt;|&#34;계속 작업&#34;| C[&#34;🟡 경고 (70%)&lt;br/&gt;⚠️ 최적 compact 시점&#34;]
+    C --&gt;|&#34;계속 작업&#34;| D[&#34;🔴 위험 (90%)&lt;br/&gt;성능 저하 시작&#34;]
+    D --&gt;|&#34;Auto-compact 트리거&#34;| E[&#34;🟢 압축 완료 (40%)&lt;br/&gt;요약 후&#34;]
+    E --&gt;|&#34;작업 재개&#34;| B
+
+    style A fill:#90EE90,color:#000000
+    style B fill:#87CEEB,color:#000000
+    style C fill:#FFD700,color:#000000
+    style D fill:#FF6B6B,color:#000000
+    style E fill:#90EE90,color:#000000
 </code></pre><h3 id="compaction의-문제점">Compaction의 문제점<a href="#compaction의-문제점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Compaction 자체는 필요한 기능이지만, 몇 가지 문제가 있습니다:</p>
 <ol>
