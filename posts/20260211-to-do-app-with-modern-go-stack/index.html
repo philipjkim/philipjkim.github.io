@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>GoTHIC 스택으로 JavaScript 없이 모던 웹앱 만들기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Go 백엔드 개발자가 프론트엔드 프레임워크 없이도 인터랙티브한 웹 애플리케이션을 만들 수 있다면 어떨까요? 이 글에서는 **GoTHIC 스택**으로 JavaScript 로직을 최소화한 To-Do 앱을 처음부터 끝까지 만들어봅니다. 핫 리로드까지 `air`로 세팅하면 개발 경험도 꽤 쾌적합니다." />
+<meta name="keywords" content="golang, programming, dev" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260211-to-do-app-with-modern-go-stack/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="GoTHIC 스택으로 JavaScript 없이 모던 웹앱 만들기">
+<meta property="og:description" content="Go 백엔드 개발자가 프론트엔드 프레임워크 없이도 인터랙티브한 웹 애플리케이션을 만들 수 있다면 어떨까요? 이 글에서는 **GoTHIC 스택**으로 JavaScript 로직을 최소화한 To-Do 앱을 처음부터 끝까지 만들어봅니다. 핫 리로드까지 `air`로 세팅하면 개발 경험도 꽤 쾌적합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260211-to-do-app-with-modern-go-stack/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-02-11 09:31:05 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260211-to-do-app-with-modern-go-stack/">GoTHIC 스택으로 JavaScript 없이 모던 웹앱 만들기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-02-11</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<p>Go 백엔드 개발자가 프론트엔드 프레임워크 없이도 인터랙티브한 웹 애플리케이션을 만들 수 있다면 어떨까요? 이 글에서는 <strong>GoTHIC 스택</strong>으로 JavaScript 로직을 최소화한 To-Do 앱을 처음부터 끝까지 만들어봅니다. 핫 리로드까지 <code>air</code>로 세팅하면 개발 경험도 꽤 쾌적합니다.</p>
+<hr>
+<h2 id="gothic-스택이란">GoTHIC 스택이란<a href="#gothic-스택이란" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>GoTHIC</strong>은 <strong>Go</strong>(+Gin) + <strong>T</strong>(empl) + <strong>H</strong>(TMX) + <strong>I</strong>nteractive <strong>C</strong>omponents(Alpine.js + TailwindCSS + DaisyUI)의 축약어입니다. GoTH(Go + Templ + HTMX) 스택을 확장하여 클라이언트 인터랙션과 스타일링까지 아우르는 풀스택 조합입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>기술</th>
+          <th>GoTHIC에서의 역할</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Go + Gin</strong></td>
+          <td><strong>Go</strong> — 웹 프레임워크. 라우팅, 미들웨어 등</td>
+      </tr>
+      <tr>
+          <td><strong>Templ</strong></td>
+          <td><strong>T</strong> — Go 타입 안전 HTML 템플릿 엔진</td>
+      </tr>
+      <tr>
+          <td><strong>HTMX</strong></td>
+          <td><strong>H</strong> — HTML 속성만으로 AJAX 요청, DOM 교체</td>
+      </tr>
+      <tr>
+          <td><strong>Alpine.js</strong></td>
+          <td><strong>IC</strong> — 최소한의 클라이언트 상태 관리 (토글, 모달 등)</td>
+      </tr>
+      <tr>
+          <td><strong>TailwindCSS + DaisyUI</strong></td>
+          <td><strong>IC</strong> — 유틸리티 퍼스트 CSS + UI 컴포넌트</td>
+      </tr>
+      <tr>
+          <td><strong>air</strong></td>
+          <td>개발 편의 — Go 핫 리로드 도구</td>
+      </tr>
+  </tbody>
+</table>
+<p>React, Vue, Svelte 같은 SPA 프레임워크는 강력하지만, 모든 프로젝트에 필요한 건 아닙니다. 특히 Go 백엔드 개발자 입장에서 프론트엔드 빌드 파이프라인을 별도로 관리하는 건 부담이 될 수 있습니다.</p>
+<p>GoTHIC의 핵심 아이디어는 <strong>서버가 HTML을 렌더링하고, 브라우저는 그걸 잘 보여주는 것</strong>입니다. HTMX가 서버와의 통신을 담당하고, Alpine.js가 순수 클라이언트 사이드 인터랙션(모달 열기/닫기, 드롭다운 토글 등)을 처리합니다. 둘의 역할이 명확히 나뉘기 때문에 JavaScript를 직접 작성할 일이 거의 없습니다.</p>
+<h2 id="프로젝트-초기-세팅">프로젝트 초기 세팅<a href="#프로젝트-초기-세팅" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="디렉토리-구조">디렉토리 구조<a href="#디렉토리-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>todo-app/
+├── cmd/
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── handler/
+│   │   └── todo.go
+│   ├── model/
+│   │   └── todo.go
+│   └── store/
+│       └── memory.go
+├── templates/
+│   ├── layout.templ
+│   ├── index.templ
+│   └── components/
+│       ├── todo_item.templ
+│       ├── todo_list.templ
+│       └── todo_form.templ
+├── static/
+│   └── css/
+│       └── output.css
+├── .air.toml
+├── tailwind.config.js
+├── package.json
+├── go.mod
+└── go.sum
+</code></pre><h3 id="go-모듈-초기화-및-의존성-설치">Go 모듈 초기화 및 의존성 설치<a href="#go-모듈-초기화-및-의존성-설치" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir todo-app <span class="o">&amp;&amp;</span> <span class="nb">cd</span> todo-app
+</span></span><span class="line"><span class="cl">go mod init github.com/yourname/todo-app
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Go 의존성</span>
+</span></span><span class="line"><span class="cl">go get github.com/gin-gonic/gin
+</span></span><span class="line"><span class="cl">go get github.com/a-h/templ
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Templ CLI 설치</span>
+</span></span><span class="line"><span class="cl">go install github.com/a-h/templ/cmd/templ@latest
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># air 설치</span>
+</span></span><span class="line"><span class="cl">go install github.com/air-verse/air@latest
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Node 의존성 (TailwindCSS + DaisyUI)</span>
+</span></span><span class="line"><span class="cl">npm init -y
+</span></span><span class="line"><span class="cl">npm install -D tailwindcss @tailwindcss/cli daisyui
+</span></span></code></pre></div><h3 id="tailwindcss--daisyui-설정">TailwindCSS + DaisyUI 설정<a href="#tailwindcss--daisyui-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>tailwind.config.js</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="cm">/** @type {import(&#39;tailwindcss&#39;).Config} */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">content</span><span class="o">:</span> <span class="p">[</span><span class="s2">&#34;./templates/**/*.templ&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">theme</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">extend</span><span class="o">:</span> <span class="p">{},</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;daisyui&#34;</span><span class="p">)],</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">daisyui</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">themes</span><span class="o">:</span> <span class="p">[</span><span class="s2">&#34;light&#34;</span><span class="p">,</span> <span class="s2">&#34;dark&#34;</span><span class="p">,</span> <span class="s2">&#34;cupcake&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>static/css/input.css</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="p">@</span><span class="k">tailwind</span> <span class="nt">base</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">@</span><span class="k">tailwind</span> <span class="nt">components</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">@</span><span class="k">tailwind</span> <span class="nt">utilities</span><span class="p">;</span>
+</span></span></code></pre></div><p>TailwindCSS 빌드 명령:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/output.css --watch
+</span></span></code></pre></div><blockquote>
+<p>개발 시 <code>--watch</code> 플래그로 실행해두면 <code>.templ</code> 파일 변경 시 CSS가 자동으로 재빌드됩니다.</p>
+</blockquote>
+<h3 id="air-설정">air 설정<a href="#air-설정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>.air.toml</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="nx">root</span> <span class="p">=</span> <span class="s2">&#34;.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">tmp_dir</span> <span class="p">=</span> <span class="s2">&#34;tmp&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">build</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># templ generate 후 go build</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">cmd</span> <span class="p">=</span> <span class="s2">&#34;templ generate &amp;&amp; go build -o ./tmp/main ./cmd/server&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">bin</span> <span class="p">=</span> <span class="s2">&#34;./tmp/main&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">delay</span> <span class="p">=</span> <span class="mi">1000</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">exclude_dir</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;assets&#34;</span><span class="p">,</span> <span class="s2">&#34;tmp&#34;</span><span class="p">,</span> <span class="s2">&#34;vendor&#34;</span><span class="p">,</span> <span class="s2">&#34;node_modules&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">exclude_regex</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;_test.go&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">exclude_unchanged</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">follow_symlink</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">include_ext</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;go&#34;</span><span class="p">,</span> <span class="s2">&#34;templ&#34;</span><span class="p">,</span> <span class="s2">&#34;html&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">kill_delay</span> <span class="p">=</span> <span class="s2">&#34;0s&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">log</span> <span class="p">=</span> <span class="s2">&#34;build-errors.log&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">send_interrupt</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">stop_on_error</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">log</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">time</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">misc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">clean_on_exit</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span></code></pre></div><p>이제 <code>air</code> 명령 하나로 <code>.go</code>와 <code>.templ</code> 파일 변경을 감지하여 자동으로 templ 코드 생성 → Go 빌드 → 서버 재시작이 이루어집니다.</p>
+<h2 id="모델과-인메모리-스토어">모델과 인메모리 스토어<a href="#모델과-인메모리-스토어" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="모델-정의">모델 정의<a href="#모델-정의" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>internal/model/todo.go</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">model</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;time&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Todo</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ID</span><span class="w">        </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:&#34;id&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Title</span><span class="w">     </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:&#34;title&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Completed</span><span class="w"> </span><span class="kt">bool</span><span class="w">      </span><span class="s">`json:&#34;completed&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">CreatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`json:&#34;created_at&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="인메모리-스토어">인메모리 스토어<a href="#인메모리-스토어" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>internal/store/memory.go</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">store</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;fmt&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;sync&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;time&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/internal/model&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">TodoStore</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">mu</span><span class="w">     </span><span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todos</span><span class="w">  </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">nextID</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewTodoStore</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoStore</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">TodoStore</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">todos</span><span class="p">:</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoStore</span><span class="p">)</span><span class="w"> </span><span class="nf">Create</span><span class="p">(</span><span class="nx">title</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">nextID</span><span class="o">++</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todo</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">ID</span><span class="p">:</span><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;todo-%d&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">nextID</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">Title</span><span class="p">:</span><span class="w">     </span><span class="nx">title</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">Completed</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">CreatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">[</span><span class="nx">todo</span><span class="p">.</span><span class="nx">ID</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">todo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">todo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoStore</span><span class="p">)</span><span class="w"> </span><span class="nf">GetAll</span><span class="p">()</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todos</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">todos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">todos</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">todos</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoStore</span><span class="p">)</span><span class="w"> </span><span class="nf">Toggle</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todo</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;todo not found: %s&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todo</span><span class="p">.</span><span class="nx">Completed</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">Completed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">todo</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoStore</span><span class="p">)</span><span class="w"> </span><span class="nf">Delete</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;todo not found: %s&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nb">delete</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoStore</span><span class="p">)</span><span class="w"> </span><span class="nf">Update</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">defer</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todo</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;todo not found: %s&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todo</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">title</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">todo</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>sync.RWMutex</code>로 동시성을 처리합니다. 프로덕션에서는 당연히 실제 DB를 쓰겠지만, 이 예제에서는 스택 자체에 집중하기 위해 인메모리로 충분합니다.</p>
+<h2 id="templ-템플릿-작성">Templ 템플릿 작성<a href="#templ-템플릿-작성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Templ은 Go의 타입 시스템을 활용하는 템플릿 엔진입니다. <code>.templ</code> 파일을 작성하면 <code>templ generate</code> 명령으로 Go 코드가 생성됩니다. 컴파일 타임에 타입 체크가 되기 때문에 런타임 에러를 크게 줄일 수 있습니다.</p>
+<h3 id="레이아웃">레이아웃<a href="#레이아웃" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>templates/layout.templ</code>:</p>
+<pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
+
+templ Layout(title string) {
+	&lt;!DOCTYPE html&gt;
+	&lt;html lang=&#34;ko&#34; data-theme=&#34;cupcake&#34;&gt;
+	&lt;head&gt;
+		&lt;meta charset=&#34;UTF-8&#34;/&gt;
+		&lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;/&gt;
+		&lt;title&gt;{ title }&lt;/title&gt;
+		&lt;link href=&#34;/static/css/output.css&#34; rel=&#34;stylesheet&#34;/&gt;
+		&lt;!-- HTMX --&gt;
+		&lt;script src=&#34;https://unpkg.com/htmx.org@2.0.4&#34;&gt;&lt;/script&gt;
+		&lt;!-- Alpine.js --&gt;
+		&lt;script defer src=&#34;https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js&#34;&gt;&lt;/script&gt;
+	&lt;/head&gt;
+	&lt;body class=&#34;min-h-screen bg-base-200&#34;&gt;
+		&lt;div class=&#34;container mx-auto max-w-2xl px-4 py-8&#34;&gt;
+			{ children... }
+		&lt;/div&gt;
+	&lt;/body&gt;
+	&lt;/html&gt;
+}
+</code></pre><p>DaisyUI의 <code>data-theme</code> 속성으로 테마를 간단하게 전환할 수 있습니다. CDN으로 HTMX와 Alpine.js를 로드했는데, 프로덕션에서는 로컬 번들링을 권장합니다.</p>
+<h3 id="메인-페이지">메인 페이지<a href="#메인-페이지" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>templates/index.templ</code>:</p>
+<pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
+
+import &#34;github.com/yourname/todo-app/internal/model&#34;
+
+templ Index(todos []*model.Todo) {
+	@Layout(&#34;To-Do App&#34;) {
+		&lt;div class=&#34;flex flex-col gap-6&#34;&gt;
+			&lt;!-- 헤더: Alpine.js 테마 토글 --&gt;
+			@ThemeToggleHeader()
+
+			&lt;!-- 할일 입력 폼 --&gt;
+			@TodoForm()
+
+			&lt;!-- 할일 목록 --&gt;
+			&lt;div id=&#34;todo-list&#34;&gt;
+				@TodoList(todos)
+			&lt;/div&gt;
+		&lt;/div&gt;
+	}
+}
+</code></pre><h3 id="alpinejs-테마-토글-클라이언트-전용-인터랙션">Alpine.js 테마 토글 (클라이언트 전용 인터랙션)<a href="#alpinejs-테마-토글-클라이언트-전용-인터랙션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>templates/components/todo_form.templ</code>:</p>
+<pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
+
+// ThemeToggleHeader - Alpine.js가 빛나는 순간입니다.
+// 서버 왕복 없이 클라이언트에서 즉시 반응해야 하는 UI에 Alpine.js를 씁니다.
+templ ThemeToggleHeader() {
+	&lt;div class=&#34;navbar bg-base-100 rounded-box shadow-md&#34;
+		x-data=&#34;{ 
+			theme: localStorage.getItem(&#39;theme&#39;) || &#39;cupcake&#39;,
+			themes: [&#39;cupcake&#39;, &#39;light&#39;, &#39;dark&#39;],
+			setTheme(t) {
+				this.theme = t;
+				document.documentElement.setAttribute(&#39;data-theme&#39;, t);
+				localStorage.setItem(&#39;theme&#39;, t);
+			}
+		}&#34;
+		x-init=&#34;setTheme(theme)&#34;
+	&gt;
+		&lt;div class=&#34;flex-1&#34;&gt;
+			&lt;span class=&#34;text-xl font-bold px-4&#34;&gt;📝 To-Do App&lt;/span&gt;
+		&lt;/div&gt;
+		&lt;div class=&#34;flex-none&#34;&gt;
+			&lt;div class=&#34;dropdown dropdown-end&#34;&gt;
+				&lt;div tabindex=&#34;0&#34; role=&#34;button&#34; class=&#34;btn btn-ghost btn-sm gap-1&#34;&gt;
+					🎨 테마
+					&lt;svg class=&#34;w-3 h-3&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+						&lt;path stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34; stroke-width=&#34;2&#34; d=&#34;M19 9l-7 7-7-7&#34;&gt;&lt;/path&gt;
+					&lt;/svg&gt;
+				&lt;/div&gt;
+				&lt;ul tabindex=&#34;0&#34; class=&#34;dropdown-content z-10 menu p-2 shadow-lg bg-base-100 rounded-box w-40&#34;&gt;
+					&lt;template x-for=&#34;t in themes&#34; :key=&#34;t&#34;&gt;
+						&lt;li&gt;
+							&lt;button
+								x-text=&#34;t&#34;
+								@click=&#34;setTheme(t)&#34;
+								:class=&#34;{ &#39;active&#39;: theme === t }&#34;
+								class=&#34;capitalize&#34;
+							&gt;&lt;/button&gt;
+						&lt;/li&gt;
+					&lt;/template&gt;
+				&lt;/ul&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+}
+
+// TodoForm - HTMX로 서버에 할일 추가 요청
+templ TodoForm() {
+	&lt;div class=&#34;card bg-base-100 shadow-md&#34;&gt;
+		&lt;div class=&#34;card-body p-4&#34;&gt;
+			&lt;form
+				hx-post=&#34;/todos&#34;
+				hx-target=&#34;#todo-list&#34;
+				hx-swap=&#34;innerHTML&#34;
+				hx-on::after-request=&#34;this.reset()&#34;
+				class=&#34;flex gap-2&#34;
+			&gt;
+				&lt;input
+					type=&#34;text&#34;
+					name=&#34;title&#34;
+					placeholder=&#34;할 일을 입력하세요...&#34;
+					required
+					class=&#34;input input-bordered flex-1&#34;
+					autocomplete=&#34;off&#34;
+				/&gt;
+				&lt;button type=&#34;submit&#34; class=&#34;btn btn-primary&#34;&gt;추가&lt;/button&gt;
+			&lt;/form&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+}
+</code></pre><p>여기서 HTMX와 Alpine.js의 역할 분리가 명확하게 드러납니다.</p>
+<ul>
+<li><strong>테마 토글</strong>: 순수 클라이언트 로직이므로 Alpine.js가 담당합니다. 서버에 요청할 이유가 없습니다.</li>
+<li><strong>할일 추가 폼</strong>: 서버에 데이터를 보내고 응답 HTML로 목록을 교체해야 하므로 HTMX가 담당합니다.</li>
+</ul>
+<h3 id="할일-목록-및-아이템">할일 목록 및 아이템<a href="#할일-목록-및-아이템" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>templates/components/todo_list.templ</code>:</p>
+<pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
+
+import &#34;github.com/yourname/todo-app/internal/model&#34;
+import &#34;fmt&#34;
+
+templ TodoList(todos []*model.Todo) {
+	if len(todos) == 0 {
+		&lt;div class=&#34;card bg-base-100 shadow-md&#34;&gt;
+			&lt;div class=&#34;card-body items-center text-center py-12&#34;&gt;
+				&lt;p class=&#34;text-base-content/50 text-lg&#34;&gt;아직 할 일이 없어요. 위에서 추가해보세요!&lt;/p&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	} else {
+		&lt;div class=&#34;card bg-base-100 shadow-md&#34;&gt;
+			&lt;div class=&#34;card-body p-4&#34;&gt;
+				&lt;div class=&#34;flex flex-col divide-y divide-base-200&#34;&gt;
+					for _, todo := range todos {
+						@TodoItem(todo)
+					}
+				&lt;/div&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	}
+}
+
+// TodoItem - Alpine.js 인라인 편집 + HTMX 서버 동기화
+templ TodoItem(todo *model.Todo) {
+	&lt;div
+		id={ fmt.Sprintf(&#34;todo-%s&#34;, todo.ID) }
+		class=&#34;flex items-center gap-3 py-3 group&#34;
+		x-data=&#34;{ editing: false }&#34;
+	&gt;
+		&lt;!-- 완료 토글: HTMX --&gt;
+		&lt;input
+			type=&#34;checkbox&#34;
+			class=&#34;checkbox checkbox-primary&#34;
+			if todo.Completed {
+				checked
+			}
+			hx-patch={ fmt.Sprintf(&#34;/todos/%s/toggle&#34;, todo.ID) }
+			hx-target=&#34;#todo-list&#34;
+			hx-swap=&#34;innerHTML&#34;
+		/&gt;
+
+		&lt;!-- 보기 모드 --&gt;
+		&lt;span
+			x-show=&#34;!editing&#34;
+			@dblclick=&#34;editing = true&#34;
+			class={ &#34;flex-1 cursor-pointer select-none&#34;, templ.KV(&#34;line-through opacity-50&#34;, todo.Completed) }
+		&gt;
+			{ todo.Title }
+		&lt;/span&gt;
+
+		&lt;!-- 편집 모드: Alpine.js 토글 + HTMX 저장 --&gt;
+		&lt;form
+			x-show=&#34;editing&#34;
+			x-cloak
+			hx-put={ fmt.Sprintf(&#34;/todos/%s&#34;, todo.ID) }
+			hx-target=&#34;#todo-list&#34;
+			hx-swap=&#34;innerHTML&#34;
+			@htmx:after-request.window=&#34;editing = false&#34;
+			class=&#34;flex-1 flex gap-2&#34;
+		&gt;
+			&lt;input
+				type=&#34;text&#34;
+				name=&#34;title&#34;
+				value={ todo.Title }
+				class=&#34;input input-bordered input-sm flex-1&#34;
+				x-ref=&#34;editInput&#34;
+				@keydown.escape=&#34;editing = false&#34;
+			/&gt;
+			&lt;button type=&#34;submit&#34; class=&#34;btn btn-sm btn-success&#34;&gt;저장&lt;/button&gt;
+			&lt;button type=&#34;button&#34; @click=&#34;editing = false&#34; class=&#34;btn btn-sm btn-ghost&#34;&gt;취소&lt;/button&gt;
+		&lt;/form&gt;
+
+		&lt;!-- 삭제 버튼: HTMX --&gt;
+		&lt;button
+			x-show=&#34;!editing&#34;
+			hx-delete={ fmt.Sprintf(&#34;/todos/%s&#34;, todo.ID) }
+			hx-target=&#34;#todo-list&#34;
+			hx-swap=&#34;innerHTML&#34;
+			hx-confirm=&#34;정말 삭제하시겠어요?&#34;
+			class=&#34;btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 transition-opacity text-error&#34;
+		&gt;
+			✕
+		&lt;/button&gt;
+	&lt;/div&gt;
+}
+</code></pre><p><code>TodoItem</code>이 GoTHIC 스택의 조합을 가장 잘 보여주는 컴포넌트입니다.</p>
+<ul>
+<li><strong>더블클릭으로 인라인 편집 전환</strong>: <code>x-data=&quot;{ editing: false }&quot;</code>와 <code>@dblclick=&quot;editing = true&quot;</code>는 Alpine.js가 처리합니다. UI 상태 토글이므로 서버가 관여할 필요가 없습니다.</li>
+<li><strong>편집 내용 저장</strong>: <code>hx-put</code>으로 서버에 보내고 응답 HTML로 목록을 교체합니다. 서버 통신은 HTMX의 영역입니다.</li>
+<li><strong>체크박스 토글, 삭제</strong>: 마찬가지로 HTMX가 서버와 통신합니다.</li>
+<li><strong>호버 시 삭제 버튼 노출</strong>: <code>group-hover:opacity-100</code>은 순수 CSS(Tailwind)입니다.</li>
+</ul>
+<h2 id="gin-핸들러">Gin 핸들러<a href="#gin-핸들러" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>internal/handler/todo.go</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">handler</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;net/http&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;sort&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/gin-gonic/gin&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/internal/store&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/templates&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">TodoHandler</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">store</span><span class="w"> </span><span class="o">*</span><span class="nx">store</span><span class="p">.</span><span class="nx">TodoStore</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewTodoHandler</span><span class="p">(</span><span class="nx">store</span><span class="w"> </span><span class="o">*</span><span class="nx">store</span><span class="p">.</span><span class="nx">TodoStore</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">TodoHandler</span><span class="p">{</span><span class="nx">store</span><span class="p">:</span><span class="w"> </span><span class="nx">store</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// render는 templ 컴포넌트를 gin.Context에 렌더링하는 헬퍼입니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">component</span><span class="w"> </span><span class="nx">templ</span><span class="p">.</span><span class="nx">Component</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">c</span><span class="p">.</span><span class="nf">Header</span><span class="p">(</span><span class="s">&#34;Content-Type&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;text/html; charset=utf-8&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nf">Render</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="p">.</span><span class="nf">Context</span><span class="p">(),</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">Writer</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nf">String</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusInternalServerError</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;render error: %v&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">Index</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todos</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nf">sortedTodos</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">render</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">templates</span><span class="p">.</span><span class="nf">Index</span><span class="p">(</span><span class="nx">todos</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">Create</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">title</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">PostForm</span><span class="p">(</span><span class="s">&#34;title&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nf">Status</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">h</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">title</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">render</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">templates</span><span class="p">.</span><span class="nf">TodoList</span><span class="p">(</span><span class="nx">h</span><span class="p">.</span><span class="nf">sortedTodos</span><span class="p">()))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">Toggle</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">Param</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nf">Toggle</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nf">Status</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">render</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">templates</span><span class="p">.</span><span class="nf">TodoList</span><span class="p">(</span><span class="nx">h</span><span class="p">.</span><span class="nf">sortedTodos</span><span class="p">()))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">Update</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">Param</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">title</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">PostForm</span><span class="p">(</span><span class="s">&#34;title&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nf">Status</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nf">Update</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nf">Status</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">render</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">templates</span><span class="p">.</span><span class="nf">TodoList</span><span class="p">(</span><span class="nx">h</span><span class="p">.</span><span class="nf">sortedTodos</span><span class="p">()))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">Delete</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">Param</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nf">Delete</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="p">.</span><span class="nf">Status</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusNotFound</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">render</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">templates</span><span class="p">.</span><span class="nf">TodoList</span><span class="p">(</span><span class="nx">h</span><span class="p">.</span><span class="nf">sortedTodos</span><span class="p">()))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">TodoHandler</span><span class="p">)</span><span class="w"> </span><span class="nf">sortedTodos</span><span class="p">()</span><span class="w"> </span><span class="p">[]</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todos</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">h</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nf">GetAll</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">todos</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">todos</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">CreatedAt</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">todos</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">CreatedAt</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">todos</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>핸들러 코드를 보면 패턴이 보입니다. <strong>모든 변경 요청의 응답이 전체 목록의 HTML 파셜</strong>입니다. HTMX가 <code>#todo-list</code>를 이 응답으로 교체하기 때문에 클라이언트에서 상태를 관리할 필요가 없습니다. 서버가 곧 진실의 원천(Single Source of Truth)이 되는 셈입니다.</p>
+<blockquote>
+<p>참고로 <code>render</code> 헬퍼에서 import하는 <code>templ</code>은 <code>github.com/a-h/templ</code> 패키지입니다. <code>templ generate</code>로 생성된 코드와 함께 사용됩니다.</p>
+</blockquote>
+<h2 id="메인-서버">메인 서버<a href="#메인-서버" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>cmd/server/main.go</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nx">main</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;log&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/gin-gonic/gin&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/internal/handler&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/internal/store&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nf">Default</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 정적 파일 서빙</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="p">.</span><span class="nf">Static</span><span class="p">(</span><span class="s">&#34;/static&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;./static&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 인메모리 스토어 &amp; 핸들러</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todoStore</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">store</span><span class="p">.</span><span class="nf">NewTodoStore</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">todoHandler</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nf">NewTodoHandler</span><span class="p">(</span><span class="nx">todoStore</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 라우트</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="p">.</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">todoHandler</span><span class="p">.</span><span class="nx">Index</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/todos&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">todoHandler</span><span class="p">.</span><span class="nx">Create</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="p">.</span><span class="nf">PATCH</span><span class="p">(</span><span class="s">&#34;/todos/:id/toggle&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">todoHandler</span><span class="p">.</span><span class="nx">Toggle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="p">.</span><span class="nf">PUT</span><span class="p">(</span><span class="s">&#34;/todos/:id&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">todoHandler</span><span class="p">.</span><span class="nx">Update</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">r</span><span class="p">.</span><span class="nf">DELETE</span><span class="p">(</span><span class="s">&#34;/todos/:id&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">todoHandler</span><span class="p">.</span><span class="nx">Delete</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Server starting on :8080&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="개발-서버-실행">개발 서버 실행<a href="#개발-서버-실행" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>터미널을 두 개 열어서 각각 실행합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 터미널 1: TailwindCSS 빌드 (watch 모드)</span>
+</span></span><span class="line"><span class="cl">npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/output.css --watch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 터미널 2: Go 서버 (air 핫 리로드)</span>
+</span></span><span class="line"><span class="cl">air
+</span></span></code></pre></div><p>브라우저에서 <code>http://localhost:8080</code>에 접속하면 To-Do 앱이 동작합니다. <code>.go</code> 파일이나 <code>.templ</code> 파일을 수정하면 air가 자동으로 재빌드하고, Tailwind 클래스를 변경하면 CSS가 자동으로 재빌드됩니다.</p>
+<h2 id="htmx-vs-alpinejs-언제-무엇을-쓸까">HTMX vs Alpine.js: 언제 무엇을 쓸까<a href="#htmx-vs-alpinejs-언제-무엇을-쓸까" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>GoTHIC 스택에서 가장 중요한 판단은 &ldquo;이 인터랙션을 HTMX로 할까, Alpine.js로 할까&quot;입니다. 기준은 단순합니다.</p>
+<p><strong>HTMX를 쓰는 경우</strong>:</p>
+<ul>
+<li>서버의 데이터가 변경되어야 할 때 (CRUD 작업)</li>
+<li>응답으로 받은 HTML로 DOM을 교체할 때</li>
+<li>폼 제출, 페이지네이션, 무한 스크롤 등</li>
+</ul>
+<p><strong>Alpine.js를 쓰는 경우</strong>:</p>
+<ul>
+<li>순수 클라이언트 UI 상태 관리 (토글, 모달, 드롭다운)</li>
+<li>서버 왕복 없이 즉시 반응해야 할 때</li>
+<li>테마 전환, 폼 유효성 검사, 애니메이션 제어 등</li>
+</ul>
+<p><strong>둘 다 쓰는 경우</strong> (이 예제의 인라인 편집):</p>
+<ul>
+<li>Alpine.js가 편집 모드 전환 (UI 상태)을 관리하고</li>
+<li>HTMX가 수정된 내용을 서버로 전송 (데이터 변경)합니다</li>
+</ul>
+<pre tabindex="0"><code>사용자 액션 → 서버 필요? ─ Yes → HTMX
+                        └ No  → Alpine.js (또는 순수 CSS)
+</code></pre><h2 id="한-걸음-더-makefile로-개발-편의성-높이기">한 걸음 더: Makefile로 개발 편의성 높이기<a href="#한-걸음-더-makefile로-개발-편의성-높이기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>매번 여러 터미널에서 명령어를 실행하는 건 번거롭습니다. <code>Makefile</code>로 정리해봅시다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">dev</span> <span class="n">build</span> <span class="n">css</span> <span class="n">templ</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># 개발 서버 (air + tailwind watch)
+</span></span></span><span class="line"><span class="cl"><span class="nf">dev</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	@echo <span class="s2">&#34;Starting development server...&#34;</span>
+</span></span><span class="line"><span class="cl">	@make -j2 air css-watch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">air</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	air
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">css-watch</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/output.css --watch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># 빌드
+</span></span></span><span class="line"><span class="cl"><span class="nf">build</span><span class="o">:</span> <span class="n">templ</span> <span class="n">css</span>
+</span></span><span class="line"><span class="cl">	go build -o ./bin/server ./cmd/server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">templ</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	templ generate
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">css</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/output.css --minify
+</span></span></code></pre></div><p>이제 <code>make dev</code> 한 번이면 모든 워치 프로세스가 동시에 실행됩니다.</p>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>GoTHIC 스택의 본질은 <strong>서버 사이드 렌더링으로 회귀하되, 현대적 DX를 포기하지 않는 것</strong>입니다.</p>
+<ul>
+<li><strong>Templ</strong>이 타입 안전한 HTML을 생성하고</li>
+<li><strong>HTMX</strong>가 페이지 리로드 없는 인터랙션을 제공하며</li>
+<li><strong>Alpine.js</strong>가 서버 왕복이 불필요한 클라이언트 인터랙션을 처리하고</li>
+<li><strong>TailwindCSS + DaisyUI</strong>가 빠른 스타일링을 가능하게 하고</li>
+<li><strong>air</strong>가 쾌적한 개발 경험을 보장합니다</li>
+</ul>
+<p>JavaScript 번들러도 없고, 프론트엔드 빌드 파이프라인도 단순하며, Go 타입 시스템의 안전망 위에서 개발할 수 있습니다. 풀스택 SPA가 필요하지 않은 프로젝트라면 GoTHIC을 한 번 시도해볼 만합니다.</p>
+<p>모든 소스 코드는 위에서 다룬 파일들을 그대로 구성하면 동작합니다. <code>go mod tidy</code> 잊지 마시고, Happy hacking!</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260210-introduction-to-jambon-beurre/" class="button inline next">
+         [<span class="button__text">파리의 소울 푸드, 잠봉 뵈르(Jambon-Beurre) 소개</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
