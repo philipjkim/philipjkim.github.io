@@ -247,10 +247,9 @@
 ├── templates/
 │   ├── layout.templ
 │   ├── index.templ
-│   └── components/
-│       ├── todo_item.templ
-│       ├── todo_list.templ
-│       └── todo_form.templ
+│   ├── todo_form.templ
+│   ├── todo_item.templ
+│   └── todo_list.templ
 ├── static/
 │   └── css/
 │       └── output.css
@@ -472,7 +471,7 @@ templ Index(todos []*model.Todo) {
 	}
 }
 </code></pre><h3 id="alpinejs-테마-토글-클라이언트-전용-인터랙션">Alpine.js 테마 토글 (클라이언트 전용 인터랙션)<a href="#alpinejs-테마-토글-클라이언트-전용-인터랙션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><code>templates/components/todo_form.templ</code>:</p>
+<p><code>templates/todo_form.templ</code>:</p>
 <pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
 
 // ThemeToggleHeader - Alpine.js가 빛나는 순간입니다.
@@ -548,11 +547,10 @@ templ TodoForm() {
 <li><strong>할일 추가 폼</strong>: 서버에 데이터를 보내고 응답 HTML로 목록을 교체해야 하므로 HTMX가 담당합니다.</li>
 </ul>
 <h3 id="할일-목록-및-아이템">할일 목록 및 아이템<a href="#할일-목록-및-아이템" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p><code>templates/components/todo_list.templ</code>:</p>
+<p><code>templates/todo_list.templ</code>:</p>
 <pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
 
 import &#34;github.com/yourname/todo-app/internal/model&#34;
-import &#34;fmt&#34;
 
 templ TodoList(todos []*model.Todo) {
 	if len(todos) == 0 {
@@ -573,11 +571,15 @@ templ TodoList(todos []*model.Todo) {
 		&lt;/div&gt;
 	}
 }
+</code></pre><p><code>templates/todo_item.templ</code>:</p>
+<pre tabindex="0"><code class="language-templ" data-lang="templ">package templates
+
+import &#34;github.com/yourname/todo-app/internal/model&#34;
 
 // TodoItem - Alpine.js 인라인 편집 + HTMX 서버 동기화
 templ TodoItem(todo *model.Todo) {
 	&lt;div
-		id={ fmt.Sprintf(&#34;todo-%s&#34;, todo.ID) }
+		id={ todo.ID }
 		class=&#34;flex items-center gap-3 py-3 group&#34;
 		x-data=&#34;{ editing: false }&#34;
 	&gt;
@@ -652,7 +654,9 @@ templ TodoItem(todo *model.Todo) {
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;net/http&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;sort&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/a-h/templ&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/gin-gonic/gin&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/internal/model&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/internal/store&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="s">&#34;github.com/yourname/todo-app/templates&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
