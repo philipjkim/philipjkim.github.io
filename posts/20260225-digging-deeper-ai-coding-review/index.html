@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>AI 시대 엔지니어의 심화 전략: 복리 게임, 거울의 한계, 선제적 AI 활용 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="&#34;코드를 읽지 않는 시대, 엔지니어는 무엇을 읽어야 하는가&#34;에서 다룬 핵심 개념들을 심화하여, 엔터프라이즈급 소프트웨어를 다루는 시니어 엔지니어 관점에서 구체적 액션 플랜을 정리합니다." />
+<meta name="keywords" content="AI, LLM, programming, dev, claude" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260225-digging-deeper-ai-coding-review/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="AI 시대 엔지니어의 심화 전략: 복리 게임, 거울의 한계, 선제적 AI 활용">
+<meta property="og:description" content="&#34;코드를 읽지 않는 시대, 엔지니어는 무엇을 읽어야 하는가&#34;에서 다룬 핵심 개념들을 심화하여, 엔터프라이즈급 소프트웨어를 다루는 시니어 엔지니어 관점에서 구체적 액션 플랜을 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260225-digging-deeper-ai-coding-review/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-02-25 13:54:39 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260225-digging-deeper-ai-coding-review/">AI 시대 엔지니어의 심화 전략: 복리 게임, 거울의 한계, 선제적 AI 활용</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-02-25</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <ul>
+<li><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></li>
+<li><strong>이 글의 시작이 된 에세이</strong>: <a href="https://flowkater.io/posts/2026-02-19-code-reading-era/">코드를 읽지 않는 시대, 엔지니어는 무엇을 읽어야 하는가</a></li>
+</ul>
+<hr>
+<h2 id="1-복리-게임-정의-본질-그리고-승리-전략">1. 복리 게임: 정의, 본질, 그리고 승리 전략<a href="#1-복리-게임-정의-본질-그리고-승리-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="복리-게임이란-무엇인가">복리 게임이란 무엇인가<a href="#복리-게임이란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Kent Beck이 제시한 <strong>복리 게임(The Compounding Game)</strong> 은 소프트웨어 개발의 본질을 설명하는 프레임이다. 이를 이해하려면 먼저 그 반대편에 있는 결승선 게임과 대비해야 한다.</p>
+<p><strong>결승선 게임(The Finish Line Game)</strong> 은 명확한 종료 조건이 있는 게임이다. &ldquo;X를 하는 소프트웨어가 필요하다 → X를 구현하면 끝.&rdquo; 일회성 스크립트, PoC, 해커톤 프로젝트가 여기에 해당한다. 가장 빠르게 결승선에 도달하는 사람이 이기고, 결승선을 넘으면 게임이 끝난다. AI 바이브 코딩이 압도적으로 유리한 영역이기도 하다.</p>
+<p><strong>복리 게임</strong>은 끝이 없는 게임이다. 오늘 만든 것이 내일의 자원이 되고, 그 자원 위에 다음 것을 쌓고, 그것이 또 다음의 토대가 된다. 프로덕션 시스템, 장기 운영 서비스, 팀이 계속 개발하는 제품은 전부 복리 게임이다. 핵심 특성은 다음과 같다.</p>
+<ul>
+<li><strong>축적성</strong>: 이전 라운드의 결과가 다음 라운드의 초기 조건이 된다. 좋은 아키텍처 결정은 다음 기능 개발을 빠르게 만들고, 나쁜 결정은 매 라운드마다 비용이 누적된다.</li>
+<li><strong>비선형성</strong>: 초반의 작은 차이가 시간이 지나면서 기하급수적으로 벌어진다. 연 10%의 복리와 연 5%의 복리가 10년 후에 보여주는 격차처럼.</li>
+<li><strong>비가역성의 정도</strong>: 모든 결정이 되돌릴 수 없는 건 아니지만, 되돌리는 비용이 시간에 따라 증가한다. 초기에 잡은 모듈 경계를 1년 뒤에 바꾸는 것과 1주일 뒤에 바꾸는 것의 비용 차이를 생각해보면 된다.</li>
+</ul>
+<p>Kent Beck의 핵심 통찰은 이것이다: <strong>&ldquo;더 나은 agent.md 파일로는 복리 게임을 이길 수 없다.&rdquo;</strong> 결승선 게임의 도구(프롬프트 엔지니어링, 하네스 구축, 에이전트 조율)를 아무리 잘 갈고닦아도, 복리 게임의 본질 — 시스템이 시간에 따라 복잡해지고 진화한다는 사실 — 은 바뀌지 않는다.</p>
+<h3 id="복리-게임-vs-결승선-게임-일상-속-구분법">복리 게임 vs 결승선 게임: 일상 속 구분법<a href="#복리-게임-vs-결승선-게임-일상-속-구분법" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>엔터프라이즈 환경에서는 두 게임이 뒤섞여 있다. 구분의 핵심은 <strong>&ldquo;이것이 끝나면 내가 다시 돌아올 일이 있는가?&rdquo;</strong> 이다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th>게임 유형</th>
+          <th>이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>B2B 쿠폰 API에 새로운 할인 타입 추가</td>
+          <td>복리</td>
+          <td>기존 테이블 구조, 도메인 모델, API 계약에 영향. 다음 할인 타입 추가 난이도가 결정됨</td>
+      </tr>
+      <tr>
+          <td>데이터 마이그레이션 일회성 스크립트</td>
+          <td>결승선</td>
+          <td>한 번 돌리고 끝. 속도가 우선</td>
+      </tr>
+      <tr>
+          <td>50M+ row 테이블 인덱스 최적화</td>
+          <td>복리</td>
+          <td>인덱스 전략이 향후 쿼리 패턴, 테이블 파티셔닝 결정에 영향</td>
+      </tr>
+      <tr>
+          <td>장애 대응용 핫픽스</td>
+          <td>결승선 (단, 주의 필요)</td>
+          <td>당장은 결승선이지만, 핫픽스가 축적되면 복리의 부채가 됨</td>
+      </tr>
+      <tr>
+          <td>K8s 클러스터 설정 변경</td>
+          <td>복리</td>
+          <td>리소스 제한, 네트워크 정책 등이 이후 모든 배포의 기반</td>
+      </tr>
+  </tbody>
+</table>
+<p>위험한 패턴은 <strong>복리 게임을 결승선 게임으로 착각하는 것</strong>이다. AI로 빠르게 기능을 찍어내면서 &ldquo;잘 되고 있다&quot;고 느끼지만, 3개월 뒤 그 위에 무언가를 올리려 할 때 구조가 버티지 못하는 상황. 포스트에서도 언급한 바로 그 경험이다.</p>
+<h3 id="복리-게임에서-승리하기-위한-구체적-액션-플랜">복리 게임에서 승리하기 위한 구체적 액션 플랜<a href="#복리-게임에서-승리하기-위한-구체적-액션-플랜" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="액션-1-features와-futures를-분리해서-관리한다">액션 1: Features와 Futures를 분리해서 관리한다<a href="#액션-1-features와-futures를-분리해서-관리한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Kent Beck의 &ldquo;피처만큼이나 퓨처스에 투자하라&quot;를 실무에 적용하면 이렇다.</p>
+<ul>
+<li><strong>구현 전 퓨처스 체크리스트</strong>: 기능 구현에 들어가기 전, &ldquo;이 구현이 끝났을 때 시스템은 어떤 새로운 가능성을 갖는가 / 어떤 가능성을 잃는가&quot;를 명시적으로 적는다.</li>
+<li><strong>AGENTS.md에 퓨처스 섹션 추가</strong>: 지금 구현하는 기능의 맥락뿐 아니라, &ldquo;향후 예상되는 확장 방향&quot;을 적어둔다. AI 에이전트가 현재 기능만 최적화하는 게 아니라, 미래 확장을 고려한 구조를 제안할 수 있도록.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># AGENTS.md - Futures Section 예시
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 현재 구현: 쿠폰 발급 API v2
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 정률 할인, 정액 할인 지원
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 향후 확장 (Futures)
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 3개월 내: 조건부 할인 (최소 구매금액, 특정 카테고리 한정)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 6개월 내: 쿠폰 조합 규칙 엔진 (중복 적용, 우선순위)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 고려사항: 현재 discount_type enum 설계가 조건부 할인을 수용할 수 있는 구조인지 확인 필요
+</span></span></code></pre></div><h4 id="액션-2-아키텍처-결정-기록adr을-ai-에이전트의-필수-컨텍스트로-제공한다">액션 2: 아키텍처 결정 기록(ADR)을 AI 에이전트의 필수 컨텍스트로 제공한다<a href="#액션-2-아키텍처-결정-기록adr을-ai-에이전트의-필수-컨텍스트로-제공한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>복리가 쌓이려면 과거의 결정과 그 이유가 보존되어야 한다. Architecture Decision Records(ADR)를 단순한 문서가 아니라 AI 에이전트의 작업 맥락으로 활용한다.</p>
+<ul>
+<li>매 주요 결정마다 ADR 작성: &ldquo;어떤 선택을 했는가&rdquo;, &ldquo;왜 그렇게 했는가&rdquo;, &ldquo;어떤 대안을 검토했고 왜 기각했는가&rdquo;</li>
+<li>ADR을 AGENTS.md에서 참조하도록 연결: AI가 새 기능을 구현할 때 과거 결정의 맥락을 자동으로 참조</li>
+<li>결정의 유효 기간 명시: &ldquo;이 결정은 월간 트랜잭션 1억 건 이하에서 유효하다&rdquo; 같은 조건을 달아두면, AI가 조건 변화 시 재검토를 제안할 수 있음</li>
+</ul>
+<h4 id="액션-3-리팩토링을-기능-개발의-일부로-포함한다-복리의-이자-재투자">액션 3: 리팩토링을 기능 개발의 일부로 포함한다 (복리의 이자 재투자)<a href="#액션-3-리팩토링을-기능-개발의-일부로-포함한다-복리의-이자-재투자" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>복리에서 이자를 재투자하지 않으면 단리가 된다. 소프트웨어에서 이자 재투자는 리팩토링이다.</p>
+<ul>
+<li><strong>Tidy First 원칙 적용</strong>: Kent Beck의 또 다른 제안으로, 기능 구현 전에 작은 구조 개선(tidy)을 먼저 한다. AI 에이전트에게 &ldquo;이 기능을 추가하기 전에, 관련 코드의 구조를 먼저 정리해&quot;라고 지시하는 습관.</li>
+<li><strong>복리 건강 지표 모니터링</strong>: 새 기능을 추가할 때 걸리는 시간이 점점 늘어나고 있다면 복리가 역방향으로 작동하고 있다는 신호다. 스프린트 회고에서 &ldquo;이번 기능이 예상보다 오래 걸린 이유가 기존 구조 때문인가?&ldquo;를 체크한다.</li>
+</ul>
+<h4 id="액션-4-ai에게-결승선-마인드셋을-경계하라고-명시한다">액션 4: AI에게 &ldquo;결승선 마인드셋&quot;을 경계하라고 명시한다<a href="#액션-4-ai에게-결승선-마인드셋을-경계하라고-명시한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>AI 에이전트는 기본적으로 주어진 태스크를 완료하는 데 최적화되어 있다. 이것이 결승선 게임 편향이다. 명시적으로 복리 관점을 요구한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># AGENTS.md - Development Philosophy
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 핵심 원칙: 이 프로젝트는 복리 게임이다
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> &#34;동작하는 코드&#34;가 아니라 &#34;다음 변경을 쉽게 만드는 코드&#34;가 목표다
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 기능을 완료하는 것보다 시스템의 일관성을 유지하는 것이 우선이다
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 새 코드는 기존 패턴과 구조를 따라야 한다. 새로운 패턴을 도입하려면 먼저 제안하고 승인을 받아라
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 퀵 해킹(quick hack)보다는 적절한 추상화를 선택하라. 단, 과도한 추상화도 경계하라
+</span></span></code></pre></div><h4 id="액션-5-주기적으로-복리-감사를-수행한다">액션 5: 주기적으로 &ldquo;복리 감사&quot;를 수행한다<a href="#액션-5-주기적으로-복리-감사를-수행한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>분기마다 시스템의 복리 건강 상태를 점검한다.</p>
+<ul>
+<li><strong>확장 마찰 지표</strong>: 최근 3개월간 새 기능 추가 시 기존 코드 변경이 필요했던 비율</li>
+<li><strong>의존성 방향 검사</strong>: 의존성이 안쪽(도메인)에서 바깥쪽(인프라)으로 흐르는지, 역방향이 생기고 있지는 않은지</li>
+<li><strong>AI 에이전트 활용</strong>: Claude Code에게 &ldquo;이 코드베이스에서 가장 변경 빈도가 높은 파일과 그 변경 이유를 분석해줘. 구조적 문제가 반복 변경을 유발하고 있다면 지적해줘&quot;라고 요청</li>
+</ul>
+<hr>
+<h2 id="2-거울의-한계-내가-모르는-선택지를-ai가-제안하게-만들기">2. 거울의 한계: 내가 모르는 선택지를 AI가 제안하게 만들기<a href="#2-거울의-한계-내가-모르는-선택지를-ai가-제안하게-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="문제의-본질">문제의 본질<a href="#문제의-본질" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>포스트에서 짚은 &ldquo;거울의 한계&quot;를 엔터프라이즈 아키텍처 맥락에서 구체화하면 이렇다.</p>
+<p>GitHub repo 단위의 대규모 코드베이스에 아키텍처를 적용하려 할 때, 대부분의 엔지니어는 자신이 알고 있는 선택지 안에서 판단한다. DDD, Vertical Slicing, Hexagonal Architecture — 이미 학습하고 경험한 패턴들. Claude Code나 Gemini CLI에 &ldquo;이 repo에 DDD를 적용해줘 vs Hexagonal을 적용해줘, 장단점 비교해줘&quot;라고 지시하면, AI는 충실하게 그 두 선택지를 비교한다.</p>
+<p>문제는, <strong>내가 질문에 넣지 않은 선택지는 비교 대상에 포함되지 않는다</strong>는 점이다.</p>
+<p>예를 들어 이런 상황들이 발생할 수 있다.</p>
+<ul>
+<li>현재 repo의 특성 (이벤트 중심, CQRS 패턴이 이미 부분적으로 존재)을 고려하면 <strong>Event Sourcing + Projection</strong> 기반 아키텍처가 가장 자연스러운 선택일 수 있지만, Event Sourcing에 대한 실무 경험이 없으면 선택지에 넣을 수 없다.</li>
+<li>50M+ row 테이블을 다루는 쿠폰 시스템이라면, 전통적인 레이어드 아키텍처보다 <strong>Functional Core / Imperative Shell</strong> 패턴이 성능과 테스트 용이성 모두에서 유리할 수 있지만, 이 패턴 자체를 모르면 고려할 수 없다.</li>
+<li>팀 규모와 도메인 복잡도에 따라 DDD가 과도한 선택(over-engineering)이고, <strong>Feature-based Module Organization + 명시적 의존성 규칙</strong>만으로 충분할 수 있지만, &ldquo;DDD를 해야 한다&quot;는 전제를 가지고 있으면 이 판단을 내리기 어렵다.</li>
+<li>Go로 마이그레이션하는 서비스라면, Java 세계의 Hexagonal보다 <strong>Go의 Standard Project Layout + 인터페이스 기반 의존성 역전</strong>이 언어 관용구에 더 맞는 선택일 수 있다.</li>
+</ul>
+<p>이것이 <strong>&ldquo;알려진 미지(known unknowns)&ldquo;와 &ldquo;알려지지 않은 미지(unknown unknowns)&rdquo;</strong> 의 차이다. AI에게 &ldquo;내가 모르는 게 뭔지 알려줘&quot;라고 물어야 하지만, 무엇을 모르는지를 모르니 질문 자체를 구성할 수 없는 딜레마.</p>
+<h3 id="해결-전략과-액션-플랜">해결 전략과 액션 플랜<a href="#해결-전략과-액션-플랜" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="액션-1-열린-질문-프롬프트-패턴-확립">액션 1: &ldquo;열린 질문 프롬프트&rdquo; 패턴 확립<a href="#액션-1-열린-질문-프롬프트-패턴-확립" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>AI에게 비교를 요청할 때, 내가 아는 선택지를 나열하는 대신 <strong>제약 조건과 목표를 제시하고 선택지를 AI에게 생성하게 한다.</strong></p>
+<pre tabindex="0"><code># 나쁜 예 (닫힌 질문)
+&#34;이 repo에 DDD vs Hexagonal Architecture 적용 시 장단점을 비교해줘&#34;
+
+# 좋은 예 (열린 질문)
+&#34;이 repo의 구조, 도메인 복잡도, 팀 규모, 기술 스택을 분석해서,
+적용 가능한 아키텍처 패턴을 5가지 이상 제안해줘.
+내가 이미 알고 있는 DDD, Vertical Slicing, Hexagonal은 포함하되,
+내가 언급하지 않았지만 이 repo의 특성에 더 적합할 수 있는 패턴이 있다면
+반드시 포함하고 그 이유를 설명해줘.
+각 패턴의 적합도를 현재 코드베이스 기준으로 점수화해줘.&#34;
+</code></pre><p>핵심은 <strong>&ldquo;내가 언급하지 않았지만&rdquo;</strong> 이라는 문구다. AI에게 명시적으로 &ldquo;네 지식 범위 내에서 내가 빠뜨린 선택지를 찾아라&quot;고 요청하는 것.</p>
+<h4 id="액션-2-코드베이스-분석--패턴-추론-파이프라인-구축">액션 2: 코드베이스 분석 → 패턴 추론 파이프라인 구축<a href="#액션-2-코드베이스-분석--패턴-추론-파이프라인-구축" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude Code를 사용한다면, 아키텍처 결정 전에 반드시 <strong>코드베이스 현황 분석 단계</strong>를 거치도록 한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Claude Code에서의 워크플로우 예시</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 1: 현황 분석 요청</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;이 repo 전체를 분석해서 다음을 알려줘:
+</span></span></span><span class="line"><span class="cl"><span class="s2">1. 현재 암묵적으로 사용되고 있는 아키텍처 패턴들
+</span></span></span><span class="line"><span class="cl"><span class="s2">2. 모듈 간 의존성 그래프와 순환 의존이 있는 곳
+</span></span></span><span class="line"><span class="cl"><span class="s2">3. 도메인 로직이 인프라 코드와 결합되어 있는 지점
+</span></span></span><span class="line"><span class="cl"><span class="s2">4. 가장 변경 빈도가 높은 영역과 그 이유 추론&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 2: 분석 결과 기반으로 열린 질문</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;위 분석 결과를 바탕으로, 이 코드베이스에 가장 적합한
+</span></span></span><span class="line"><span class="cl"><span class="s2">아키텍처 개선 방향을 제안해줘. 내가 미처 고려하지 못한
+</span></span></span><span class="line"><span class="cl"><span class="s2">패턴이나 접근법이 있다면 반드시 포함해줘.&#34;</span>
+</span></span></code></pre></div><p>이 2단계 접근이 중요한 이유는, AI가 실제 코드를 분석한 후에 추천하면 <strong>일반론이 아닌 맥락 기반 추천</strong>이 나오기 때문이다. &ldquo;이 repo는 이미 이벤트 패턴이 곳곳에 존재하니 Event Sourcing으로의 전환 비용이 낮다&quot;같은 구체적 근거가 붙는다.</p>
+<h4 id="액션-3-devils-advocate-세션을-정례화한다">액션 3: &ldquo;Devil&rsquo;s Advocate&rdquo; 세션을 정례화한다<a href="#액션-3-devils-advocate-세션을-정례화한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>주요 아키텍처 결정을 내리기 전에, AI에게 의도적으로 반론을 요청한다.</p>
+<pre tabindex="0"><code>&#34;나는 이 시스템에 Hexagonal Architecture를 적용하려고 한다.
+너는 이 결정에 반대하는 시니어 아키텍트 역할을 해줘.
+1. 이 선택이 왜 이 시스템에 과도하거나 부적합한지 논증해
+2. 같은 문제를 더 단순하게 해결하는 대안을 제시해
+3. 내가 간과하고 있을 수 있는 리스크를 지적해
+4. 이 결정이 5명 규모 팀의 개발 속도에 미칠 영향을 예측해&#34;
+</code></pre><p>이 패턴의 핵심은 <strong>확증 편향(confirmation bias) 차단</strong>이다. 내가 이미 선호하는 방향이 있을 때, AI는 보통 그 방향을 지지하는 쪽으로 답한다(사용자 동의 편향). Devil&rsquo;s Advocate 역할을 명시적으로 부여하면 이 편향을 깨뜨릴 수 있다.</p>
+<h4 id="액션-4-기술-레이더technology-radar를-ai-컨텍스트에-포함한다">액션 4: 기술 레이더(Technology Radar)를 AI 컨텍스트에 포함한다<a href="#액션-4-기술-레이더technology-radar를-ai-컨텍스트에-포함한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>ThoughtWorks Technology Radar, CNCF Landscape 같은 기술 동향 자료를 주기적으로 AI의 참조 맥락에 포함시킨다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># AGENTS.md - Architecture Reference
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 기술 레이더 참조
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 새로운 아키텍처 패턴을 제안할 때, 최신 ThoughtWorks Technology Radar의
+</span></span><span class="line"><span class="cl">  Trial/Assess 단계에 있는 관련 패턴을 확인하라
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 제안하는 패턴이 우리 기술 스택(Go, Java/Spring Boot, K8s)과
+</span></span><span class="line"><span class="cl">  호환되는지 실제 사례를 함께 제시하라
+</span></span></code></pre></div><p>이렇게 하면 AI가 &ldquo;최근 주목받고 있지만 아직 널리 알려지지 않은 패턴&quot;을 선택지에 포함시킬 확률이 높아진다.</p>
+<h4 id="액션-5-다른-도메인의-해결책을-크로스레퍼런스-하게-한다">액션 5: 다른 도메인의 해결책을 크로스레퍼런스 하게 한다<a href="#액션-5-다른-도메인의-해결책을-크로스레퍼런스-하게-한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>소프트웨어 아키텍처의 돌파구는 종종 다른 도메인에서 온다. 이를 AI에게 명시적으로 요청한다.</p>
+<pre tabindex="0"><code>&#34;이 쿠폰 시스템의 할인 규칙 엔진을 설계하려 한다.
+전통적인 전자상거래 도메인의 접근법 외에,
+금융(파생상품 가격 결정), 게임(보상 시스템), 보험(언더라이팅 규칙) 등
+다른 도메인에서 유사한 문제를 해결한 아키텍처 패턴이 있다면 소개해줘.&#34;
+</code></pre><p>이런 크로스도메인 질문은 내가 알지 못하는 선택지를 발견할 가능성이 가장 높은 방법 중 하나다. AI의 광범위한 학습 데이터가 여기서 진가를 발휘한다.</p>
+<h4 id="액션-6-점진적-지식-확장-루프-설계">액션 6: 점진적 지식 확장 루프 설계<a href="#액션-6-점진적-지식-확장-루프-설계" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>한 번의 질문으로 모든 미지의 영역을 커버할 수 없다. 대신, <strong>발견 → 학습 → 재질문</strong>의 루프를 의식적으로 돌린다.</p>
+<ol>
+<li>AI가 내가 모르던 패턴 X를 추천</li>
+<li>X의 핵심 개념과 트레이드오프를 학습 (AI에게 개념 설명 요청)</li>
+<li>X를 알게 된 상태에서 다시 열린 질문: &ldquo;X 말고 X와 유사하지만 다른 접근법은?&rdquo;</li>
+<li>새로운 선택지 Y 발견</li>
+<li>반복</li>
+</ol>
+<p>이 루프를 2-3회 돌리면, 초기에 &ldquo;DDD vs Hexagonal&rdquo; 두 가지였던 선택지가 5-7가지로 확장되고, 그중에서 코드베이스에 가장 적합한 선택이 무엇인지에 대한 판단력도 함께 키워진다.</p>
+<hr>
+<h2 id="3-ai-에이전트의-선제적-지식-확장-claude-code-opus-46-활용-전략">3. AI 에이전트의 선제적 지식 확장: Claude Code Opus 4.6 활용 전략<a href="#3-ai-에이전트의-선제적-지식-확장-claude-code-opus-46-활용-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="목표">목표<a href="#목표" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>AI 에이전트가 단순히 사용자의 지시를 수행하는 것을 넘어, <strong>사용자의 현재 지식 수준을 파악하고, 사용자가 미처 생각하지 못한 방향으로 지식을 확장해주는 역할</strong>을 하게 만든다. &ldquo;내가 질문한 것&quot;에만 답하는 것이 아니라, &ldquo;내가 질문하지 않았지만 질문했어야 할 것&quot;을 역으로 제안하는 에이전트.</p>
+<h3 id="핵심-원리-역질문-기반-교육socratic-method의-ai-적용">핵심 원리: 역질문 기반 교육(Socratic Method)의 AI 적용<a href="#핵심-원리-역질문-기반-교육socratic-method의-ai-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Jeremy Utley가 강조한 &ldquo;AI에게 질문하지 말고, AI가 나에게 질문하게 하라&quot;를 코딩 맥락에서 구체화한다. 단순한 프롬프트 트릭이 아니라, Claude Code의 워크플로우 전체에 이 원리를 내장하는 것이 목표다.</p>
+<h3 id="claude-code-opus-46-기반-액션-플랜">Claude Code Opus 4.6 기반 액션 플랜<a href="#claude-code-opus-46-기반-액션-플랜" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="액션-1-claudemd에-선제적-교육자-역할을-정의한다">액션 1: CLAUDE.md에 &ldquo;선제적 교육자&rdquo; 역할을 정의한다<a href="#액션-1-claudemd에-선제적-교육자-역할을-정의한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude Code는 프로젝트 루트의 <code>CLAUDE.md</code>(또는 <code>AGENTS.md</code>)를 자동으로 읽는다. 여기에 선제적 지식 확장 행동을 명시한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md - Proactive Knowledge Expansion
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 역할 정의
+</span></span></span><span class="line"><span class="cl">너는 코드를 작성하는 에이전트이자, 시니어 엔지니어의 기술적 시야를 넓히는 교육자다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 선제적 행동 규칙
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 1. 지식 수준 탐색
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 새로운 아키텍처 패턴이나 기술적 개념을 적용하기 전에, 해당 개념에 대한
+</span></span><span class="line"><span class="cl">  내 이해 수준을 먼저 확인하라
+</span></span><span class="line"><span class="cl"><span class="k">-</span> &#34;이 개념을 잘 아시나요?&#34;가 아니라, 핵심 트레이드오프를 질문해서 간접 확인하라
+</span></span><span class="line"><span class="cl">  예: &#34;Event Sourcing 적용 시 projection rebuild 전략을 어떻게 가져갈지
+</span></span><span class="line"><span class="cl">  선호하는 방향이 있으신가요?&#34; → 답변 수준으로 이해도 판단
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 2. Unknown Unknowns 탐지 및 제안
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 내가 지시한 접근법이 최선이 아닐 수 있다고 판단되면,
+</span></span><span class="line"><span class="cl">  반드시 대안을 함께 제시하라
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 형식: &#34;요청하신 대로 진행할 수 있습니다. 다만, 이 코드베이스의 특성을 고려하면
+</span></span><span class="line"><span class="cl">  [대안 패턴]도 검토해볼 만합니다. 이유는 [근거]. 어느 방향으로 진행할까요?&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 3. 관련 개념 연결
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 구현 중 관련되지만 내가 언급하지 않은 개념이 있으면,
+</span></span><span class="line"><span class="cl">  구현 완료 후 &#34;참고로...&#34; 형식으로 알려줘
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 예: 내가 Repository 패턴 구현을 요청했을 때, Unit of Work 패턴에 대해
+</span></span><span class="line"><span class="cl">  언급하지 않았다면 → 구현 후 연결 개념으로 소개
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 4. 더 읽을 거리 추천
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 새로운 개념을 소개할 때, 원전(original paper/post)과
+</span></span><span class="line"><span class="cl">  실전 적용 사례(case study)를 함께 추천하라
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 한국어 자료가 있으면 우선 추천, 없으면 영어 원문 + 핵심 요약 제공
+</span></span></code></pre></div><h4 id="액션-2-claude-code-hooks로-지식-체크포인트를-자동화한다">액션 2: Claude Code Hooks로 &ldquo;지식 체크포인트&quot;를 자동화한다<a href="#액션-2-claude-code-hooks로-지식-체크포인트를-자동화한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude Code의 Hooks 기능을 활용해, 특정 작업 전후에 지식 확장 단계를 자동으로 삽입한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// .claude/settings.json - Hooks 설정 예시
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hooks&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PreToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;edit|create&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hook&#34;</span><span class="p">:</span> <span class="s2">&#34;echo &#39;⚠️ 구현 전 체크: 이 접근 방식의 대안을 검토했는가? 사용자에게 역질문할 필요는 없는가?&#39;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;PostToolUse&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;matcher&#34;</span><span class="p">:</span> <span class="s2">&#34;edit|create&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hook&#34;</span><span class="p">:</span> <span class="s2">&#34;echo &#39;📚 구현 후 체크: 사용자가 모를 수 있는 관련 개념이 있는가? 있다면 소개하라.&#39;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>이 Hooks는 매 코드 수정/생성 시 Claude Code에게 &ldquo;메타 인지&rdquo; 단계를 상기시킨다. AI가 관성적으로 구현만 하는 것을 방지하고, 매번 &ldquo;이 사용자가 놓치고 있을 만한 것이 있는가?&ldquo;를 체크하게 한다.</p>
+<h4 id="액션-3-custom-slash-commands로-지식-확장-세션을-만든다">액션 3: Custom Slash Commands로 지식 확장 세션을 만든다<a href="#액션-3-custom-slash-commands로-지식-확장-세션을-만든다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude Code의 커스텀 명령어를 활용해, 필요할 때 즉시 지식 확장 세션을 시작할 수 있게 한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">&lt;!-- .claude/commands/explore.md --&gt;
+</span></span><span class="line"><span class="cl"><span class="gh"># /explore - 지식 탐색 세션
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">현재 작업 중인 코드 영역을 분석하고, 다음을 수행해줘:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> <span class="gs">**현재 사용 중인 패턴 식별**</span>: 이 코드가 암묵적으로 사용하고 있는 아키텍처 패턴과 디자인 패턴을 나열해
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> <span class="gs">**대안 패턴 제안**</span>: 같은 문제를 다르게 해결하는 패턴을 3가지 이상 제시하고, 각각의 트레이드오프를 설명해
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> <span class="gs">**지식 갭 탐지**</span>: 내가 이 코드에서 사용하고 있지만 깊이 이해하지 못할 수 있는 개념이 있다면 질문 형태로 제시해
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> <span class="gs">**학습 로드맵**</span>: 이 영역의 전문성을 한 단계 높이려면 무엇을 학습해야 하는지, 구체적 자료와 함께 추천해
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ARGUMENTS 에 특정 영역이나 관심사가 있으면 해당 방향으로 깊이를 조절해줘.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">&lt;!-- .claude/commands/review-arch.md --&gt;
+</span></span><span class="line"><span class="cl"><span class="gh"># /review-arch - 아키텍처 역질문 세션
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">이 프로젝트의 현재 아키텍처를 분석하고, 시니어 아키텍트의 관점에서
+</span></span><span class="line"><span class="cl">나에게 다음과 같은 역질문들을 해줘:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> &#34;이 구조에서 [X]를 선택한 이유가 무엇인가요?&#34; - 명시적으로 결정하지 않은 것들 중심으로
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> &#34;만약 트래픽이 10배가 되면 이 구조의 어디가 먼저 깨질까요?&#34;
+</span></span><span class="line"><span class="cl"><span class="k">3.</span> &#34;이 도메인에서 [Y] 패턴을 적용하지 않은 특별한 이유가 있나요?&#34; - 일반적으로 적용되지만 현재 빠져있는 패턴
+</span></span><span class="line"><span class="cl"><span class="k">4.</span> &#34;$ARGUMENTS&#34; 주제와 관련된 심화 질문
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">내가 답하면 그 답변을 바탕으로 더 깊은 후속 질문을 해줘.
+</span></span><span class="line"><span class="cl">3-5 라운드의 대화를 통해 내 지식의 사각지대를 발견하는 것이 목표야.
+</span></span></code></pre></div><h4 id="액션-4-학습-저널-자동-생성">액션 4: &ldquo;학습 저널&rdquo; 자동 생성<a href="#액션-4-학습-저널-자동-생성" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude Code와 작업하면서 발견한 새로운 개념들을 자동으로 기록하는 습관을 만든다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">&lt;!-- .claude/commands/til.md --&gt;
+</span></span><span class="line"><span class="cl"><span class="gh"># /til - Today I Learned 기록
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">오늘 작업 세션에서 내가 새로 배웠거나 AI가 제안해서 알게 된 개념들을 정리해줘.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">형식:
+</span></span><span class="line"><span class="cl"><span class="gu">## YYYY-MM-DD TIL
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 새로 알게 된 개념
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> **[개념명]**: 한 줄 설명 / 왜 중요한지 / 이 프로젝트에서의 관련성
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 심화 학습 필요
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> **[개념명]**: 현재 이해 수준 / 다음에 학습할 포인트
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 추천 자료
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> [<span class="nt">자료명</span>](<span class="na">URL</span>) - 추천 이유
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">이 내용을 docs/til/ 디렉토리에 날짜별 파일로 저장해줘.
+</span></span></code></pre></div><p>이 TIL 로그가 쌓이면, <strong>내 지식의 성장 궤적</strong>이 기록되고, 나중에 &ldquo;3개월 전에는 몰랐지만 지금은 알게 된 것들&quot;을 확인할 수 있다. 복리 게임의 이자가 실제로 쌓이고 있는지 확인하는 지표 역할을 한다.</p>
+<h4 id="액션-5-mcpmodel-context-protocol로-외부-지식-소스-연결">액션 5: MCP(Model Context Protocol)로 외부 지식 소스 연결<a href="#액션-5-mcpmodel-context-protocol로-외부-지식-소스-연결" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Claude Code의 MCP 기능을 활용해, AI가 선제적 제안을 할 때 실시간 외부 자료를 참조할 수 있게 한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// .claude/settings.json - MCP 설정
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mcpServers&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;tech-radar&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;url&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://your-company-tech-radar-mcp.example.com/sse&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;architecture-wiki&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;url&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://your-internal-wiki-mcp.example.com/sse&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>사내 기술 레이더나 아키텍처 위키를 MCP로 연결하면, AI가 &ldquo;우리 회사에서 이 패턴을 이미 다른 팀이 적용한 사례가 있다&quot;는 수준의 맥락적 제안을 할 수 있게 된다.</p>
+<h4 id="액션-6-역질문-강도를-상황에-맞게-조절한다">액션 6: 역질문 강도를 상황에 맞게 조절한다<a href="#액션-6-역질문-강도를-상황에-맞게-조절한다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>매번 AI가 역질문을 쏟아내면 오히려 생산성이 떨어진다. 상황별로 강도를 조절하는 프로토콜을 정한다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># CLAUDE.md - 역질문 프로토콜
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 상황별 역질문 강도
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 🔴 높음 (반드시 역질문) - 비가역적 결정
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 아키텍처 패턴 선택
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 데이터 모델/스키마 설계
+</span></span><span class="line"><span class="cl"><span class="k">-</span> API 계약 정의
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 인프라 구조 변경
+</span></span><span class="line"><span class="cl">→ 구현 전 최소 3가지 대안을 제시하고, 트레이드오프를 확인하라
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 🟡 중간 (간결한 제안) - 중요하지만 되돌릴 수 있는 결정
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 디자인 패턴 선택
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 에러 처리 전략
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 테스트 전략
+</span></span><span class="line"><span class="cl">→ 더 나은 대안이 있으면 한 줄로 언급하고, 사용자가 관심 보이면 상세 설명
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 🟢 낮음 (묵묵히 실행) - 구현 수준 결정
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 변수 네이밍
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 루프 vs 스트림
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 포매팅
+</span></span><span class="line"><span class="cl">→ 기존 코드베이스 컨벤션을 따라 실행. 역질문 불필요
+</span></span></code></pre></div><h3 id="실전-시나리오-이-모든-것이-합쳐질-때">실전 시나리오: 이 모든 것이 합쳐질 때<a href="#실전-시나리오-이-모든-것이-합쳐질-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>philipjkim가 쿠폰 시스템의 할인 규칙 엔진을 리팩토링하려 한다고 가정하자.</p>
+<pre tabindex="0"><code>philipjkim: &#34;쿠폰 할인 규칙을 Strategy 패턴으로 리팩토링하려고 해.
+     각 할인 타입별로 DiscountStrategy를 구현하고,
+     CouponService에서 타입에 따라 전략을 선택하는 구조로.&#34;
+
+Claude Code (선제적 응답):
+&#34;Strategy 패턴으로 진행할 수 있습니다. 구현 전에 몇 가지 확인하고 싶습니다.
+
+1. 현재 할인 타입이 3가지인데, 향후 조건부 할인(최소 구매금액, 카테고리 한정)도
+   추가될 가능성이 있나요? 있다면 단순 Strategy보다는 Rules Engine 패턴이나
+   Specification 패턴과 결합하는 것이 확장에 유리합니다.
+
+2. 할인 규칙이 런타임에 변경될 가능성은요? 만약 비즈니스팀이 할인 규칙을
+   직접 설정해야 한다면, 코드 기반 Strategy보다 설정 기반 규칙 엔진
+   (예: JSON/DSL 기반)이 운영 효율면에서 나을 수 있습니다.
+
+3. 현재 코드베이스를 보니 이미 일부 할인 계산에서 체이닝 패턴이 보입니다.
+   혹시 Chain of Responsibility 패턴은 검토해보셨나요?
+   중복 할인 적용 순서가 중요하다면 이 방향이 자연스럽습니다.
+
+4. 참고로, 이런 규칙 기반 시스템에서 Martin Fowler의 &#39;Specification Pattern&#39;과
+   Eric Evans의 &#39;Policy&#39; 개념을 결합한 접근법이 있습니다.
+   관심 있으시면 상세히 설명드리겠습니다.
+
+어느 방향으로 진행할까요?&#34;
+</code></pre><p>이 응답에서 AI는 사용자가 요청한 Strategy 패턴을 존중하면서도, 사용자가 언급하지 않은 Rules Engine, Specification Pattern, Chain of Responsibility, 설정 기반 접근법을 선택지로 제시하고 있다. 각 제안에 &ldquo;왜 이것이 현재 상황에 관련되는지&quot;의 근거가 있고, 사용자의 판단을 대신하지 않고 선택권을 돌려주고 있다.</p>
+<hr>
+<h2 id="마무리-세-가지-전략의-연결-고리">마무리: 세 가지 전략의 연결 고리<a href="#마무리-세-가지-전략의-연결-고리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 세 가지 심화 주제는 독립적인 것이 아니라 하나의 흐름으로 연결된다.</p>
+<p><strong>복리 게임</strong>을 인식하면, 단기 성과(결승선)에 매몰되지 않고 장기적 시스템 건강에 투자하게 된다. 이 투자의 핵심은 <strong>아키텍처 결정의 질</strong>이고, 그 질을 높이려면 <strong>내가 모르는 선택지까지 포함한 넓은 시야</strong>가 필요하다. 그 시야를 AI 에이전트가 선제적으로 넓혀줄 수 있다면, 우리는 &ldquo;거울에 비출 것&quot;을 계속 늘려갈 수 있다.</p>
+<p>결국 AI 시대 엔지니어의 핵심 역량은 코드를 짜는 능력이 아니라, <strong>무엇을 만들어야 하는지 판단하고, 그 판단의 근거가 되는 지식을 계속 확장하는 능력</strong>이다. AI는 그 확장을 가속시켜주는 도구이지만, 확장하겠다는 의지와 방향 설정은 여전히 우리의 몫이다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260225-book-review-how-to-react-to-bad-people/" class="button inline next">
+         [<span class="button__text">책 소개: 정문정 작가의 《무례한 사람에게 웃으며 대처하는 법》</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
