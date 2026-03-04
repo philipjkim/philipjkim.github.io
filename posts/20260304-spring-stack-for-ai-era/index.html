@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>AI 시대의 Spring 기술 스택 재정비: 명시성을 되찾기 위한 선택들 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 코딩 도구 시대에 Java/Spring 기술 스택을 재정비하는 관점을 다룹니다. Lombok 제거, JPA 대안, Virtual Threads, 선언적 HTTP 클라이언트 등 명시성 중심의 기술 선택을 살펴봅니다." />
+<meta name="keywords" content="java, spring, programming, dev, AI" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260304-spring-stack-for-ai-era/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="AI 시대의 Spring 기술 스택 재정비: 명시성을 되찾기 위한 선택들">
+<meta property="og:description" content="AI 코딩 도구 시대에 Java/Spring 기술 스택을 재정비하는 관점을 다룹니다. Lombok 제거, JPA 대안, Virtual Threads, 선언적 HTTP 클라이언트 등 명시성 중심의 기술 선택을 살펴봅니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260304-spring-stack-for-ai-era/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-04 16:20:43 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260304-spring-stack-for-ai-era/">AI 시대의 Spring 기술 스택 재정비: 명시성을 되찾기 위한 선택들</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-04</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/java/">java</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/spring/">spring</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p>Claude Code 같은 AI 코딩 도구를 본격적으로 활용하기 시작하면서, 그동안 당연하게 쓰던 기술 스택에 대해 다시 생각하게 되었습니다. JPA의 dirty checking이 정말 편한 건지, Lombok 없이는 못 사는 건지, RestTemplate과 Retrofit이 뒤섞인 코드베이스가 과연 합리적인 건지.</p>
+<p>결론부터 말하면, <strong>AI가 생성한 코드를 사람이 빠르게 읽고 검증하려면 &ldquo;마법(magic)&ldquo;보다 &ldquo;명시성(explicitness)&ldquo;이 훨씬 중요하다</strong>는 생각에 도달했습니다. 이 글에서는 그 관점에서 기존 Java/Spring 기술 스택의 각 영역을 하나씩 짚어봅니다.</p>
+<hr>
+<h2 id="1-java-25-without-lombok--kotlin-대신-java를-메인으로">1. Java 25 (without Lombok) — Kotlin 대신 Java를 메인으로<a href="#1-java-25-without-lombok--kotlin-대신-java를-메인으로" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="modern-java가-따라잡은-것들">Modern Java가 따라잡은 것들<a href="#modern-java가-따라잡은-것들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한때 Kotlin을 선택하는 이유는 명확했습니다. data class, null safety, coroutines, extension functions — Java가 제공하지 못하던 것들이 너무 매력적이었습니다. 그런데 2025년 기준으로 Java 25를 보면, 그 격차가 상당히 좁혀졌습니다.</p>
+<ul>
+<li><strong>Records</strong> (Java 16~): <code>public record User(String name, String email) {}</code> 한 줄이면 Kotlin의 <code>data class</code>가 하던 일을 합니다. <code>equals()</code>, <code>hashCode()</code>, <code>toString()</code>이 자동 생성되고, 기본적으로 immutable입니다.</li>
+<li><strong>Sealed Classes + Pattern Matching</strong> (Java 17~21): Kotlin의 <code>sealed class</code> + <code>when</code>에 대응하는 대수적 타입 모델링이 가능해졌습니다.</li>
+<li><strong>Virtual Threads</strong> (Java 21~): Kotlin coroutines가 풀어주던 동시성 문제를 JVM 레벨에서 해결합니다.</li>
+<li><strong>Text Blocks, var, Switch Expressions</strong>: 전반적인 장황함(verbosity)이 크게 줄었습니다.</li>
+</ul>
+<p>Spring Boot 4도 이 흐름에 맞춰 Java 25를 지원하면서, JSpecify 기반 null safety 어노테이션을 플랫폼 전반에 도입했습니다. Spring Framework 7에서는 기존의 <code>@Nullable</code>, <code>@NonNull</code> 등이 deprecated 되고 JSpecify 어노테이션으로 대체되었습니다. 컴파일 타임 null safety는 아직 Kotlin에 못 미치지만, IDE(IntelliJ IDEA 2025.3+)와 NullAway 같은 정적 분석 도구 수준에서는 실질적인 보호막이 됩니다.</p>
+<h3 id="lombok은-이제-내려놓을-때">Lombok은 이제 내려놓을 때<a href="#lombok은-이제-내려놓을-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Lombok의 공이 큽니다. <code>@Data</code> 하나로 수십 줄의 boilerplate를 없앤 건 혁명적이었습니다. 하지만 Records가 언어 표준으로 들어온 지금, Lombok을 유지해야 할 이유가 점점 줄고 있습니다.</p>
+<p>Dan Vega가 정리한 Lombok의 문제점들이 핵심을 잘 짚습니다:</p>
+<ul>
+<li>Lombok은 표준 annotation processing이 아니라 <strong>컴파일러 내부 API(<code>com.sun.tools.javac</code>)를 해킹하여 AST를 직접 조작</strong>합니다. JDK 마이너 업데이트에서도 깨질 수 있습니다.</li>
+<li>디버깅할 때 <strong>소스 코드에 존재하지 않는 메서드</strong>를 추적해야 합니다. &ldquo;작성한 코드가 실행되는 코드가 아닌&rdquo; 상황이 발생합니다.</li>
+<li>MapStruct, QueryDSL, JPA Buddy 등 다른 annotation processor와의 <strong>충돌</strong>이 빈번합니다.</li>
+</ul>
+<p>nipafx(Nicolai Parlog)는 더 근본적인 차이를 지적합니다. Lombok의 <code>@Data</code>는 &ldquo;코드를 생성해주는 도구&quot;이지만, Java Records는 <strong>&ldquo;이 타입은 투명한 불변 데이터 캐리어&quot;라는 의미론적 선언</strong>입니다. 이 의미론적 보장 덕분에 Records는 pattern matching의 destructuring 대상이 될 수 있고, Lombok 클래스는 될 수 없습니다.</p>
+<h3 id="그래도-kotlin이-여전히-나은-점">그래도 Kotlin이 여전히 나은 점<a href="#그래도-kotlin이-여전히-나은-점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>공정하게 말하면, Kotlin이 아직 앞서는 영역이 있습니다:</p>
+<ul>
+<li><strong>컴파일 타임 null safety</strong>: Java의 JSpecify는 도구 지원이지, 언어 수준의 보장은 아닙니다.</li>
+<li><strong>Extension functions</strong>: Java에서는 유틸리티 클래스로 우회해야 합니다.</li>
+<li><strong>Coroutines의 구조적 동시성</strong>: Java의 Structured Concurrency는 아직 preview 상태입니다 (JDK 25, JEP 505).</li>
+<li><strong>DSL 지원</strong>: 내부 DSL을 만들 때 Kotlin의 표현력이 월등합니다.</li>
+</ul>
+<p>그럼에도, 두 언어를 혼용하는 비용(빌드 시간 증가, 상호운용 시 null safety 불일치, 온보딩 복잡도)을 따져보면, <strong>대부분의 엔터프라이즈 백엔드 팀에서는 Java 단일 언어로 통일하는 편이 실익이 크다</strong>고 봅니다.</p>
+<blockquote>
+<p><strong>참고 자료</strong></p>
+<ul>
+<li><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes">Spring Boot 4.0 Release Notes</a> — Java 25 지원, HTTP Service Client</li>
+<li><a href="https://spring.io/blog/2025/11/12/null-safe-applications-with-spring-boot-4/">Spring 공식 — &ldquo;Null-safe applications with Spring Boot 4&rdquo;</a> — JSpecify null safety 도입</li>
+<li><a href="https://www.danvega.dev/blog/no-lombok">Dan Vega — &ldquo;Modern Java: Why You Might Not Need Lombok Anymore&rdquo;</a></li>
+<li><a href="https://nipafx.dev/java-record-semantics/">nipafx — &ldquo;Why Java&rsquo;s Records Are Better Than Lombok&rsquo;s @Data and Kotlin&rsquo;s Data Classes&rdquo;</a></li>
+<li><a href="https://blog.jetbrains.com/idea/2025/11/spring-boot-4/">JetBrains Blog — Spring Boot 4: Leaner, Safer Apps</a></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="2-spring-boot-4x--mvc--virtual-threads">2. Spring Boot 4.x — MVC + Virtual Threads<a href="#2-spring-boot-4x--mvc--virtual-threads" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="webflux를-쓸-이유가-줄었습니다">WebFlux를 쓸 이유가 줄었습니다<a href="#webflux를-쓸-이유가-줄었습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Spring Boot 4는 Spring Framework 7 위에서 동작하며, 모듈화된 auto-configuration, OpenTelemetry 통합 스타터, API Versioning 등 다양한 개선을 가져왔습니다.</p>
+<p>그중 MVC 사용자에게 가장 의미 있는 변화는 <strong>Virtual Threads와의 자연스러운 통합</strong>입니다. <code>spring.threads.virtual.enabled=true</code> 한 줄이면 MVC의 동기식 프로그래밍 모델을 유지하면서도 높은 I/O 동시성을 확보할 수 있습니다. auto-configured HTTP client들도 Virtual Thread를 자동으로 활용합니다.</p>
+<p>WebFlux가 필요했던 주된 이유가 &ldquo;스레드 부족으로 인한 처리량 한계&quot;였다면, Virtual Threads가 그 문제를 MVC 안에서 해결해줍니다. 그리고 리액티브 코드의 스택 트레이스가 얼마나 읽기 어려운지는 한번이라도 디버깅해 본 사람이라면 공감할 것입니다.</p>
+<p>물론 수십만 RPS 이상의 극단적 시나리오에서 backpressure가 필수적이거나, R2DBC 같은 리액티브 전용 스택이 핵심인 경우라면 WebFlux가 여전히 적합합니다. 하지만 <strong>대부분의 일반적인 비즈니스 서비스에서는 MVC + Virtual Threads가 복잡도 대비 최적의 조합</strong>이라고 생각합니다.</p>
+<h3 id="ai-도구와의-궁합">AI 도구와의 궁합<a href="#ai-도구와의-궁합" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>AI가 생성한 코드를 리뷰하는 상황을 떠올려 봅시다. 동기식 코드는 위에서 아래로 읽으면 흐름이 보입니다. 반면 <code>Mono.flatMap(...).switchIfEmpty(...).onErrorResume(...)</code> 체인에서 AI가 실수한 부분을 찾으려면 상당한 리액티브 프로그래밍 경험이 필요합니다. 코드의 명시성이 중요한 이유가 여기에도 있습니다.</p>
+<blockquote>
+<p><strong>참고 자료</strong></p>
+<ul>
+<li><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes">Spring Boot 4.0 Release Notes</a> — 모듈화, Virtual Thread 지원, HTTP Service Client</li>
+<li><a href="https://www.baeldung.com/spring-boot-4-spring-framework-7">Baeldung — &ldquo;Spring Boot 4 &amp; Spring Framework 7&rdquo;</a> — AOT 개선, observability, 네이티브 이미지</li>
+<li><a href="https://spring.io/blog/2025/11/20/spring-boot-4-0-0-available-now/">spring.io — Spring Boot 4.0.0 릴리스 공지</a></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="3-spring-data-jdbc-또는-mybatis--jpa를-대체하는-두-가지-길">3. Spring Data JDBC 또는 MyBatis — JPA를 대체하는 두 가지 길<a href="#3-spring-data-jdbc-또는-mybatis--jpa를-대체하는-두-가지-길" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="jpa는-왜-문제인가">JPA는 왜 문제인가<a href="#jpa는-왜-문제인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>JPA(Hibernate)를 오래 운영해 본 사람이라면 한번쯤 겪어봤을 것입니다:</p>
+<p><strong>Dirty Checking의 함정.</strong> 트랜잭션 안에서 엔티티 객체의 필드를 바꾸면, 명시적인 <code>save()</code> 호출 없이도 트랜잭션 커밋 시점에 UPDATE가 날아갑니다. 의도한 것이라면 편리하지만, 의도하지 않았다면 추적하기 까다로운 버그의 원인이 됩니다. Vlad Mihalcea(Hibernate 핵심 기여자)조차 &ldquo;엔티티는 현재 트랜잭션이 해당 엔티티를 수정해야 하는 경우에만 필요하다&quot;고 하며, 읽기 전용 조회에는 DTO projection을 권장합니다.</p>
+<p><strong>LazyInitializationException.</strong> JPA에서 가장 빈번한 예외 중 하나입니다. Thorben Janssen은 이 예외를 피하기 위해 FetchType을 EAGER로 바꾸는 것이 &ldquo;또 다른 성능 문제를 야기하며 N+1 select 문제의 가장 흔한 원인&quot;이라고 경고합니다. Open Session in View는 N+1 문제를 숨기면서 DB 커넥션을 오래 점유하는 안티패턴입니다.</p>
+<p><strong>jOOQ 공식 문서</strong>의 표현이 정곡을 찌릅니다: &ldquo;lazy loading은 데이터가 필요 없을 때의 불필요한 로딩은 막아주지만, 데이터가 필요할 때는 N+1 문제를 만듭니다.&rdquo;</p>
+<p><strong>AI 시대의 추가적 문제.</strong> AI가 생성한 JPA 코드에서 <code>@Transactional</code> 범위 안의 의도치 않은 엔티티 수정은 일반 개발자가 작성한 코드보다 발견하기 어려울 수 있습니다. SQL이 코드에 직접 드러나는 방식이라면, AI가 생성한 쿼리를 그대로 리뷰할 수 있습니다.</p>
+<h3 id="대안-1-spring-data-jdbc">대안 1: Spring Data JDBC<a href="#대안-1-spring-data-jdbc" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Spring Data JDBC는 Spring Data 프로젝트의 공식 모듈이면서도, JPA와는 근본적으로 다른 철학을 갖고 있습니다. 공식 문서가 이를 명확히 밝힙니다:</p>
+<blockquote>
+<p>&ldquo;If you load an entity, SQL statements get run. Once this is done, you have a completely loaded entity. No lazy loading or caching is done.&rdquo;</p>
+<p>&ldquo;If you save an entity, it gets saved. If you do not, it does not. There is no dirty tracking and no session.&rdquo;</p>
+<p>— Spring 공식 문서, <em>Why Spring Data JDBC?</em></p>
+</blockquote>
+<p>이 철학이 가져다주는 이점은 분명합니다:</p>
+<ul>
+<li><strong>No Session, No Proxy</strong>: 로드한 객체는 그냥 POJO입니다. 다른 스레드로 넘기든, JSON으로 직렬화하든, detached entity 에러를 걱정할 필요가 없습니다.</li>
+<li><strong>Java Records와의 궁합</strong>: JPA 엔티티는 기본적으로 mutable이어야 하므로 Records와 잘 맞지 않습니다. Spring Data JDBC에서는 Records를 자연스럽게 활용할 수 있습니다.</li>
+<li><strong>DDD Aggregate Root 강제</strong>: Repository는 Aggregate Root에 대해서만 존재합니다. 무분별한 엔티티 간 연관 탐색을 방지하고, bounded context를 자연스럽게 지키게 됩니다.</li>
+</ul>
+<p>단점도 있습니다. 양방향 연관관계나 cascade를 자동으로 처리하지 않으므로 직접 쿼리를 작성해야 하고, first-level cache가 없어서 동일 엔티티를 반복 조회하면 매번 DB를 호출합니다.</p>
+<h3 id="대안-2-mybatis">대안 2: MyBatis<a href="#대안-2-mybatis" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>MyBatis는 특히 한국과 일본 개발 커뮤니티에서 높은 점유율을 가지고 있고, 그 이유가 있습니다.</p>
+<p><strong>강점:</strong></p>
+<ul>
+<li><strong>XML/어노테이션 기반의 완전한 SQL 제어</strong>: 개발자가 작성한 SQL이 그대로 실행됩니다. 복잡한 동적 쿼리를 <code>&lt;if&gt;</code>, <code>&lt;choose&gt;</code>, <code>&lt;foreach&gt;</code> 등의 태그로 유연하게 구성할 수 있습니다.</li>
+<li><strong>레거시 스키마 대응</strong>: 정규화되지 않은 복잡한 스키마, 여러 테이블을 조인해야 하는 리포트성 쿼리 등에서 JPA보다 훨씬 자연스럽습니다.</li>
+<li><strong>결과 매핑의 유연성</strong>: <code>ResultMap</code>으로 복잡한 계층 구조를 자유롭게 매핑할 수 있습니다. 조인 결과를 원하는 형태의 DTO로 직접 매핑하는 것이 직관적입니다.</li>
+<li><strong>학습 곡선</strong>: SQL을 아는 개발자라면 즉시 생산성을 낼 수 있습니다.</li>
+</ul>
+<p><strong>약점:</strong></p>
+<ul>
+<li><strong>Spring Data 추상화 미적용</strong>: Spring Data JDBC처럼 <code>CrudRepository</code> 인터페이스를 사용하는 패턴이 아니므로, Spring Data의 일관된 프로그래밍 모델에서 벗어납니다.</li>
+<li><strong>XML 관리 오버헤드</strong>: 대규모 프로젝트에서 XML mapper 파일이 늘어나면 관리가 번거로워질 수 있습니다. 어노테이션 기반으로 전환하면 이 문제를 줄일 수 있지만, 복잡한 쿼리에서는 XML이 더 읽기 편한 경우가 많습니다.</li>
+<li><strong>타입 안전성 부족</strong>: 쿼리가 문자열이므로 컴파일 타임에 오류를 잡기 어렵습니다.</li>
+</ul>
+<h3 id="spring-data-jdbc-vs-mybatis--어떤-걸-선택할까">Spring Data JDBC vs MyBatis — 어떤 걸 선택할까<a href="#spring-data-jdbc-vs-mybatis--어떤-걸-선택할까" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>기준</th>
+          <th>Spring Data JDBC</th>
+          <th>MyBatis</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Spring 생태계 일관성</td>
+          <td>Repository 인터페이스 기반, Spring Data Commons 공유</td>
+          <td>별도 통합, Spring Boot starter는 있음</td>
+      </tr>
+      <tr>
+          <td>쿼리 작성 방식</td>
+          <td>파생 쿼리 + <code>@Query</code> 어노테이션</td>
+          <td>XML mapper 또는 어노테이션 기반 SQL</td>
+      </tr>
+      <tr>
+          <td>복잡한 동적 쿼리</td>
+          <td>상대적으로 제한적</td>
+          <td><code>&lt;if&gt;</code>, <code>&lt;choose&gt;</code>, <code>&lt;foreach&gt;</code> 등으로 유연</td>
+      </tr>
+      <tr>
+          <td>DDD 지원</td>
+          <td>Aggregate Root 패턴 내장</td>
+          <td>별도로 설계해야 함</td>
+      </tr>
+      <tr>
+          <td>레거시 스키마 대응</td>
+          <td>단순한 매핑에 적합</td>
+          <td>복잡한 스키마에서 강점</td>
+      </tr>
+      <tr>
+          <td>Java Records 호환</td>
+          <td>자연스러움</td>
+          <td>가능하지만 추가 설정 필요</td>
+      </tr>
+      <tr>
+          <td>기존 팀 경험</td>
+          <td>JPA 경험이 많은 팀에 친숙 (Spring Data 패턴)</td>
+          <td>SQL 중심 개발 경험이 많은 팀에 친숙</td>
+      </tr>
+  </tbody>
+</table>
+<p>결국 둘 다 &ldquo;SQL이 코드에 보인다&quot;는 공통된 장점을 갖고 있고, JPA의 암묵적 동작들을 제거한다는 목표는 동일합니다. <strong>새로운 마이크로서비스를 처음부터 만들 때는 Spring Data JDBC의 DDD 친화적 설계가 더 잘 맞고, 기존의 복잡한 스키마를 다루거나 동적 쿼리가 핵심인 경우에는 MyBatis가 더 현실적</strong>이라고 봅니다. 프로젝트 특성에 따라 혼용해도 무방합니다.</p>
+<h3 id="jpa가-여전히-합리적인-경우">JPA가 여전히 합리적인 경우<a href="#jpa가-여전히-합리적인-경우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>모든 상황에서 JPA를 들어내야 한다는 주장은 아닙니다. 다음과 같은 경우에는 JPA를 유지하는 것이 합리적일 수 있습니다:</p>
+<ul>
+<li>변경할 수 없는 복잡한 레거시 스키마가 있고, 엔티티 그래프 탐색이 핵심 패턴인 경우</li>
+<li>Second Level Cache가 성능 전략의 핵심인 read-heavy 모놀리스</li>
+<li>DB 벤더 독립성이 반드시 필요한 경우</li>
+</ul>
+<blockquote>
+<p><strong>참고 자료</strong></p>
+<ul>
+<li><a href="https://docs.spring.io/spring-data/relational/reference/jdbc/why.html">Spring 공식 — &ldquo;Why Spring Data JDBC?&rdquo;</a></li>
+<li><a href="https://www.jooq.org/doc/latest/manual/coming-from-jpa/from-jpa-eager-lazy/">jOOQ — &ldquo;Coming from JPA: Eager or lazy loading&rdquo;</a></li>
+<li><a href="https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/">Vlad Mihalcea — &ldquo;The best way to handle the LazyInitializationException&rdquo;</a></li>
+<li><a href="https://thorben-janssen.com/lazyinitializationexception/">Thorben Janssen — &ldquo;LazyInitializationException&rdquo;</a></li>
+<li><a href="https://jpa-buddy.com/blog/spring-data-jpa-to-spring-data-jdbc-a-smooth-ride/">JPA Buddy — &ldquo;Spring Data JPA to Spring Data JDBC – a smooth ride?&rdquo;</a></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="4-httpexchange--http-클라이언트-통일">4. <code>@HttpExchange</code> — HTTP 클라이언트 통일<a href="#4-httpexchange--http-클라이언트-통일" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="파편화된-http-클라이언트-정리">파편화된 HTTP 클라이언트 정리<a href="#파편화된-http-클라이언트-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오래 운영된 프로젝트에서는 HTTP 클라이언트가 뒤섞이는 경우가 흔합니다. 초기에 만든 서비스는 RestTemplate, 나중에 만든 것은 WebClient, 외부 API 연동은 Retrofit, Kotlin 서비스는 Ktor client&hellip; 각각의 설정 방식과 에러 핸들링 패턴이 다르니 코드 리뷰도 피곤해집니다.</p>
+<p>Spring Boot 4는 이 문제에 대한 깔끔한 답을 내놓았습니다. <code>@HttpExchange</code> 기반의 선언적 HTTP Service Client가 프레임워크 네이티브 기능으로 들어왔습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@HttpExchange</span><span class="p">(</span><span class="s">&#34;/orders&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">OrderClient</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@GetExchange</span><span class="p">(</span><span class="s">&#34;/{id}&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">OrderDetails</span><span class="w"> </span><span class="nf">getOrder</span><span class="p">(</span><span class="nd">@PathVariable</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>인터페이스를 정의하고 <code>@ImportHttpServices</code>로 등록하면, Spring이 런타임에 구현체를 자동 생성합니다. URL 빌딩, JSON 직렬화/역직렬화, 에러 핸들링 모두 프레임워크가 처리합니다. HTTP service group은 기본적으로 RestClient로 구성되며, <code>clientType</code> 속성으로 WebClient로 전환할 수도 있습니다.</p>
+<h3 id="ai-시대에-좋아진-이유">AI 시대에 좋아진 이유<a href="#ai-시대에-좋아진-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>과거에 Java HttpClient를 직접 사용하기 어려웠던 이유 중 하나는, 프록시 설정, 타임아웃, SSL 인증서 같은 세부 설정을 일일이 작성해야 하는 번거로움이었습니다. 그래서 이런 것들을 편하게 추상화해주는 RestTemplate이나 Retrofit이 각광받았습니다.</p>
+<p>지금은 그런 boilerplate를 AI가 깔끔하게 생성해줍니다. 게다가 Spring Boot 4에서는 <code>spring.http.client.service.group.*</code> 프로퍼티로 서비스 그룹별 base URL, timeout, SSL 등을 선언적으로 관리할 수 있고, Spring Security 7의 OAuth 지원(<code>@ClientRegistrationId</code>)이나 Spring Cloud 2025.1의 로드밸런싱/서킷브레이킹도 자동 적용됩니다. Feign이나 Retrofit 같은 외부 라이브러리를 유지할 이유가 줄어든 셈입니다.</p>
+<p>초기 버전이라는 점에서 edge case 성숙도는 지켜볼 필요가 있지만, Spring 팀이 RestTemplate을 deprecated 방향으로 가고 있고 <code>@HttpExchange</code>에 명확히 투자하고 있으므로, 새로운 코드에서는 이쪽으로 가는 것이 자연스럽습니다.</p>
+<blockquote>
+<p><strong>참고 자료</strong></p>
+<ul>
+<li><a href="https://spring.io/blog/2025/09/23/http-service-client-enhancements/">Spring 공식 블로그 — &ldquo;HTTP Service Client Enhancements&rdquo;</a> — 그룹별 설정, Spring Security/Cloud 통합</li>
+<li><a href="https://spring.io/blog/2025/09/30/the-state-of-http-clients-in-spring/">Spring 공식 블로그 — &ldquo;The state of HTTP clients in Spring&rdquo;</a></li>
+<li><a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes">Spring Boot 4.0 Release Notes</a> — <code>@ImportHttpServices</code>, JDK HttpClient + Virtual Thread</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="5-종합-비교">5. 종합 비교<a href="#5-종합-비교" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>영역</th>
+          <th>기존 (일반적인 구성)</th>
+          <th>제안</th>
+          <th>핵심 이유</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>언어</td>
+          <td>Java + Kotlin 혼용, Lombok</td>
+          <td>Java 25, No Lombok</td>
+          <td>단일 언어 통일, Records + Sealed + Pattern Matching</td>
+      </tr>
+      <tr>
+          <td>프레임워크</td>
+          <td>Spring Boot 2.x~3.x</td>
+          <td>Spring Boot 4.x (MVC + Virtual Threads)</td>
+          <td>모듈화, 동기식 코드에서 높은 동시성</td>
+      </tr>
+      <tr>
+          <td>데이터 접근</td>
+          <td>JPA + QueryDSL</td>
+          <td>Spring Data JDBC / MyBatis</td>
+          <td>명시적 SQL, No Dirty Checking, Immutable Records</td>
+      </tr>
+      <tr>
+          <td>HTTP 클라이언트</td>
+          <td>RestTemplate, Retrofit 등 혼재</td>
+          <td><code>@HttpExchange</code> + JDK HttpClient</td>
+          <td>Spring 네이티브, 선언적, 통일된 설정</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 글에서 다룬 변화들의 공통 키워드는 <strong>명시성</strong>입니다.</p>
+<p>JPA의 dirty checking 대신 SQL이 코드에 보이는 방식. Lombok의 AST 마법 대신 Records의 언어 수준 보장. 리액티브 체인 대신 위에서 아래로 읽히는 동기식 코드. 각기 다른 HTTP 클라이언트 대신 하나의 선언적 인터페이스.</p>
+<p>이런 변화들이 과거에는 &ldquo;개발 생산성을 포기하는 것&quot;으로 느껴졌을 수 있습니다. 하지만 AI 코딩 도구가 boilerplate 생성을 대신해주는 지금, 프레임워크의 &ldquo;편의 기능&quot;이 가져다주던 가치는 줄어들고 있는 반면, 코드를 빠르게 읽고 검증할 수 있는 능력의 가치는 올라가고 있습니다.</p>
+<p>물론 모든 프로젝트에 일괄 적용해야 한다는 뜻은 아닙니다. JPA가 적합한 상황은 여전히 존재하고, Kotlin의 장점도 분명합니다. 중요한 건 기존의 관성이 아니라, 현재의 맥락에서 각 기술 선택의 트레이드오프를 다시 따져보는 것입니다.</p>
+<p>새로운 서비스를 설계하거나, 기존 스택을 점검할 타이밍이라면, 한번쯤 이런 관점에서 돌아보는 것도 괜찮지 않을까요.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-05/" class="button inline next">
+         [<span class="button__text">WELC ver. 2026 Part 5: 의존성 깨기 기법 카탈로그</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
