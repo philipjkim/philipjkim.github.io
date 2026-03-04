@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>WELC ver. 2026 Part 3: 테스트 하네스에 코드 넣기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="테스트가 전혀 없는 클래스와 메서드를 테스트 하네스에 넣는 기법들을 다룹니다. Hidden Dependency, Irritating Parameter, Global Dependency 등의 문제 상황별 해법과 Characterization Test 작성법을 JDK 25 코드로 보여줍니다." />
+<meta name="keywords" content="java, programming, refactoring, legacy-code, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="WELC ver. 2026 Part 3: 테스트 하네스에 코드 넣기">
+<meta property="og:description" content="테스트가 전혀 없는 클래스와 메서드를 테스트 하네스에 넣는 기법들을 다룹니다. Hidden Dependency, Irritating Parameter, Global Dependency 등의 문제 상황별 해법과 Characterization Test 작성법을 JDK 25 코드로 보여줍니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-04 10:03:50 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-03/">WELC ver. 2026 Part 3: 테스트 하네스에 코드 넣기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-04</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/java/">java</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/refactoring/">refactoring</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/legacy-code/">legacy-code</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="도입">도입<a href="#도입" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>레거시 코드를 변경하려면 먼저 테스트를 작성해야 합니다. 하지만 테스트를 작성하려면 코드의 의존성을 깨야 합니다. 의존성을 깨려면 코드를 변경해야 하는데, 변경의 안전성을 보장해줄 테스트가 아직 없습니다.</p>
+<p>이것이 Feathers가 말하는 &ldquo;레거시 코드의 딜레마&quot;입니다.</p>
+<blockquote>
+<p>In legacy code, the weights work against us. We have to pull out a piece to work with because we can&rsquo;t easily test it in place.
+— Michael Feathers, <em>Working Effectively with Legacy Code</em> (2004)</p>
+</blockquote>
+<p>이 딜레마를 해결하는 첫 번째 단계는 코드를 <strong>테스트 하네스(test harness)</strong> 에 넣는 것입니다. 테스트 하네스란 테스트 코드에서 대상 코드를 인스턴스화하고 실행할 수 있는 상태를 의미합니다. 이 파트에서는 원서 9~13장의 핵심 기법들을 JDK 25 코드로 다룹니다.</p>
+<h2 id="클래스를-테스트-하네스에-넣기">클래스를 테스트 하네스에 넣기<a href="#클래스를-테스트-하네스에-넣기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>클래스를 테스트에서 인스턴스화하려고 할 때 가장 흔히 부딪히는 장벽은 <strong>생성자의 의존성</strong>입니다. 생성자가 데이터베이스 커넥션을 열거나, 외부 서비스에 연결하거나, 파일 시스템에 접근하면 테스트 환경에서 해당 클래스를 생성할 수 없습니다.</p>
+<p>Feathers는 이런 장벽을 유형별로 분류하고 각각에 대한 해법을 제시합니다.</p>
+<h3 id="case-1-the-hidden-dependency-숨겨진-의존성">Case 1: The Hidden Dependency (숨겨진 의존성)<a href="#case-1-the-hidden-dependency-숨겨진-의존성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>생성자 내부에서 직접 의존 객체를 생성하는 경우입니다. 클래스의 공개 인터페이스만 봐서는 어떤 의존성이 있는지 알 수 없습니다.</p>
+<p><strong>Before:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ReportGenerator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DatabaseConnection</span><span class="w"> </span><span class="n">connection</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PdfRenderer</span><span class="w"> </span><span class="n">renderer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">ReportGenerator</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 생성자에서 직접 의존성 생성 — 테스트 불가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DatabaseConnection</span><span class="p">(</span><span class="s">&#34;jdbc:mysql://prod:3306/reports&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">renderer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PdfRenderer</span><span class="p">(</span><span class="s">&#34;/usr/local/fonts&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">reportId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="s">&#34;SELECT * FROM reports WHERE id = ?&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">reportId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">renderer</span><span class="p">.</span><span class="na">render</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>테스트에서 <code>new ReportGenerator()</code>를 호출하면 프로덕션 데이터베이스에 연결을 시도합니다. 테스트가 불가능합니다.</p>
+<p><strong>After (JDK 25 &ndash; Parameterize Constructor):</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ReportGenerator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DatabaseConnection</span><span class="w"> </span><span class="n">connection</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PdfRenderer</span><span class="w"> </span><span class="n">renderer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 테스트용 생성자: 의존성 주입</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">ReportGenerator</span><span class="p">(</span><span class="n">DatabaseConnection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">PdfRenderer</span><span class="w"> </span><span class="n">renderer</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">renderer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">renderer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 기존 호환성을 위한 생성자 (production 용)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">ReportGenerator</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">DatabaseConnection</span><span class="p">(</span><span class="s">&#34;jdbc:mysql://prod:3306/reports&#34;</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">PdfRenderer</span><span class="p">(</span><span class="s">&#34;/usr/local/fonts&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">reportId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="s">&#34;SELECT * FROM reports WHERE id = ?&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">reportId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">renderer</span><span class="p">.</span><span class="na">render</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>핵심은 <strong>의존성을 매개변수로 받는 생성자를 추가</strong>하고, 기존 기본 생성자는 이 새 생성자에 위임하도록 변경하는 것입니다. 기존 호출 코드는 전혀 수정할 필요가 없습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 테스트</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@ExtendWith</span><span class="p">(</span><span class="n">MockitoExtension</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">ReportGeneratorTest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Mock</span><span class="w"> </span><span class="n">DatabaseConnection</span><span class="w"> </span><span class="n">connection</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Mock</span><span class="w"> </span><span class="n">PdfRenderer</span><span class="w"> </span><span class="n">renderer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;리포트 데이터를 조회하여 PDF를 생성한다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">generatesPdfFromReportData</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">generator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ReportGenerator</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">renderer</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">testData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ReportData</span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&#34;title&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Q4 Report&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">when</span><span class="p">(</span><span class="n">connection</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">anyString</span><span class="p">(),</span><span class="w"> </span><span class="n">eq</span><span class="p">(</span><span class="s">&#34;RPT-001&#34;</span><span class="p">))).</span><span class="na">thenReturn</span><span class="p">(</span><span class="n">testData</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">when</span><span class="p">(</span><span class="n">renderer</span><span class="p">.</span><span class="na">render</span><span class="p">(</span><span class="n">testData</span><span class="p">)).</span><span class="na">thenReturn</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="p">{</span><span class="n">0x25</span><span class="p">,</span><span class="w"> </span><span class="n">0x50</span><span class="p">,</span><span class="w"> </span><span class="n">0x44</span><span class="p">,</span><span class="w"> </span><span class="n">0x46</span><span class="p">});</span><span class="w"> </span><span class="c1">// %PDF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="na">generate</span><span class="p">(</span><span class="s">&#34;RPT-001&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">isNotEmpty</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">verify</span><span class="p">(</span><span class="n">renderer</span><span class="p">).</span><span class="na">render</span><span class="p">(</span><span class="n">testData</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Feathers는 이 기법을 <strong>Parameterize Constructor</strong>라고 부릅니다. 가장 단순하면서도 효과적인 의존성 깨기 기법 중 하나입니다.</p>
+<h3 id="case-2-the-irritating-parameter-짜증나는-매개변수">Case 2: The Irritating Parameter (짜증나는 매개변수)<a href="#case-2-the-irritating-parameter-짜증나는-매개변수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>메서드의 매개변수가 생성하기 어려운 객체인 경우입니다. <code>HttpServletRequest</code>처럼 인터페이스 뒤에 복잡한 컨테이너 구현이 숨어 있는 객체가 대표적입니다.</p>
+<p><strong>Before:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CreditValidator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">isValid</span><span class="p">(</span><span class="n">HttpServletRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">creditNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getParameter</span><span class="p">(</span><span class="s">&#34;creditNo&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">expDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">getParameter</span><span class="p">(</span><span class="s">&#34;expDate&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 복잡한 유효성 검증 로직...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">creditNumber</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">creditNumber</span><span class="p">.</span><span class="na">length</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">16</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>테스트하려면 <code>HttpServletRequest</code>를 mock해야 합니다. mock 자체는 어렵지 않지만, 테스트가 HTTP라는 전달 메커니즘에 불필요하게 결합됩니다.</p>
+<p><strong>After (JDK 25 &ndash; Extract Interface / record 도입):</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 필요한 데이터만 추출한 record</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">CreditRequest</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">creditNumber</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">expirationDate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// HttpServletRequest에서 변환하는 팩토리 메서드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">CreditRequest</span><span class="w"> </span><span class="nf">from</span><span class="p">(</span><span class="n">HttpServletRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CreditRequest</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">request</span><span class="p">.</span><span class="na">getParameter</span><span class="p">(</span><span class="s">&#34;creditNo&#34;</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">request</span><span class="p">.</span><span class="na">getParameter</span><span class="p">(</span><span class="s">&#34;expDate&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CreditValidator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 인터페이스가 아닌 record를 받으므로 테스트에서 쉽게 생성 가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">isValid</span><span class="p">(</span><span class="n">CreditRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">creditNumber</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="na">creditNumber</span><span class="p">().</span><span class="na">length</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">16</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span><span class="w"> </span><span class="nf">validCreditNumber_returnsTrue</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CreditRequest</span><span class="p">(</span><span class="s">&#34;1234567890123456&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;12/28&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CreditValidator</span><span class="p">().</span><span class="na">isValid</span><span class="p">(</span><span class="n">request</span><span class="p">)).</span><span class="na">isTrue</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span><span class="w"> </span><span class="nf">nullCreditNumber_returnsFalse</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CreditRequest</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;12/28&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CreditValidator</span><span class="p">().</span><span class="na">isValid</span><span class="p">(</span><span class="n">request</span><span class="p">)).</span><span class="na">isFalse</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>record</code>로 HTTP 요청의 필요한 부분만 추출하면, <code>HttpServletRequest</code>를 mock할 필요가 없습니다. 테스트에서 <code>new CreditRequest(...)</code>로 원하는 값을 즉시 생성할 수 있습니다.</p>
+<p>이것이 Feathers가 말하는 <strong>Adapt Parameter</strong> 기법의 현대적 적용입니다. 원서에서는 인터페이스를 추출하여 래퍼를 만드는 방식을 사용했지만, JDK 16에서 도입된 record (JEP 395)를 사용하면 보일러플레이트 없이 같은 효과를 얻을 수 있습니다.</p>
+<h3 id="case-3-the-irritating-global-dependency-전역-의존성">Case 3: The Irritating Global Dependency (전역 의존성)<a href="#case-3-the-irritating-global-dependency-전역-의존성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>싱글톤이나 정적 메서드를 통한 전역 의존성은 레거시 코드에서 가장 흔한 테스트 장벽입니다.</p>
+<p><strong>Before:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PricingEngine</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">BigDecimal</span><span class="w"> </span><span class="nf">calculatePrice</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">productId</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 싱글톤에 대한 전역 의존성</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AppConfig</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">taxRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="p">.</span><span class="na">getTaxRate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">discount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DiscountRegistry</span><span class="p">.</span><span class="na">getInstance</span><span class="p">().</span><span class="na">getDiscount</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">basePrice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">catalog</span><span class="p">.</span><span class="na">getPrice</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">basePrice</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">quantity</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">ONE</span><span class="p">.</span><span class="na">subtract</span><span class="p">(</span><span class="n">discount</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">ONE</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">taxRate</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>AppConfig.getInstance()</code>와 <code>DiscountRegistry.getInstance()</code>가 프로덕션 설정 파일이나 데이터베이스에 접근합니다. 테스트 환경에서 이 싱글톤들의 상태를 제어할 수 없으므로 테스트가 불가능합니다.</p>
+<p><strong>After (JDK 25 &ndash; 의존성을 명시적으로 전달):</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">PricingContext</span><span class="p">(</span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">taxRate</span><span class="p">,</span><span class="w"> </span><span class="n">DiscountPolicy</span><span class="w"> </span><span class="n">discountPolicy</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">DiscountPolicy</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">BigDecimal</span><span class="w"> </span><span class="nf">getDiscount</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">productId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PricingEngine</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PricingContext</span><span class="w"> </span><span class="n">context</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ProductCatalog</span><span class="w"> </span><span class="n">catalog</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">PricingEngine</span><span class="p">(</span><span class="n">PricingContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">ProductCatalog</span><span class="w"> </span><span class="n">catalog</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">catalog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">catalog</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">BigDecimal</span><span class="w"> </span><span class="nf">calculatePrice</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">productId</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">discount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="na">discountPolicy</span><span class="p">().</span><span class="na">getDiscount</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">basePrice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">catalog</span><span class="p">.</span><span class="na">getPrice</span><span class="p">(</span><span class="n">productId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">basePrice</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">quantity</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">ONE</span><span class="p">.</span><span class="na">subtract</span><span class="p">(</span><span class="n">discount</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">ONE</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">taxRate</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span><span class="w"> </span><span class="nf">appliesTaxAndDiscount</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PricingContext</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;0.10&#34;</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">productId</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;0.20&#34;</span><span class="p">)</span><span class="w">  </span><span class="c1">// 20% 할인</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">catalog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mock</span><span class="p">(</span><span class="n">ProductCatalog</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">when</span><span class="p">(</span><span class="n">catalog</span><span class="p">.</span><span class="na">getPrice</span><span class="p">(</span><span class="s">&#34;ITEM-1&#34;</span><span class="p">)).</span><span class="na">thenReturn</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;10000&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">engine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PricingEngine</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">catalog</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span><span class="na">calculatePrice</span><span class="p">(</span><span class="s">&#34;ITEM-1&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 10000 * 2 * (1 - 0.20) * (1 + 0.10) = 17600</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">price</span><span class="p">).</span><span class="na">isEqualByComparingTo</span><span class="p">(</span><span class="s">&#34;17600&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>전역 의존성을 생성자 매개변수로 전환하면 두 가지 이점이 있습니다. 첫째, 테스트에서 의존성을 완전히 제어할 수 있습니다. 둘째, 클래스의 의존 관계가 시그니처에 명시적으로 드러나므로 코드를 읽는 사람이 의존성을 즉시 파악할 수 있습니다.</p>
+<p><code>DiscountPolicy</code>를 함수형 인터페이스로 정의했기 때문에 테스트에서 람다로 간단히 구현할 수 있습니다. <code>PricingContext</code>를 record로 정의하여 관련된 설정 값들을 하나의 불변 객체로 묶었습니다.</p>
+<h2 id="메서드를-테스트-하네스에-넣기">메서드를 테스트 하네스에 넣기<a href="#메서드를-테스트-하네스에-넣기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>클래스를 인스턴스화하는 문제를 해결했다면, 다음은 개별 메서드를 테스트 가능한 상태로 만드는 것입니다.</p>
+<h3 id="숨겨진-메서드-hidden-method">숨겨진 메서드 (Hidden Method)<a href="#숨겨진-메서드-hidden-method" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>private 메서드를 직접 테스트하고 싶은 충동은 흔히 발생합니다. 복잡한 계산 로직이 private 메서드 안에 숨어 있고, public 메서드를 통해 간접적으로 테스트하기에는 경로가 너무 복잡한 경우입니다.</p>
+<p>Feathers의 조언은 명확합니다.</p>
+<blockquote>
+<p>If we need to test a private method, we should make it public. If making it public bothers us, in most cases, it means that our class is doing too much and we ought to fix it.
+— Michael Feathers, <em>Working Effectively with Legacy Code</em> (2004)</p>
+</blockquote>
+<p>private 메서드를 직접 테스트하고 싶다면, 그것은 별도의 클래스로 추출해야 한다는 신호입니다.</p>
+<p><strong>Before:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderProcessor</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">validate</span><span class="p">(</span><span class="n">order</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculateTotal</span><span class="p">(</span><span class="n">order</span><span class="p">);</span><span class="w">  </span><span class="c1">// private, 복잡한 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">paymentService</span><span class="p">.</span><span class="na">charge</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="na">customerId</span><span class="p">(),</span><span class="w"> </span><span class="n">total</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">BigDecimal</span><span class="w"> </span><span class="nf">calculateTotal</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 수십 줄의 복잡한 계산 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 세금, 할인, 배송비, 멤버십 등</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (JDK 25 &ndash; Extract Class):</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 복잡한 계산 로직을 별도 클래스로 추출</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderTotalCalculator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">TaxPolicy</span><span class="w"> </span><span class="n">taxPolicy</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ShippingPolicy</span><span class="w"> </span><span class="n">shippingPolicy</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">OrderTotalCalculator</span><span class="p">(</span><span class="n">TaxPolicy</span><span class="w"> </span><span class="n">taxPolicy</span><span class="p">,</span><span class="w"> </span><span class="n">ShippingPolicy</span><span class="w"> </span><span class="n">shippingPolicy</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">taxPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taxPolicy</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">shippingPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shippingPolicy</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">BigDecimal</span><span class="w"> </span><span class="nf">calculate</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">subtotal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">items</span><span class="p">().</span><span class="na">stream</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="na">price</span><span class="p">().</span><span class="na">multiply</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">item</span><span class="p">.</span><span class="na">quantity</span><span class="p">())))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">reduce</span><span class="p">(</span><span class="n">BigDecimal</span><span class="p">.</span><span class="na">ZERO</span><span class="p">,</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">::</span><span class="n">add</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">tax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taxPolicy</span><span class="p">.</span><span class="na">calculate</span><span class="p">(</span><span class="n">subtotal</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">shipping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shippingPolicy</span><span class="p">.</span><span class="na">calculate</span><span class="p">(</span><span class="n">order</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">subtotal</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">tax</span><span class="p">).</span><span class="na">add</span><span class="p">(</span><span class="n">shipping</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span><span class="w"> </span><span class="nf">calculatesOrderTotal</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">calculator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OrderTotalCalculator</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">subtotal</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">subtotal</span><span class="p">.</span><span class="na">multiply</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;0.10&#34;</span><span class="p">)),</span><span class="w">  </span><span class="c1">// 10% tax</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">order</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;3000&#34;</span><span class="p">)</span><span class="w">  </span><span class="c1">// flat shipping</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Order</span><span class="p">(</span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">OrderItem</span><span class="p">(</span><span class="s">&#34;A&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;10000&#34;</span><span class="p">),</span><span class="w"> </span><span class="n">2</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">OrderItem</span><span class="p">(</span><span class="s">&#34;B&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;5000&#34;</span><span class="p">),</span><span class="w"> </span><span class="n">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (10000*2 + 5000*1) + 10% tax + 3000 shipping = 25000 + 2500 + 3000 = 30500</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">calculator</span><span class="p">.</span><span class="na">calculate</span><span class="p">(</span><span class="n">order</span><span class="p">)).</span><span class="na">isEqualByComparingTo</span><span class="p">(</span><span class="s">&#34;30500&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>OrderProcessor</code>의 private 메서드였던 계산 로직이 <code>OrderTotalCalculator</code>라는 독립 클래스의 public 메서드가 되었습니다. 이제 이 로직은 직접 테스트할 수 있고, <code>OrderProcessor</code>는 조율(orchestration)만 담당하는 얇은 클래스가 됩니다. 이것이 단일 책임 원칙(SRP)의 실천적 적용입니다.</p>
+<h2 id="effect-analysis-영향-분석">Effect Analysis (영향 분석)<a href="#effect-analysis-영향-분석" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>코드를 변경했을 때 그 영향이 어디까지 퍼지는지를 분석하는 기법입니다. Feathers는 이를 <strong>Effect Sketch(영향 스케치)</strong> 라는 시각적 도구로 설명합니다.</p>
+<p>영향 분석의 절차는 다음과 같습니다.</p>
+<ol>
+<li>변경하려는 메서드에서 시작합니다.</li>
+<li>해당 메서드가 반환하는 값, 수정하는 변수를 추적합니다.</li>
+<li>영향받는 변수를 사용하는 다른 메서드들을 추적합니다.</li>
+<li>이 과정을 영향이 시스템 경계에 도달할 때까지 반복합니다.</li>
+<li>영향 경로상의 <strong>핀치 포인트(pinch point)</strong> 를 찾습니다.</li>
+</ol>
+<p>다음은 <code>calculateTotal</code> 메서드 변경의 영향을 스케치한 것입니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TD
+    A[calculateTotal] --&gt;|affects| B[order.total]
+    B --&gt;|affects| C[invoice.amount]
+    B --&gt;|affects| D[receipt.printedTotal]
+    A --&gt;|calls| E[taxPolicy.calculate]
+    E --&gt;|affects| F[taxAmount]
+    F --&gt;|affects| B
+    style A fill:#90EE90,color:#000000
+    style B fill:#FFD700,color:#000000
+    style C fill:#87CEEB,color:#000000
+    style D fill:#87CEEB,color:#000000
+    style E fill:#90EE90,color:#000000
+    style F fill:#FFD700,color:#000000
+</code></pre><p>이 스케치에서 <code>order.total</code>은 <strong>핀치 포인트</strong>입니다. <code>calculateTotal</code>과 <code>taxPolicy.calculate</code>의 영향이 모두 이 지점을 통과합니다. 핀치 포인트에서 테스트를 작성하면 적은 수의 테스트로 넓은 범위를 검증할 수 있습니다.</p>
+<p>핀치 포인트는 테스트 작성의 효율적 지점이기도 하지만, 향후 코드 분리의 자연스러운 경계이기도 합니다. 핀치 포인트를 중심으로 모듈을 분리하면 각 모듈의 응집도가 높고 결합도가 낮은 구조를 얻을 수 있습니다.</p>
+<h2 id="characterization-test-특성-테스트">Characterization Test (특성 테스트)<a href="#characterization-test-특성-테스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Characterization Test는 기존 코드의 <strong>현재 동작을 그대로 기록</strong>하는 테스트입니다. 코드가 &ldquo;무엇을 해야 하는가&quot;가 아니라 &ldquo;지금 실제로 무엇을 하는가&quot;를 포착합니다.</p>
+<p>일반적인 단위 테스트가 &ldquo;이 코드는 이렇게 동작해야 한다&quot;라는 명세를 검증한다면, Characterization Test는 &ldquo;이 코드는 현재 이렇게 동작한다&quot;라는 사실을 기록합니다. 코드에 버그가 있더라도 그 버그를 포함한 현재 동작을 기록하는 것이 목적입니다.</p>
+<h3 id="작성-절차">작성 절차<a href="#작성-절차" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li>코드의 한 부분을 테스트 하네스에 넣습니다.</li>
+<li>의도적으로 실패하는 assertion을 작성합니다.</li>
+<li>실패 메시지에서 실제 값을 확인합니다.</li>
+<li>실제 값을 expected 값으로 변경하여 테스트를 통과시킵니다.</li>
+<li>이 과정을 반복하여 코드의 동작을 문서화합니다.</li>
+</ol>
+<h3 id="예제">예제<a href="#예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 레거시 코드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">StringFormatter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">template</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">template</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="na">entrySet</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">replace</span><span class="p">(</span><span class="s">&#34;${&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="na">getKey</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="na">getValue</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 코드의 동작을 모르는 상태에서 Characterization Test를 작성합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">StringFormatterTest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;템플릿의 플레이스홀더를 값으로 치환한다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">replacesPlaceholders</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringFormatter</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;Hello, ${name}! You have ${count} messages.&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&#34;name&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Kim&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;count&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;5&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 처음에는 의도적으로 틀린 값을 넣어 실제 동작을 확인</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// assertEquals(&#34;fred&#34;, result);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// → 실패 메시지: expected:&lt;fred&gt; but was:&lt;Hello, Kim! You have 5 messages.&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 실제 동작을 기록</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">isEqualTo</span><span class="p">(</span><span class="s">&#34;Hello, Kim! You have 5 messages.&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;존재하지 않는 플레이스홀더는 그대로 남는다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">preservesUnknownPlaceholders</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringFormatter</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;${greeting}, ${name}!&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&#34;name&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Lee&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">isEqualTo</span><span class="p">(</span><span class="s">&#34;${greeting}, Lee!&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;빈 맵이면 템플릿을 그대로 반환한다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">returnsTemplateWhenNoValues</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringFormatter</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&#34;Hello, ${name}!&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">isEqualTo</span><span class="p">(</span><span class="s">&#34;Hello, ${name}!&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;null 값이 포함되면 어떻게 되는지 특성을 기록한다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">handlesNullValues</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// HashMap은 null 값을 허용합니다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">values</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&#34;name&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StringFormatter</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&#34;Hello, ${name}!&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">isEqualTo</span><span class="p">(</span><span class="s">&#34;Hello, null!&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>마지막 테스트 <code>handlesNullValues</code>에 주목하십시오. <code>null</code> 값이 전달되면 <code>String.replace</code>가 <code>&quot;null&quot;</code> 문자열로 치환합니다. 이것이 의도된 동작인지는 알 수 없지만, <strong>현재 코드가 이렇게 동작한다는 사실</strong>을 기록했습니다.</p>
+<h3 id="characterization-test의-핵심">Characterization Test의 핵심<a href="#characterization-test의-핵심" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>코드를 &ldquo;올바르게&rdquo; 만드는 것이 목적이 아닙니다.</li>
+<li>현재 동작을 <strong>안전망(safety net)</strong> 으로 기록합니다.</li>
+<li>이후 리팩터링 시 기존 동작이 변경되면 즉시 감지할 수 있습니다.</li>
+<li>버그를 발견하더라도 Characterization Test에서는 현재 동작을 그대로 기록합니다. 버그 수정은 별도의 작업으로 진행합니다.</li>
+</ul>
+<p>Characterization Test는 레거시 코드를 다루는 데 있어 가장 실용적인 도구입니다. 코드의 명세가 없을 때, 코드 자체를 명세로 삼는 것입니다.</p>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 파트에서는 테스트가 전혀 없는 코드를 테스트 하네스에 넣는 기법들을 살펴봤습니다. Parameterize Constructor, Adapt Parameter, Extract Class는 모두 &ldquo;의존성을 깨서 코드를 테스트 가능하게 만드는&rdquo; 같은 원칙의 변형입니다. Characterization Test는 코드의 현재 동작을 안전망으로 기록하는 실용적 기법이고, Effect Analysis는 변경의 영향 범위를 시각화하여 테스트를 작성할 최적의 지점을 찾는 전략입니다.</p>
+<p>Part 4에서는 비대한 클래스, 몬스터 메서드, 구조 없는 애플리케이션 등 대규모 코드 문제를 다루는 전략을 살펴봅니다.</p>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Feathers, M. (2004). <em>Working Effectively with Legacy Code</em>. Prentice Hall. ISBN 978-0131177055.</li>
+<li>OpenJDK. &ldquo;JDK 25&rdquo;. <a href="https://openjdk.org/projects/jdk/25/">https://openjdk.org/projects/jdk/25/</a></li>
+<li>JEP 395: Records. <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></li>
+<li>JUnit 5 User Guide. <a href="https://junit.org/junit5/docs/current/user-guide/">https://junit.org/junit5/docs/current/user-guide/</a></li>
+<li>Mockito Framework. <a href="https://site.mockito.org/">https://site.mockito.org/</a></li>
+<li>AssertJ. <a href="https://assertj.github.io/doc/">https://assertj.github.io/doc/</a></li>
+<li>Understand Legacy Code. &ldquo;Key Points of Working Effectively with Legacy Code&rdquo;. <a href="https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/">https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/</a></li>
+<li>Fowler, M. (2018). <em>Refactoring: Improving the Design of Existing Code</em> (2nd ed.). Addison-Wesley.</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-04/" class="button inline prev">
+        &lt; [<span class="button__text">WELC ver. 2026 Part 4: 대규모 코드 문제 다루기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-02/" class="button inline next">
+         [<span class="button__text">WELC ver. 2026 Part 2: 안전한 코드 변경 패턴 — Sprout와 Wrap</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

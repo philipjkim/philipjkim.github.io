@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>WELC ver. 2026 Part 1: 레거시 코드의 정의와 변경의 역학 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2004년 출판된 Michael Feathers의 명저를 2026년 현재 JDK 25 기준으로 재해석합니다. Part 1에서는 레거시 코드의 정의, 변경의 4가지 이유, Legacy Code Change Algorithm, 그리고 Seam Model을 다룹니다." />
+<meta name="keywords" content="java, programming, refactoring, legacy-code, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="WELC ver. 2026 Part 1: 레거시 코드의 정의와 변경의 역학">
+<meta property="og:description" content="2004년 출판된 Michael Feathers의 명저를 2026년 현재 JDK 25 기준으로 재해석합니다. Part 1에서는 레거시 코드의 정의, 변경의 4가지 이유, Legacy Code Change Algorithm, 그리고 Seam Model을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-04 10:03:48 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-01/">WELC ver. 2026 Part 1: 레거시 코드의 정의와 변경의 역학</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-04</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/java/">java</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/refactoring/">refactoring</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/legacy-code/">legacy-code</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="시리즈-소개">시리즈 소개<a href="#시리즈-소개" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2004년 Michael Feathers가 출판한 <em>Working Effectively with Legacy Code</em> (a.k.a. WELC)는 레거시 코드를 안전하게 변경하는 기법들을 체계적으로 정리한 명저입니다. 출판된 지 20년이 넘었지만, 이 책이 제시하는 원칙과 알고리즘은 여전히 유효합니다. 코드베이스가 노후화되는 속도보다 개발자가 이 책을 읽는 속도가 느린 것이 문제일 뿐입니다.</p>
+<p>원서의 예제는 Java 1.4/5, C++, C 시대의 코드입니다. 이 시리즈에서는 JDK 25 (2025년 9월 GA, LTS) 기준의 modern Java로 핵심 기법들을 재현합니다. Sealed class, record, text block, pattern matching 등 최신 언어 기능을 적극 활용하여, 원서의 기법이 오늘날 어떤 형태로 적용되는지 보여드리겠습니다.</p>
+<p>시리즈는 총 5개 파트로 구성됩니다.</p>
+<ul>
+<li><strong>Part 1</strong>: 레거시 코드의 정의와 변경의 역학 (원서 1~5장)</li>
+<li><strong>Part 2</strong>: Sprout/Wrap 패턴 — 기존 코드에 기능 추가하기 (원서 6~8장)</li>
+<li><strong>Part 3</strong>: 의존성 깨기 기법 I (원서 9~16장)</li>
+<li><strong>Part 4</strong>: 의존성 깨기 기법 II (원서 17~21장)</li>
+<li><strong>Part 5</strong>: 대규모 변경과 코드 이해 전략 (원서 22~25장)</li>
+</ul>
+<h2 id="레거시-코드란-무엇인가">레거시 코드란 무엇인가<a href="#레거시-코드란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Feathers의 정의는 간결합니다.</p>
+<blockquote>
+<p>Code without tests is legacy code.
+— Michael Feathers, <em>Working Effectively with Legacy Code</em> (2004)</p>
+</blockquote>
+<p>테스트가 없는 코드는 레거시 코드입니다. 코드가 얼마나 오래되었는지, 어떤 언어로 작성되었는지, 아키텍처가 얼마나 복잡한지는 부차적인 문제입니다. 핵심은 <strong>테스트의 유무</strong>입니다.</p>
+<p>이 정의가 중요한 이유는 명확합니다. 테스트가 없으면 코드를 변경한 후 그 변경이 기존 동작을 깨뜨리지 않았는지 확인할 방법이 없습니다. 변경이 안전한지 검증할 수단이 없는 코드에서는 모든 수정이 잠재적 장애의 씨앗입니다.</p>
+<h3 id="코드-변경의-4가지-이유">코드 변경의 4가지 이유<a href="#코드-변경의-4가지-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Feathers는 소프트웨어에서 코드를 변경하는 이유를 네 가지로 분류합니다.</p>
+<ol>
+<li><strong>기능 추가 (Adding a feature)</strong>: 새로운 비즈니스 요구사항을 구현합니다.</li>
+<li><strong>버그 수정 (Fixing a bug)</strong>: 의도와 다르게 동작하는 코드를 바로잡습니다.</li>
+<li><strong>설계 개선 (Improving the design)</strong>: 외부 동작은 유지하면서 코드의 내부 구조를 개선합니다. 리팩터링이 여기에 해당합니다.</li>
+<li><strong>자원 사용 최적화 (Optimizing resource usage)</strong>: 메모리, CPU, 네트워크 등의 자원 효율을 높입니다.</li>
+</ol>
+<p>이 네 가지 이유에서 공통적으로 중요한 것은, 변경 후에도 <strong>기존 동작이 보존되어야 한다</strong>는 점입니다. 기능 추가 시에도 기존 기능이 깨져서는 안 되고, 성능 최적화 시에도 비즈니스 로직이 달라져서는 안 됩니다. 이 &ldquo;기존 동작 보존&quot;을 보장하는 것이 바로 테스트입니다.</p>
+<h2 id="the-legacy-code-change-algorithm">The Legacy Code Change Algorithm<a href="#the-legacy-code-change-algorithm" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Feathers는 레거시 코드를 안전하게 변경하기 위한 5단계 알고리즘을 제시합니다.</p>
+<h3 id="1-변경-지점-식별-identify-change-points">1. 변경 지점 식별 (Identify change points)<a href="#1-변경-지점-식별-identify-change-points" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>코드의 어느 부분을 변경해야 하는지 파악합니다. 이 단계에서는 코드를 이해하는 것이 핵심입니다. 기능 스케치(Feature Sketching), 영향 분석(Effect Analysis) 등의 기법이 활용됩니다. Part 5에서 대규모 코드베이스를 이해하는 전략과 함께 다룹니다.</p>
+<h3 id="2-테스트-지점-찾기-find-test-points">2. 테스트 지점 찾기 (Find test points)<a href="#2-테스트-지점-찾기-find-test-points" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>변경의 정확성을 검증할 수 있는 지점을 찾습니다. 변경 지점과 테스트 지점이 항상 같지는 않습니다. 때로는 변경의 영향이 전파되는 경로를 따라 더 상위 레벨에서 테스트하는 것이 효과적입니다.</p>
+<h3 id="3-의존성-깨기-break-dependencies">3. 의존성 깨기 (Break dependencies)<a href="#3-의존성-깨기-break-dependencies" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>레거시 코드에서 테스트를 작성하기 어려운 가장 큰 이유는 <strong>의존성</strong>입니다. 데이터베이스, 외부 API, 파일 시스템, 싱글턴 등에 대한 직접적인 의존성이 코드를 테스트 하네스(test harness)에 넣는 것을 방해합니다. 이 단계에서 의존성을 끊어내어 코드를 테스트 가능하게 만듭니다. Part 3과 Part 4에서 구체적인 의존성 깨기 기법들을 집중적으로 다룹니다.</p>
+<h3 id="4-테스트-작성-write-tests">4. 테스트 작성 (Write tests)<a href="#4-테스트-작성-write-tests" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>의존성을 깬 후, 기존 동작을 포착하는 <strong>특성 테스트(Characterization Test)</strong> 를 작성합니다. 특성 테스트는 코드가 &ldquo;어떻게 동작해야 하는지&quot;가 아니라 &ldquo;현재 어떻게 동작하는지&quot;를 기록합니다. 이 테스트가 변경 과정에서 안전망 역할을 합니다.</p>
+<h3 id="5-변경-및-리팩터링-make-changes-and-refactor">5. 변경 및 리팩터링 (Make changes and refactor)<a href="#5-변경-및-리팩터링-make-changes-and-refactor" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>테스트가 있으니 이제 안전하게 코드를 변경할 수 있습니다. 변경 후 테스트를 실행하여 기존 동작이 보존되었는지 확인합니다. 필요하다면 리팩터링을 통해 설계를 개선합니다.</p>
+<p>이 시리즈의 나머지 파트들은 이 알고리즘의 각 단계를 깊이 있게 다룹니다. 특히 3단계(의존성 깨기)에 가장 많은 분량을 할애합니다. 레거시 코드에서 가장 어려운 부분이 바로 의존성을 끊어내는 것이기 때문입니다.</p>
+<h2 id="seam-model--코드의-접합점">Seam Model — 코드의 접합점<a href="#seam-model--코드의-접합점" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Feathers가 이 책에서 제시하는 가장 핵심적인 개념 중 하나가 <strong>Seam</strong>입니다.</p>
+<blockquote>
+<p>A seam is a place where you can alter behavior in your program without editing in that place.
+— Michael Feathers</p>
+</blockquote>
+<p>Seam(접합점)이란, 해당 위치의 코드를 직접 편집하지 않고도 프로그램의 동작을 변경할 수 있는 지점입니다.</p>
+<p>그리고 모든 Seam에는 <strong>Enabling Point</strong>가 존재합니다. Enabling Point는 Seam에서 어떤 동작을 사용할지 결정하는 지점입니다. 예를 들어, 인터페이스가 Seam이라면 생성자에서 어떤 구현체를 주입하느냐가 Enabling Point입니다.</p>
+<h3 id="seam의-3가지-유형">Seam의 3가지 유형<a href="#seam의-3가지-유형" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Feathers는 Seam을 세 가지 유형으로 분류합니다.</p>
+<p><strong>Preprocessing Seam</strong>: C/C++의 전처리기(<code>#define</code>, <code>#ifdef</code>)를 이용하여 컴파일 전에 코드의 동작을 변경하는 방식입니다. Java에는 전처리기가 없으므로 해당되지 않습니다.</p>
+<p><strong>Link Seam</strong>: 같은 이름의 클래스나 함수가 링크 단계에서 어떤 구현체로 연결되는지를 바꾸는 방식입니다. Java에서는 클래스패스 순서를 조작하거나, 테스트 시 같은 패키지에 같은 이름의 클래스를 배치하는 것이 이에 해당합니다. 실무에서 의도적으로 사용하기에는 취약한 방식이므로 권장되지 않습니다.</p>
+<p><strong>Object Seam</strong>: 객체지향 프로그래밍에서 가장 유용하고 안전한 Seam입니다. 인터페이스, 추상 클래스, 다형성을 활용하여 의존 객체를 교체합니다. 생성자 주입, 메서드 오버라이드 등이 Enabling Point가 됩니다. Java 개발에서 가장 빈번하게 사용하는 Seam 유형입니다.</p>
+<h3 id="object-seam을-modern-java로-구현">Object Seam을 Modern Java로 구현<a href="#object-seam을-modern-java로-구현" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Object Seam의 적용 전후를 비교해 보겠습니다.</p>
+<h4 id="before--테스트-불가능한-코드-java-14-스타일">Before — 테스트 불가능한 코드 (Java 1.4 스타일)<a href="#before--테스트-불가능한-코드-java-14-스타일" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PaymentProcessor</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">processPayment</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 직접 외부 API 호출 — 테스트 불가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">HttpClient</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HttpClient</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&#34;https://payment.api/charge&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;amount=&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">amount</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="na">contains</span><span class="p">(</span><span class="s">&#34;ERROR&#34;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeException</span><span class="p">(</span><span class="s">&#34;Payment failed&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 직접 DB 접근 — 테스트 불가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Database</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Database</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">db</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;INSERT INTO payments (amount, status) VALUES (&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="o">+</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;, &#39;SUCCESS&#39;)&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 코드에는 Seam이 없습니다. <code>HttpClient</code>와 <code>Database</code>가 메서드 내부에서 직접 생성되거나 싱글턴으로 접근되기 때문에, 테스트 시 이들을 대체할 방법이 없습니다. 테스트를 실행하려면 실제 외부 API와 데이터베이스가 필요합니다.</p>
+<h4 id="after--object-seam-적용-jdk-25">After — Object Seam 적용 (JDK 25)<a href="#after--object-seam-적용-jdk-25" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Seam: 인터페이스로 외부 의존성 추상화</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">sealed</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">PaymentGateway</span><span class="w"> </span><span class="n">permits</span><span class="w"> </span><span class="n">HttpPaymentGateway</span><span class="p">,</span><span class="w"> </span><span class="n">TestPaymentGateway</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">PaymentResult</span><span class="w"> </span><span class="nf">charge</span><span class="p">(</span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">amount</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">PaymentResult</span><span class="p">(</span><span class="kt">boolean</span><span class="w"> </span><span class="n">success</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">transactionId</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Production 구현</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">HttpPaymentGateway</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">PaymentGateway</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">HttpClient</span><span class="w"> </span><span class="n">httpClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HttpClient</span><span class="p">.</span><span class="na">newHttpClient</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">PaymentResult</span><span class="w"> </span><span class="nf">charge</span><span class="p">(</span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HttpRequest</span><span class="p">.</span><span class="na">newBuilder</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">uri</span><span class="p">(</span><span class="n">URI</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="s">&#34;https://payment.api/charge&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">POST</span><span class="p">(</span><span class="n">HttpRequest</span><span class="p">.</span><span class="na">BodyPublishers</span><span class="p">.</span><span class="na">ofString</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="s">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">                {&#34;amount&#34;: %s}
+</span></span></span><span class="line"><span class="cl"><span class="s">                &#34;&#34;&#34;</span><span class="p">.</span><span class="na">formatted</span><span class="p">(</span><span class="n">amount</span><span class="p">)))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PaymentResult</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;txn-123&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Test 구현 (Enabling Point: 생성자에서 어떤 구현체를 주입할지 결정)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TestPaymentGateway</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">PaymentGateway</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">shouldSucceed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setShouldSucceed</span><span class="p">(</span><span class="kt">boolean</span><span class="w"> </span><span class="n">shouldSucceed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">shouldSucceed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shouldSucceed</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">PaymentResult</span><span class="w"> </span><span class="nf">charge</span><span class="p">(</span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PaymentResult</span><span class="p">(</span><span class="n">shouldSucceed</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;test-txn-001&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Seam 적용된 PaymentProcessor</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PaymentProcessor</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PaymentGateway</span><span class="w"> </span><span class="n">gateway</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PaymentRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Enabling Point: 생성자 주입</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">PaymentProcessor</span><span class="p">(</span><span class="n">PaymentGateway</span><span class="w"> </span><span class="n">gateway</span><span class="p">,</span><span class="w"> </span><span class="n">PaymentRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">gateway</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gateway</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repository</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">processPayment</span><span class="p">(</span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gateway</span><span class="p">.</span><span class="na">charge</span><span class="p">(</span><span class="n">amount</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">.</span><span class="na">success</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PaymentException</span><span class="p">(</span><span class="s">&#34;Payment failed&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">repository</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">PaymentRecord</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">transactionId</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>변경된 점을 정리하면 다음과 같습니다.</p>
+<ul>
+<li><strong><code>sealed interface</code>로 Seam을 명시적으로 정의했습니다 (JDK 17+).</strong> <code>PaymentGateway</code>의 구현체가 <code>HttpPaymentGateway</code>와 <code>TestPaymentGateway</code>로 제한된다는 것을 타입 시스템 레벨에서 선언합니다. 실무에서는 <code>sealed</code> 대신 일반 <code>interface</code>를 사용하는 것이 더 유연할 수 있지만, 여기서는 Seam의 범위를 명시적으로 보여주기 위해 사용했습니다.</li>
+<li><strong><code>record</code>로 값 객체를 간결하게 표현했습니다 (JDK 16+).</strong> <code>PaymentResult</code>는 불변 데이터 캐리어입니다. <code>equals()</code>, <code>hashCode()</code>, <code>toString()</code>이 자동으로 생성됩니다.</li>
+<li><strong>Text block으로 JSON 리터럴을 가독성 있게 작성했습니다 (JDK 15+).</strong> 문자열 연결 대신 <code>&quot;&quot;&quot;...&quot;&quot;&quot;</code> 블록을 사용합니다.</li>
+<li><strong>생성자 주입이 Enabling Point 역할을 합니다.</strong> 프로덕션에서는 <code>HttpPaymentGateway</code>를, 테스트에서는 <code>TestPaymentGateway</code>를 주입합니다. <code>PaymentProcessor</code>의 코드를 변경하지 않고도 동작을 바꿀 수 있습니다. 이것이 Seam의 핵심입니다.</li>
+<li><strong><code>BigDecimal</code>로 금액을 처리합니다.</strong> <code>double</code>로 금액을 다루면 부동소수점 오차가 발생합니다. 금융 계산에서는 반드시 <code>BigDecimal</code>을 사용해야 합니다.</li>
+</ul>
+<h2 id="2026년의-테스트-도구">2026년의 테스트 도구<a href="#2026년의-테스트-도구" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>레거시 코드에 테스트를 추가하려면 테스트 도구에 대한 기본적인 이해가 필요합니다. 2026년 현재 Java 생태계의 표준 테스트 도구를 간략히 소개합니다.</p>
+<h3 id="junit-5-jupiter">JUnit 5 (Jupiter)<a href="#junit-5-jupiter" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java의 사실상 표준 테스트 프레임워크입니다. 주요 어노테이션은 다음과 같습니다.</p>
+<ul>
+<li><code>@Test</code>: 테스트 메서드를 표시합니다.</li>
+<li><code>@BeforeEach</code>: 각 테스트 전에 실행되는 설정 메서드를 표시합니다.</li>
+<li><code>@DisplayName</code>: 테스트의 표시 이름을 지정합니다. 한국어로 작성하면 테스트 결과가 읽기 쉬워집니다.</li>
+<li><code>@Nested</code>: 테스트 클래스 안에 내부 클래스를 만들어 테스트를 계층적으로 구성합니다.</li>
+<li><code>@ParameterizedTest</code>: 여러 입력값으로 같은 테스트를 반복 실행합니다.</li>
+</ul>
+<h3 id="mockito-5">Mockito 5+<a href="#mockito-5" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>목(mock) 객체를 생성하고 동작을 정의하는 프레임워크입니다. <code>mock()</code>, <code>when()</code>, <code>verify()</code> 등의 API로 의존 객체의 동작을 제어합니다. <code>@ExtendWith(MockitoExtension.class)</code>로 JUnit 5와 통합합니다.</p>
+<h3 id="assertj">AssertJ<a href="#assertj" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>유창한(fluent) 스타일의 assertion API를 제공합니다. <code>assertThat(actual).isEqualTo(expected)</code> 형태로 검증 코드를 자연어에 가깝게 작성할 수 있습니다. 예외 검증 시 <code>assertThatThrownBy()</code>가 특히 유용합니다.</p>
+<h3 id="paymentprocessor-테스트-예제">PaymentProcessor 테스트 예제<a href="#paymentprocessor-테스트-예제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>앞에서 Object Seam을 적용한 <code>PaymentProcessor</code>를 테스트하는 코드입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@ExtendWith</span><span class="p">(</span><span class="n">MockitoExtension</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">PaymentProcessorTest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Mock</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">PaymentRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">TestPaymentGateway</span><span class="w"> </span><span class="n">gateway</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">PaymentProcessor</span><span class="w"> </span><span class="n">processor</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@BeforeEach</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">setUp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">gateway</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TestPaymentGateway</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">processor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PaymentProcessor</span><span class="p">(</span><span class="n">gateway</span><span class="p">,</span><span class="w"> </span><span class="n">repository</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;결제 성공 시 결제 기록이 저장된다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">savesPaymentRecord_whenPaymentSucceeds</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;50000&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">processor</span><span class="p">.</span><span class="na">processPayment</span><span class="p">(</span><span class="n">amount</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">verify</span><span class="p">(</span><span class="n">repository</span><span class="p">).</span><span class="na">save</span><span class="p">(</span><span class="n">argThat</span><span class="p">(</span><span class="n">record</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">record</span><span class="err">.</span><span class="nc">amount</span><span class="p">().</span><span class="na">equals</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">record</span><span class="err">.</span><span class="nc">transactionId</span><span class="p">().</span><span class="na">equals</span><span class="p">(</span><span class="s">&#34;test-txn-001&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;결제 실패 시 PaymentException이 발생한다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">throwsException_whenPaymentFails</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">gateway</span><span class="p">.</span><span class="na">setShouldSucceed</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThatThrownBy</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">processor</span><span class="p">.</span><span class="na">processPayment</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BigDecimal</span><span class="p">(</span><span class="s">&#34;50000&#34;</span><span class="p">)))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">isInstanceOf</span><span class="p">(</span><span class="n">PaymentException</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">hasMessageContaining</span><span class="p">(</span><span class="s">&#34;Payment failed&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>PaymentGateway</code>에는 <code>TestPaymentGateway</code>를 직접 생성하여 주입하고, <code>PaymentRepository</code>에는 Mockito의 <code>@Mock</code>을 사용했습니다. 이 차이에 주목할 필요가 있습니다. <code>TestPaymentGateway</code>는 테스트에서 결제 성공/실패 시나리오를 제어하기 위해 명시적으로 만든 테스트 구현체이고, <code>PaymentRepository</code>는 <code>save()</code> 호출 여부만 검증하면 되므로 mock으로 충분합니다. 상황에 따라 적절한 테스트 더블을 선택하는 것이 중요합니다.</p>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 글에서는 Feathers의 레거시 코드 정의, 코드 변경의 4가지 이유, Legacy Code Change Algorithm, 그리고 Seam Model의 핵심 개념을 살펴보았습니다. 특히 Object Seam을 JDK 25의 <code>sealed interface</code>, <code>record</code>, text block 등으로 구현하는 방법을 확인했습니다. Part 2에서는 기존 코드에 기능을 추가할 때 가장 즉시 적용 가능한 Sprout Method, Sprout Class, Wrap Method, Wrap Class 패턴을 다룹니다.</p>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Feathers, M. (2004). <em>Working Effectively with Legacy Code</em>. Prentice Hall. ISBN 978-0131177055.</li>
+<li>OpenJDK. &ldquo;JDK 25&rdquo;. <a href="https://openjdk.org/projects/jdk/25/">https://openjdk.org/projects/jdk/25/</a></li>
+<li>JEP 409: Sealed Classes. <a href="https://openjdk.org/jeps/409">https://openjdk.org/jeps/409</a></li>
+<li>JEP 395: Records. <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></li>
+<li>JUnit 5 User Guide. <a href="https://junit.org/junit5/docs/current/user-guide/">https://junit.org/junit5/docs/current/user-guide/</a></li>
+<li>Mockito Framework. <a href="https://site.mockito.org/">https://site.mockito.org/</a></li>
+<li>AssertJ. <a href="https://assertj.github.io/doc/">https://assertj.github.io/doc/</a></li>
+<li>Understand Legacy Code. &ldquo;Key Points of Working Effectively with Legacy Code&rdquo;. <a href="https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/">https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-02/" class="button inline prev">
+        &lt; [<span class="button__text">WELC ver. 2026 Part 2: 안전한 코드 변경 패턴 — Sprout와 Wrap</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260302-introducing-viola/" class="button inline next">
+         [<span class="button__text">현악기 비올라 소개: 오케스트라의 숨은 심장</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

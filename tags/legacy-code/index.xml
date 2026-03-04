@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Refactoring on philipjkim</title>
-    <link>https://philipjkim.github.io/tags/refactoring/</link>
-    <description>Recent content in Refactoring on philipjkim</description>
+    <title>Legacy-Code on philipjkim</title>
+    <link>https://philipjkim.github.io/tags/legacy-code/</link>
+    <description>Recent content in Legacy-Code on philipjkim</description>
     <generator>Hugo</generator>
     <language>en-US</language>
     <lastBuildDate>Wed, 04 Mar 2026 10:03:52 +0900</lastBuildDate>
-    <atom:link href="https://philipjkim.github.io/tags/refactoring/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://philipjkim.github.io/tags/legacy-code/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>WELC ver. 2026 Part 5: 의존성 깨기 기법 카탈로그</title>
       <link>https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-05/</link>
@@ -42,27 +42,6 @@
       <pubDate>Wed, 04 Mar 2026 10:03:48 +0900</pubDate>
       <guid>https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-01/</guid>
       <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;시리즈-소개&#34;&gt;시리즈 소개&lt;/h2&gt;&#xA;&lt;p&gt;2004년 Michael Feathers가 출판한 &lt;em&gt;Working Effectively with Legacy Code&lt;/em&gt; (a.k.a. WELC)는 레거시 코드를 안전하게 변경하는 기법들을 체계적으로 정리한 명저입니다. 출판된 지 20년이 넘었지만, 이 책이 제시하는 원칙과 알고리즘은 여전히 유효합니다. 코드베이스가 노후화되는 속도보다 개발자가 이 책을 읽는 속도가 느린 것이 문제일 뿐입니다.&lt;/p&gt;&#xA;&lt;p&gt;원서의 예제는 Java 1.4/5, C++, C 시대의 코드입니다. 이 시리즈에서는 JDK 25 (2025년 9월 GA, LTS) 기준의 modern Java로 핵심 기법들을 재현합니다. Sealed class, record, text block, pattern matching 등 최신 언어 기능을 적극 활용하여, 원서의 기법이 오늘날 어떤 형태로 적용되는지 보여드리겠습니다.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>개발 팁: 읽기 쉽고 확장 가능한 if 구문 리팩토링 가이드</title>
-      <link>https://philipjkim.github.io/posts/20250905-how-to-replace-if-statements/</link>
-      <pubDate>Fri, 05 Sep 2025 13:02:51 +0900</pubDate>
-      <guid>https://philipjkim.github.io/posts/20250905-how-to-replace-if-statements/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://philipjkim.github.io/img/20250905_refactoring_if.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;em&gt;프로그래밍에서 if 를 사용하는 조건부 로직을 대체할 수 있는 방법들에 대해 gemini 2.5 pro 에게 요청한 연구 결과입니다.&lt;/em&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;em&gt;모든 예제 코드는 Go 로 작성되었으나, 다른 프로그래밍 언어에 공통적으로 적용할 수 있는 내용들입니다.&lt;/em&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;서론-조건문의-확산과-기술-부채의-축적&#34;&gt;서론: 조건문의 확산과 기술 부채의 축적&lt;/h2&gt;&#xA;&lt;p&gt;소프트웨어 개발에서 &lt;code&gt;if-else&lt;/code&gt; 문은 제어 흐름을 구성하는 가장 기본적인 도구 중 하나입니다. 그러나 이 근본적인 구조는 종종 오용되어, 시간이 지남에 따라 시스템의 건강을 심각하게 해치는 주범이 되기도 합니다. 복잡하게 중첩되거나 끝없이 이어지는 &lt;code&gt;if-else&lt;/code&gt; 체인은 가독성을 저해하고 유지보수를 악몽으로 만들며, 이는 소프트웨어 공학에서 &amp;ldquo;코드 스멜(code smell)&amp;ldquo;이라 불리는 명백한 위험 신호입니다. [1, 2, 3]&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>TotT: 인터페이스 테스트하기</title>
-      <link>https://philipjkim.github.io/posts/20250721-tott-testing-against-interfaces/</link>
-      <pubDate>Mon, 21 Jul 2025 10:01:35 +0900</pubDate>
-      <guid>https://philipjkim.github.io/posts/20250721-tott-testing-against-interfaces/</guid>
-      <description>&lt;p&gt;원문: &lt;a href=&#34;https://testing.googleblog.com/2008/07/tott-testing-against-interfaces.html&#34;&gt;https://testing.googleblog.com/2008/07/tott-testing-against-interfaces.html&lt;/a&gt; (Translated by Google Gemini)&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;부족함에 대한 지속적인 느낌을 억누르기 위해, 당신은 공학 분야의 진정한 통과 의례인 자신만의 행성 파괴 광선총을 만드는 데 시간을 들였습니다. 축하합니다. 그리고 당신은 매우 자랑스러워했지만, 그 다음 주말에 이워크&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; 해설이 포함된 한정판 스타워즈 3부작을 구매하여 데스스타&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;가 알데라안&lt;sup id=&#34;fnref:3&#34;&gt;&lt;a href=&#34;#fn:3&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;3&lt;/a&gt;&lt;/sup&gt;을 파괴하는 것을 보고 잘못된 결정을 내렸다는 것을 깨달았습니다. 당신의 행성 파괴 광선총은 파란색 레이저를 가지고 있지만, 녹색 레이저가 훨씬 더 멋있어 보입니다. 하지만 라디오셱&lt;sup id=&#34;fnref:4&#34;&gt;&lt;a href=&#34;#fn:4&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;4&lt;/a&gt;&lt;/sup&gt;에 가서 기존의 파괴 광선총에 끼울 수 있는 녹색 레이저를 사는 것은 간단한 문제가 아닙니다. 녹색 레이저를 가지려면 처음부터 다른 행성 파괴 광선총을 만들어야 할 것입니다. 두 개의 파괴 광선총을 소유하는 것이 하나보다 이웃들의 질투심을 더 자극할 것이므로 당신에게는 괜찮습니다.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>TotT: &#34;Static Cling&#34; 퇴치하기</title>
-      <link>https://philipjkim.github.io/posts/20250717-tott-defeat-static-cling/</link>
-      <pubDate>Thu, 17 Jul 2025 17:03:43 +0900</pubDate>
-      <guid>https://philipjkim.github.io/posts/20250717-tott-defeat-static-cling/</guid>
-      <description>&lt;p&gt;원문: &lt;a href=&#34;https://testing.googleblog.com/2008/06/defeat-static-cling.html&#34;&gt;https://testing.googleblog.com/2008/06/defeat-static-cling.html&lt;/a&gt; (Translated by Google Gemini)&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;당신은 페어 프로그래밍을 하고 있고, 많은 뛰어난 사람들이 그렇듯이 소리 내어 말하고 있습니다. &amp;ldquo;목을 만들고, 주입하고, 테스트를 다시 실행할 거야. 통과해야 하는데&amp;hellip; 젠장!&amp;rdquo; 당신의 파트너는 예외 &lt;code&gt;&amp;quot;ConnectionFactory not initialized&amp;quot;&lt;/code&gt;를 발견합니다. &amp;ldquo;뭐?&amp;rdquo; 그녀는 말합니다. &amp;ldquo;뭔가가 데이터베이스를 사용하고 있어? 젠장, 이건 작은 테스트여야 했는데.&amp;rdquo;&lt;/p&gt;&#xA;&lt;p&gt;검사해보니 당신의 클래스가 다른 클래스의 정적 메서드를 호출하고 있다는 것을 발견했습니다. Static Cling&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;이 발생한 것입니다! 만약 정적 메서드에 의존하는 코드를 생성하는 데이터 지속성 레이어를 (잘못) 사용하고, &lt;em&gt;주의를 기울이지 않았다면&lt;/em&gt;, 당신의 코드는 다음과 같을 수 있습니다.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

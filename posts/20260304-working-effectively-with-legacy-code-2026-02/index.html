@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>WELC ver. 2026 Part 2: 안전한 코드 변경 패턴 — Sprout와 Wrap :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="레거시 코드에 기능을 추가할 때 가장 즉시 적용 가능한 4가지 패턴 — Sprout Method, Sprout Class, Wrap Method, Wrap Class — 를 JDK 25 기준의 modern Java 코드로 재현합니다." />
+<meta name="keywords" content="java, programming, refactoring, legacy-code, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="WELC ver. 2026 Part 2: 안전한 코드 변경 패턴 — Sprout와 Wrap">
+<meta property="og:description" content="레거시 코드에 기능을 추가할 때 가장 즉시 적용 가능한 4가지 패턴 — Sprout Method, Sprout Class, Wrap Method, Wrap Class — 를 JDK 25 기준의 modern Java 코드로 재현합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-04 10:03:49 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-02/">WELC ver. 2026 Part 2: 안전한 코드 변경 패턴 — Sprout와 Wrap</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-04</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/java/">java</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/refactoring/">refactoring</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/legacy-code/">legacy-code</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="도입">도입<a href="#도입" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1에서 다룬 Legacy Code Change Algorithm의 5단계 중, 이번 글은 &ldquo;변경 및 리팩터링&rdquo; 단계에 해당하는 실전 패턴들을 다룹니다. Michael Feathers의 <em>Working Effectively with Legacy Code</em> 6~8장에 등장하는 핵심 기법입니다.</p>
+<p>레거시 코드에 기능을 추가해야 하는데 시간이 없을 때, 기존 코드를 전면 리팩터링하는 것은 현실적이지 않습니다. 이때 사용할 수 있는 4가지 패턴이 있습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>패턴</th>
+          <th>핵심 아이디어</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Sprout Method</td>
+          <td>새 기능을 별도 메서드로 추출</td>
+      </tr>
+      <tr>
+          <td>Sprout Class</td>
+          <td>새 기능을 별도 클래스로 분리</td>
+      </tr>
+      <tr>
+          <td>Wrap Method</td>
+          <td>기존 메서드를 감싸서 전후 동작 추가</td>
+      </tr>
+      <tr>
+          <td>Wrap Class</td>
+          <td>Decorator 패턴으로 기존 클래스를 감싸기</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 4가지 패턴의 공통점은 <strong>기존 코드를 가능한 한 건드리지 않으면서 새 기능을 추가</strong>한다는 것입니다.</p>
+<hr>
+<h2 id="sprout-method-새싹-메서드">Sprout Method (새싹 메서드)<a href="#sprout-method-새싹-메서드" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>새 기능을 기존 메서드에 끼워넣는 대신, 별도의 새 메서드로 작성하여 호출하는 기법입니다.</p>
+<h3 id="before-레거시-코드--java-14-스타일">Before (레거시 코드 — Java 1.4 스타일)<a href="#before-레거시-코드--java-14-스타일" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TransactionGate</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">postEntries</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">entries</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entries</span><span class="p">.</span><span class="na">iterator</span><span class="p">();</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="na">hasNext</span><span class="p">();</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Entry</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Entry</span><span class="p">)</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="na">next</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">entry</span><span class="p">.</span><span class="na">postDate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">transactionBundle</span><span class="p">.</span><span class="na">getListManager</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">entries</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>요구사항이 하나 들어옵니다. 중복 항목을 필터링해야 합니다.</p>
+<h3 id="나쁜-접근--기존-메서드에-직접-수정">나쁜 접근 — 기존 메서드에 직접 수정<a href="#나쁜-접근--기존-메서드에-직접-수정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">postEntries</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">entries</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">List</span><span class="w"> </span><span class="n">entriesToAdd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LinkedList</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entries</span><span class="p">.</span><span class="na">iterator</span><span class="p">();</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="na">hasNext</span><span class="p">();</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Entry</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Entry</span><span class="p">)</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="na">next</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">transactionBundle</span><span class="p">.</span><span class="na">getListManager</span><span class="p">().</span><span class="na">hasEntry</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">entry</span><span class="p">.</span><span class="na">postDate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">entriesToAdd</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">transactionBundle</span><span class="p">.</span><span class="na">getListManager</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">entriesToAdd</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이렇게 하면 기존 코드와 새 코드가 뒤섞여서, 어디까지가 원래 동작이고 어디부터가 새 기능인지 구분할 수 없게 됩니다. 테스트도 불가능합니다.</p>
+<h3 id="after-jdk-25--sprout-method-적용">After (JDK 25 — Sprout Method 적용)<a href="#after-jdk-25--sprout-method-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TransactionGate</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">postEntries</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Entry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entries</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">uniqueEntries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">filterDuplicates</span><span class="p">(</span><span class="n">entries</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">uniqueEntries</span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="n">Entry</span><span class="p">::</span><span class="n">postDate</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">transactionBundle</span><span class="p">.</span><span class="na">getListManager</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">uniqueEntries</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Sprout Method: 새 기능을 독립된 메서드로 추출</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Entry</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">filterDuplicates</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Entry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entries</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">existingManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transactionBundle</span><span class="p">.</span><span class="na">getListManager</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">entries</span><span class="p">.</span><span class="na">stream</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">entry</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">existingManager</span><span class="p">.</span><span class="na">hasEntry</span><span class="p">(</span><span class="n">entry</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">toList</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>filterDuplicates</code>는 패키지-프라이빗 접근 제어자를 사용합니다. 같은 패키지의 테스트 클래스에서 직접 호출할 수 있도록 하기 위함입니다.</p>
+<h3 id="sprout-method의-테스트-junit-5">Sprout Method의 테스트 (JUnit 5)<a href="#sprout-method의-테스트-junit-5" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nd">@DisplayName</span><span class="p">(</span><span class="s">&#34;중복 항목이 필터링된다&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span><span class="w"> </span><span class="nf">filtersDuplicateEntries</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// setup with mock ListManager...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gate</span><span class="p">.</span><span class="na">filterDuplicates</span><span class="p">(</span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">entry1</span><span class="p">,</span><span class="w"> </span><span class="n">entry2</span><span class="p">,</span><span class="w"> </span><span class="n">entry3</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">assertThat</span><span class="p">(</span><span class="n">result</span><span class="p">).</span><span class="na">containsExactly</span><span class="p">(</span><span class="n">entry1</span><span class="p">,</span><span class="w"> </span><span class="n">entry3</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>새로 추출한 메서드만 독립적으로 테스트할 수 있습니다. 기존 <code>postEntries</code>의 복잡한 의존성을 세팅할 필요가 없습니다.</p>
+<h3 id="sprout-method-적용-단계">Sprout Method 적용 단계<a href="#sprout-method-적용-단계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li>변경이 필요한 코드의 위치를 식별합니다.</li>
+<li>새 기능을 독립된 메서드로 작성합니다.</li>
+<li>기존 메서드에서 새 메서드를 호출합니다.</li>
+<li>새 메서드에 대한 테스트를 작성합니다.</li>
+</ol>
+<p><strong>장점</strong>: 새 코드와 기존 코드의 경계가 명확합니다. 새 코드는 테스트 가능합니다.</p>
+<p><strong>단점</strong>: 기존 메서드는 여전히 테스트되지 않은 상태입니다. Sprout Method는 응급 처치이지, 근본적인 해결이 아닙니다.</p>
+<hr>
+<h2 id="sprout-class-새싹-클래스">Sprout Class (새싹 클래스)<a href="#sprout-class-새싹-클래스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>새 기능이 기존 클래스와 다른 책임을 가질 때, 아예 새 클래스로 분리하는 기법입니다. Sprout Method의 확장판이라고 볼 수 있습니다.</p>
+<h3 id="before">Before<a href="#before" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">InventoryManager</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">processReceiving</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="w"> </span><span class="n">products</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">products</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 복잡한 재고 처리 로직 (수백 줄)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">warehouse</span><span class="p">.</span><span class="na">stock</span><span class="p">(</span><span class="n">product</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ledger</span><span class="p">.</span><span class="na">record</span><span class="p">(</span><span class="n">product</span><span class="p">.</span><span class="na">getSku</span><span class="p">(),</span><span class="w"> </span><span class="n">product</span><span class="p">.</span><span class="na">getQuantity</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>요구사항: 유통기한이 지난 제품을 필터링해야 합니다.</p>
+<p><code>InventoryManager</code>에 유통기한 검증 로직을 직접 추가하면 이 클래스의 책임이 더 비대해집니다. 이미 수백 줄인 클래스에 또 다른 관심사를 밀어넣는 것은 상황을 악화시킵니다.</p>
+<h3 id="after-jdk-25--sprout-class-적용">After (JDK 25 — Sprout Class 적용)<a href="#after-jdk-25--sprout-class-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Sprout Class: 새 책임을 별도 클래스로 분리</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExpirationValidator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Clock</span><span class="w"> </span><span class="n">clock</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">ExpirationValidator</span><span class="p">(</span><span class="n">Clock</span><span class="w"> </span><span class="n">clock</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">removeExpired</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="w"> </span><span class="n">products</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LocalDate</span><span class="p">.</span><span class="na">now</span><span class="p">(</span><span class="n">clock</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">products</span><span class="p">.</span><span class="na">stream</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="na">expirationDate</span><span class="p">().</span><span class="na">isAfter</span><span class="p">(</span><span class="n">now</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">toList</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 기존 클래스에서는 Sprout Class를 호출</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">InventoryManager</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ExpirationValidator</span><span class="w"> </span><span class="n">expirationValidator</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">InventoryManager</span><span class="p">(</span><span class="n">ExpirationValidator</span><span class="w"> </span><span class="n">expirationValidator</span><span class="p">,</span><span class="w"> </span><span class="cm">/* ... */</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">expirationValidator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expirationValidator</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">processReceiving</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="w"> </span><span class="n">products</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">validProducts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expirationValidator</span><span class="p">.</span><span class="na">removeExpired</span><span class="p">(</span><span class="n">products</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">validProducts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">warehouse</span><span class="p">.</span><span class="na">stock</span><span class="p">(</span><span class="n">product</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ledger</span><span class="p">.</span><span class="na">record</span><span class="p">(</span><span class="n">product</span><span class="p">.</span><span class="na">getSku</span><span class="p">(),</span><span class="w"> </span><span class="n">product</span><span class="p">.</span><span class="na">getQuantity</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>몇 가지 포인트가 있습니다.</p>
+<ul>
+<li><code>Clock</code> 주입으로 시간 의존성을 테스트 가능하게 만듭니다. <code>LocalDate.now()</code>를 직접 호출하면 테스트에서 날짜를 제어할 수 없습니다.</li>
+<li><code>Product</code>가 record 타입이라면 <code>expirationDate()</code> 접근자를 자연스럽게 사용할 수 있습니다.</li>
+<li><code>ExpirationValidator</code>는 완전히 독립적인 단위이므로, 테스트 작성이 간단합니다.</li>
+</ul>
+<p>Sprout Class를 사용하는 시점은 다음과 같습니다.</p>
+<ul>
+<li>새 기능이 기존 클래스의 책임과 명확히 다를 때</li>
+<li>기존 클래스의 생성자가 너무 복잡해서 테스트 인스턴스를 만들기 어려울 때</li>
+<li>새 기능 자체가 여러 곳에서 재사용될 가능성이 있을 때</li>
+</ul>
+<hr>
+<h2 id="wrap-method-감싸기-메서드">Wrap Method (감싸기 메서드)<a href="#wrap-method-감싸기-메서드" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>기존 메서드의 실행 전후에 새 동작을 추가하기 위해, 기존 메서드의 이름을 변경하고 원래 이름으로 새 메서드를 만들어 감싸는 기법입니다.</p>
+<h3 id="before-1">Before<a href="#before-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Employee</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">pay</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Money</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculator</span><span class="p">.</span><span class="na">calculatePay</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">bankService</span><span class="p">.</span><span class="na">transfer</span><span class="p">(</span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>요구사항: 급여 지급 시 감사(audit) 로그를 남겨야 합니다.</p>
+<h3 id="after-jdk-25--wrap-method-적용">After (JDK 25 — Wrap Method 적용)<a href="#after-jdk-25--wrap-method-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Employee</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">pay</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">logPayment</span><span class="p">();</span><span class="w">      </span><span class="c1">// 새 동작 (before)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">dispatchPay</span><span class="p">();</span><span class="w">     </span><span class="c1">// 원래 동작</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 원래 pay()의 이름을 변경</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">dispatchPay</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Money</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculator</span><span class="p">.</span><span class="na">calculatePay</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">bankService</span><span class="p">.</span><span class="na">transfer</span><span class="p">(</span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">amount</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Wrap: 새 기능을 별도 메서드로</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">logPayment</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">auditLog</span><span class="p">.</span><span class="na">record</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">PaymentEvent</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">employeeId</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Instant</span><span class="p">.</span><span class="na">now</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;SALARY_PAYMENT&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// record로 이벤트 정의</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">PaymentEvent</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">employeeId</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">timestamp</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="wrap-method-적용-단계">Wrap Method 적용 단계<a href="#wrap-method-적용-단계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li>기존 메서드의 이름을 변경합니다 (<code>pay</code> -&gt; <code>dispatchPay</code>).</li>
+<li>원래 이름으로 새 메서드를 만듭니다.</li>
+<li>새 메서드에서 이름이 변경된 기존 메서드와 새 기능을 호출합니다.</li>
+</ol>
+<p>Wrap Method의 핵심은 <strong>기존 메서드의 시그니처(이름, 파라미터, 반환 타입)를 유지</strong>한다는 것입니다. 외부에서 <code>pay()</code>를 호출하는 코드는 전혀 변경할 필요가 없습니다.</p>
+<p><strong>장점</strong>: 기존 코드를 수정하지 않으면서 전후 동작을 추가할 수 있습니다.</p>
+<p><strong>단점</strong>: 메서드 이름 변경이 필요하므로, private이 아닌 메서드에 적용할 때는 호출부 영향을 확인해야 합니다.</p>
+<hr>
+<h2 id="wrap-class-감싸기-클래스">Wrap Class (감싸기 클래스)<a href="#wrap-class-감싸기-클래스" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Decorator 패턴의 응용입니다. 기존 클래스를 수정하지 않고, 새 클래스로 감싸서 동작을 추가합니다.</p>
+<h3 id="before-2">Before<a href="#before-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">NotificationSender</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">emailService</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>요구사항: 알림 전송 시 감사(audit) 로그를 남겨야 합니다.</p>
+<h3 id="after-jdk-25--wrap-class-적용">After (JDK 25 — Wrap Class 적용)<a href="#after-jdk-25--wrap-class-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 인터페이스 추출</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">MessageSender</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 기존 클래스가 인터페이스 구현</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">NotificationSender</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">MessageSender</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">emailService</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Wrap Class: Decorator 패턴으로 감사 로그 추가</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">AuditingMessageSender</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">MessageSender</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MessageSender</span><span class="w"> </span><span class="n">delegate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">AuditLogger</span><span class="w"> </span><span class="n">auditLogger</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">AuditingMessageSender</span><span class="p">(</span><span class="n">MessageSender</span><span class="w"> </span><span class="n">delegate</span><span class="p">,</span><span class="w"> </span><span class="n">AuditLogger</span><span class="w"> </span><span class="n">auditLogger</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">delegate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delegate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">auditLogger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">auditLogger</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">auditLogger</span><span class="p">.</span><span class="na">log</span><span class="p">(</span><span class="s">&#34;Sending message to %s&#34;</span><span class="p">.</span><span class="na">formatted</span><span class="p">(</span><span class="n">userId</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">delegate</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">auditLogger</span><span class="p">.</span><span class="na">log</span><span class="p">(</span><span class="s">&#34;Message sent to %s&#34;</span><span class="p">.</span><span class="na">formatted</span><span class="p">(</span><span class="n">userId</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Wrap Class의 핵심은 <strong>인터페이스 추출</strong>입니다. 기존 클래스에서 인터페이스를 추출하고, Decorator가 같은 인터페이스를 구현하게 합니다. 이렇게 하면 기존 코드를 전혀 수정하지 않고도 동작을 추가할 수 있습니다.</p>
+<p>Decorator 패턴의 장점은 체이닝이 가능하다는 것입니다. logging, retry, metrics 등 여러 관심사를 각각의 Decorator로 분리하고, 필요에 따라 조합할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Decorator 체이닝 예시</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">MessageSender</span><span class="w"> </span><span class="n">sender</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RetryingMessageSender</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AuditingMessageSender</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">NotificationSender</span><span class="p">(</span><span class="n">emailService</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">auditLogger</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">retryPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<h2 id="tdd와-레거시-코드">TDD와 레거시 코드<a href="#tdd와-레거시-코드" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Feathers는 TDD(Test-Driven Development)를 레거시 코드에 적용하는 방법도 설명합니다. 레거시 코드에서의 TDD 절차는 다음과 같습니다.</p>
+<ol>
+<li>실패하는 테스트 작성</li>
+<li>컴파일되게 만들기</li>
+<li>테스트 통과시키기</li>
+<li>중복 제거</li>
+<li>반복</li>
+</ol>
+<p>이 절차에서 특히 &ldquo;2. 컴파일되게 만들기&quot;가 레거시 코드에서 가장 어려운 단계입니다. 의존성이 복잡하게 얽혀 있어서 테스트 대상 클래스의 인스턴스를 만드는 것 자체가 난관인 경우가 많습니다.</p>
+<h3 id="programming-by-difference--sealed-classes-활용">Programming by Difference — Sealed Classes 활용<a href="#programming-by-difference--sealed-classes-활용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Feathers가 소개하는 &ldquo;Programming by Difference&quot;는 기존 클래스를 상속하여 차이점만 구현하는 기법입니다. 레거시 코드에서 빠르게 변형을 만들어야 할 때 유용하지만, 상속 남용으로 이어질 위험이 있습니다.</p>
+<p>JDK 25에서는 Sealed Classes를 사용하면 이 기법을 타입 안전하게 적용할 수 있습니다.</p>
+<p><strong>Before (상속 남용):</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageForwarder</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">sendMessage</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 복잡한 전송 로직</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Programming by Difference: 기존 동작을 상속으로 확장</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">AnonymousMessageForwarder</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">MessageForwarder</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">sendMessage</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">msg</span><span class="p">.</span><span class="na">setFrom</span><span class="p">(</span><span class="s">&#34;anonymous&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">super</span><span class="p">.</span><span class="na">sendMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 접근의 문제점은 상속 계층이 제한 없이 확장될 수 있다는 것입니다. 누구든 <code>MessageForwarder</code>를 상속할 수 있고, <code>sendMessage</code>를 오버라이드할 수 있습니다.</p>
+<p><strong>After (JDK 25 — Sealed Classes로 타입 안전하게):</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">sealed</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">MessageForwardingStrategy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">permits</span><span class="w"> </span><span class="n">StandardForwarding</span><span class="p">,</span><span class="w"> </span><span class="n">AnonymousForwarding</span><span class="p">,</span><span class="w"> </span><span class="n">EncryptedForwarding</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Message</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">original</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">StandardForwarding</span><span class="p">()</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">MessageForwardingStrategy</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">original</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">original</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">AnonymousForwarding</span><span class="p">()</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">MessageForwardingStrategy</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">original</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">original</span><span class="p">.</span><span class="na">withFrom</span><span class="p">(</span><span class="s">&#34;anonymous&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">EncryptedForwarding</span><span class="p">(</span><span class="n">EncryptionKey</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">MessageForwardingStrategy</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">original</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">original</span><span class="p">.</span><span class="na">withBody</span><span class="p">(</span><span class="n">encrypt</span><span class="p">(</span><span class="n">original</span><span class="p">.</span><span class="na">body</span><span class="p">(),</span><span class="w"> </span><span class="n">key</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 전략을 사용하는 Forwarder</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MessageForwarder</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MessageForwardingStrategy</span><span class="w"> </span><span class="n">strategy</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">TransportLayer</span><span class="w"> </span><span class="n">transport</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MessageForwarder</span><span class="p">(</span><span class="n">MessageForwardingStrategy</span><span class="w"> </span><span class="n">strategy</span><span class="p">,</span><span class="w"> </span><span class="n">TransportLayer</span><span class="w"> </span><span class="n">transport</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strategy</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">transport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transport</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="n">Message</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">prepared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strategy</span><span class="p">.</span><span class="na">prepare</span><span class="p">(</span><span class="n">message</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">transport</span><span class="p">.</span><span class="na">send</span><span class="p">(</span><span class="n">prepared</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 변환에서 주목할 포인트는 다음과 같습니다.</p>
+<ul>
+<li><code>sealed interface</code>로 허용된 변형을 컴파일 타임에 제한합니다. <code>permits</code> 절에 명시된 클래스만 이 인터페이스를 구현할 수 있습니다.</li>
+<li><code>record</code>로 불변 전략 객체를 간결하게 표현합니다. boilerplate 코드가 사라집니다.</li>
+<li>상속 대신 합성(composition)을 사용합니다. <code>MessageForwarder</code>는 전략 객체를 주입받습니다.</li>
+<li><code>switch</code> 패턴 매칭으로 모든 변형을 exhaustive하게 처리할 수 있습니다. 새 변형이 추가되면 컴파일러가 누락된 분기를 알려줍니다.</li>
+</ul>
+<hr>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 글에서 다룬 4가지 패턴(Sprout Method, Sprout Class, Wrap Method, Wrap Class)은 레거시 코드에 기능을 추가할 때 가장 즉시 적용 가능한 기법들입니다. 기존 코드를 최소한으로 건드리면서 새 코드를 테스트 가능한 형태로 작성하는 것이 핵심입니다.</p>
+<p>Part 3에서는 테스트가 전혀 없는 클래스와 메서드를 테스트 하네스에 넣는 구체적인 기법을 다룹니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Feathers, M. (2004). <em>Working Effectively with Legacy Code</em>. Prentice Hall. ISBN 978-0131177055.</li>
+<li>OpenJDK. &ldquo;JDK 25&rdquo;. <a href="https://openjdk.org/projects/jdk/25/">https://openjdk.org/projects/jdk/25/</a></li>
+<li>JEP 409: Sealed Classes. <a href="https://openjdk.org/jeps/409">https://openjdk.org/jeps/409</a></li>
+<li>JEP 395: Records. <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></li>
+<li>JEP 394: Pattern Matching for instanceof. <a href="https://openjdk.org/jeps/394">https://openjdk.org/jeps/394</a></li>
+<li>JUnit 5 User Guide. <a href="https://junit.org/junit5/docs/current/user-guide/">https://junit.org/junit5/docs/current/user-guide/</a></li>
+<li>Gamma, E. et al. (1994). <em>Design Patterns: Elements of Reusable Object-Oriented Software</em>. Addison-Wesley. (Decorator 패턴)</li>
+<li>Understand Legacy Code. &ldquo;Key Points of Working Effectively with Legacy Code&rdquo;. <a href="https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/">https://understandlegacycode.com/blog/key-points-of-working-effectively-with-legacy-code/</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-03/" class="button inline prev">
+        &lt; [<span class="button__text">WELC ver. 2026 Part 3: 테스트 하네스에 코드 넣기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260304-working-effectively-with-legacy-code-2026-01/" class="button inline next">
+         [<span class="button__text">WELC ver. 2026 Part 1: 레거시 코드의 정의와 변경의 역학</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
