@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Go 웹 프레임워크 비교: Chi vs. Gin :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Go 웹 개발의 양대 선택지인 Chi와 Gin을 설계 철학, 라우팅, 미들웨어, 데이터 바인딩, 성능, 생태계 등 다양한 관점에서 비교 분석합니다. 각각의 강점과 약점을 이해하고, 프로젝트 성격에 따라 어떤 것을 선택해야 하는지 가이드를 제공합니다." />
+<meta name="keywords" content="golang, programming, review" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260307-go-web-framework-chi-vs-gin/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Go 웹 프레임워크 비교: Chi vs. Gin">
+<meta property="og:description" content="Go 웹 개발의 양대 선택지인 Chi와 Gin을 설계 철학, 라우팅, 미들웨어, 데이터 바인딩, 성능, 생태계 등 다양한 관점에서 비교 분석합니다. 각각의 강점과 약점을 이해하고, 프로젝트 성격에 따라 어떤 것을 선택해야 하는지 가이드를 제공합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260307-go-web-framework-chi-vs-gin/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-07 00:21:25 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260307-go-web-framework-chi-vs-gin/">Go 웹 프레임워크 비교: Chi vs. Gin</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-07</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/review/">review</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p>Go로 웹 애플리케이션을 만들 때, 가장 많이 비교되는 두 선택지가 <strong>Chi</strong>와 <strong>Gin</strong>입니다. GitHub 스타 기준으로 Gin이 압도적인 인기를 누리고 있지만(Gin ~80k vs Chi ~19k), 실무에서의 선택은 단순한 인기도만으로 결정할 문제가 아닙니다.</p>
+<p>이 글에서는 두 라이브러리의 <strong>설계 철학</strong>부터 시작해서, 실제 코드 레벨에서의 차이를 비교합니다.</p>
+<hr>
+<h2 id="설계-철학-라우터-vs-프레임워크">설계 철학: 라우터 vs. 프레임워크<a href="#설계-철학-라우터-vs-프레임워크" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Chi와 Gin의 가장 근본적인 차이는 <strong>자기 자신을 어떻게 정의하는가</strong>에 있습니다.</p>
+<h3 id="chi-nethttp와-함께-쓰는-라우터">Chi: &ldquo;net/http와 함께 쓰는 라우터&rdquo;<a href="#chi-nethttp와-함께-쓰는-라우터" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Chi는 스스로를 &ldquo;lightweight, idiomatic, and composable router&quot;라고 소개합니다. 핵심 철학은 명확합니다:</p>
+<ul>
+<li><strong><code>net/http</code> 100% 호환</strong>: <code>http.Handler</code>와 <code>http.HandlerFunc</code> 인터페이스를 그대로 사용</li>
+<li><strong>최소주의</strong>: 코어 라우터가 1,000줄 미만</li>
+<li><strong>외부 의존성 제로</strong>: Go 표준 라이브러리 외에 아무것도 필요 없음</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Chi의 핸들러 — 표준 net/http 시그니처 그대로</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">GetArticle</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">chi</span><span class="p">.</span><span class="nf">URLParam</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;articleID&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;Article: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">id</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="gin-배터리-포함-웹-프레임워크">Gin: &ldquo;배터리 포함 웹 프레임워크&rdquo;<a href="#gin-배터리-포함-웹-프레임워크" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Gin은 &ldquo;high-performance web framework&quot;를 표방합니다. 목표가 다릅니다:</p>
+<ul>
+<li><strong>자체 Context 객체</strong>: 요청/응답 처리를 위한 풍부한 헬퍼 메서드 제공</li>
+<li><strong>내장 기능</strong>: JSON 바인딩, 유효성 검증, 렌더링 등을 프레임워크 차원에서 지원</li>
+<li><strong>martini-like API</strong>: 직관적이고 간결한 API 설계</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Gin의 핸들러 — Gin 전용 Context 사용</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">GetArticle</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">Param</span><span class="p">(</span><span class="s">&#34;articleID&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;article&#34;</span><span class="p">:</span><span class="w"> </span><span class="nx">id</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 차이는 단순한 API 스타일의 문제가 아닙니다. <strong>프로젝트의 의존성 구조와 테스트 전략에 직접적인 영향</strong>을 미칩니다.</p>
+<hr>
+<h2 id="라우팅">라우팅<a href="#라우팅" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="chi의-라우팅">Chi의 라우팅<a href="#chi의-라우팅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Chi는 <code>Route</code>와 <code>Mount</code>를 통해 라우트 그룹과 서브 라우터를 구성합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">chi</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Route</span><span class="p">(</span><span class="s">&#34;/articles&#34;</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="nx">chi</span><span class="p">.</span><span class="nx">Router</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">listArticles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">Post</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">createArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">Route</span><span class="p">(</span><span class="s">&#34;/{articleID}&#34;</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="nx">chi</span><span class="p">.</span><span class="nx">Router</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">ArticleCtx</span><span class="p">)</span><span class="w"> </span><span class="c1">// 이 그룹에만 적용되는 미들웨어</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">getArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">r</span><span class="p">.</span><span class="nf">Put</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">updateArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">r</span><span class="p">.</span><span class="nf">Delete</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">deleteArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 별도 라우터를 마운트하는 방식도 가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">apiRouter</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">chi</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">apiRouter</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/health&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">healthCheck</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Mount</span><span class="p">(</span><span class="s">&#34;/api&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">apiRouter</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>정규식 URL 파라미터도 지원합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/{slug:[a-z-]+}&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">getBySlug</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><h3 id="gin의-라우팅">Gin의 라우팅<a href="#gin의-라우팅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Gin은 <code>Group</code>으로 라우트를 구성합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">router</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nf">Default</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">articles</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nf">Group</span><span class="p">(</span><span class="s">&#34;/articles&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">articles</span><span class="p">.</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">listArticles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">articles</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">createArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">article</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">articles</span><span class="p">.</span><span class="nf">Group</span><span class="p">(</span><span class="s">&#34;/:articleID&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">article</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nf">ArticleCtx</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">article</span><span class="p">.</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">getArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">article</span><span class="p">.</span><span class="nf">PUT</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">updateArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">article</span><span class="p">.</span><span class="nf">DELETE</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">deleteArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="비교">비교<a href="#비교" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>Chi</th>
+          <th>Gin</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>그룹핑</td>
+          <td><code>Route()</code>, <code>Mount()</code></td>
+          <td><code>Group()</code></td>
+      </tr>
+      <tr>
+          <td>URL 파라미터</td>
+          <td><code>{param}</code> 형식</td>
+          <td><code>:param</code> 형식</td>
+      </tr>
+      <tr>
+          <td>정규식 파라미터</td>
+          <td>지원 (<code>{slug:[a-z-]+}</code>)</td>
+          <td>미지원</td>
+      </tr>
+      <tr>
+          <td>서브 라우터 마운트</td>
+          <td><code>Mount()</code>로 독립 라우터 결합</td>
+          <td>직접 지원 없음</td>
+      </tr>
+  </tbody>
+</table>
+<p>Chi의 <code>Mount()</code>는 마이크로서비스 아키텍처에서 각 도메인별 라우터를 독립적으로 개발하고 합치는 패턴에 유용합니다.</p>
+<hr>
+<h2 id="미들웨어">미들웨어<a href="#미들웨어" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>미들웨어 설계는 두 라이브러리의 철학이 가장 극명하게 드러나는 부분입니다.</p>
+<h3 id="chi-표준-미들웨어-시그니처">Chi: 표준 미들웨어 시그니처<a href="#chi-표준-미들웨어-시그니처" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Chi의 미들웨어는 표준 <code>net/http</code> 패턴을 따릅니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">AuthMiddleware</span><span class="p">(</span><span class="nx">next</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nf">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">token</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;Authorization&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Unauthorized&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">401</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">next</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">AuthMiddleware</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>Go 생태계의 모든 <code>net/http</code> 호환 미들웨어를 그대로 사용할 수 있습니다. 별도의 어댑터가 필요 없습니다.</p>
+<p>Chi는 자주 쓰이는 미들웨어도 내장하고 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">RequestID</span><span class="p">)</span><span class="w">    </span><span class="c1">// 요청 ID 부여</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">RealIP</span><span class="p">)</span><span class="w">       </span><span class="c1">// 프록시 뒤의 실제 IP 파싱</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">Logger</span><span class="p">)</span><span class="w">       </span><span class="c1">// 요청 로깅</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">Recoverer</span><span class="p">)</span><span class="w">    </span><span class="c1">// 패닉 복구</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">CleanPath</span><span class="p">)</span><span class="w">    </span><span class="c1">// 중복 슬래시 정리</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">middleware</span><span class="p">.</span><span class="nf">Timeout</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">))</span><span class="w"> </span><span class="c1">// 타임아웃</span><span class="w">
+</span></span></span></code></pre></div><h3 id="gin-전용-미들웨어-시그니처">Gin: 전용 미들웨어 시그니처<a href="#gin-전용-미들웨어-시그니처" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Gin의 미들웨어는 <code>gin.HandlerFunc</code>를 사용합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">AuthMiddleware</span><span class="p">()</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">token</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">GetHeader</span><span class="p">(</span><span class="s">&#34;Authorization&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">c</span><span class="p">.</span><span class="nf">AbortWithStatusJSON</span><span class="p">(</span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;error&#34;</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;Unauthorized&#34;</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">c</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">router</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nf">AuthMiddleware</span><span class="p">())</span><span class="w">
+</span></span></span></code></pre></div><p><code>gin.Context</code>가 제공하는 <code>c.Abort()</code>, <code>c.Next()</code>, <code>c.Set()</code>, <code>c.Get()</code> 등의 메서드로 미들웨어 흐름을 제어할 수 있어 편리합니다. 다만, <code>net/http</code> 미들웨어를 직접 사용하려면 래핑이 필요합니다.</p>
+<h3 id="비교-1">비교<a href="#비교-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>Chi</th>
+          <th>Gin</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>시그니처</td>
+          <td><code>func(http.Handler) http.Handler</code></td>
+          <td><code>gin.HandlerFunc</code></td>
+      </tr>
+      <tr>
+          <td>net/http 호환</td>
+          <td>100% 호환, 그대로 사용</td>
+          <td>래핑 필요</td>
+      </tr>
+      <tr>
+          <td>내장 미들웨어</td>
+          <td>Logger, Recoverer, Timeout 등</td>
+          <td>Logger, Recovery</td>
+      </tr>
+      <tr>
+          <td>미들웨어 체인 제어</td>
+          <td><code>next.ServeHTTP()</code> 호출 여부로</td>
+          <td><code>c.Next()</code>, <code>c.Abort()</code></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="데이터-바인딩과-유효성-검증">데이터 바인딩과 유효성 검증<a href="#데이터-바인딩과-유효성-검증" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 영역에서는 Gin이 확실한 우위를 가집니다.</p>
+<h3 id="chi-직접-구현">Chi: 직접 구현<a href="#chi-직접-구현" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Chi는 데이터 바인딩 기능을 제공하지 않습니다. <code>encoding/json</code>이나 서드파티 라이브러리로 직접 처리해야 합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">CreateArticle</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">Title</span><span class="w">   </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&#34;title&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">Content</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&#34;content&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">req</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Bad Request&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 유효성 검증도 직접 구현</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">http</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Title is required&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 응답도 직접 마샬링</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">w</span><span class="p">.</span><span class="nf">Header</span><span class="p">().</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Content-Type&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;application/json&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nf">NewEncoder</span><span class="p">(</span><span class="nx">w</span><span class="p">).</span><span class="nf">Encode</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;status&#34;</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;created&#34;</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="gin-내장-바인딩--검증">Gin: 내장 바인딩 + 검증<a href="#gin-내장-바인딩--검증" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Gin은 <code>go-playground/validator</code>를 내장하여 선언적 바인딩과 검증을 지원합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">CreateArticleReq</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Title</span><span class="w">   </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&#34;title&#34; binding:&#34;required,min=1,max=200&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Content</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&#34;content&#34; binding:&#34;required&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">CreateArticle</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="nx">CreateArticleReq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nf">ShouldBindJSON</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">req</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;error&#34;</span><span class="p">:</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">()})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">201</span><span class="p">,</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;status&#34;</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;created&#34;</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>JSON, XML, YAML, Form, Multipart 등 다양한 포맷의 바인딩을 구조체 태그 하나로 처리할 수 있습니다.</p>
+<hr>
+<h2 id="성능">성능<a href="#성능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="벤치마크">벤치마크<a href="#벤치마크" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Gin은 <strong>httprouter</strong> 기반의 라딕스 트리(radix tree) 알고리즘으로 라우팅하며, &ldquo;zero allocation router&quot;를 표방합니다. Chi도 라딕스 트리를 사용하지만, <code>net/http</code> 호환성을 유지하면서 약간의 오버헤드가 있습니다.</p>
+<p>그러나 <strong>실무에서 두 라이브러리의 성능 차이는 거의 무의미합니다.</strong> 웹 애플리케이션의 병목은 라우팅이 아니라 데이터베이스 쿼리, 외부 API 호출, 비즈니스 로직에 있기 때문입니다.</p>
+<h3 id="메모리-할당">메모리 할당<a href="#메모리-할당" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>Chi</th>
+          <th>Gin</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>라우팅 알고리즘</td>
+          <td>Radix Tree</td>
+          <td>Radix Tree (httprouter 기반)</td>
+      </tr>
+      <tr>
+          <td>라우팅 시 할당</td>
+          <td>최소</td>
+          <td>Zero allocation</td>
+      </tr>
+      <tr>
+          <td>Context 오버헤드</td>
+          <td>없음 (표준 context 사용)</td>
+          <td><code>gin.Context</code> 풀링으로 최소화</td>
+      </tr>
+  </tbody>
+</table>
+<p>Gin이 <strong>마이크로 벤치마크에서는 더 빠르지만</strong>, 실제 애플리케이션에서 체감할 수준의 차이는 아닙니다.</p>
+<hr>
+<h2 id="테스트">테스트<a href="#테스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="chi-표준-테스트-도구-그대로">Chi: 표준 테스트 도구 그대로<a href="#chi-표준-테스트-도구-그대로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Chi 핸들러는 표준 <code>net/http</code> 시그니처이므로, <code>httptest</code> 패키지로 바로 테스트할 수 있습니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">TestGetArticle</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">req</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httptest</span><span class="p">.</span><span class="nf">NewRequest</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;/articles/123&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">w</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httptest</span><span class="p">.</span><span class="nf">NewRecorder</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">chi</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;/articles/{articleID}&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">GetArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Code</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;expected 200, got %d&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Code</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="gin-테스트-모드-설정-필요">Gin: 테스트 모드 설정 필요<a href="#gin-테스트-모드-설정-필요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Gin도 <code>httptest</code>를 사용할 수 있지만, <code>gin.Context</code>를 설정하는 과정이 필요합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">TestGetArticle</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">gin</span><span class="p">.</span><span class="nf">SetMode</span><span class="p">(</span><span class="nx">gin</span><span class="p">.</span><span class="nx">TestMode</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">w</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httptest</span><span class="p">.</span><span class="nf">NewRecorder</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gin</span><span class="p">.</span><span class="nf">CreateTestContext</span><span class="p">(</span><span class="nx">w</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#34;/articles/:articleID&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">GetArticle</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">httptest</span><span class="p">.</span><span class="nf">NewRequest</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;/articles/123&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Code</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;expected 200, got %d&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Code</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Chi의 핸들러는 <code>http.HandlerFunc</code> 자체이므로, 라우터 없이도 단위 테스트가 가능합니다. Gin의 핸들러는 <code>gin.Context</code>에 의존하므로 테스트 시 항상 Gin 런타임이 필요합니다.</p>
+<hr>
+<h2 id="언제-무엇을-선택할까">언제 무엇을 선택할까?<a href="#언제-무엇을-선택할까" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="chi를-선택해야-할-때">Chi를 선택해야 할 때<a href="#chi를-선택해야-할-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>표준 라이브러리 친화적인 코드</strong>를 선호하는 팀</li>
+<li><code>net/http</code> 호환 미들웨어 생태계를 적극 활용하려는 경우</li>
+<li>핸들러를 프레임워크에 종속시키고 싶지 않은 경우</li>
+<li>마이크로서비스에서 <strong>도메인별 라우터를 독립적으로 개발</strong>하고 합치는 구조</li>
+<li>Go의 관용적(idiomatic) 패턴을 중시하는 프로젝트</li>
+</ul>
+<h3 id="gin을-선택해야-할-때">Gin을 선택해야 할 때<a href="#gin을-선택해야-할-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>빠른 프로토타이핑</strong>과 생산성이 중요한 프로젝트</li>
+<li>JSON API 서버를 빠르게 구축해야 하는 경우</li>
+<li><strong>데이터 바인딩과 유효성 검증</strong>을 선언적으로 처리하고 싶은 경우</li>
+<li>풍부한 커뮤니티 리소스와 레퍼런스가 필요한 경우</li>
+<li>Rails/Express.js 같은 프레임워크 경험이 있는 팀</li>
+</ul>
+<h3 id="판단-기준-정리">판단 기준 정리<a href="#판단-기준-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>기준</th>
+          <th>Chi</th>
+          <th>Gin</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>철학</td>
+          <td>최소주의, 표준 호환</td>
+          <td>배터리 포함, 편의성</td>
+      </tr>
+      <tr>
+          <td>학습 곡선</td>
+          <td>net/http 이해 필요</td>
+          <td>프레임워크 API 학습</td>
+      </tr>
+      <tr>
+          <td>프레임워크 종속성</td>
+          <td>없음</td>
+          <td>있음 (gin.Context)</td>
+      </tr>
+      <tr>
+          <td>데이터 바인딩</td>
+          <td>직접 구현</td>
+          <td>내장</td>
+      </tr>
+      <tr>
+          <td>미들웨어 호환</td>
+          <td>net/http 생태계 전체</td>
+          <td>Gin 전용</td>
+      </tr>
+      <tr>
+          <td>커뮤니티 크기</td>
+          <td>중간</td>
+          <td>매우 큼</td>
+      </tr>
+      <tr>
+          <td>적합한 규모</td>
+          <td>중~대형 프로젝트</td>
+          <td>소~중형 프로젝트</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Chi와 Gin은 &ldquo;어떤 것이 더 좋은가&quot;의 문제가 아니라 <strong>&ldquo;어떤 철학으로 웹 서버를 만들 것인가&rdquo;</strong> 의 문제입니다.</p>
+<p>Go의 표준 라이브러리를 최대한 활용하면서 프레임워크 종속성을 피하고 싶다면 Chi가 적합합니다. 반면, 프레임워크가 제공하는 편의 기능을 적극 활용하여 빠르게 개발하고 싶다면 Gin이 좋은 선택입니다.</p>
+<p>개인적으로는 <strong>Go 1.22 이후</strong> <code>net/http</code>의 라우팅 기능이 강화되면서, Chi의 &ldquo;표준 호환&rdquo; 철학의 가치가 더욱 부각되고 있다고 생각합니다. 표준 라이브러리만으로도 상당 부분을 커버할 수 있게 되었고, Chi는 그 위에 꼭 필요한 것만 얹어주는 역할을 하기 때문입니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://go-chi.io/">Chi 공식 문서</a></li>
+<li><a href="https://gin-gonic.com/docs/">Gin 공식 문서</a></li>
+<li><a href="https://github.com/go-chi/chi">Chi GitHub</a></li>
+<li><a href="https://github.com/gin-gonic/gin">Gin GitHub</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260307-go-html-template-vs-templ-with-htmx/" class="button inline next">
+         [<span class="button__text">HTMX와 함께 사용할 Go 템플릿 기술 비교: html/template vs. Templ</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
