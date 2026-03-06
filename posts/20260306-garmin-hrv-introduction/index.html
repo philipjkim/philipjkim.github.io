@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>가민(Garmin)의 HRV 소개: 측정, 해석, 그리고 관리 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="가민 기기에서 제공하는 HRV(심박변이도)의 정의, 측정 방법, 적정 범위를 벗어났을 때의 의미, 그리고 HRV를 개선하기 위한 실질적인 방법들을 정리합니다." />
+<meta name="keywords" content="garmin, HRV, health, wearable" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260306-garmin-hrv-introduction/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="가민(Garmin)의 HRV 소개: 측정, 해석, 그리고 관리">
+<meta property="og:description" content="가민 기기에서 제공하는 HRV(심박변이도)의 정의, 측정 방법, 적정 범위를 벗어났을 때의 의미, 그리고 HRV를 개선하기 위한 실질적인 방법들을 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260306-garmin-hrv-introduction/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-06 11:08:53 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260306-garmin-hrv-introduction/">가민(Garmin)의 HRV 소개: 측정, 해석, 그리고 관리</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-06</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/garmin/">garmin</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/hrv/">HRV</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/health/">health</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/wearable/">wearable</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="hrv란-무엇인가">HRV란 무엇인가<a href="#hrv란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>HRV(Heart Rate Variability, 심박변이도)는 심장 박동 간의 시간 간격이 얼마나 불규칙한지를 나타내는 지표입니다. 심장은 메트로놈처럼 정확한 간격으로 뛰지 않습니다. 건강한 심장은 오히려 박동 사이의 간격이 미세하게 변동합니다. 이 변동의 크기가 바로 HRV입니다.</p>
+<p>구체적으로, 심전도(ECG)나 광학 심박 센서에서 측정되는 R-R 간격(연속된 두 심박 사이의 시간)의 변이를 분석한 값입니다.</p>
+<h3 id="가민에서의-hrv-계산">가민에서의 HRV 계산<a href="#가민에서의-hrv-계산" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가민은 HRV의 정확한 계산 공식을 공개하지 않지만, 업계 표준과 가민의 공식 문서를 종합하면 <strong>RMSSD(Root Mean Square of Successive Differences)</strong> 방식을 사용하는 것으로 알려져 있습니다.</p>
+<p>RMSSD의 일반적인 계산 공식은 다음과 같습니다:</p>
+<pre tabindex="0"><code>RMSSD = √(Σ(RRi+1 - RRi)² / (N-1))
+</code></pre><ul>
+<li><code>RRi</code>: i번째 R-R 간격 (밀리초 단위)</li>
+<li><code>N</code>: 전체 R-R 간격의 수</li>
+</ul>
+<p>RMSSD는 단기 HRV 분석에 가장 널리 사용되는 지표이며, 부교감신경(미주신경) 활동을 잘 반영하는 것으로 알려져 있습니다. 가민은 이 값을 자연로그 변환(ln RMSSD)하여 표시하는 것으로 추정됩니다. 이렇게 하면 값의 분포가 정규 분포에 가까워져 해석이 용이해집니다.</p>
+<h3 id="hrv-수치의-일반적인-범위">HRV 수치의 일반적인 범위<a href="#hrv-수치의-일반적인-범위" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>HRV는 개인차가 매우 큽니다. 나이, 성별, 체력 수준에 따라 크게 달라지므로 절대적인 수치보다는 <strong>자신의 기준선(baseline) 대비 변화 추이</strong>가 더 중요합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>연령대</th>
+          <th>일반적인 RMSSD 범위 (ms)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20대</td>
+          <td>25–105</td>
+      </tr>
+      <tr>
+          <td>30대</td>
+          <td>20–85</td>
+      </tr>
+      <tr>
+          <td>40대</td>
+          <td>15–70</td>
+      </tr>
+      <tr>
+          <td>50대</td>
+          <td>10–55</td>
+      </tr>
+      <tr>
+          <td>60대 이상</td>
+          <td>8–45</td>
+      </tr>
+  </tbody>
+</table>
+<p>위 수치는 참고용이며, 꾸준히 운동하는 사람은 동일 연령대에서 더 높은 HRV를 보이는 경향이 있습니다.</p>
+<hr>
+<h2 id="hrv를-측정하는-방법">HRV를 측정하는 방법<a href="#hrv를-측정하는-방법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="가민-워치에서의-자동-측정">가민 워치에서의 자동 측정<a href="#가민-워치에서의-자동-측정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가민의 최신 워치(Forerunner, Venu, Fenix 시리즈 등)는 <strong>수면 중 자동으로 HRV를 측정</strong>합니다. 이것이 가장 신뢰할 수 있는 측정 방식입니다.</p>
+<ul>
+<li><strong>측정 시점</strong>: 수면 중 마지막 5분간의 데이터를 기반으로 산출</li>
+<li><strong>표시 위치</strong>: Garmin Connect 앱 → &ldquo;건강 통계&rdquo; → &ldquo;HRV 상태&rdquo;</li>
+<li><strong>기준선 수립</strong>: 최소 3주간의 데이터가 필요합니다. 이 기간 동안 가민은 개인의 HRV 기준선과 정상 범위를 학습합니다</li>
+</ul>
+<h3 id="측정-정확도를-높이는-팁">측정 정확도를 높이는 팁<a href="#측정-정확도를-높이는-팁" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>매일 같은 조건에서 측정</strong>: 워치를 착용하고 잠자리에 드는 시간을 일정하게 유지합니다</li>
+<li><strong>워치 착용 위치</strong>: 손목뼈에서 약 1cm 위, 너무 느슨하지 않게 착용합니다</li>
+<li><strong>수면 시간 확보</strong>: 최소 4시간 이상의 수면 데이터가 있어야 HRV가 기록됩니다</li>
+<li><strong>센서 청결 유지</strong>: 워치 뒷면의 광학 센서를 주기적으로 닦아줍니다</li>
+</ol>
+<h3 id="사이클링-트립-컴퓨터에서의-측정">사이클링 트립 컴퓨터에서의 측정<a href="#사이클링-트립-컴퓨터에서의-측정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Edge 시리즈 같은 사이클링 컴퓨터 자체에는 HRV 측정 기능이 없습니다. 다만 호환되는 가슴 스트랩 심박 센서(HRM-Pro, HRM-Pro Plus 등)를 연결하면 운동 중 R-R 간격 데이터를 기록할 수 있습니다. 이 데이터는 Garmin Connect를 통해 확인 가능합니다.</p>
+<p>가슴 스트랩은 광학 센서 대비 R-R 간격 측정 정확도가 높으므로, HRV 데이터의 품질을 중시한다면 수면 시에도 HRM-Pro를 착용하는 것을 고려할 수 있습니다(다만 착용감 문제로 현실적이지 않을 수 있습니다).</p>
+<hr>
+<h2 id="hrv가-적정-수준을-초과할-때">HRV가 적정 수준을 초과할 때<a href="#hrv가-적정-수준을-초과할-때" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>HRV가 높다는 것은 일반적으로 자율신경계가 잘 조절되고 있음을 의미하므로 긍정적인 신호입니다. 그러나 <strong>비정상적으로 높은 HRV</strong>가 갑자기 나타나는 경우에는 주의가 필요합니다.</p>
+<h3 id="주의해야-할-상황">주의해야 할 상황<a href="#주의해야-할-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>과도한 부교감신경 활성화</strong>: 극심한 과훈련(overreaching) 상태에서 신체가 회복 모드에 과도하게 들어간 경우, HRV가 비정상적으로 높게 나타날 수 있습니다</li>
+<li><strong>부정맥</strong>: 심방세동(atrial fibrillation) 등의 부정맥이 있으면 R-R 간격의 변이가 커져 HRV가 인위적으로 높게 측정될 수 있습니다</li>
+<li><strong>알코올 섭취 후 반등</strong>: 음주 후 HRV가 급락했다가 이후 반등하면서 평소보다 높게 나타나는 경우가 있습니다. 이는 진정한 의미의 높은 HRV가 아닙니다</li>
+<li><strong>측정 오류</strong>: 센서가 피부에 밀착되지 않았거나, 수면 중 워치가 움직인 경우 비정상 수치가 나올 수 있습니다</li>
+</ul>
+<h3 id="가민에서의-표시">가민에서의 표시<a href="#가민에서의-표시" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가민 Connect에서 HRV 상태가 개인 기준선 대비 <strong>&ldquo;높음(Above)&rdquo;</strong> 으로 표시되면, 대부분은 좋은 회복 상태를 의미합니다. 그러나 지속적으로 비정상 범위를 벗어난다면 의료 전문가와 상담하는 것이 좋습니다.</p>
+<hr>
+<h2 id="hrv가-적정-수준-미만일-때">HRV가 적정 수준 미만일 때<a href="#hrv가-적정-수준-미만일-때" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>HRV가 기준선보다 낮다는 것은 신체에 스트레스가 가해지고 있거나 회복이 덜 된 상태를 의미합니다.</p>
+<h3 id="잠재적-원인과-문제">잠재적 원인과 문제<a href="#잠재적-원인과-문제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>신체적 스트레스</strong>: 과도한 운동, 부상, 질병(감기, 독감 등)으로 인해 교감신경이 활성화된 상태</li>
+<li><strong>수면 부족</strong>: 수면의 질이 떨어지거나 수면 시간이 부족한 경우 HRV가 현저히 낮아집니다</li>
+<li><strong>정신적 스트레스</strong>: 업무 스트레스, 불안, 긴장 상태가 지속되면 HRV가 하락합니다</li>
+<li><strong>탈수 및 영양 부족</strong>: 충분한 수분과 영양을 섭취하지 못한 경우</li>
+<li><strong>알코올</strong>: 음주 당일과 다음 날 HRV가 크게 감소합니다. Reddit의 가민 사용자 커뮤니티에서도 가장 흔하게 보고되는 HRV 하락 원인 중 하나입니다</li>
+<li><strong>과훈련 증후군</strong>: 장기간의 과도한 훈련이 누적되면 만성적으로 HRV가 낮아집니다</li>
+</ul>
+<h3 id="낮은-hrv가-지속될-때의-위험">낮은 HRV가 지속될 때의 위험<a href="#낮은-hrv가-지속될-때의-위험" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>면역 기능 저하로 감염에 취약해질 수 있습니다</li>
+<li>운동 수행 능력이 저하되고, 부상 위험이 증가합니다</li>
+<li>만성적으로 낮은 HRV는 심혈관 질환과의 연관성이 보고되어 있습니다</li>
+<li>정신 건강에도 영향을 미쳐, 피로감과 무기력함이 동반될 수 있습니다</li>
+</ul>
+<h3 id="가민에서의-표시-1">가민에서의 표시<a href="#가민에서의-표시-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가민 Connect에서 HRV 상태가 <strong>&ldquo;낮음(Below)&rdquo;</strong> 또는 <strong>&ldquo;좋지 않음(Poor)&rdquo;</strong> 으로 표시되면, 신체에 무리가 가고 있다는 신호입니다. 특히 Body Battery가 함께 낮게 나타난다면 회복에 집중해야 합니다.</p>
+<hr>
+<h2 id="hrv를-개선하기-위한-방법">HRV를 개선하기 위한 방법<a href="#hrv를-개선하기-위한-방법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="운동">운동<a href="#운동" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>유산소 운동</strong>: 규칙적인 유산소 운동(달리기, 사이클링, 수영)은 장기적으로 HRV를 높이는 가장 효과적인 방법입니다. 주 3–5회, 중강도 이상의 유산소 운동을 권장합니다</li>
+<li><strong>고강도 인터벌 훈련(HIIT)</strong>: 주 1–2회의 HIIT는 심폐 기능을 향상시켜 HRV를 개선합니다. 단, 과도한 HIIT는 오히려 역효과를 줄 수 있습니다</li>
+<li><strong>근력 운동</strong>: 적절한 근력 운동도 자율신경계 균형에 도움이 됩니다</li>
+<li><strong>과훈련 방지</strong>: 가민의 Training Status와 Training Load를 모니터링하여 적절한 훈련량을 유지합니다. 훈련 부하가 &ldquo;비생산적(Unproductive)&ldquo;으로 표시되면 훈련량을 줄여야 합니다</li>
+</ul>
+<h3 id="수면">수면<a href="#수면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>수면 시간 확보</strong>: 7–9시간의 수면을 목표로 합니다</li>
+<li><strong>규칙적인 수면 스케줄</strong>: 매일 같은 시간에 잠자리에 들고 일어나는 것이 중요합니다</li>
+<li><strong>수면 환경 최적화</strong>: 서늘하고 어두운 환경, 전자기기 사용 자제</li>
+<li><strong>취침 전 루틴</strong>: 가민 사용자들 사이에서는 취침 2시간 전부터 스마트폰을 멀리하고, 가벼운 스트레칭을 하는 것이 HRV에 긍정적이라는 보고가 많습니다</li>
+</ul>
+<h3 id="식이">식이<a href="#식이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>알코올 제한</strong>: 알코올은 HRV에 직접적이고 즉각적인 부정적 영향을 미칩니다. 가민 커뮤니티에서 가장 많이 언급되는 HRV 개선법이 &ldquo;술 줄이기&quot;입니다</li>
+<li><strong>카페인 관리</strong>: 오후 2시 이후 카페인 섭취를 자제합니다</li>
+<li><strong>항산화 식품 섭취</strong>: 베리류, 녹색 채소, 견과류 등 항염증 식품이 도움이 됩니다</li>
+<li><strong>수분 섭취</strong>: 충분한 수분 섭취를 유지합니다. 탈수는 HRV를 낮추는 직접적인 원인입니다</li>
+<li><strong>과식 피하기</strong>: 취침 전 과식은 수면의 질을 떨어뜨려 HRV에 악영향을 줍니다</li>
+</ul>
+<h3 id="스트레스-관리">스트레스 관리<a href="#스트레스-관리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>호흡 운동</strong>: 가민 워치의 &ldquo;호흡&rdquo; 기능을 활용하여 하루 2–3회, 5분간 깊은 호흡을 연습합니다. 4-7-8 호흡법(4초 들이쉬기, 7초 멈추기, 8초 내쉬기)이 효과적입니다</li>
+<li><strong>명상</strong>: 하루 10–15분의 명상은 부교감신경 활성화에 도움이 됩니다</li>
+<li><strong>자연 속 활동</strong>: 야외 산책이나 하이킹은 스트레스 호르몬(코르티솔)을 낮추는 데 효과적입니다</li>
+</ul>
+<h3 id="기타">기타<a href="#기타" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>냉수 샤워 / 냉수 노출</strong>: 짧은 시간(30초–2분)의 냉수 노출이 미주신경을 자극하여 HRV를 개선한다는 연구 결과가 있습니다</li>
+<li><strong>사우나</strong>: 정기적인 사우나 사용이 심혈관 건강과 HRV에 긍정적인 영향을 미칠 수 있습니다</li>
+<li><strong>체중 관리</strong>: 비만은 만성 염증과 연관되며, HRV를 낮추는 요인입니다</li>
+<li><strong>금연</strong>: 흡연은 HRV를 유의미하게 낮춥니다</li>
+</ul>
+<hr>
+<h2 id="가민-connect에서-hrv-활용하기">가민 Connect에서 HRV 활용하기<a href="#가민-connect에서-hrv-활용하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가민 Connect 앱과 웹에서 HRV 데이터를 다양하게 활용할 수 있습니다.</p>
+<ul>
+<li><strong>HRV 상태(HRV Status)</strong>: 7일 평균 HRV를 기준선과 비교하여 &ldquo;균형(Balanced)&rdquo;, &ldquo;높음(Above)&rdquo;, &ldquo;낮음(Below)&rdquo; 등으로 표시합니다</li>
+<li><strong>Body Battery</strong>: HRV 데이터를 기반으로 한 에너지 잔량 지표입니다. HRV가 높으면 Body Battery 충전이 빠르고, 낮으면 충전이 더딥니다</li>
+<li><strong>Training Readiness</strong>: HRV, 수면, 스트레스, 훈련 부하를 종합하여 당일 훈련 준비 상태를 점수화합니다</li>
+<li><strong>Morning Report</strong>: 수면 중 측정된 HRV를 포함한 건강 요약을 매일 아침 워치에서 확인할 수 있습니다</li>
+</ul>
+<p>이 데이터들을 종합적으로 활용하면 훈련 계획 수립과 일상 건강 관리에 유용한 인사이트를 얻을 수 있습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://support.garmin.com/en-US/?faq=H4GRQRzBzS5Y3sPkDnVYi9">Garmin Support - Heart Rate Variability</a></li>
+<li><a href="https://support.garmin.com/en-US/?faq=GFJfYD7mH55RdTFJgfTgu6">Garmin Support - HRV Status</a></li>
+<li><a href="https://www.garmin.com/en-US/garmin-technology/health-science/heart-rate-variability/">Garmin Blog - Understanding HRV and What It Can Tell You</a></li>
+<li><a href="https://www.reddit.com/r/Garmin/">r/Garmin - HRV discussions</a></li>
+<li>Shaffer, F., &amp; Ginsberg, J.P. (2017). &ldquo;An Overview of Heart Rate Variability Metrics and Norms.&rdquo; <em>Frontiers in Public Health</em>, 5, 258.</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260305-famous-people-buried-at-passy-cemetery/" class="button inline next">
+         [<span class="button__text">파리 Passy 묘지에 안장된 유명 인물들</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
