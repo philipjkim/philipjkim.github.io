@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>HTMX와 함께 사용할 Go 템플릿 기술 비교: html/template vs. Templ :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Go로 SSR 웹 앱을 만들 때 HTMX와 함께 사용할 템플릿 기술로 html/template &#43; 커스텀 PageRenderer와 Templ을 비교합니다." />
+<meta name="keywords" content="golang, programming, dev, HTMX, templ, SSR" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260307-go-html-template-vs-templ-with-htmx/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="HTMX와 함께 사용할 Go 템플릿 기술 비교: html/template vs. Templ">
+<meta property="og:description" content="Go로 SSR 웹 앱을 만들 때 HTMX와 함께 사용할 템플릿 기술로 html/template &#43; 커스텀 PageRenderer와 Templ을 비교합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260307-go-html-template-vs-templ-with-htmx/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-07 00:01:56 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260307-go-html-template-vs-templ-with-htmx/">HTMX와 함께 사용할 Go 템플릿 기술 비교: html/template vs. Templ</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-07</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/dev/">dev</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/htmx/">HTMX</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/templ/">templ</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ssr/">SSR</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p>Go로 SSR 웹 앱을 만들 때 HTMX와 함께 사용할 템플릿 기술로 두 가지 선택지가 있습니다.</p>
+<ol>
+<li>Go 표준 <code>html/template</code> + 커스텀 PageRenderer (페이지별 독립 템플릿 세트)</li>
+<li>Templ</li>
+</ol>
+<p>이 글에서는 두 방식의 장단점을 실무 관점에서 비교합니다.</p>
+<hr>
+<h2 id="타입-안전성">타입 안전성<a href="#타입-안전성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가장 큰 갈림길입니다.</p>
+<p><code>html/template</code>은 런타임에 템플릿을 파싱하고 데이터를 바인딩합니다. <code>{{ .Titl }}</code>이라고 써도 빌드는 통과합니다. 런타임에 빈 문자열이 나오거나 에러가 발생하고 나서야 문제를 알 수 있습니다.</p>
+<p>Templ은 <code>.templ</code> 파일이 Go 코드로 생성됩니다. 컴포넌트의 파라미터가 Go 함수 시그니처가 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">templ</span><span class="w"> </span><span class="nf">TodoItem</span><span class="p">(</span><span class="nx">todo</span><span class="w"> </span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">Todo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="nx">li</span><span class="p">&gt;{</span><span class="w"> </span><span class="nx">todo</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="p">}&lt;</span><span class="o">/</span><span class="nx">li</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이렇게 선언하면 컴파일러가 타입을 체크합니다. 필드명 오타는 빌드 실패로 잡히고, IDE 자동완성도 동작합니다.</p>
+<hr>
+<h2 id="컴포넌트-모델과-조합성">컴포넌트 모델과 조합성<a href="#컴포넌트-모델과-조합성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>html/template</code>에서 재사용 가능한 파셜을 만들려면 <code>{{ define &quot;todo-item&quot; }}</code>과 <code>{{ template &quot;todo-item&quot; . }}</code>을 사용합니다. 여기서 <code>.</code>으로 넘기는 데이터가 <code>interface{}</code>이기 때문에, 어떤 구조체가 들어오는지 템플릿 파일만 봐서는 알 수 없습니다.</p>
+<p>커스텀 PageRenderer를 만들어서 페이지별로 독립 템플릿 세트를 구성하면 관리가 나아지지만, 데이터 흐름이 불투명한 근본적인 문제는 그대로입니다.</p>
+<p>Templ에서는 Go 함수가 곧 컴포넌트입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 컴포넌트 호출</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="err">@</span><span class="nf">TodoItem</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 슬롯 패턴</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">templ</span><span class="w"> </span><span class="nf">Layout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="nx">main</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">children</span><span class="o">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="o">/</span><span class="nx">main</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>컴포넌트 간 데이터 흐름이 함수 호출과 동일하므로, 코드를 읽는 것만으로 의존관계가 명확합니다.</p>
+<hr>
+<h2 id="개발-경험-dx">개발 경험 (DX)<a href="#개발-경험-dx" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="htmltemplate의-장점-추가-도구-불필요">html/template의 장점: 추가 도구 불필요<a href="#htmltemplate의-장점-추가-도구-불필요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Go 표준 라이브러리만으로 동작합니다. 코드 생성 단계가 없고, <code>go build</code>만 하면 됩니다. 템플릿 파일을 <code>embed.FS</code>로 바이너리에 포함시키면 배포도 단순합니다.</p>
+<h3 id="templ의-장점-우수한-ide-지원">Templ의 장점: 우수한 IDE 지원<a href="#templ의-장점-우수한-ide-지원" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>templ generate</code>라는 코드 생성 단계가 추가됩니다. <code>.templ</code> → <code>_templ.go</code> 변환이 필요하고, air 같은 워치 도구에서 이 단계를 빌드 파이프라인에 넣어야 합니다. 외부 의존성이 하나 더 생기는 셈입니다.</p>
+<p>다만 LSP 서버가 제공되어 VS Code에서의 자동완성, 에러 하이라이팅, 포매팅은 Templ이 훨씬 우수합니다.</p>
+<hr>
+<h2 id="htmx와의-궁합">HTMX와의 궁합<a href="#htmx와의-궁합" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>HTMX 파셜 응답을 보낼 때 차이가 뚜렷합니다.</p>
+<h3 id="htmltemplate--pagerenderer">html/template + PageRenderer<a href="#htmltemplate--pagerenderer" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>파셜 렌더링을 위해 보통 이런 패턴을 씁니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 전체 페이지</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">tmpl</span><span class="p">.</span><span class="nf">ExecuteTemplate</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;page.html&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// HTMX 파셜 — 동일 템플릿의 특정 block만 렌더링</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">tmpl</span><span class="p">.</span><span class="nf">ExecuteTemplate</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;todo-list&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>이 방식이 동작하려면 <code>{{ define &quot;todo-list&quot; }}</code>으로 명명된 블록이 미리 파싱된 템플릿 세트에 포함되어 있어야 합니다. 페이지별로 템플릿 세트를 관리하는 PageRenderer 패턴은 여기서 나오는 건데, 결국 &ldquo;어떤 템플릿 세트에 어떤 block이 들어있는가&quot;를 개발자가 머릿속에 들고 있어야 합니다.</p>
+<h3 id="templ">Templ<a href="#templ" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>컴포넌트 자체가 독립적으로 렌더링 가능합니다:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 전체 페이지</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">templates</span><span class="p">.</span><span class="nf">Index</span><span class="p">(</span><span class="nx">todos</span><span class="p">).</span><span class="nf">Render</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">w</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// HTMX 파셜 — 동일 컴포넌트를 그대로 호출</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">templates</span><span class="p">.</span><span class="nf">TodoList</span><span class="p">(</span><span class="nx">todos</span><span class="p">).</span><span class="nf">Render</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">w</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>컴포넌트가 자기 완결적이라 파셜 렌더링에 별도 설정이 필요 없습니다. HTMX와의 조합에서는 Templ이 확실히 자연스럽습니다.</p>
+<hr>
+<h2 id="성능">성능<a href="#성능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>html/template</code>은 초기 파싱 후 <code>*Template</code>을 재사용하면 성능이 괜찮지만, 내부적으로 reflection 기반 데이터 바인딩을 사용합니다.</p>
+<p>Templ은 생성된 Go 코드가 <code>io.Writer</code>에 직접 쓰기 때문에 reflection이 없고, 벤치마크에서 일반적으로 더 빠릅니다.</p>
+<p>다만 대부분의 웹 앱에서 템플릿 렌더링이 병목이 되는 경우는 드물어서, 이 차이가 기술 선택의 결정적 요인이 되지는 않습니다.</p>
+<hr>
+<h2 id="비교-정리">비교 정리<a href="#비교-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>기준</th>
+          <th><code>html/template</code> + PageRenderer</th>
+          <th>Templ</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>타입 안전성</strong></td>
+          <td>런타임 (<code>interface{}</code>)</td>
+          <td>컴파일 타임 (Go 함수 시그니처)</td>
+      </tr>
+      <tr>
+          <td><strong>외부 의존성</strong></td>
+          <td>없음 (표준 라이브러리)</td>
+          <td><code>templ</code> CLI 필요</td>
+      </tr>
+      <tr>
+          <td><strong>코드 생성</strong></td>
+          <td>없음</td>
+          <td><code>templ generate</code> 단계 필요</td>
+      </tr>
+      <tr>
+          <td><strong>IDE 지원</strong></td>
+          <td>제한적 (Go 템플릿 문법)</td>
+          <td>LSP 서버, 자동완성, 포매팅</td>
+      </tr>
+      <tr>
+          <td><strong>HTMX 파셜</strong></td>
+          <td><code>ExecuteTemplate</code>으로 named block 렌더링</td>
+          <td>컴포넌트 자체가 독립 렌더링 가능</td>
+      </tr>
+      <tr>
+          <td><strong>컴포넌트 조합</strong></td>
+          <td><code>define</code>/<code>template</code> (데이터 흐름 불투명)</td>
+          <td>Go 함수 호출 (타입 명시적)</td>
+      </tr>
+      <tr>
+          <td><strong>학습 곡선</strong></td>
+          <td>Go 개발자라면 즉시 사용 가능</td>
+          <td>Templ 문법 학습 필요 (30분~1시간)</td>
+      </tr>
+      <tr>
+          <td><strong>생태계 성숙도</strong></td>
+          <td>10년+ (표준 라이브러리)</td>
+          <td>비교적 신생 (2023~)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="어떤-걸-선택할-것인가">어떤 걸 선택할 것인가<a href="#어떤-걸-선택할-것인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>프로젝트 규모가 작고 팀원 모두가 Go에 익숙하다면 <code>html/template</code>으로 충분합니다. 표준 라이브러리만으로 동작한다는 것은 의존성 관리와 빌드 파이프라인 측면에서 분명한 장점입니다.</p>
+<p>하지만 다음 조건에 해당한다면 Templ을 고려할 가치가 있습니다:</p>
+<ul>
+<li>템플릿이 20~30개 이상으로 늘어나는 규모</li>
+<li>HTMX 파셜 응답이 많아지는 구조</li>
+<li>타입 안전성과 컴파일 타임 검증을 중시하는 팀</li>
+</ul>
+<p>Templ의 타입 안전성과 컴포넌트 모델은 프로젝트 규모가 커질수록 실수를 줄여줍니다. 특히 HTMX와의 조합에서 컴포넌트가 독립적으로 렌더링 가능하다는 점은 파셜 응답이 많은 앱에서 코드 관리를 크게 단순화합니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://pkg.go.dev/html/template">Go html/template 공식 문서</a></li>
+<li><a href="https://templ.guide/">Templ 공식 사이트</a></li>
+<li><a href="https://github.com/a-h/templ">Templ GitHub 저장소</a></li>
+<li><a href="https://htmx.org/">HTMX 공식 사이트</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260306-garmin-hrv-introduction/" class="button inline next">
+         [<span class="button__text">가민(Garmin)의 HRV 소개: 측정, 해석, 그리고 관리</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
