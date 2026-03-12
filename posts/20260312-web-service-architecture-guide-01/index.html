@@ -224,7 +224,23 @@ Domain
 
 Infrastructure
   - Repository 구현, ORM/SQL, Redis 어댑터, Kafka producer/consumer, 외부 API 클라이언트
-</code></pre><h3 id="의존성-방향과-closedopen-layer">의존성 방향과 closed/open layer<a href="#의존성-방향과-closedopen-layer" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+</code></pre><pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TD
+    P[&#34;&lt;b&gt;Presentation&lt;/b&gt;&lt;br/&gt;Controller, gRPC Handler, ViewModel&#34;]
+    App[&#34;&lt;b&gt;Application&lt;/b&gt;&lt;br/&gt;Use Case 조율, 트랜잭션, DTO&#34;]
+    D[&#34;&lt;b&gt;Domain&lt;/b&gt;&lt;br/&gt;Entity, Aggregate, Value Object&#34;]
+    Infra[&#34;&lt;b&gt;Infrastructure&lt;/b&gt;&lt;br/&gt;Repository 구현, ORM, Redis, Kafka&#34;]
+
+    P --&gt; App
+    App --&gt; D
+    App -.-&gt;|&#34;interface 호출&#34;| Infra
+    Infra -.-&gt;|&#34;구현 제공&#34;| D
+
+    style P fill:#87CEEB,color:#000000
+    style App fill:#90EE90,color:#000000
+    style D fill:#FFD700,color:#000000
+    style Infra fill:#FFB6C1,color:#000000
+</code></pre><p>점선 화살표는 DIP(의존성 역전)가 적용된 부분입니다. Application이 Infrastructure의 구체 구현이 아니라 Domain에 정의된 인터페이스를 호출하고, Infrastructure가 그 인터페이스를 구현합니다.</p>
+<h3 id="의존성-방향과-closedopen-layer">의존성 방향과 closed/open layer<a href="#의존성-방향과-closedopen-layer" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>전통적 Layered Architecture에서 의존성은 위에서 아래로 흐릅니다. <strong>Closed layer</strong> 방식에서는 각 계층이 바로 아래 계층만 호출할 수 있고, <strong>open layer</strong> 방식에서는 여러 계층을 건너뛸 수 있습니다. Closed layer는 결합을 줄이는 대신 단순한 위임(pass-through) 메서드가 늘어나고, open layer는 유연하지만 계층 간 결합이 늘어납니다.</p>
 <p>DDD식 4계층에서는 한 가지 중요한 변형이 있습니다. Domain 계층이 Infrastructure에 직접 의존하지 않도록, Domain에 인터페이스(Repository interface 등)를 정의하고 Infrastructure가 이를 구현하게 만드는 것입니다. 이렇게 하면 의존성 역전 원칙(DIP)이 적용되어, 가장 중요한 비즈니스 로직이 DB나 메시지 큐 같은 기술 세부사항에 끌려다니지 않게 됩니다.</p>
 <h3 id="장점">장점<a href="#장점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
@@ -269,6 +285,43 @@ Infrastructure
 <li><strong>경계는 인터페이스(포트/계약)로 정의한다</strong> — 안쪽은 추상에 의존하고, 바깥쪽이 구체 구현을 제공한다.</li>
 </ol>
 <p>이 원칙만 이해하면 세 가지 변종의 차이는 강조점의 차이일 뿐입니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph LR
+    subgraph &#34;Driving Adapters (입력)&#34;
+        REST[&#34;REST Controller&#34;]
+        GRPC[&#34;gRPC Handler&#34;]
+        MSG_IN[&#34;Message Consumer&#34;]
+    end
+
+    subgraph &#34;Application Core&#34;
+        IP[&#34;Input Ports&#34;]
+        UC[&#34;Use Cases&lt;br/&gt;Domain Model&#34;]
+        OP[&#34;Output Ports&#34;]
+        IP --&gt; UC --&gt; OP
+    end
+
+    subgraph &#34;Driven Adapters (출력)&#34;
+        DB[&#34;DB Repository&#34;]
+        CACHE[&#34;Redis Cache&#34;]
+        MQ[&#34;Kafka Publisher&#34;]
+    end
+
+    REST --&gt; IP
+    GRPC --&gt; IP
+    MSG_IN --&gt; IP
+    OP --&gt; DB
+    OP --&gt; CACHE
+    OP --&gt; MQ
+
+    style UC fill:#FFD700,color:#000000
+    style IP fill:#90EE90,color:#000000
+    style OP fill:#90EE90,color:#000000
+    style REST fill:#87CEEB,color:#000000
+    style GRPC fill:#87CEEB,color:#000000
+    style MSG_IN fill:#87CEEB,color:#000000
+    style DB fill:#FFB6C1,color:#000000
+    style CACHE fill:#FFB6C1,color:#000000
+    style MQ fill:#FFB6C1,color:#000000
+</code></pre><p>중앙의 Application Core(도메인 + 유스케이스)가 Port를 통해 바깥과 통신하고, 각 Adapter가 Port의 구체 구현을 제공합니다. 왼쪽 Driving Adapter는 외부에서 애플리케이션을 호출하는 쪽이고, 오른쪽 Driven Adapter는 애플리케이션이 외부를 호출하는 쪽입니다.</p>
 <h3 id="hexagonal-architecture-ports-and-adapters">Hexagonal Architecture (Ports and Adapters)<a href="#hexagonal-architecture-ports-and-adapters" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>Alistair Cockburn이 제안한 이 구조의 핵심은 <strong>inside-outside 비대칭</strong> 입니다. 문제의 본질은 &ldquo;왼쪽은 UI, 오른쪽은 DB&quot;가 아니라, <strong>안쪽의 애플리케이션 핵심과 바깥의 외부 세계가 뒤엉키는 것</strong> 입니다.</p>
 <ul>
@@ -369,12 +422,35 @@ Infrastructure
 </ul>
 <p>이 둘을 하나의 모델로 다루면, 도메인 모델이 읽기 최적화를 위해 오염되거나, 읽기 성능이 도메인 규칙 때문에 제한됩니다.</p>
 <h3 id="핵심-구조">핵심 구조<a href="#핵심-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<pre tabindex="0"><code>Command (쓰기) 경로:
-  Client → Command → Command Handler → Domain Model → Repository → DB
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TD
+    Client[&#34;Client&#34;]
 
-Query (읽기) 경로:
-  Client → Query → Query Handler → Read Model → DB (or Cache)
-</code></pre><p>쓰기 경로는 Aggregate와 Domain Event를 통해 비즈니스 규칙을 엄격하게 적용합니다. 읽기 경로는 도메인 모델을 거치지 않고, 조회에 최적화된 별도의 Read Model을 직접 사용합니다.</p>
+    Client --&gt;|&#34;Command&#34;| CH[&#34;Command Handler&#34;]
+    Client --&gt;|&#34;Query&#34;| QH[&#34;Query Handler&#34;]
+
+    subgraph &#34;쓰기 경로 (Command)&#34;
+        CH --&gt; DM[&#34;Domain Model&lt;br/&gt;Aggregate, 규칙 검증&#34;]
+        DM --&gt; REPO[&#34;Repository&#34;]
+        REPO --&gt; WDB[(&#34;Write DB&#34;)]
+    end
+
+    subgraph &#34;읽기 경로 (Query)&#34;
+        QH --&gt; RM[&#34;Read Model&lt;br/&gt;비정규화 뷰, DTO&#34;]
+        RM --&gt; RDB[(&#34;Read DB / Cache&#34;)]
+    end
+
+    WDB -.-&gt;|&#34;동기화&lt;br/&gt;(같은 DB 또는 이벤트)&#34;| RDB
+
+    style Client fill:#FFFFFF,color:#000000
+    style CH fill:#FFB6C1,color:#000000
+    style DM fill:#FFD700,color:#000000
+    style REPO fill:#FFB6C1,color:#000000
+    style WDB fill:#FFB6C1,color:#000000
+    style QH fill:#87CEEB,color:#000000
+    style RM fill:#87CEEB,color:#000000
+    style RDB fill:#87CEEB,color:#000000
+</code></pre><p>쓰기 경로(붉은색)는 도메인 규칙을 엄격하게 적용하고, 읽기 경로(푸른색)는 조회에 최적화된 별도 모델을 사용합니다. 두 경로 사이의 점선은 동기화를 나타냅니다.</p>
+<p>쓰기 경로는 Aggregate와 Domain Event를 통해 비즈니스 규칙을 엄격하게 적용합니다. 읽기 경로는 도메인 모델을 거치지 않고, 조회에 최적화된 별도의 Read Model을 직접 사용합니다.</p>
 <p>중요한 점은 <strong>CQRS가 반드시 별도 DB를 요구하지 않는다</strong> 는 것입니다. 같은 DB를 쓰면서 모델만 분리하는 것도 유효한 CQRS입니다. Fowler도 이 점을 강조합니다. 쓰기용 정규화 테이블과 읽기용 뷰/비정규화 테이블이 같은 DB에 있어도, 모델이 분리되어 있다면 CQRS의 이점을 얻을 수 있습니다.</p>
 <h3 id="장점-1">장점<a href="#장점-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><strong>읽기와 쓰기를 독립적으로 최적화할 수 있습니다.</strong> 쓰기 경로는 도메인 규칙에 집중하고, 읽기 경로는 성능에 집중할 수 있습니다. 읽기에 Redis 캐시를 붙이거나, Elasticsearch를 Read Model로 쓰거나, 비정규화 뷰를 만들어도 쓰기 모델에 영향을 주지 않습니다.</p>

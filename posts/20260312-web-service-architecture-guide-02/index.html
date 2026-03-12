@@ -210,6 +210,33 @@
 <p>EDA의 주요 토폴로지는 두 가지입니다.</p>
 <p><strong>Mediator 토폴로지</strong>: 중앙 조정자가 이벤트를 받아 처리 단계를 조율합니다. 여러 단계를 거치는 복잡한 워크플로에 적합합니다. 예를 들어 주문 처리 시 &ldquo;결제 확인 → 재고 차감 → 배송 요청&quot;을 중앙에서 순서대로 조율합니다.</p>
 <p><strong>Broker 토폴로지</strong>: 중앙 조정자 없이, 이벤트가 메시지 브로커를 통해 관심 있는 소비자에게 전달됩니다. 각 소비자가 독립적으로 반응하므로 결합도가 낮습니다. 예를 들어 <code>OrderCreated</code> 이벤트에 대해 재고 서비스, 알림 서비스, 분석 서비스가 각각 독립적으로 반응합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph LR
+    subgraph &#34;Event Producers&#34;
+        OS[&#34;Order Service&#34;]
+        PS[&#34;Payment Service&#34;]
+    end
+
+    BROKER[&#34;Message Broker&lt;br/&gt;Kafka / RabbitMQ&#34;]
+
+    subgraph &#34;Event Consumers&#34;
+        INV[&#34;Inventory Service&#34;]
+        NOTI[&#34;Notification Service&#34;]
+        ANAL[&#34;Analytics Service&#34;]
+    end
+
+    OS --&gt;|&#34;OrderCreated&#34;| BROKER
+    PS --&gt;|&#34;PaymentCompleted&#34;| BROKER
+    BROKER --&gt; INV
+    BROKER --&gt; NOTI
+    BROKER --&gt; ANAL
+
+    style BROKER fill:#FFD700,color:#000000
+    style OS fill:#90EE90,color:#000000
+    style PS fill:#90EE90,color:#000000
+    style INV fill:#87CEEB,color:#000000
+    style NOTI fill:#87CEEB,color:#000000
+    style ANAL fill:#87CEEB,color:#000000
+</code></pre><p>Producer(초록색)는 이벤트를 발행만 하고, Consumer(푸른색)의 존재를 알 필요가 없습니다. 새로운 Consumer를 추가해도 Producer를 수정하지 않습니다.</p>
 <h3 id="domain-event과의-관계">Domain Event과의 관계<a href="#domain-event과의-관계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>DDD에서 말하는 Domain Event와 EDA의 이벤트는 같은 개념이 아닙니다. Domain Event는 도메인 모델 안에서 &ldquo;비즈니스적으로 의미 있는 일이 발생했다&quot;를 표현하는 것이고, EDA의 이벤트는 시스템 간 통신 메커니즘입니다.</p>
 <p>하지만 실무에서 이 둘은 자연스럽게 연결됩니다. Domain Event가 발생하면 이를 메시지 브로커를 통해 다른 컴포넌트에 전파하는 패턴이 매우 흔합니다. 이때 주의할 점은 <strong>내부 Domain Event의 구조와 외부로 발행하는 Integration Event의 구조를 분리</strong> 하는 것입니다. 내부 이벤트는 도메인 모델의 세부사항을 포함할 수 있지만, 외부 이벤트는 소비자가 필요한 최소한의 정보만 담아야 합니다.</p>
@@ -276,6 +303,38 @@
       UpdatePriceCommand.cs
       UpdatePriceHandler.cs
 </code></pre><p>각 slice에는 request/response 모델, 핸들러, validator, 매핑 설정 등 해당 기능에 필요한 모든 것이 가까이 모여 있습니다. Controller는 라우팅을 만족시키기 위한 얇은 껍데기일 뿐입니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TD
+    subgraph &#34;Slice: 주문 생성&#34;
+        E1[&#34;Endpoint&#34;] --&gt; H1[&#34;Handler&#34;]
+        H1 --&gt; V1[&#34;Validator&#34;]
+        H1 --&gt; D1[&#34;Domain Model + DB&#34;]
+    end
+
+    subgraph &#34;Slice: 상품 검색&#34;
+        E2[&#34;Endpoint&#34;] --&gt; H2[&#34;Handler&#34;]
+        H2 --&gt; V2[&#34;Validator&#34;]
+        H2 --&gt; D2[&#34;Query + Cache&#34;]
+    end
+
+    subgraph &#34;Slice: 가격 변경&#34;
+        E3[&#34;Endpoint&#34;] --&gt; H3[&#34;Handler&#34;]
+        H3 --&gt; V3[&#34;Validator&#34;]
+        H3 --&gt; D3[&#34;Domain + Event 발행&#34;]
+    end
+
+    style E1 fill:#FFB6C1,color:#000000
+    style H1 fill:#FFB6C1,color:#000000
+    style V1 fill:#FFB6C1,color:#000000
+    style D1 fill:#FFB6C1,color:#000000
+    style E2 fill:#87CEEB,color:#000000
+    style H2 fill:#87CEEB,color:#000000
+    style V2 fill:#87CEEB,color:#000000
+    style D2 fill:#87CEEB,color:#000000
+    style E3 fill:#90EE90,color:#000000
+    style H3 fill:#90EE90,color:#000000
+    style V3 fill:#90EE90,color:#000000
+    style D3 fill:#90EE90,color:#000000
+</code></pre><p>각 slice(색상별)가 독립적으로 Endpoint부터 데이터 접근까지 수직으로 관통합니다. Slice마다 내부 구현 방식이 다를 수 있습니다. 주문 생성은 Domain Model을 거치고, 상품 검색은 캐시를 직접 조회하며, 가격 변경은 이벤트를 발행합니다.</p>
 <h3 id="왜-이런-구조가-필요한가">왜 이런 구조가 필요한가<a href="#왜-이런-구조가-필요한가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p>&ldquo;상품 검색&quot;과 &ldquo;상품 가격 변경&quot;을 예로 들면, 이 둘이 <code>ProductService</code>를 공유할 이유는 생각보다 많지 않습니다.</p>
 <ul>
@@ -328,7 +387,45 @@
 ├── Inventory 모듈
 │   └── ...
 └── Shared Kernel (공용 Value Object, 인터페이스)
-</code></pre><p>각 모듈은 다음 원칙을 따릅니다.</p>
+</code></pre><pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TD
+    subgraph &#34;단일 배포 단위 (Monolith)&#34;
+        subgraph &#34;Orders Module&#34;
+            OA[&#34;Public API&#34;] --&gt; OD[&#34;Internal Domain&#34;]
+            OD --&gt; ODB[(&#34;Data Store&#34;)]
+        end
+
+        subgraph &#34;Payments Module&#34;
+            PA[&#34;Public API&#34;] --&gt; PD[&#34;Internal Domain&#34;]
+            PD --&gt; PDB[(&#34;Data Store&#34;)]
+        end
+
+        subgraph &#34;Inventory Module&#34;
+            IA[&#34;Public API&#34;] --&gt; ID[&#34;Internal Domain&#34;]
+            ID --&gt; IDB[(&#34;Data Store&#34;)]
+        end
+
+        EB[&#34;Event Bus&#34;]
+        SK[&#34;Shared Kernel&#34;]
+    end
+
+    OA -.-&gt;|&#34;API 호출&#34;| PA
+    OA -.-&gt;|&#34;API 호출&#34;| IA
+    PA -.-&gt;|&#34;이벤트 발행&#34;| EB
+    EB -.-&gt;|&#34;이벤트 구독&#34;| OD
+
+    style OA fill:#FFB6C1,color:#000000
+    style OD fill:#FFB6C1,color:#000000
+    style ODB fill:#FFB6C1,color:#000000
+    style PA fill:#87CEEB,color:#000000
+    style PD fill:#87CEEB,color:#000000
+    style PDB fill:#87CEEB,color:#000000
+    style IA fill:#90EE90,color:#000000
+    style ID fill:#90EE90,color:#000000
+    style IDB fill:#90EE90,color:#000000
+    style EB fill:#DDA0DD,color:#000000
+    style SK fill:#FFD700,color:#000000
+</code></pre><p>각 모듈(색상별)은 자신만의 Public API, Internal Domain, Data Store를 가집니다. 모듈 간 직접 호출은 단방향으로 유지하여 순환 의존을 방지하고, 역방향 통신이 필요할 때는 Event Bus를 통한 간접 통신을 사용합니다. 어떤 경우든 다른 모듈의 내부 구현이나 DB에 직접 접근하지 않습니다.</p>
+<p>각 모듈은 다음 원칙을 따릅니다.</p>
 <ol>
 <li><strong>모듈 간 통신은 Public API를 통해서만</strong> 합니다. 다른 모듈의 내부 클래스나 DB 테이블에 직접 접근하지 않습니다.</li>
 <li><strong>각 모듈은 자신의 데이터를 소유합니다.</strong> 다른 모듈의 테이블을 직접 조인하지 않습니다.</li>
