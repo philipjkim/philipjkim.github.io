@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>웹서비스 내부 구조 아키텍처 가이드 Part 1: Layered, Ports &amp; Adapters, CQRS :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="웹서비스 내부 코드 구조를 설계할 때 고려할 수 있는 주요 아키텍처들을 소개합니다. Part 1에서는 Layered Architecture, Ports & Adapters 계열(Hexagonal, Onion, Clean), CQRS를 다룹니다." />
+<meta name="keywords" content="software-design, programming, architecture, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260312-web-service-architecture-guide-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="웹서비스 내부 구조 아키텍처 가이드 Part 1: Layered, Ports &amp; Adapters, CQRS">
+<meta property="og:description" content="웹서비스 내부 코드 구조를 설계할 때 고려할 수 있는 주요 아키텍처들을 소개합니다. Part 1에서는 Layered Architecture, Ports & Adapters 계열(Hexagonal, Onion, Clean), CQRS를 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260312-web-service-architecture-guide-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-12 10:07:29 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260312-web-service-architecture-guide-01/">웹서비스 내부 구조 아키텍처 가이드 Part 1: Layered, Ports &amp; Adapters, CQRS</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-12</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/software-design/">software-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/architecture/">architecture</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p>이 글은 웹서비스를 전제로 합니다. 구체적으로는 HTML/CSS/JS 프런트엔드, REST/gRPC 기반 백엔드, RDB/Redis/NoSQL 저장소, Kafka/RabbitMQ 같은 메시지 브로커가 있는 환경을 상정합니다.</p>
+<p>비교 대상은 &ldquo;배포 아키텍처&quot;가 아닙니다. 마이크로서비스냐 모놀리스냐의 문제가 아니라, <strong>애플리케이션 내부 코드를 어떻게 나누고, 의존성을 어느 방향으로 흐르게 하며, 변경을 어떤 단위로 흡수할 것인가</strong> 에 관한 내부 구조 아키텍처입니다. Microsoft도 논리적 계층(layer)과 물리적 계층(tier)을 구분하며, 논리적 계층 분리가 반드시 별도 서버 분리를 의미하지는 않는다고 설명합니다.</p>
+<p>이 시리즈에서 다루는 아키텍처는 다음 여섯 가지입니다.</p>
+<ol>
+<li><strong>Layered Architecture</strong></li>
+<li><strong>Ports &amp; Adapters 계열</strong> (Hexagonal / Onion / Clean Architecture)</li>
+<li><strong>CQRS</strong> (Command Query Responsibility Segregation)</li>
+<li><strong>Event-Driven Architecture</strong></li>
+<li><strong>Vertical Slice Architecture</strong></li>
+<li><strong>Modular Monolith</strong></li>
+</ol>
+<p>Part 1에서는 1<del>3번을, Part 2에서는 4</del>6번과 비교·선택 기준을 다룹니다.</p>
+<hr>
+<h2 id="1-layered-architecture">1. Layered Architecture<a href="#1-layered-architecture" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="개요">개요<a href="#개요" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Layered Architecture는 가장 오래되고 가장 널리 쓰이는 내부 구조 패턴입니다. 코드를 책임별 계층(layer)으로 나누고, 각 계층이 바로 아래 계층에만 의존하도록 만드는 것이 기본 원칙입니다. Microsoft Azure 문서는 이를 &ldquo;코드를 논리적 계층으로 조직하는 가장 전통적인 방법&quot;으로 설명합니다.</p>
+<p>가장 단순한 형태는 3계층입니다.</p>
+<pre tabindex="0"><code>Presentation → Business Logic → Data Access
+</code></pre><p>DDD(Domain-Driven Design)를 적용하면 보통 4계층으로 확장됩니다. Evans는 도메인 코드를 UI, Application, Infrastructure로부터 분리해 모델을 선명하게 유지해야 한다고 강조했습니다.</p>
+<pre tabindex="0"><code>Presentation (UI)
+  - Controller, gRPC handler, ViewModel, 인증 진입점
+
+Application
+  - 유스케이스 조율, 트랜잭션 경계, 권한 검사, DTO 변환
+
+Domain
+  - Entity, Aggregate, Value Object, Domain Service, Domain Event
+
+Infrastructure
+  - Repository 구현, ORM/SQL, Redis 어댑터, Kafka producer/consumer, 외부 API 클라이언트
+</code></pre><h3 id="의존성-방향과-closedopen-layer">의존성 방향과 closed/open layer<a href="#의존성-방향과-closedopen-layer" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>전통적 Layered Architecture에서 의존성은 위에서 아래로 흐릅니다. <strong>Closed layer</strong> 방식에서는 각 계층이 바로 아래 계층만 호출할 수 있고, <strong>open layer</strong> 방식에서는 여러 계층을 건너뛸 수 있습니다. Closed layer는 결합을 줄이는 대신 단순한 위임(pass-through) 메서드가 늘어나고, open layer는 유연하지만 계층 간 결합이 늘어납니다.</p>
+<p>DDD식 4계층에서는 한 가지 중요한 변형이 있습니다. Domain 계층이 Infrastructure에 직접 의존하지 않도록, Domain에 인터페이스(Repository interface 등)를 정의하고 Infrastructure가 이를 구현하게 만드는 것입니다. 이렇게 하면 의존성 역전 원칙(DIP)이 적용되어, 가장 중요한 비즈니스 로직이 DB나 메시지 큐 같은 기술 세부사항에 끌려다니지 않게 됩니다.</p>
+<h3 id="장점">장점<a href="#장점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>이해 비용이 낮습니다.</strong> 대부분의 개발자가 이미 UI/BLL/DAL 같은 모델에 익숙합니다. 초기 온보딩과 코드 탐색이 쉽고, 팀 합의도 빠릅니다. 관리자 페이지, 내부 업무 시스템, 전통적 CRUD 웹앱에서는 이 익숙함 자체가 큰 생산성이 됩니다.</p>
+<p><strong>책임 경계가 명시적입니다.</strong> &ldquo;이 코드는 어느 계층에 있어야 하는가?&ldquo;라는 질문에 대체로 명확한 답이 있습니다. 코드 리뷰에서도 계층 위반을 발견하기 쉽습니다.</p>
+<p><strong>기존 시스템과의 호환성이 좋습니다.</strong> 레거시 온프레미스 시스템을 클라우드로 이전하거나, 기존 enterprise 프레임워크를 활용할 때 자연스러운 출발점이 됩니다.</p>
+<h3 id="단점과-흔한-실패-모드">단점과 흔한 실패 모드<a href="#단점과-흔한-실패-모드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>컴파일타임 의존성이 아래로 흐르기 쉽습니다.</strong> DIP를 적용하지 않으면 Business Logic이 Data Access의 구체 구현에 의존하게 되고, 테스트가 어려워집니다. Microsoft는 이 점을 전통적 layered 구조의 대표적 약점으로 지적합니다.</p>
+<p><strong>도메인 빈혈(Anemic Domain Model)이 발생하기 쉽습니다.</strong> DDD식 4계층이라는 이름을 붙였지만, 실제로는 Entity가 getter/setter 묶음이고 모든 규칙이 Application Service에 몰리는 경우가 매우 흔합니다. Fowler는 이를 Anemic Domain Model 안티패턴이라 부르며, &ldquo;도메인 객체에 행동이 거의 없는 것&quot;이 문제의 본질이라고 설명합니다.</p>
+<p><strong>Repository를 테이블 단위 DAO로 오해하는 경우가 많습니다.</strong> DDD에서 Repository는 Aggregate Root 단위로 두어야 합니다. 테이블마다 Repository를 만들면 Aggregate의 일관성 경계가 흐려집니다.</p>
+<p><strong>계층이 많아질수록 pass-through 코드가 늘어납니다.</strong> Controller → Service → Repository 사이에 실질적인 로직 없이 위임만 하는 메서드가 쌓이면, 계층 분리의 비용이 이점을 초과하기 시작합니다.</p>
+<h3 id="적합한-상황">적합한 상황<a href="#적합한-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>업무 흐름은 많지만 도메인 난도가 중간 이하인 시스템</li>
+<li>팀이 전통적 enterprise layering에 익숙한 조직</li>
+<li>기존 레거시 시스템을 점진적으로 이전하는 경우</li>
+<li>규정 준수상 계층 책임을 문서화해야 하는 환경</li>
+</ul>
+<h3 id="부적합한-상황">부적합한 상황<a href="#부적합한-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>유스케이스마다 데이터 접근 방식이 크게 다른 시스템</li>
+<li>읽기/쓰기 비대칭이 극단적인 서비스</li>
+<li>프레임워크/DB 독립성이 매우 중요한 경우</li>
+</ul>
+<h3 id="실무-팁">실무 팁<a href="#실무-팁" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>완벽한 4계층 교리를 강요하기보다, 다음 네 가지만 지켜도 건강한 Layered Architecture가 됩니다.</p>
+<ol>
+<li>비즈니스 규칙은 Domain 안에 둔다</li>
+<li>Application 계층은 얇게 유지한다</li>
+<li>Repository는 Aggregate 단위로 둔다</li>
+<li>읽기 경로를 과도하게 교리화하지 않는다 (읽기 최적화가 필요하면 별도 경로를 허용한다)</li>
+</ol>
+<p>Layered Architecture의 문제는 대개 계층 자체보다 &ldquo;계층을 기계적으로 적용하는 것&quot;에서 발생합니다.</p>
+<hr>
+<h2 id="2-ports--adapters-계열">2. Ports &amp; Adapters 계열<a href="#2-ports--adapters-계열" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="hexagonal-onion-clean-architecture--하나의-원칙-세-가지-표현">Hexagonal, Onion, Clean Architecture — 하나의 원칙, 세 가지 표현<a href="#hexagonal-onion-clean-architecture--하나의-원칙-세-가지-표현" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Microsoft는 DIP(의존성 역전 원칙)와 DDD를 따라가면 역사적으로 Hexagonal → Ports and Adapters → Onion → Clean Architecture로 불려온 매우 유사한 구조에 도달한다고 설명합니다. 이 셋은 적대적 대안이 아니라, 같은 핵심 원칙을 서로 다른 은유로 표현한 것에 가깝습니다.</p>
+<p><strong>공통 원칙은 세 가지입니다.</strong></p>
+<ol>
+<li><strong>도메인(비즈니스 규칙)이 중심에 위치한다</strong> — UI, DB, 프레임워크 같은 바깥 요소가 안쪽에 의존하지, 안쪽이 바깥에 의존하지 않는다.</li>
+<li><strong>인프라는 외부에 위치한다</strong> — DB는 시스템의 중심이 아니라 교체 가능한 외부 서비스이다.</li>
+<li><strong>경계는 인터페이스(포트/계약)로 정의한다</strong> — 안쪽은 추상에 의존하고, 바깥쪽이 구체 구현을 제공한다.</li>
+</ol>
+<p>이 원칙만 이해하면 세 가지 변종의 차이는 강조점의 차이일 뿐입니다.</p>
+<h3 id="hexagonal-architecture-ports-and-adapters">Hexagonal Architecture (Ports and Adapters)<a href="#hexagonal-architecture-ports-and-adapters" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Alistair Cockburn이 제안한 이 구조의 핵심은 <strong>inside-outside 비대칭</strong> 입니다. 문제의 본질은 &ldquo;왼쪽은 UI, 오른쪽은 DB&quot;가 아니라, <strong>안쪽의 애플리케이션 핵심과 바깥의 외부 세계가 뒤엉키는 것</strong> 입니다.</p>
+<ul>
+<li><strong>Port</strong>: 애플리케이션이 외부와 나누는 &ldquo;목적 있는 대화&quot;를 나타내는 인터페이스입니다. <code>OrderCreationPort</code>, <code>PaymentGatewayPort</code> 같은 비즈니스 목적 중심으로 정의합니다.</li>
+<li><strong>Adapter</strong>: 각 Port에 맞춰 구체적인 외부 기술을 연결하는 구현체입니다. 한 Port에 REST adapter, gRPC adapter, 테스트 stub 등 여러 어댑터가 붙을 수 있습니다.</li>
+</ul>
+<p><strong>입력 어댑터(driving)</strong>: REST Controller, gRPC handler, 메시지 소비자, 배치 작업, CLI
+<strong>출력 어댑터(driven)</strong>: RDB Repository 구현, Redis 캐시, Kafka publisher, 외부 결제 API 클라이언트</p>
+<p>Hexagonal이 특히 빛나는 상황은 <strong>입출력 채널이 다양한 시스템</strong> 입니다. 같은 주문 생성 유스케이스를 HTTP API, 내부 gRPC, 배치 작업, 메시지 소비자에서 동시에 호출해야 한다면, 이들을 &ldquo;같은 입력 포트에 붙는 서로 다른 어댑터&quot;로 모델링할 수 있습니다.</p>
+<p><strong>주의점</strong>: 많은 팀이 이를 &ldquo;Controller 뒤에 Service, Repository 인터페이스 두기&rdquo; 정도로 이해합니다. 하지만 Cockburn의 핵심은 계층 수가 아니라 Port의 목적성입니다. <code>SqlOrderPort</code>, <code>KafkaOrderPort</code> 같은 기술 기준 이름이 나오기 시작하면 본래 의도에서 벗어난 것입니다.</p>
+<h3 id="onion-architecture">Onion Architecture<a href="#onion-architecture" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Jeffrey Palermo가 제안한 이 구조는 <strong>동심원(concentric circles)</strong> 은유를 사용합니다.</p>
+<ul>
+<li>가장 안쪽: <strong>Domain Model</strong> (Entity, Value Object, Domain Service)</li>
+<li>중간 링: <strong>Application Service</strong>, Repository interface 같은 계약</li>
+<li>가장 바깥: <strong>UI, Infrastructure, Tests</strong></li>
+</ul>
+<p>핵심 메시지는 &ldquo;모든 결합은 중심을 향한다&quot;입니다. Palermo는 DB를 시스템의 중심이 아니라 외부 저장 서비스로 보아야 한다고 강조합니다. 이 관점은 &ldquo;테이블 구조가 곧 도메인 모델&quot;이라는 사고를 깨뜨리는 데 효과적입니다.</p>
+<p>Onion의 정신 모델은 매우 강력합니다. &ldquo;우리 시스템의 진짜 핵심이 무엇인가?&ldquo;를 팀이 계속 의식하게 만들기 때문입니다. 금융, 주문/정산, 예약, 정책 엔진처럼 규칙과 상태 전이가 복잡한 시스템에서 특히 효과적입니다.</p>
+<p>다만 Palermo 자신도 이 구조가 <strong>작은 웹사이트보다는 오래 살아남아야 하는 복잡한 비즈니스 애플리케이션</strong> 에 적합하다고 말합니다.</p>
+<h3 id="clean-architecture">Clean Architecture<a href="#clean-architecture" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Robert C. Martin(Uncle Bob)이 제안한 이 구조는 <strong>Dependency Rule</strong> 을 가장 전면에 내세웁니다.</p>
+<ul>
+<li><strong>Entities</strong>: 가장 일반적이고 안정적인 비즈니스 규칙</li>
+<li><strong>Use Cases</strong>: 애플리케이션 특화 비즈니스 규칙</li>
+<li><strong>Interface Adapters</strong>: Controller, Presenter, Gateway, Repository 구현</li>
+<li><strong>Frameworks &amp; Drivers</strong>: 웹 프레임워크, DB, 메시지 브로커</li>
+</ul>
+<p>규칙은 단순합니다. <strong>소스코드 의존성은 오직 안쪽으로만 향해야 하며</strong>, 안쪽 원은 바깥 원의 어떤 이름도 알면 안 됩니다. 경계를 넘는 데이터는 가능한 단순한 구조여야 하며, ORM 엔티티나 프레임워크 객체를 안쪽으로 들이밀면 안 됩니다.</p>
+<p>Clean Architecture의 최대 강점은 <strong>위반을 발견하기 쉽다</strong> 는 것입니다. Use Case 안에서 EF Core 엔티티를 직접 다루거나, Controller에서 DbContext를 직접 호출하면 어디서 규칙을 어겼는지 바로 보입니다. 팀 교육과 코드 리뷰에서 이 명확함은 큰 이점입니다.</p>
+<h3 id="세-변종의-차이-요약">세 변종의 차이 요약<a href="#세-변종의-차이-요약" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>관점</th>
+          <th>Hexagonal</th>
+          <th>Onion</th>
+          <th>Clean</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>핵심 은유</strong></td>
+          <td>육각형, 포트와 어댑터</td>
+          <td>동심원, 양파 껍질</td>
+          <td>동심원, 의존성 규칙</td>
+      </tr>
+      <tr>
+          <td><strong>강조점</strong></td>
+          <td>안팎의 비대칭, 입출력 대칭성</td>
+          <td>도메인 중심성, 결합 방향</td>
+          <td>의존성 규칙, 경계 통과 규칙</td>
+      </tr>
+      <tr>
+          <td><strong>잘 설명하는 것</strong></td>
+          <td>&ldquo;바깥과 어떻게 연결하는가&rdquo;</td>
+          <td>&ldquo;코어가 어디인가&rdquo;</td>
+          <td>&ldquo;어디까지가 정책이고 어디부터가 세부사항인가&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>실무 적합도</strong></td>
+          <td>입출력 채널이 다양한 시스템</td>
+          <td>도메인 규칙이 핵심 자산인 시스템</td>
+          <td>의존성 거버넌스가 중요한 팀</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="계열-전체의-장점">계열 전체의 장점<a href="#계열-전체의-장점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>프레임워크/DB 독립성이 높습니다.</strong> 핵심 비즈니스 로직이 특정 프레임워크나 DB에 묶이지 않으므로, 기술 교체 비용이 줄어듭니다.</p>
+<p><strong>테스트가 쉬워집니다.</strong> 도메인과 유스케이스를 인프라 없이 단위 테스트할 수 있습니다. Cockburn은 GUI가 완성되기 전에도 자동 테스트를 만들 수 있어야 한다고 강조합니다.</p>
+<p><strong>장기 유지보수에 유리합니다.</strong> 외곽 기술(DB, 메시지 브로커, 외부 API)이 바뀌어도 중심부는 안정적으로 유지됩니다.</p>
+<h3 id="계열-전체의-단점">계열 전체의 단점<a href="#계열-전체의-단점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>추상화 비용이 있습니다.</strong> 포트, 어댑터, 인터페이스, DTO, 매핑 코드가 늘어나는 방향으로 가기 쉽습니다. 단순 CRUD 서비스에서는 이 비용이 실제 도메인 복잡도를 초과할 수 있습니다.</p>
+<p><strong>교리화 위험이 있습니다.</strong> &ldquo;무조건 Repository 인터페이스&rdquo;, &ldquo;무조건 Use Case 클래스&rdquo;, &ldquo;무조건 Presenter&rdquo; 식으로 적용하면, 구조 보존 자체가 목적이 되는 역전이 일어납니다. 이 계열의 목적은 <strong>도메인을 보호하는 것</strong> 이지, <strong>계층 수를 늘리는 것</strong> 이 아닙니다.</p>
+<p><strong>읽기 경로가 무거워질 수 있습니다.</strong> 모든 조회를 Domain → Repository → Use Case 경로로 밀어 넣으면 불필요하게 무거워집니다. 읽기 모델이 복잡한 서비스에서는 조회 전용 경로를 별도로 두는 것이 더 실용적입니다. (이 문제는 바로 다음에 다룰 CQRS와 직접 연결됩니다.)</p>
+<h3 id="적합한-상황-1">적합한 상황<a href="#적합한-상황-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>핵심 비즈니스 규칙이 복잡하고 오래 유지해야 하는 시스템</li>
+<li>입출력 채널이 다양한 서비스 (HTTP, gRPC, 배치, 메시지 소비자)</li>
+<li>인프라 교체 가능성이 높은 환경</li>
+<li>테스트 격리가 중요한 프로젝트</li>
+</ul>
+<h3 id="부적합한-상황-1">부적합한 상황<a href="#부적합한-상황-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>화면 몇 개짜리 단순 CRUD 서비스</li>
+<li>대부분이 읽기 위주인 시스템</li>
+<li>팀이 인터페이스 개수만 늘리고 포트의 목적을 정의하지 않는 경우</li>
+</ul>
+<hr>
+<h2 id="3-cqrs-command-query-responsibility-segregation">3. CQRS (Command Query Responsibility Segregation)<a href="#3-cqrs-command-query-responsibility-segregation" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="개요-1">개요<a href="#개요-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CQRS는 <strong>읽기(Query)와 쓰기(Command)의 모델을 분리</strong> 하는 패턴입니다. Greg Young이 체계화하고 Martin Fowler가 정리한 이 패턴은, Bertrand Meyer의 CQS(Command Query Separation) 원칙을 아키텍처 수준으로 확장한 것입니다.</p>
+<p>전통적인 CRUD 시스템에서는 같은 모델이 읽기와 쓰기를 모두 담당합니다. <code>OrderService</code>가 주문을 생성하고, 주문 목록을 조회하고, 주문 상세를 반환합니다. 단순한 시스템에서는 이것으로 충분합니다.</p>
+<p>하지만 시스템이 커지면 읽기와 쓰기의 요구사항이 극단적으로 달라지는 경우가 많습니다.</p>
+<ul>
+<li><strong>쓰기</strong>: 도메인 규칙 검증, 상태 전이, 불변조건 보장, 트랜잭션 일관성이 중요합니다.</li>
+<li><strong>읽기</strong>: 여러 Aggregate를 조인한 비정규화 뷰, 페이징, 정렬, 필터링, 캐싱이 중요합니다.</li>
+</ul>
+<p>이 둘을 하나의 모델로 다루면, 도메인 모델이 읽기 최적화를 위해 오염되거나, 읽기 성능이 도메인 규칙 때문에 제한됩니다.</p>
+<h3 id="핵심-구조">핵심 구조<a href="#핵심-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>Command (쓰기) 경로:
+  Client → Command → Command Handler → Domain Model → Repository → DB
+
+Query (읽기) 경로:
+  Client → Query → Query Handler → Read Model → DB (or Cache)
+</code></pre><p>쓰기 경로는 Aggregate와 Domain Event를 통해 비즈니스 규칙을 엄격하게 적용합니다. 읽기 경로는 도메인 모델을 거치지 않고, 조회에 최적화된 별도의 Read Model을 직접 사용합니다.</p>
+<p>중요한 점은 <strong>CQRS가 반드시 별도 DB를 요구하지 않는다</strong> 는 것입니다. 같은 DB를 쓰면서 모델만 분리하는 것도 유효한 CQRS입니다. Fowler도 이 점을 강조합니다. 쓰기용 정규화 테이블과 읽기용 뷰/비정규화 테이블이 같은 DB에 있어도, 모델이 분리되어 있다면 CQRS의 이점을 얻을 수 있습니다.</p>
+<h3 id="장점-1">장점<a href="#장점-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>읽기와 쓰기를 독립적으로 최적화할 수 있습니다.</strong> 쓰기 경로는 도메인 규칙에 집중하고, 읽기 경로는 성능에 집중할 수 있습니다. 읽기에 Redis 캐시를 붙이거나, Elasticsearch를 Read Model로 쓰거나, 비정규화 뷰를 만들어도 쓰기 모델에 영향을 주지 않습니다.</p>
+<p><strong>도메인 모델이 읽기 요구사항에 오염되지 않습니다.</strong> 화면에 보여줄 데이터 형태 때문에 Aggregate에 불필요한 필드를 추가하거나 관계를 풀어야 하는 압력이 사라집니다.</p>
+<p><strong>독립적 확장(scaling)이 가능합니다.</strong> 대부분의 웹서비스는 읽기가 쓰기보다 훨씬 많습니다. 읽기 경로만 별도로 스케일 아웃하거나, 읽기 전용 레플리카를 활용하기 쉬워집니다.</p>
+<p><strong>Ports &amp; Adapters 계열과 자연스럽게 결합됩니다.</strong> 쓰기 경로에서는 Hexagonal/Clean의 도메인 중심 구조를 적용하고, 읽기 경로에서는 가볍게 DB를 직접 조회하는 방식이 가능합니다. 앞 섹션에서 언급한 &ldquo;읽기 경로가 무거워지는 문제&quot;를 CQRS가 직접 해결합니다.</p>
+<h3 id="단점">단점<a href="#단점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>복잡성이 증가합니다.</strong> 모델이 두 개가 되므로 코드량이 늘어나고, 두 모델 간 동기화를 관리해야 합니다. Fowler는 CQRS가 시스템의 일부분에만 적용되어야 하며, 전체 시스템에 적용하면 상당한 복잡성이 추가된다고 경고합니다.</p>
+<p><strong>별도 DB를 쓰는 경우 eventual consistency를 다뤄야 합니다.</strong> 쓰기 DB와 읽기 DB가 분리되면, 쓰기 직후 읽기에서 최신 데이터가 바로 보이지 않을 수 있습니다. 이 지연을 사용자 경험 측면에서 어떻게 처리할지 설계해야 합니다.</p>
+<p><strong>단순 CRUD에는 과도합니다.</strong> 읽기와 쓰기의 모양이 거의 같은 시스템이라면, 모델을 분리하는 비용이 이점을 초과합니다. Microsoft도 CQRS를 &ldquo;도메인이 복잡한 경우에만 적용하라&quot;고 권합니다.</p>
+<h3 id="event-sourcing과의-관계">Event Sourcing과의 관계<a href="#event-sourcing과의-관계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CQRS는 종종 Event Sourcing과 함께 언급되지만, 둘은 별개의 패턴입니다.</p>
+<ul>
+<li><strong>CQRS</strong>: 읽기/쓰기 모델을 분리한다.</li>
+<li><strong>Event Sourcing</strong>: 상태를 직접 저장하는 대신, 상태 변화를 이벤트의 시퀀스로 저장한다.</li>
+</ul>
+<p>Event Sourcing을 쓰면 이벤트 스트림에서 Read Model을 프로젝션(projection)하는 것이 자연스러우므로 CQRS와 궁합이 좋습니다. 하지만 CQRS 없이 Event Sourcing을 쓸 수도 있고, Event Sourcing 없이 CQRS를 쓸 수도 있습니다. 실무에서는 Event Sourcing 없이 CQRS만 적용하는 경우가 훨씬 흔합니다.</p>
+<h3 id="적합한-상황-2">적합한 상황<a href="#적합한-상황-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>읽기/쓰기 비율이 크게 비대칭인 시스템 (예: 읽기 90% 이상)</li>
+<li>읽기와 쓰기의 데이터 모양이 크게 다른 서비스</li>
+<li>쓰기는 도메인 규칙이 복잡하지만, 읽기는 다양한 뷰가 필요한 경우</li>
+<li>읽기 경로의 독립적 확장이 필요한 서비스</li>
+</ul>
+<h3 id="부적합한-상황-2">부적합한 상황<a href="#부적합한-상황-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>읽기와 쓰기의 모양이 거의 같은 단순 CRUD</li>
+<li>도메인 규칙이 단순한 시스템</li>
+<li>팀이 eventual consistency를 다룰 준비가 되지 않은 경우 (별도 DB 사용 시)</li>
+</ul>
+<h3 id="실무-팁-1">실무 팁<a href="#실무-팁-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>CQRS를 도입할 때 가장 실용적인 접근법은 <strong>점진적 적용</strong> 입니다. 처음부터 별도 DB를 나누지 말고, 같은 DB 안에서 쓰기 모델과 읽기 모델(뷰, 비정규화 테이블)만 분리하는 것부터 시작합니다. 이것만으로도 도메인 모델 오염 방지와 읽기 최적화의 이점을 얻을 수 있습니다. 별도 DB 분리는 성능이나 확장 요구가 실제로 드러난 후에 해도 늦지 않습니다.</p>
+<hr>
+<p>Part 2에서는 Event-Driven Architecture, Vertical Slice Architecture, Modular Monolith를 다루고, 여섯 가지 아키텍처의 비교와 선택 기준을 정리합니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Microsoft, &ldquo;Common web application architectures,&rdquo; <em>Microsoft Learn</em>. <a href="https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures">https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures</a></li>
+<li>Microsoft, &ldquo;N-tier architecture style,&rdquo; <em>Azure Architecture Center</em>. <a href="https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier">https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier</a></li>
+<li>Microsoft, &ldquo;DDD-oriented microservice,&rdquo; <em>Microsoft Learn</em>. <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice">https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice</a></li>
+<li>Microsoft, &ldquo;Infrastructure persistence layer design,&rdquo; <em>Microsoft Learn</em>. <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-design">https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-design</a></li>
+<li>Eric Evans, &ldquo;Domain-Driven Design Reference,&rdquo; <em>Domain Language</em>, 2015. <a href="https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf">https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf</a></li>
+<li>Martin Fowler, &ldquo;AnemicDomainModel,&rdquo; <em>martinfowler.com</em>. <a href="https://martinfowler.com/bliki/AnemicDomainModel.html">https://martinfowler.com/bliki/AnemicDomainModel.html</a></li>
+<li>Martin Fowler, &ldquo;CQRS,&rdquo; <em>martinfowler.com</em>. <a href="https://martinfowler.com/bliki/CQRS.html">https://martinfowler.com/bliki/CQRS.html</a></li>
+<li>Alistair Cockburn, &ldquo;Hexagonal Architecture,&rdquo; <em>alistair.cockburn.us</em>. <a href="https://alistair.cockburn.us/hexagonal-architecture">https://alistair.cockburn.us/hexagonal-architecture</a></li>
+<li>Jeffrey Palermo, &ldquo;The Onion Architecture: part 1,&rdquo; <em>Programming with Palermo</em>, 2008. <a href="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/">https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/</a></li>
+<li>Robert C. Martin, &ldquo;The Clean Architecture,&rdquo; <em>Clean Coder Blog</em>, 2012. <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html</a></li>
+<li>Greg Young, &ldquo;CQRS Documents,&rdquo; 2010. <a href="https://cqrs.files.wordpress.com/2010/11/cqrs_documents.pdf">https://cqrs.files.wordpress.com/2010/11/cqrs_documents.pdf</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260312-web-service-architecture-guide-02/" class="button inline prev">
+        &lt; [<span class="button__text">웹서비스 내부 구조 아키텍처 가이드 Part 2: EDA, VSA, Modular Monolith</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260311-omaha-starting-hands-guide-03/" class="button inline next">
+         [<span class="button__text">오마하 스타팅 핸드 가이드 Part 3: 핸드 예시, 멀티웨이 팟, 3bet 전략</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
