@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>AI 에이전트 시대의 C 언어 Part 1: 흔들리는 위상과 새로운 도전자들 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="메모리 안전성 논쟁, 미국 정부의 공식 권고, 주요 프로젝트의 탈C 마이그레이션, C23 표준의 한계, 그리고 Rust·Zig·Go 등 대안 언어의 부상까지. AI 에이전트 시대를 논하기 전에 먼저 C 언어가 처한 현실을 정리합니다." />
+<meta name="keywords" content="programming, AI, C-language, rust" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260320-c-language-in-ai-agent-era-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="AI 에이전트 시대의 C 언어 Part 1: 흔들리는 위상과 새로운 도전자들">
+<meta property="og:description" content="메모리 안전성 논쟁, 미국 정부의 공식 권고, 주요 프로젝트의 탈C 마이그레이션, C23 표준의 한계, 그리고 Rust·Zig·Go 등 대안 언어의 부상까지. AI 에이전트 시대를 논하기 전에 먼저 C 언어가 처한 현실을 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260320-c-language-in-ai-agent-era-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-03-20 14:08:55 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260320-c-language-in-ai-agent-era-01/">AI 에이전트 시대의 C 언어 Part 1: 흔들리는 위상과 새로운 도전자들</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-03-20</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/c-language/">C-language</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/rust/">rust</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>C 언어는 1972년 탄생 이래 50년 넘게 시스템 프로그래밍의 근간이었습니다. Linux 커널, Windows, macOS, PostgreSQL, Python 런타임, nginx — 우리가 매일 쓰는 소프트웨어의 토대 상당 부분이 C로 작성되어 있습니다.</p>
+<p>그러나 최근 몇 년간 C 언어의 입지에 큰 변화가 일어나고 있습니다. 메모리 안전성 문제를 둘러싼 논쟁이 격화되고, 미국 정부 기관이 공식적으로 C 사용을 자제하라고 권고하며, Rust를 비롯한 대안 언어들이 빠르게 성장하고 있습니다. 여기에 2024년부터 본격화된 <strong>AI 코딩 에이전트(Claude Code, Codex, Gemini CLI 등)</strong> 의 등장은 이 흐름을 더욱 가속하고 있습니다.</p>
+<p>이 글은 2파트로 구성됩니다:</p>
+<ul>
+<li><strong>Part 1</strong> (이 글): AI 이전의 C 언어 위상 변화, C23 표준, 대안 언어들</li>
+<li><strong>Part 2</strong>: AI 에이전트가 C 개발에 미치는 영향, 도메인별 현황, 개발자 생태계, 전망</li>
+</ul>
+<hr>
+<h2 id="1-메모리-안전성-논쟁-70-규칙">1. 메모리 안전성 논쟁: &ldquo;70% 규칙&rdquo;<a href="#1-메모리-안전성-논쟁-70-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>C 언어의 위상이 흔들리기 시작한 핵심 원인은 <strong>메모리 안전성(Memory Safety)</strong> 문제입니다. 버퍼 오버플로, use-after-free, 댕글링 포인터 같은 메모리 관련 버그는 C/C++ 코드베이스에서 가장 흔한 보안 취약점의 원인입니다.</p>
+<p>얼마나 심각할까요? 주요 기업과 프로젝트의 통계를 보면 놀라울 정도로 일관된 패턴이 나타납니다:</p>
+<table>
+  <thead>
+      <tr>
+          <th>프로젝트/조직</th>
+          <th>메모리 안전 관련 취약점 비율</th>
+          <th>출처</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Microsoft (Windows 등)</strong></td>
+          <td>~70% (고위험 CVE 기준)</td>
+          <td>MSRC, 2019 (12년간 일관)</td>
+      </tr>
+      <tr>
+          <td><strong>Google Chrome</strong></td>
+          <td>~70% (심각한 보안 버그 기준)</td>
+          <td>Chromium 프로젝트</td>
+      </tr>
+      <tr>
+          <td><strong>Android</strong></td>
+          <td>76% (2019년) → 24% (2024년)</td>
+          <td>Google Security Blog</td>
+      </tr>
+      <tr>
+          <td><strong>Google Project Zero (제로데이)</strong></td>
+          <td>~67% (2021년 기준)</td>
+          <td>Project Zero 보고서</td>
+      </tr>
+  </tbody>
+</table>
+<p>Microsoft는 2019년 MSRC 블로그에서 이렇게 밝혔습니다: <strong>&ldquo;매년 CVE를 부여하는 보안 취약점의 약 70%가 메모리 안전 이슈이며, 이 비율은 최소 12년간 일관적으로 유지되고 있다.&rdquo;</strong> 그리고 같은 해 &ldquo;We Need a Safer Systems Programming Language&quot;라는 제목의 글을 게시하며 Rust를 대안으로 명시적으로 언급했습니다.</p>
+<p>이 &ldquo;70% 규칙&quot;은 C/C++ 코드베이스의 구조적 문제를 가리킵니다. 아무리 뛰어난 개발자라도 수만~수백만 줄의 C 코드에서 메모리 버그를 완전히 방지하기란 사실상 불가능합니다. 이것은 개발자의 역량 문제가 아니라 <strong>언어 설계의 근본적 한계</strong> 에 가깝습니다.</p>
+<hr>
+<h2 id="2-주요-마이그레이션-사례-누가-왜-c를-떠나고-있는가">2. 주요 마이그레이션 사례: 누가, 왜 C를 떠나고 있는가<a href="#2-주요-마이그레이션-사례-누가-왜-c를-떠나고-있는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="linux-커널-가장-큰-c-코드베이스의-변화">Linux 커널: 가장 큰 C 코드베이스의 변화<a href="#linux-커널-가장-큰-c-코드베이스의-변화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>약 3,400만 줄의 C 코드로 이루어진 Linux 커널은 세계 최대의 C 프로젝트입니다. 이 커널이 Rust를 수용하기 시작했다는 것은 상징적인 의미가 큽니다.</p>
+<ul>
+<li><strong>2022년 10월</strong>: Linux 6.1에 Rust 인프라가 최초로 머지됩니다. 약 12,500줄의 기본 인프라 코드였습니다.</li>
+<li><strong>2023년 12월</strong>: Linux 6.8에 Rust로 작성된 최초의 드라이버가 수용됩니다.</li>
+<li><strong>2024년 8월</strong>: Linus Torvalds는 Rust 도입 속도가 기대보다 느리다고 언급하면서도, &ldquo;old-time kernel developers are used to C and don&rsquo;t know Rust&quot;라며 변화의 불가피성을 인정합니다.</li>
+<li><strong>2025년 12월</strong>: 커널 메인테이너 서밋에서 &ldquo;the experiment is done, Rust is here to stay&quot;라는 선언이 나옵니다. Rust는 Linux 커널의 영구적인 공식 언어로 자리 잡았습니다.</li>
+</ul>
+<p>그러나 이 과정이 순탄하지만은 않았습니다. 2024년 9월, Rust for Linux의 핵심 메인테이너 Wedson Almeida Filho가 &ldquo;비기술적 문제(nontechnical nonsense)&rdquo; 에 대한 좌절감으로 사임했고, 2025년 2월에는 커널 메인테이너 Christoph Hellwig가 Rust 바인딩 추가를 거부하며 다중 언어 코드베이스를 &ldquo;cancer&quot;에 비유하는 논란이 있었습니다. <strong>50년간 C만 써온 거대한 커뮤니티에서의 변화는 기술적 문제만큼이나 문화적 저항도 크다</strong> 는 것을 보여주는 사례입니다.</p>
+<h3 id="google-android-가장-명확한-성과">Google Android: 가장 명확한 성과<a href="#google-android-가장-명확한-성과" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Google의 Android 프로젝트는 C에서 Rust로의 전환이 가져오는 <strong>실증적 성과</strong> 를 가장 명확하게 보여줍니다.</p>
+<ul>
+<li>메모리 안전 취약점 비율: 2019년 <strong>76%</strong> → 2024년 <strong>24%</strong> (실제 건수: 223건 → 50건 미만)</li>
+<li>Rust 코드는 C/C++ 코드 대비 <strong>메모리 안전 취약점 밀도 1,000배 감소</strong></li>
+<li>개발 효율: Rust 변경사항은 롤백률 <strong>4배 낮음</strong>, 코드 리뷰 시간 <strong>25% 단축</strong></li>
+</ul>
+<h3 id="microsoft-2030년까지-cc-전면-교체-선언">Microsoft: 2030년까지 C/C++ 전면 교체 선언<a href="#microsoft-2030년까지-cc-전면-교체-선언" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2023년에 Azure CTO Mark Russinovich가 신규 C/C++ 프로젝트를 금지하고 Rust를 요구한 데 이어, 2025년 12월에는 Distinguished Engineer Galen Hunt가 <strong>&ldquo;2030년까지 Microsoft의 모든 C/C++ 코드를 제거하겠다&rdquo;</strong> 는 목표를 발표했습니다. 목표 지표는 &ldquo;1명의 엔지니어가 1개월에 100만 줄의 코드를 변환&quot;하는 것입니다. 다만 한 시니어 엔지니어는 &ldquo;Windows가 AI로 Rust에 재작성되고 있다는 것은 아니다&quot;라고 명확히 선을 긋기도 했습니다.</p>
+<h3 id="sudosu-보안-핵심-도구의-재작성">sudo/su: 보안 핵심 도구의 재작성<a href="#sudosu-보안-핵심-도구의-재작성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Unix/Linux의 핵심 보안 도구인 sudo와 su도 Rust로 재작성되었습니다. 원래 sudo의 보안 버그 중 <strong>3분의 1이 메모리 관리 이슈</strong> 에서 기인했으며, 2023년 9월 ISRG의 Prossimo 프로젝트를 통해 메모리 안전한 sudo-rs가 출시되었습니다.</p>
+<hr>
+<h2 id="3-미국-정부의-공식-권고-c를-쓰지-말라">3. 미국 정부의 공식 권고: C를 쓰지 말라<a href="#3-미국-정부의-공식-권고-c를-쓰지-말라" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>개별 기업의 판단을 넘어, <strong>미국 정부 기관들이 공식적으로 C/C++ 사용을 자제하라고 권고</strong> 하고 있다는 점은 이 흐름의 무게감을 더해줍니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>시기</th>
+          <th>기관</th>
+          <th>핵심 내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022년 11월</td>
+          <td>NSA</td>
+          <td>C/C++에서 Rust, Go, Java, C# 등으로의 전략적 전환 권고</td>
+      </tr>
+      <tr>
+          <td>2023년 10월</td>
+          <td>CISA</td>
+          <td>&ldquo;Secure by Design&rdquo; — 메모리 안전 언어 우선 사용 권고</td>
+      </tr>
+      <tr>
+          <td>2023년 12월</td>
+          <td>CISA+NSA+FBI</td>
+          <td>&ldquo;The Case for Memory Safe Roadmaps&rdquo; 공동 가이드 발행</td>
+      </tr>
+      <tr>
+          <td>2024년 2월</td>
+          <td>백악관 ONCD</td>
+          <td>메모리 안전 언어 채택 공식 촉구. Morris worm(1988), Heartbleed(2014) 등의 공통 원인이 메모리 안전 취약점이라고 명시</td>
+      </tr>
+      <tr>
+          <td>2025년 6월</td>
+          <td>NSA/국방부</td>
+          <td>메모리 안전 언어 전환 권고 재강조</td>
+      </tr>
+  </tbody>
+</table>
+<p>백악관이 특정 프로그래밍 언어에 대해 공식 입장을 내놓는 것은 이례적인 일입니다. 이는 메모리 안전성 문제가 단순한 기술적 논쟁이 아니라 <strong>국가 안보 차원의 이슈</strong> 로 격상되었음을 의미합니다.</p>
+<hr>
+<h2 id="4-rewrite-it-in-rust-논쟁-반론도-있다">4. &ldquo;Rewrite it in Rust&rdquo; 논쟁: 반론도 있다<a href="#4-rewrite-it-in-rust-논쟁-반론도-있다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>물론 이 흐름에 대한 반론도 존재합니다. 일방적인 &ldquo;C는 끝났다&rdquo; 서사는 현실을 정확히 반영하지 못합니다.</p>
+<h3 id="cc-진영의-반론">C/C++ 진영의 반론<a href="#cc-진영의-반론" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>C++ 창시자 Bjarne Stroustrup</strong> 은 2023년 NSA의 권고에 대해 강하게 반박했습니다. 그는 NSA가 C와 C++를 &ldquo;C/C++&ldquo;로 묶어 취급하는 것에 반대하며, &ldquo;30년 이상의 발전을 무시한다&quot;고 비판했습니다. C++의 Safety Profiles를 통한 정적 분석으로 메모리 안전을 달성할 수 있다는 것이 그의 주장입니다.</p>
+<p><strong>UC San Diego의 학술 연구</strong> 는 C와 Rust 인터페이스 경계(FFI)에서 발생하는 메모리 안전 이슈를 분류하며, 단순한 재작성이 모든 문제를 해결하지 못한다는 점을 지적했습니다.</p>
+<p><strong>CISA KEV(Known Exploited Vulnerabilities)</strong> 분석에서는 실제로 악용된 취약점 중 메모리 손상은 <strong>19.5%</strong> 에 불과하다는 결과도 나왔습니다. 메모리 안전에만 집중하면 다른 유형의 취약점을 간과할 수 있다는 경고입니다.</p>
+<h3 id="c가-여전히-강점을-가지는-영역">C가 여전히 강점을 가지는 영역<a href="#c가-여전히-강점을-가지는-영역" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>성능</strong>: 순수한 실행 속도에서 여전히 최고 수준</li>
+<li><strong>이식성</strong>: ANSI C로 작성하면 거의 모든 플랫폼에서 컴파일 가능</li>
+<li><strong>생태계 성숙도</strong>: GCC, Clang 등 수십 년간 검증된 도구 체인</li>
+<li><strong>하드웨어 근접성</strong>: OS 커널, 펌웨어, 임베디드 시스템에서의 결정적 리소스 제어</li>
+<li><strong>언어 인터페이스</strong>: 대부분의 현대 언어가 C ABI를 통해 상호운용</li>
+</ul>
+<hr>
+<h2 id="5-c23-표준-언어-차원의-대응-그리고-근본적-한계">5. C23 표준: 언어 차원의 대응, 그리고 근본적 한계<a href="#5-c23-표준-언어-차원의-대응-그리고-근본적-한계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2024년 10월, 새로운 C 표준인 <strong>C23(ISO/IEC 9899:2024)</strong> 이 공식 발표되었습니다. C 언어도 가만히 있지는 않았습니다.</p>
+<h3 id="주요-개선사항">주요 개선사항<a href="#주요-개선사항" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>기능</th>
+          <th>설명</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>nullptr</code> 키워드</td>
+          <td>타입 안전한 널 포인터. <code>NULL</code>/<code>0</code>의 모호함 해소</td>
+      </tr>
+      <tr>
+          <td><code>bool</code>, <code>true</code>, <code>false</code></td>
+          <td>정식 키워드 승격 (<code>stdbool.h</code> 불필요)</td>
+      </tr>
+      <tr>
+          <td><code>auto</code> 타입 추론</td>
+          <td>변수 선언 시 타입 자동 추론</td>
+      </tr>
+      <tr>
+          <td><code>constexpr</code></td>
+          <td>컴파일 타임 상수 평가</td>
+      </tr>
+      <tr>
+          <td><code>typeof</code> 연산자</td>
+          <td>표준화된 타입 추론</td>
+      </tr>
+      <tr>
+          <td><code>#embed</code> 지시자</td>
+          <td>바이너리 데이터 직접 포함</td>
+      </tr>
+      <tr>
+          <td>속성 문법</td>
+          <td><code>[[nodiscard]]</code>, <code>[[maybe_unused]]</code> 등</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="근본적-한계">근본적 한계<a href="#근본적-한계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>그러나 C23이 메모리 안전성의 근본 문제를 해결하지는 못합니다. <strong>빌려오기 검사(borrow checking), 수명 분석(lifetime analysis), 메모리 안전 보장</strong> 같은 기능은 C23에 포함되지 않았습니다. 버퍼 오버플로, use-after-free, 댕글링 포인터의 방지는 여전히 프로그래머의 책임입니다.</p>
+<p>2025년 3월에 발표된 <strong>MISRA C:2025</strong> 는 4개의 새 규칙을 추가하고 C23 기능을 지원하지만, 이는 언어 차원의 강제가 아닌 가이드라인 수준에 머무릅니다.</p>
+<p>요약하면, C23은 <strong>&ldquo;더 현대적인 C&rdquo;</strong> 를 제공하지만, 메모리 안전성이라는 핵심 논쟁에 대한 답은 되지 못합니다. C 언어의 설계 철학 — 프로그래머에게 최대한의 자유를 주되, 그 결과에 대한 책임도 프로그래머가 진다 — 은 C23에서도 변하지 않았습니다.</p>
+<hr>
+<h2 id="6-대안-언어들-c의-왕좌를-노리는-도전자들">6. 대안 언어들: C의 왕좌를 노리는 도전자들<a href="#6-대안-언어들-c의-왕좌를-노리는-도전자들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="rust-가장-유력한-후계자">Rust: 가장 유력한 후계자<a href="#rust-가장-유력한-후계자" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Rust는 현재 C의 대안으로 가장 주목받는 언어입니다.</p>
+<ul>
+<li>최근 12개월간 <strong>220만 명 이상</strong> 의 개발자가 사용</li>
+<li>기업의 <strong>60%</strong> 가 신규 프로젝트에 Rust를 채택 (RustRover 2025 설문)</li>
+<li>Linux 커널의 영구 공식 언어로 자리매김</li>
+<li>자동차 분야에서 ISO 26262 인증 Rust 컴파일러 등장 (Ferrous Systems)</li>
+<li>임베디드: Espressif(ESP32)의 공식 지원, ARM Cortex-M 생태계 성장</li>
+</ul>
+<p>Rust의 강점은 <strong>컴파일 타임에 메모리 안전성을 보장</strong> 하면서도 C에 준하는 성능을 제공한다는 점입니다. 다만 학습 곡선이 가파르고, 기존 C 개발자들의 채택 저항이 크다는 점은 여전한 과제입니다.</p>
+<h3 id="zig-더-나은-c를-표방하는-신생-언어">Zig: &ldquo;더 나은 C&quot;를 표방하는 신생 언어<a href="#zig-더-나은-c를-표방하는-신생-언어" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Zig는 C의 직접적인 개선을 목표로 하는 언어입니다. 아직 1.0 이전(2025년 10월 기준 0.15.2)이지만, 1.0은 2026년 중후반으로 예상됩니다.</p>
+<ul>
+<li><strong>일급 C 상호운용</strong>: C 헤더를 직접 임포트하고, C 라이브러리와 자연스럽게 연동</li>
+<li><strong>숨겨진 할당 없음</strong>: 메모리 할당이 명시적이어서 임베디드 환경에 적합</li>
+<li><strong>comptime</strong>: 컴파일 타임 코드 실행으로 C 매크로의 대안 제공</li>
+</ul>
+<p>Zig는 Rust처럼 패러다임을 바꾸기보다, <strong>C의 철학을 유지하면서 날카로운 모서리를 다듬는</strong> 접근을 취합니다. C 개발자에게는 가장 자연스러운 전환 경로가 될 수 있습니다.</p>
+<h3 id="go-시스템-인프라의-새-강자">Go: 시스템 인프라의 새 강자<a href="#go-시스템-인프라의-새-강자" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Go는 가비지 컬렉션이 있어 C의 직접적 대체는 아니지만, <strong>과거 C로 작성했을 법한 인프라 소프트웨어</strong> 의 상당 부분을 흡수했습니다. Docker, Kubernetes, Terraform, Prometheus — 클라우드 네이티브 생태계의 핵심 도구들이 Go로 작성되어 있습니다. 2024년 기준 세 번째로 빠르게 성장하는 언어입니다.</p>
+<h3 id="carbon-아직은-먼-미래">Carbon: 아직은 먼 미래<a href="#carbon-아직은-먼-미래" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Google이 개발 중인 Carbon은 C++의 후계자를 목표로 합니다. 그러나 0.1 버전도 2026년 말 이후로 예상되며, 프로덕션용 1.0은 2028년 이전에는 어렵습니다. C 대체보다는 C++ 대체에 초점이 맞춰져 있습니다.</p>
+<h3 id="tiobe-지수로-본-현재">TIOBE 지수로 본 현재<a href="#tiobe-지수로-본-현재" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>TIOBE 지수에서 C의 위치도 의미심장한 변화를 보이고 있습니다:</p>
+<ul>
+<li><strong>2024년</strong>: C++에 추월당하며 <strong>4위로 하락</strong> — 2001년 TIOBE 지수 시작 이래 최저 순위 기록</li>
+<li><strong>2026년 1월</strong>: C23 채택과 임베디드/IoT 수요에 힘입어 <strong>2위로 반등</strong> (10.99%)</li>
+<li><strong>2026년 3월</strong>: Python(~22%) 에 이어 2위권 유지, C++·Java와 1% 이내 근소한 차이</li>
+</ul>
+<p>C가 죽어가는 것은 아니지만, 더 이상 압도적인 1위도 아닙니다. <strong>&ldquo;범용 시스템 언어&quot;에서 &ldquo;특정 도메인의 핵심 언어&quot;로 역할이 좁혀지고 있다</strong> 는 것이 현재의 흐름입니다.</p>
+<hr>
+<h2 id="part-1-마무리">Part 1 마무리<a href="#part-1-마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>지금까지 살펴본 것은 AI 에이전트가 등장하기 <strong>이전에</strong> 이미 진행되고 있던 변화입니다. 메모리 안전성 논쟁, 정부 권고, 주요 프로젝트의 마이그레이션, C23의 한계, 대안 언어의 성장 — 이 모든 것이 C 언어의 위상에 구조적 변화가 일어나고 있음을 보여줍니다.</p>
+<p>Part 2에서는 이 변화의 한가운데 등장한 <strong>AI 코딩 에이전트</strong> 가 C 언어 개발에 어떤 영향을 미치고 있는지 살펴보겠습니다. AI는 C 개발을 더 안전하게 만들어 C의 수명을 연장하고 있을까요, 아니면 C에서 다른 언어로의 전환을 가속하고 있을까요? 흥미롭게도, <strong>두 가지 현상이 동시에 일어나고 있습니다.</strong></p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://msrc.microsoft.com/blog/2019/07/we-need-a-safer-systems-programming-language/">Microsoft MSRC: We Need a Safer Systems Programming Language (2019)</a></li>
+<li><a href="https://security.googleblog.com/2025/11/rust-in-android-move-fast-fix-things.html">Google Security Blog: Rust in Android (2025)</a></li>
+<li><a href="https://bidenwhitehouse.archives.gov/oncd/briefing-room/2024/02/26/press-release-technical-report/">White House ONCD: Back to the Building Blocks (2024)</a></li>
+<li><a href="https://www.theregister.com/2022/11/11/nsa_urges_orgs_to_use/">NSA: Software Memory Safety CSI (2022)</a></li>
+<li><a href="https://www.cisa.gov/resources-tools/resources/case-memory-safe-roadmaps">CISA: The Case for Memory Safe Roadmaps (2023)</a></li>
+<li><a href="https://www.phoronix.com/news/Rust-To-Stay-Linux-Kernel">Linux Kernel Adopts Rust as Permanent Language (2025)</a></li>
+<li><a href="https://thenewstack.io/microsofts-bold-goal-replace-1b-lines-of-c-c-with-rust/">Microsoft to Replace All C/C++ by 2030 (2025)</a></li>
+<li><a href="https://www.theregister.com/2023/09/02/isrg_prossimo_sudo_rs/">ISRG Prossimo: sudo-rs (2023)</a></li>
+<li><a href="https://www.infoworld.com/article/2337894/c-plus-plus-creator-bjarne-stroustrup-defends-its-safety.html">C++ Creator Bjarne Stroustrup Defends Its Safety (2023)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/C23_%28C_standard_revision%29">C23 Standard (ISO/IEC 9899:2024)</a></li>
+<li><a href="https://ldra.com/misra/">MISRA C:2025 (2025)</a></li>
+<li><a href="https://www.techrepublic.com/article/news-tiobe-index-language-rankings/">TIOBE Index (2026)</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260320-c-language-in-ai-agent-era-02/" class="button inline prev">
+        &lt; [<span class="button__text">AI 에이전트 시대의 C 언어 Part 2: AI는 C를 살리는가, 대체하는가</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260320-chu-han-vs-lotgh-leadership-comparison/" class="button inline next">
+         [<span class="button__text">초한지 vs 은하영웅전설: 양대 세력 대결에서 리더십과 인재가 승패를 가르는 법</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
