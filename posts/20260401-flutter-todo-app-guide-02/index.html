@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>크로스플랫폼 To-Do 앱 만들기 Part 2: Flutter 기초와 UI 구현 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Flutter 위젯 시스템과 Dart 기초를 배우고, To-Do 리스트 앱의 UI를 직접 구현합니다." />
+<meta name="keywords" content="mobile, flutter, programming, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="크로스플랫폼 To-Do 앱 만들기 Part 2: Flutter 기초와 UI 구현">
+<meta property="og:description" content="Flutter 위젯 시스템과 Dart 기초를 배우고, To-Do 리스트 앱의 UI를 직접 구현합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-01 09:10:52 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-02/">크로스플랫폼 To-Do 앱 만들기 Part 2: Flutter 기초와 UI 구현</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-01</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/mobile/">mobile</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/flutter/">flutter</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260401-flutter-todo-app-guide-01/">Part 1</a>에서 Flutter SDK 설치, 에디터 설정, 에뮬레이터 구성 등 개발 환경을 갖추었습니다. 이제 본격적으로 코드를 작성할 차례입니다.</p>
+<p>이번 Part 2에서는 Dart 언어의 핵심 문법을 빠르게 훑어본 뒤, Flutter의 위젯 시스템을 이해하고, 실제로 동작하는 To-Do 리스트 앱의 UI를 구현합니다. 이 글을 따라 하면 할 일을 추가하고, 완료 표시하고, 삭제하는 기본 기능이 모두 갖춰진 앱을 만들 수 있습니다.</p>
+<h2 id="dart-언어-핵심-문법">Dart 언어 핵심 문법<a href="#dart-언어-핵심-문법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Flutter는 Dart 언어를 사용합니다. 다른 프로그래밍 언어 경험이 있다면 금방 익숙해질 수 있습니다.</p>
+<h3 id="변수와-타입">변수와 타입<a href="#변수와-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Dart는 정적 타입 언어이지만, <code>var</code> 키워드로 타입 추론도 지원합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="c1">// 타입 명시
+</span></span></span><span class="line"><span class="cl"><span class="kt">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;홍길동&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">age</span> <span class="o">=</span> <span class="m">30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">double</span> <span class="n">height</span> <span class="o">=</span> <span class="m">175.5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="n">isStudent</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 타입 추론
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="n">city</span> <span class="o">=</span> <span class="s1">&#39;서울&#39;</span><span class="p">;</span> <span class="c1">// String으로 추론
+</span></span></span></code></pre></div><h3 id="null-safety">Null Safety<a href="#null-safety" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Dart는 null safety를 기본으로 지원합니다. 변수가 null이 될 수 있으려면 <code>?</code> 를 붙여야 합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="kt">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;홍길동&#39;</span><span class="p">;</span>   <span class="c1">// null 불가
+</span></span></span><span class="line"><span class="cl"><span class="kt">String</span><span class="o">?</span> <span class="n">nickname</span><span class="p">;</span>          <span class="c1">// null 가능
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// null 체크 연산자
+</span></span></span><span class="line"><span class="cl"><span class="n">print</span><span class="p">(</span><span class="n">nickname</span><span class="o">?</span><span class="p">.</span><span class="n">length</span><span class="p">);</span>   <span class="c1">// null이면 null 반환
+</span></span></span><span class="line"><span class="cl"><span class="n">print</span><span class="p">(</span><span class="n">nickname</span> <span class="o">??</span> <span class="s1">&#39;없음&#39;</span><span class="p">);</span> <span class="c1">// null이면 &#39;없음&#39; 반환
+</span></span></span></code></pre></div><h3 id="클래스와-함수">클래스와 함수<a href="#클래스와-함수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="kt">String</span> <span class="n">name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="kt">int</span> <span class="n">age</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 생성자 축약 문법
+</span></span></span><span class="line"><span class="cl">  <span class="n">Person</span><span class="p">({</span><span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">age</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">String</span> <span class="n">greet</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s1">&#39;안녕하세요, </span><span class="si">$</span><span class="n">name입니다</span><span class="s1">. </span><span class="si">$</span><span class="n">age살입니다</span><span class="s1">.&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 화살표 함수
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+</span></span></code></pre></div><h3 id="컬렉션">컬렉션<a href="#컬렉션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="c1">// List
+</span></span></span><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">fruits</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;사과&#39;</span><span class="p">,</span> <span class="s1">&#39;바나나&#39;</span><span class="p">,</span> <span class="s1">&#39;포도&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">fruits</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;딸기&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Map
+</span></span></span><span class="line"><span class="cl"><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s1">&#39;국어&#39;</span><span class="o">:</span> <span class="m">90</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s1">&#39;수학&#39;</span><span class="o">:</span> <span class="m">85</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s1">&#39;영어&#39;</span><span class="o">:</span> <span class="m">92</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">scores</span><span class="p">[</span><span class="s1">&#39;과학&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="m">88</span><span class="p">;</span>
+</span></span></code></pre></div><h3 id="asyncawait">async/await<a href="#asyncawait" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>네트워크 요청이나 파일 읽기 같은 비동기 작업에 <code>async</code>/<code>await</code> 를 사용합니다. Part 3에서 데이터를 저장할 때 본격적으로 활용하겠지만, 기본 문법만 미리 살펴봅니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="n">Future</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">fetchData</span><span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 2초 대기 (네트워크 요청 시뮬레이션)
+</span></span></span><span class="line"><span class="cl">  <span class="kd">await</span> <span class="n">Future</span><span class="p">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">Duration</span><span class="p">(</span><span class="nl">seconds:</span> <span class="m">2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="s1">&#39;데이터 로드 완료&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="flutter-위젯-시스템-이해">Flutter 위젯 시스템 이해<a href="#flutter-위젯-시스템-이해" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Flutter에서 화면에 보이는 모든 것은 <strong>위젯(Widget)</strong> 입니다. 텍스트, 버튼, 레이아웃, 심지어 앱 자체도 위젯입니다.</p>
+<h3 id="widget-트리">Widget 트리<a href="#widget-트리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>위젯은 트리 구조로 구성됩니다. 상위 위젯이 하위 위젯을 포함하며, 이 트리가 곧 화면의 구조가 됩니다.</p>
+<pre tabindex="0"><code>MaterialApp
+ └── Scaffold
+      ├── AppBar
+      │    └── Text(&#39;To-Do&#39;)
+      └── Body
+           └── ListView
+                ├── ListTile
+                └── ListTile
+</code></pre><h3 id="statelesswidget-vs-statefulwidget">StatelessWidget vs StatefulWidget<a href="#statelesswidget-vs-statefulwidget" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>StatelessWidget</strong>: 상태가 변하지 않는 위젯입니다. 한 번 그려지면 내용이 바뀌지 않습니다.</li>
+<li><strong>StatefulWidget</strong>: 상태가 변할 수 있는 위젯입니다. 사용자 입력이나 데이터 변경에 따라 화면이 다시 그려집니다.</li>
+</ul>
+<p>To-Do 앱은 할 일을 추가/삭제/완료 처리해야 하므로 <strong>StatefulWidget</strong> 을 사용합니다.</p>
+<h3 id="buildcontext와-setstate">BuildContext와 setState<a href="#buildcontext와-setstate" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>BuildContext</strong>: 위젯 트리에서 현재 위젯의 위치 정보를 담고 있습니다. 상위 위젯의 데이터에 접근하거나 테마 정보를 가져올 때 사용합니다.</li>
+<li><strong>setState()</strong>: StatefulWidget의 상태를 변경할 때 호출합니다. 이 함수를 호출하면 Flutter가 위젯을 다시 빌드하여 화면을 갱신합니다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="n">setState</span><span class="p">(()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">todos</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">newTodo</span><span class="p">);</span> <span class="c1">// 상태 변경
+</span></span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// → 화면이 자동으로 다시 그려집니다
+</span></span></span></code></pre></div><h2 id="프로젝트-구조-설계">프로젝트 구조 설계<a href="#프로젝트-구조-설계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1에서 생성한 프로젝트의 <code>lib/</code> 디렉토리를 아래와 같이 구성합니다.</p>
+<pre tabindex="0"><code>lib/
+├── main.dart            // 앱 진입점
+├── models/
+│   └── todo.dart        // To-Do 모델 클래스
+├── screens/
+│   └── home_screen.dart // 메인 화면
+└── widgets/
+    └── todo_item.dart   // 할 일 항목 위젯
+</code></pre><p>터미널에서 디렉토리와 파일을 생성합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> my_todo_app
+</span></span><span class="line"><span class="cl">mkdir -p lib/models lib/screens lib/widgets
+</span></span><span class="line"><span class="cl">touch lib/models/todo.dart
+</span></span><span class="line"><span class="cl">touch lib/screens/home_screen.dart
+</span></span><span class="line"><span class="cl">touch lib/widgets/todo_item.dart
+</span></span></code></pre></div><h2 id="to-do-모델-클래스-작성">To-Do 모델 클래스 작성<a href="#to-do-모델-클래스-작성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>할 일 하나를 나타내는 데이터 모델을 정의합니다. <code>lib/models/todo.dart</code> 파일을 열고 아래 코드를 작성합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Todo</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="kt">String</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">String</span> <span class="n">title</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">isCompleted</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Todo</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="n">isCompleted</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
+<li><code>id</code>: 각 할 일을 구별하기 위한 고유 식별자입니다.</li>
+<li><code>title</code>: 할 일의 내용입니다.</li>
+<li><code>isCompleted</code>: 완료 여부입니다. 기본값은 <code>false</code> 입니다.</li>
+</ul>
+<h2 id="할-일-항목-위젯-작성">할 일 항목 위젯 작성<a href="#할-일-항목-위젯-작성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>개별 할 일을 표시하는 위젯을 분리합니다. <code>lib/widgets/todo_item.dart</code> 파일에 다음 코드를 작성합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../models/todo.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">TodoItem</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">Todo</span> <span class="n">todo</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">ValueChanged</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">?&gt;</span> <span class="n">onToggle</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">VoidCallback</span> <span class="n">onDelete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">const</span> <span class="n">TodoItem</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">key</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">todo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">onToggle</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">onDelete</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">CheckboxListTile</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">value:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isCompleted</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">onChanged:</span> <span class="n">onToggle</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="n">Text</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">todo</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">decoration:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isCompleted</span>
+</span></span><span class="line"><span class="cl">              <span class="o">?</span> <span class="n">TextDecoration</span><span class="p">.</span><span class="n">lineThrough</span>
+</span></span><span class="line"><span class="cl">              <span class="o">:</span> <span class="n">TextDecoration</span><span class="p">.</span><span class="n">none</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">color:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isCompleted</span> <span class="o">?</span> <span class="n">Colors</span><span class="p">.</span><span class="n">grey</span> <span class="o">:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">black</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">secondary:</span> <span class="n">IconButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">icon:</span> <span class="kd">const</span> <span class="n">Icon</span><span class="p">(</span><span class="n">Icons</span><span class="p">.</span><span class="n">delete</span><span class="p">,</span> <span class="nl">color:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">red</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">onPressed:</span> <span class="n">onDelete</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">controlAffinity:</span> <span class="n">ListTileControlAffinity</span><span class="p">.</span><span class="n">leading</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>이 위젯은 세 가지 콜백을 외부에서 받습니다.</p>
+<ul>
+<li><code>onToggle</code>: 체크박스를 눌렀을 때 호출됩니다.</li>
+<li><code>onDelete</code>: 삭제 버튼을 눌렀을 때 호출됩니다.</li>
+</ul>
+<p>위젯 자체는 상태를 갖지 않으므로 <code>StatelessWidget</code> 으로 구현합니다.</p>
+<h2 id="메인-화면-ui-구현">메인 화면 UI 구현<a href="#메인-화면-ui-구현" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>lib/screens/home_screen.dart</code> 파일에 메인 화면을 구현합니다. 이 화면이 앱의 핵심입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../models/todo.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../widgets/todo_item.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">HomeScreen</span> <span class="kd">extends</span> <span class="n">StatefulWidget</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">const</span> <span class="n">HomeScreen</span><span class="p">({</span><span class="k">super</span><span class="p">.</span><span class="n">key</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">State</span><span class="o">&lt;</span><span class="n">HomeScreen</span><span class="o">&gt;</span> <span class="n">createState</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">_HomeScreenState</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">_HomeScreenState</span> <span class="kd">extends</span> <span class="n">State</span><span class="o">&lt;</span><span class="n">HomeScreen</span><span class="o">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="n">_todos</span> <span class="o">=</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">TextEditingController</span> <span class="n">_textController</span> <span class="o">=</span> <span class="n">TextEditingController</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">_addTodo</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">text</span> <span class="o">=</span> <span class="n">_textController</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">trim</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">text</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">setState</span><span class="p">(()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">_todos</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">Todo</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">id:</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">now</span><span class="p">().</span><span class="n">millisecondsSinceEpoch</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">title:</span> <span class="n">text</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_textController</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">_toggleTodo</span><span class="p">(</span><span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="kt">bool</span><span class="o">?</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">setState</span><span class="p">(()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">_todos</span><span class="p">[</span><span class="n">index</span><span class="p">].</span><span class="n">isCompleted</span> <span class="o">=</span> <span class="n">value</span> <span class="o">??</span> <span class="kc">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">_deleteTodo</span><span class="p">(</span><span class="kt">int</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">setState</span><span class="p">(()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">_todos</span><span class="p">.</span><span class="n">removeAt</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">dispose</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_textController</span><span class="p">.</span><span class="n">dispose</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">super</span><span class="p">.</span><span class="n">dispose</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;나의 To-Do&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">centerTitle:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">body:</span> <span class="n">Column</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">children:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 할 일 입력 영역
+</span></span></span><span class="line"><span class="cl">          <span class="n">Padding</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">padding:</span> <span class="kd">const</span> <span class="n">EdgeInsets</span><span class="p">.</span><span class="n">all</span><span class="p">(</span><span class="m">16.0</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">child:</span> <span class="n">Row</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">              <span class="nl">children:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Expanded</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">child:</span> <span class="n">TextField</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">controller:</span> <span class="n">_textController</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">decoration:</span> <span class="kd">const</span> <span class="n">InputDecoration</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                      <span class="nl">hintText:</span> <span class="s1">&#39;할 일을 입력하세요&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="nl">border:</span> <span class="n">OutlineInputBorder</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">onSubmitted:</span> <span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">_addTodo</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">const</span> <span class="n">SizedBox</span><span class="p">(</span><span class="nl">width:</span> <span class="m">12</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ElevatedButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">onPressed:</span> <span class="n">_addTodo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">child:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;추가&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="p">),</span>
+</span></span><span class="line"><span class="cl">              <span class="p">],</span>
+</span></span><span class="line"><span class="cl">            <span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 구분선
+</span></span></span><span class="line"><span class="cl">          <span class="kd">const</span> <span class="n">Divider</span><span class="p">(</span><span class="nl">height:</span> <span class="m">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 할 일 목록
+</span></span></span><span class="line"><span class="cl">          <span class="n">Expanded</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">child:</span> <span class="n">_todos</span><span class="p">.</span><span class="n">isEmpty</span>
+</span></span><span class="line"><span class="cl">                <span class="o">?</span> <span class="kd">const</span> <span class="n">Center</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                      <span class="s1">&#39;할 일이 없습니다.</span><span class="se">\n</span><span class="s1">새로운 할 일을 추가해 보세요!&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="nl">textAlign:</span> <span class="n">TextAlign</span><span class="p">.</span><span class="n">center</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                        <span class="nl">fontSize:</span> <span class="m">16</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nl">color:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">grey</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">:</span> <span class="n">ListView</span><span class="p">.</span><span class="n">builder</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">itemCount:</span> <span class="n">_todos</span><span class="p">.</span><span class="n">length</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                      <span class="k">return</span> <span class="n">TodoItem</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                        <span class="nl">todo:</span> <span class="n">_todos</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                        <span class="nl">onToggle:</span> <span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">_toggleTodo</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                        <span class="nl">onDelete:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="n">_deleteTodo</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                      <span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">],</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 플로팅 버튼 (선택적 추가 방법)
+</span></span></span><span class="line"><span class="cl">      <span class="nl">floatingActionButton:</span> <span class="n">FloatingActionButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">onPressed:</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// TextField에 포커스를 줍니다
+</span></span></span><span class="line"><span class="cl">          <span class="n">FocusScope</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="n">requestFocus</span><span class="p">(</span><span class="n">FocusNode</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">          <span class="n">Future</span><span class="p">.</span><span class="n">delayed</span><span class="p">(</span><span class="kd">const</span> <span class="n">Duration</span><span class="p">(</span><span class="nl">milliseconds:</span> <span class="m">100</span><span class="p">),</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">_textController</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">          <span class="p">});</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">child:</span> <span class="kd">const</span> <span class="n">Icon</span><span class="p">(</span><span class="n">Icons</span><span class="p">.</span><span class="n">add</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>주요 구성 요소를 하나씩 살펴보겠습니다.</p>
+<h3 id="appbar">AppBar<a href="#appbar" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;나의 To-Do&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nl">centerTitle:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">),</span>
+</span></span></code></pre></div><p>화면 상단에 앱 제목을 표시합니다. <code>centerTitle: true</code> 로 중앙 정렬합니다.</p>
+<h3 id="입력-영역">입력 영역<a href="#입력-영역" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>TextField</code>와 <code>ElevatedButton</code> 을 <code>Row</code> 위젯으로 나란히 배치합니다. <code>onSubmitted</code> 콜백을 설정하면 키보드의 Enter 키로도 할 일을 추가할 수 있습니다.</p>
+<h3 id="listviewbuilder">ListView.builder<a href="#listviewbuilder" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>ListView.builder</code> 는 목록의 항목 수만큼 위젯을 동적으로 생성합니다. 항목이 수백 개라도 화면에 보이는 것만 렌더링하므로 성능이 우수합니다.</p>
+<h3 id="빈-상태-처리">빈 상태 처리<a href="#빈-상태-처리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>할 일이 없을 때 빈 화면 대신 안내 메시지를 표시합니다. 삼항 연산자(<code>_todos.isEmpty ? ... : ...</code>)로 간단하게 분기합니다.</p>
+<h2 id="앱-진입점-수정">앱 진입점 수정<a href="#앱-진입점-수정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>lib/main.dart</code> 파일을 열고 기존 코드를 모두 지운 뒤 아래 코드로 교체합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;screens/home_screen.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">runApp</span><span class="p">(</span><span class="kd">const</span> <span class="n">MyTodoApp</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">MyTodoApp</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">const</span> <span class="n">MyTodoApp</span><span class="p">({</span><span class="k">super</span><span class="p">.</span><span class="n">key</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="s1">&#39;나의 To-Do&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">colorScheme:</span> <span class="n">ColorScheme</span><span class="p">.</span><span class="n">fromSeed</span><span class="p">(</span><span class="nl">seedColor:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">blue</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">useMaterial3:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">home:</span> <span class="kd">const</span> <span class="n">HomeScreen</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">debugShowCheckedModeBanner:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
+<li><code>MaterialApp</code>: Material Design 스타일의 앱을 구성합니다.</li>
+<li><code>ThemeData</code>: <code>colorScheme</code>을 사용하여 앱 전체의 색상 테마를 설정합니다. <code>useMaterial3: true</code> 로 최신 Material 3 디자인을 적용합니다.</li>
+<li><code>debugShowCheckedModeBanner: false</code>: 우측 상단의 &ldquo;DEBUG&rdquo; 배너를 숨깁니다.</li>
+</ul>
+<h2 id="실행-확인">실행 확인<a href="#실행-확인" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>터미널에서 앱을 실행합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> my_todo_app
+</span></span><span class="line"><span class="cl">flutter run
+</span></span></code></pre></div><p>에뮬레이터 또는 연결된 기기에서 다음과 같은 동작을 확인할 수 있습니다.</p>
+<ol>
+<li><strong>할 일 추가</strong>: 텍스트 필드에 내용을 입력하고 &ldquo;추가&rdquo; 버튼을 누르거나 Enter를 누릅니다.</li>
+<li><strong>완료 토글</strong>: 항목 왼쪽의 체크박스를 누르면 취소선이 그어지며 완료 처리됩니다.</li>
+<li><strong>삭제</strong>: 항목 오른쪽의 빨간 휴지통 아이콘을 누르면 해당 할 일이 삭제됩니다.</li>
+</ol>
+<h2 id="전체-파일-구조-정리">전체 파일 구조 정리<a href="#전체-파일-구조-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>최종적으로 <code>lib/</code> 디렉토리는 아래와 같습니다.</p>
+<pre tabindex="0"><code>lib/
+├── main.dart                 # 앱 진입점, 테마 설정
+├── models/
+│   └── todo.dart             # Todo 모델 (id, title, isCompleted)
+├── screens/
+│   └── home_screen.dart      # 메인 화면 (StatefulWidget)
+└── widgets/
+    └── todo_item.dart        # 개별 할 일 위젯 (StatelessWidget)
+</code></pre><p>각 파일의 역할을 정리하면 다음과 같습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>파일</th>
+          <th>역할</th>
+          <th>위젯 종류</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>main.dart</code></td>
+          <td>앱 시작, 테마 설정</td>
+          <td>StatelessWidget</td>
+      </tr>
+      <tr>
+          <td><code>todo.dart</code></td>
+          <td>데이터 모델 정의</td>
+          <td>-</td>
+      </tr>
+      <tr>
+          <td><code>home_screen.dart</code></td>
+          <td>화면 레이아웃, 상태 관리</td>
+          <td>StatefulWidget</td>
+      </tr>
+      <tr>
+          <td><code>todo_item.dart</code></td>
+          <td>개별 항목 표시</td>
+          <td>StatelessWidget</td>
+      </tr>
+  </tbody>
+</table>
+<p>이렇게 파일을 분리하면 코드의 가독성이 높아지고, 나중에 기능을 확장하기에도 유리합니다.</p>
+<h2 id="다음-단계">다음 단계<a href="#다음-단계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3에서는 앱을 종료해도 할 일 목록이 유지되도록 로컬 저장소를 연동하고, 상태 관리 패턴을 적용하여 코드 구조를 개선합니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-03/" class="button inline prev">
+        &lt; [<span class="button__text">크로스플랫폼 To-Do 앱 만들기 Part 3: 상태 관리와 로컬 데이터 저장</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-01/" class="button inline next">
+         [<span class="button__text">크로스플랫폼 To-Do 앱 만들기 Part 1: 프레임워크 선택과 개발 환경 설정</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

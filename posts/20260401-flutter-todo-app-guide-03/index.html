@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>크로스플랫폼 To-Do 앱 만들기 Part 3: 상태 관리와 로컬 데이터 저장 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Riverpod을 활용한 상태 관리 리팩토링과 sqflite를 이용한 로컬 데이터 영구 저장을 구현합니다." />
+<meta name="keywords" content="mobile, flutter, programming, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="크로스플랫폼 To-Do 앱 만들기 Part 3: 상태 관리와 로컬 데이터 저장">
+<meta property="og:description" content="Riverpod을 활용한 상태 관리 리팩토링과 sqflite를 이용한 로컬 데이터 영구 저장을 구현합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-01 09:11:52 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-03/">크로스플랫폼 To-Do 앱 만들기 Part 3: 상태 관리와 로컬 데이터 저장</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-01</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/mobile/">mobile</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/flutter/">flutter</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260401-flutter-todo-app-guide-02/">Part 2</a>에서는 Flutter 위젯을 활용해 To-Do 앱의 UI를 구성했습니다. 할 일을 추가하고, 완료 처리하고, 삭제하는 기본 기능까지 구현했는데요. 한 가지 치명적인 문제가 있었습니다. <strong>앱을 종료했다가 다시 실행하면 모든 데이터가 사라진다</strong> 는 점입니다.</p>
+<p><code>setState</code>로 관리하던 <code>List&lt;Todo&gt;</code> 는 메모리에만 존재하기 때문입니다. 이번 Part 3에서는 <strong>Riverpod</strong> 을 사용한 상태 관리 리팩토링과 <strong>sqflite</strong> 를 이용한 로컬 데이터 영구 저장을 구현합니다.</p>
+<h2 id="1-setstate의-한계">1. setState의 한계<a href="#1-setstate의-한계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 2에서 사용한 <code>setState</code>는 간단한 프로토타입에는 충분하지만, 앱 규모가 커지면 여러 문제가 생깁니다.</p>
+<ul>
+<li><strong>상태가 위젯에 묶여 있습니다.</strong> 다른 화면에서 같은 데이터에 접근하려면 상태를 상위 위젯으로 끌어올려야 합니다.</li>
+<li><strong>리빌드 범위를 제어하기 어렵습니다.</strong> <code>setState</code> 호출 시 해당 위젯 전체가 다시 빌드됩니다.</li>
+<li><strong>테스트가 까다롭습니다.</strong> 비즈니스 로직이 위젯 안에 섞여 있으면 단위 테스트를 작성하기 어렵습니다.</li>
+</ul>
+<h2 id="2-상태-관리-솔루션-비교와-riverpod-선택">2. 상태 관리 솔루션 비교와 Riverpod 선택<a href="#2-상태-관리-솔루션-비교와-riverpod-선택" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>솔루션</th>
+          <th>특징</th>
+          <th>러닝커브</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Provider</strong></td>
+          <td>Flutter 팀 권장, 간단한 DI 컨테이너</td>
+          <td>낮음</td>
+      </tr>
+      <tr>
+          <td><strong>Riverpod</strong></td>
+          <td>Provider의 개선판, 타입 안전, 컴파일 타임 검증</td>
+          <td>중간</td>
+      </tr>
+      <tr>
+          <td><strong>Bloc</strong></td>
+          <td>이벤트 기반, 대규모 앱에 적합</td>
+          <td>높음</td>
+      </tr>
+  </tbody>
+</table>
+<p>이번 시리즈에서는 <strong>Riverpod</strong> 을 선택했습니다. Provider보다 타입 안전성이 뛰어나고, <code>BuildContext</code> 없이도 상태에 접근할 수 있으며, 테스트 작성이 용이하기 때문입니다.</p>
+<h2 id="3-패키지-추가">3. 패키지 추가<a href="#3-패키지-추가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>pubspec.yaml</code>에 필요한 패키지를 모두 추가합니다. sqflite는 나중에 사용하지만 미리 함께 설치합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">dependencies</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">flutter</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">sdk</span><span class="p">:</span><span class="w"> </span><span class="l">flutter</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">flutter_riverpod</span><span class="p">:</span><span class="w"> </span><span class="l">^2.6.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">sqflite</span><span class="p">:</span><span class="w"> </span><span class="l">^2.4.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">^1.9.0</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">flutter pub get
+</span></span></code></pre></div><blockquote>
+<p><strong>참고:</strong> sqflite는 Android와 iOS에서 동작하는 SQLite 래퍼입니다. 웹 지원이 필요하다면 <code>drift</code> 같은 대안을 고려하세요.</p>
+</blockquote>
+<h2 id="4-todo-모델-정의">4. Todo 모델 정의<a href="#4-todo-모델-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>lib/models/todo.dart</code>에 모델 클래스를 정의합니다. DB 저장을 위한 <code>toMap</code>/<code>fromMap</code> 메서드도 함께 추가합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Todo</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="kt">int</span><span class="o">?</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="kt">String</span> <span class="n">title</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="kt">bool</span> <span class="n">isCompleted</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Todo</span><span class="p">({</span><span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="kd">required</span> <span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">isCompleted</span> <span class="o">=</span> <span class="kc">false</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Todo</span> <span class="n">copyWith</span><span class="p">({</span><span class="kt">int</span><span class="o">?</span> <span class="n">id</span><span class="p">,</span> <span class="kt">String</span><span class="o">?</span> <span class="n">title</span><span class="p">,</span> <span class="kt">bool</span><span class="o">?</span> <span class="n">isCompleted</span><span class="p">})</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Todo</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">id:</span> <span class="n">id</span> <span class="o">??</span> <span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="n">title</span> <span class="o">??</span> <span class="k">this</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">isCompleted:</span> <span class="n">isCompleted</span> <span class="o">??</span> <span class="k">this</span><span class="p">.</span><span class="n">isCompleted</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">dynamic</span><span class="o">&gt;</span> <span class="n">toMap</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s1">&#39;id&#39;</span><span class="o">:</span> <span class="n">id</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s1">&#39;title&#39;</span><span class="o">:</span> <span class="n">title</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s1">&#39;isCompleted&#39;</span><span class="o">:</span> <span class="n">isCompleted</span> <span class="o">?</span> <span class="m">1</span> <span class="o">:</span> <span class="m">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">factory</span> <span class="n">Todo</span><span class="p">.</span><span class="n">fromMap</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">dynamic</span><span class="o">&gt;</span> <span class="n">map</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Todo</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">id:</span> <span class="n">map</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">as</span> <span class="kt">int</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="n">map</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">as</span> <span class="kt">String</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">isCompleted:</span> <span class="p">(</span><span class="n">map</span><span class="p">[</span><span class="s1">&#39;isCompleted&#39;</span><span class="p">]</span> <span class="o">as</span> <span class="kt">int</span><span class="p">)</span> <span class="o">==</span> <span class="m">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="5-databasehelper-작성">5. DatabaseHelper 작성<a href="#5-databasehelper-작성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>lib/helpers/database_helper.dart</code>를 생성합니다. 싱글턴 패턴으로 앱 전체에서 하나의 DB 인스턴스를 유지합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:sqflite/sqflite.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:path/path.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../models/todo.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">DatabaseHelper</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">static</span> <span class="kd">final</span> <span class="n">DatabaseHelper</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">DatabaseHelper</span><span class="p">.</span><span class="n">_init</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">static</span> <span class="n">Database</span><span class="o">?</span> <span class="n">_database</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">DatabaseHelper</span><span class="p">.</span><span class="n">_init</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="n">Database</span><span class="o">&gt;</span> <span class="kd">get</span> <span class="n">database</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">_database</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="k">return</span> <span class="n">_database</span><span class="o">!</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_database</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">_initDB</span><span class="p">(</span><span class="s1">&#39;todos.db&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">_database</span><span class="o">!</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="n">Database</span><span class="o">&gt;</span> <span class="n">_initDB</span><span class="p">(</span><span class="kt">String</span> <span class="n">fileName</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">dbPath</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">getDatabasesPath</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">path</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">dbPath</span><span class="p">,</span> <span class="n">fileName</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">await</span> <span class="n">openDatabase</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nl">version:</span> <span class="m">1</span><span class="p">,</span> <span class="nl">onCreate:</span> <span class="n">_createDB</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">_createDB</span><span class="p">(</span><span class="n">Database</span> <span class="n">db</span><span class="p">,</span> <span class="kt">int</span> <span class="n">version</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">      CREATE TABLE todos (
+</span></span></span><span class="line"><span class="cl"><span class="s1">        id INTEGER PRIMARY KEY AUTOINCREMENT,
+</span></span></span><span class="line"><span class="cl"><span class="s1">        title TEXT NOT NULL,
+</span></span></span><span class="line"><span class="cl"><span class="s1">        isCompleted INTEGER NOT NULL DEFAULT 0
+</span></span></span><span class="line"><span class="cl"><span class="s1">      )
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#39;&#39;&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">insertTodo</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">db</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">database</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s1">&#39;todos&#39;</span><span class="p">,</span> <span class="n">todo</span><span class="p">.</span><span class="n">toMap</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;&gt;</span> <span class="n">getAllTodos</span><span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">db</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">database</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">maps</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;todos&#39;</span><span class="p">,</span> <span class="nl">orderBy:</span> <span class="s1">&#39;id ASC&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">maps</span><span class="p">.</span><span class="n">map</span><span class="p">((</span><span class="n">map</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">Todo</span><span class="p">.</span><span class="n">fromMap</span><span class="p">(</span><span class="n">map</span><span class="p">)).</span><span class="n">toList</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">updateTodo</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">db</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">database</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">update</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="s1">&#39;todos&#39;</span><span class="p">,</span> <span class="n">todo</span><span class="p">.</span><span class="n">toMap</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">where:</span> <span class="s1">&#39;id = ?&#39;</span><span class="p">,</span> <span class="nl">whereArgs:</span> <span class="p">[</span><span class="n">todo</span><span class="p">.</span><span class="n">id</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">deleteTodo</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">db</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">database</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;todos&#39;</span><span class="p">,</span> <span class="nl">where:</span> <span class="s1">&#39;id = ?&#39;</span><span class="p">,</span> <span class="nl">whereArgs:</span> <span class="p">[</span><span class="n">id</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="6-riverpod으로-상태-관리-구현">6. Riverpod으로 상태 관리 구현<a href="#6-riverpod으로-상태-관리-구현" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-todonotifier--provider">6.1 TodoNotifier + Provider<a href="#61-todonotifier--provider" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>lib/providers/todo_provider.dart</code>를 생성합니다. <code>StateNotifier</code>로 상태를 관리하면서, <code>DatabaseHelper</code>를 통해 DB와 연동합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter_riverpod/flutter_riverpod.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../models/todo.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../helpers/database_helper.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">TodoNotifier</span> <span class="kd">extends</span> <span class="n">StateNotifier</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">DatabaseHelper</span> <span class="n">_dbHelper</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">TodoNotifier</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">_dbHelper</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">([]);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">loadTodos</span><span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">_dbHelper</span><span class="p">.</span><span class="n">getAllTodos</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">add</span><span class="p">(</span><span class="kt">String</span> <span class="n">title</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">Todo</span><span class="p">(</span><span class="nl">title:</span> <span class="n">title</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">id</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">_dbHelper</span><span class="p">.</span><span class="n">insertTodo</span><span class="p">(</span><span class="n">todo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="p">[...</span><span class="n">state</span><span class="p">,</span> <span class="n">todo</span><span class="p">.</span><span class="n">copyWith</span><span class="p">(</span><span class="nl">id:</span> <span class="n">id</span><span class="p">)];</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">toggle</span><span class="p">(</span><span class="kt">int</span> <span class="n">index</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">updated</span> <span class="o">=</span> <span class="n">todo</span><span class="p">.</span><span class="n">copyWith</span><span class="p">(</span><span class="nl">isCompleted:</span> <span class="o">!</span><span class="n">todo</span><span class="p">.</span><span class="n">isCompleted</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">await</span> <span class="n">_dbHelper</span><span class="p">.</span><span class="n">updateTodo</span><span class="p">(</span><span class="n">updated</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">state</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">index</span><span class="p">)</span> <span class="n">updated</span> <span class="k">else</span> <span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">delete</span><span class="p">(</span><span class="kt">int</span> <span class="n">index</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">todo</span><span class="p">.</span><span class="n">id</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">await</span> <span class="n">_dbHelper</span><span class="p">.</span><span class="n">deleteTodo</span><span class="p">(</span><span class="n">todo</span><span class="p">.</span><span class="n">id</span><span class="o">!</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="p">[...</span><span class="n">state</span><span class="p">]..</span><span class="n">removeAt</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">final</span> <span class="n">todoProvider</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">    <span class="n">StateNotifierProvider</span><span class="o">&lt;</span><span class="n">TodoNotifier</span><span class="p">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;&gt;</span><span class="p">((</span><span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">notifier</span> <span class="o">=</span> <span class="n">TodoNotifier</span><span class="p">(</span><span class="n">DatabaseHelper</span><span class="p">.</span><span class="n">instance</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">notifier</span><span class="p">.</span><span class="n">loadTodos</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">notifier</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><p><code>state</code>에 새 리스트를 할당하면 Riverpod이 자동으로 UI에 변경을 알립니다. 기존 리스트를 직접 수정하지 않고 항상 <strong>새 리스트를 생성</strong> 하는 것이 불변 상태 관리의 핵심입니다. Provider 생성 시 <code>loadTodos()</code>를 호출하여 앱 시작과 동시에 DB에서 기존 데이터를 불러옵니다.</p>
+<h3 id="62-providerscope로-앱-감싸기">6.2 ProviderScope로 앱 감싸기<a href="#62-providerscope로-앱-감싸기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>lib/main.dart</code>를 수정합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter_riverpod/flutter_riverpod.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;screens/todo_screen.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">runApp</span><span class="p">(</span><span class="kd">const</span> <span class="n">ProviderScope</span><span class="p">(</span><span class="nl">child:</span> <span class="n">MyApp</span><span class="p">()));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">const</span> <span class="n">MyApp</span><span class="p">({</span><span class="k">super</span><span class="p">.</span><span class="n">key</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="s1">&#39;Flutter To-Do&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">colorSchemeSeed:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">blue</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">useMaterial3:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">home:</span> <span class="kd">const</span> <span class="n">TodoScreen</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>ProviderScope</code>는 Riverpod의 모든 Provider가 동작하기 위한 필수 래퍼입니다.</p>
+<h3 id="63-consumerwidget으로-ui-변경">6.3 ConsumerWidget으로 UI 변경<a href="#63-consumerwidget으로-ui-변경" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>lib/screens/todo_screen.dart</code>를 <code>ConsumerWidget</code>으로 변경합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter_riverpod/flutter_riverpod.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;../providers/todo_provider.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">TodoScreen</span> <span class="kd">extends</span> <span class="n">ConsumerWidget</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">const</span> <span class="n">TodoScreen</span><span class="p">({</span><span class="k">super</span><span class="p">.</span><span class="n">key</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">WidgetRef</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">todos</span> <span class="o">=</span> <span class="n">ref</span><span class="p">.</span><span class="n">watch</span><span class="p">(</span><span class="n">todoProvider</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">notifier</span> <span class="o">=</span> <span class="n">ref</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">todoProvider</span><span class="p">.</span><span class="n">notifier</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span><span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;To-Do List&#39;</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">body:</span> <span class="n">todos</span><span class="p">.</span><span class="n">isEmpty</span>
+</span></span><span class="line"><span class="cl">          <span class="o">?</span> <span class="kd">const</span> <span class="n">Center</span><span class="p">(</span><span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;할 일을 추가해 보세요!&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">          <span class="o">:</span> <span class="n">ListView</span><span class="p">.</span><span class="n">builder</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">              <span class="nl">itemCount:</span> <span class="n">todos</span><span class="p">.</span><span class="n">length</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">final</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">todos</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">ListTile</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">leading:</span> <span class="n">Checkbox</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">value:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isCompleted</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">onChanged:</span> <span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">notifier</span><span class="p">.</span><span class="n">toggle</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">title:</span> <span class="n">Text</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">todo</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                      <span class="nl">decoration:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isCompleted</span>
+</span></span><span class="line"><span class="cl">                          <span class="o">?</span> <span class="n">TextDecoration</span><span class="p">.</span><span class="n">lineThrough</span>
+</span></span><span class="line"><span class="cl">                          <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">trailing:</span> <span class="n">IconButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">icon:</span> <span class="kd">const</span> <span class="n">Icon</span><span class="p">(</span><span class="n">Icons</span><span class="p">.</span><span class="n">delete</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">onPressed:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="n">notifier</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="p">);</span>
+</span></span><span class="line"><span class="cl">              <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">floatingActionButton:</span> <span class="n">FloatingActionButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">onPressed:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="n">_showAddDialog</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">notifier</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">child:</span> <span class="kd">const</span> <span class="n">Icon</span><span class="p">(</span><span class="n">Icons</span><span class="p">.</span><span class="n">add</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">_showAddDialog</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">TodoNotifier</span> <span class="n">notifier</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">final</span> <span class="n">controller</span> <span class="o">=</span> <span class="n">TextEditingController</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">showDialog</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">context:</span> <span class="n">context</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">builder:</span> <span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">AlertDialog</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;새 할 일&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">content:</span> <span class="n">TextField</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">controller:</span> <span class="n">controller</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">autofocus:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">decoration:</span> <span class="kd">const</span> <span class="n">InputDecoration</span><span class="p">(</span><span class="nl">hintText:</span> <span class="s1">&#39;할 일을 입력하세요&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">actions:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">          <span class="n">TextButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">onPressed:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="n">Navigator</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">child:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;취소&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="n">TextButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">onPressed:</span> <span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="k">if</span> <span class="p">(</span><span class="n">controller</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">isNotEmpty</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">await</span> <span class="n">notifier</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">controller</span><span class="p">.</span><span class="n">text</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">mounted</span><span class="p">)</span> <span class="n">Navigator</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">child:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;추가&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">],</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>ref.watch(todoProvider)</code> 로 상태를 구독하고, <code>ref.read(todoProvider.notifier)</code> 로 상태를 변경합니다. 비즈니스 로직이 <code>TodoNotifier</code>에 분리되어 있어 테스트도 쉬워집니다. <code>onPressed</code>의 <code>async</code> 콜백에서 <code>context.mounted</code> 체크는 비동기 작업 후 <code>BuildContext</code>를 안전하게 사용하기 위한 Flutter의 권장 패턴입니다.</p>
+<h2 id="7-실행-확인">7. 실행 확인<a href="#7-실행-확인" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>앱을 실행하여 데이터 영구 저장이 잘 되는지 확인해 봅시다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">flutter run
+</span></span></code></pre></div><p>할 일을 2~3개 추가하고, 일부를 완료 처리한 뒤, 앱을 완전히 종료(핫 리로드가 아닌 프로세스 종료)했다가 다시 실행해 보세요. 이전에 추가한 할 일과 완료 상태가 그대로 유지된다면 성공입니다!</p>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 Part 3에서는 <code>setState</code>에서 <strong>Riverpod</strong> 으로 상태 관리를 전환하여 비즈니스 로직과 UI를 분리했고, <strong>sqflite</strong> 를 도입하여 앱을 종료해도 데이터가 유지되도록 했습니다.</p>
+<p>다음 Part 4에서는 앱의 완성도를 높이기 위해 테마 커스터마이징과 최종 빌드 및 배포 과정을 다루겠습니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-04/" class="button inline prev">
+        &lt; [<span class="button__text">크로스플랫폼 To-Do 앱 만들기 Part 4: UI 다듬기와 빌드/배포</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-02/" class="button inline next">
+         [<span class="button__text">크로스플랫폼 To-Do 앱 만들기 Part 2: Flutter 기초와 UI 구현</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

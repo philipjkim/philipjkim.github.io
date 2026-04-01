@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>크로스플랫폼 To-Do 앱 만들기 Part 4: UI 다듬기와 빌드/배포 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="다크 모드, 스와이프 삭제 등 UX를 개선하고, iOS/Android 빌드 및 배포 과정을 정리합니다." />
+<meta name="keywords" content="mobile, flutter, programming, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="크로스플랫폼 To-Do 앱 만들기 Part 4: UI 다듬기와 빌드/배포">
+<meta property="og:description" content="다크 모드, 스와이프 삭제 등 UX를 개선하고, iOS/Android 빌드 및 배포 과정을 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-01 09:12:52 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-04/">크로스플랫폼 To-Do 앱 만들기 Part 4: UI 다듬기와 빌드/배포</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-01</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/mobile/">mobile</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/flutter/">flutter</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="시리즈-목차">시리즈 목차<a href="#시리즈-목차" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ol>
+<li>Part 1: Flutter 소개와 개발 환경 설정</li>
+<li>Part 2: 기본 UI 구성과 상태 관리</li>
+<li>Part 3: 로컬 저장소 연동과 CRUD 완성</li>
+<li><strong>Part 4: UI 다듬기와 빌드/배포 (이번 글)</strong></li>
+</ol>
+<hr>
+<h2 id="part-3-회고">Part 3 회고<a href="#part-3-회고" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3까지 진행하면서 할 일의 추가, 수정, 삭제, 완료 토글 기능과 로컬 저장소 연동까지 모두 구현했습니다. 기능적으로는 완성된 상태이지만, 실제로 사용자에게 배포하려면 몇 가지 더 다듬어야 할 부분이 있습니다.</p>
+<p>이번 마지막 파트에서는 <strong>테마 적용, UX 개선, 앱 아이콘/스플래시 스크린 설정, 그리고 빌드와 배포</strong> 까지 다루겠습니다.</p>
+<hr>
+<h2 id="1-테마와-다크-모드-지원">1. 테마와 다크 모드 지원<a href="#1-테마와-다크-모드-지원" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="라이트다크-테마-정의">라이트/다크 테마 정의<a href="#라이트다크-테마-정의" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>앱의 전체적인 룩앤필을 통일하기 위해 <code>ThemeData</code>를 커스터마이징합니다. <code>MaterialApp</code> 위젯에서 라이트 테마와 다크 테마를 각각 정의할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="c1">// lib/app.dart
+</span></span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="s1">&#39;screens/todo_list_screen.dart&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">TodoApp</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">const</span> <span class="n">TodoApp</span><span class="p">({</span><span class="k">super</span><span class="p">.</span><span class="n">key</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="s1">&#39;My Todo&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">colorScheme:</span> <span class="n">ColorScheme</span><span class="p">.</span><span class="n">fromSeed</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">seedColor:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">indigo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">brightness:</span> <span class="n">Brightness</span><span class="p">.</span><span class="n">light</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">useMaterial3:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">appBarTheme:</span> <span class="kd">const</span> <span class="n">AppBarTheme</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">centerTitle:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">elevation:</span> <span class="m">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">floatingActionButtonTheme:</span> <span class="kd">const</span> <span class="n">FloatingActionButtonThemeData</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">elevation:</span> <span class="m">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">darkTheme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">colorScheme:</span> <span class="n">ColorScheme</span><span class="p">.</span><span class="n">fromSeed</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">seedColor:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">indigo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">brightness:</span> <span class="n">Brightness</span><span class="p">.</span><span class="n">dark</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">useMaterial3:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">appBarTheme:</span> <span class="kd">const</span> <span class="n">AppBarTheme</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">centerTitle:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">elevation:</span> <span class="m">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">themeMode:</span> <span class="n">ThemeMode</span><span class="p">.</span><span class="n">system</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">home:</span> <span class="kd">const</span> <span class="n">TodoListScreen</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>핵심은 <code>themeMode: ThemeMode.system</code> 설정입니다. 이렇게 하면 사용자의 기기 설정(다크 모드 ON/OFF) 에 따라 자동으로 테마가 전환됩니다. <code>ThemeMode.light</code> 또는 <code>ThemeMode.dark</code>로 고정할 수도 있습니다.</p>
+<p><code>ColorScheme.fromSeed()</code>를 사용하면 하나의 시드 컬러를 기반으로 Material 3 스펙에 맞는 전체 색상 팔레트가 자동 생성되어 편리합니다.</p>
+<hr>
+<h2 id="2-ux-개선">2. UX 개선<a href="#2-ux-개선" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-dismissible-위젯으로-스와이프-삭제">2.1 Dismissible 위젯으로 스와이프 삭제<a href="#21-dismissible-위젯으로-스와이프-삭제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>리스트 항목을 왼쪽으로 스와이프하면 삭제되는 패턴은 모바일 앱에서 매우 흔합니다. Flutter에서는 <code>Dismissible</code> 위젯으로 간단히 구현할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="c1">// lib/widgets/todo_item.dart
+</span></span></span><span class="line"><span class="cl"><span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">theme</span> <span class="o">=</span> <span class="n">Theme</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">Dismissible</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">key:</span> <span class="n">Key</span><span class="p">(</span><span class="n">todo</span><span class="p">.</span><span class="n">id</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">direction:</span> <span class="n">DismissDirection</span><span class="p">.</span><span class="n">endToStart</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">background:</span> <span class="n">Container</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">alignment:</span> <span class="n">Alignment</span><span class="p">.</span><span class="n">centerRight</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">padding:</span> <span class="kd">const</span> <span class="n">EdgeInsets</span><span class="p">.</span><span class="n">only</span><span class="p">(</span><span class="nl">right:</span> <span class="m">20</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">color:</span> <span class="n">theme</span><span class="p">.</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">error</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">child:</span> <span class="n">Icon</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Icons</span><span class="p">.</span><span class="n">delete</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">color:</span> <span class="n">theme</span><span class="p">.</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">onError</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">onDismissed:</span> <span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">onDelete</span><span class="p">(</span><span class="n">todo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">child:</span> <span class="n">ListTile</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">leading:</span> <span class="n">Checkbox</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">value:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isDone</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">onChanged:</span> <span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">onToggle</span><span class="p">(</span><span class="n">todo</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="n">Text</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">todo</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">decoration:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isDone</span>
+</span></span><span class="line"><span class="cl">              <span class="o">?</span> <span class="n">TextDecoration</span><span class="p">.</span><span class="n">lineThrough</span>
+</span></span><span class="line"><span class="cl">              <span class="o">:</span> <span class="n">TextDecoration</span><span class="p">.</span><span class="n">none</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">color:</span> <span class="n">todo</span><span class="p">.</span><span class="n">isDone</span>
+</span></span><span class="line"><span class="cl">              <span class="o">?</span> <span class="n">theme</span><span class="p">.</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">outline</span>
+</span></span><span class="line"><span class="cl">              <span class="o">:</span> <span class="n">theme</span><span class="p">.</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">onSurface</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">trailing:</span> <span class="n">IconButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">icon:</span> <span class="kd">const</span> <span class="n">Icon</span><span class="p">(</span><span class="n">Icons</span><span class="p">.</span><span class="n">edit</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">onPressed:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="n">onEdit</span><span class="p">(</span><span class="n">todo</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>direction: DismissDirection.endToStart</code>로 설정하면 오른쪽에서 왼쪽으로만 스와이프할 수 있습니다. <code>background</code> 속성에 빨간 배경과 삭제 아이콘을 넣어 시각적 피드백을 제공합니다.</p>
+<h3 id="22-snackbar로-삭제-취소undo-기능">2.2 SnackBar로 삭제 취소(Undo) 기능<a href="#22-snackbar로-삭제-취소undo-기능" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>실수로 삭제했을 때 되돌릴 수 있도록 <code>SnackBar</code>에 Undo 버튼을 추가합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="c1">// lib/screens/todo_list_screen.dart
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">_deleteTodo</span><span class="p">(</span><span class="n">Todo</span> <span class="n">todo</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">index</span> <span class="o">=</span> <span class="n">_todos</span><span class="p">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">todo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">setState</span><span class="p">(()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_todos</span><span class="p">.</span><span class="n">removeAt</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="n">_saveTodos</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">ScaffoldMessenger</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="n">showSnackBar</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SnackBar</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">content:</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;&#34;</span><span class="si">${</span><span class="n">todo</span><span class="p">.</span><span class="n">title</span><span class="si">}</span><span class="s1">&#34; 이(가) 삭제되었습니다.&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">action:</span> <span class="n">SnackBarAction</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">label:</span> <span class="s1">&#39;되돌리기&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">onPressed:</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">setState</span><span class="p">(()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">_todos</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">todo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="p">});</span>
+</span></span><span class="line"><span class="cl">          <span class="n">_saveTodos</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">duration:</span> <span class="kd">const</span> <span class="n">Duration</span><span class="p">(</span><span class="nl">seconds:</span> <span class="m">3</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>삭제 직후 원래 인덱스와 객체를 기억해 두었다가, 사용자가 &ldquo;되돌리기&quot;를 누르면 같은 위치에 다시 삽입합니다. <code>duration</code>을 3초로 설정하여 충분한 시간을 제공합니다.</p>
+<h3 id="23-할-일-정렬-미완료-우선-최신순">2.3 할 일 정렬 (미완료 우선, 최신순)<a href="#23-할-일-정렬-미완료-우선-최신순" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>할 일 목록을 보여줄 때 미완료 항목이 위쪽에, 완료된 항목이 아래쪽에 오도록 정렬하면 사용성이 좋아집니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span> <span class="kd">get</span> <span class="n">_sortedTodos</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">final</span> <span class="n">sorted</span> <span class="o">=</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Todo</span><span class="o">&gt;</span><span class="p">.</span><span class="n">from</span><span class="p">(</span><span class="n">_todos</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sorted</span><span class="p">.</span><span class="n">sort</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 미완료 항목을 먼저 표시
+</span></span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">isDone</span> <span class="o">!=</span> <span class="n">b</span><span class="p">.</span><span class="n">isDone</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="n">isDone</span> <span class="o">?</span> <span class="m">1</span> <span class="o">:</span> <span class="o">-</span><span class="m">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 같은 상태라면 최신 항목을 먼저 표시
+</span></span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">b</span><span class="p">.</span><span class="n">createdAt</span><span class="p">.</span><span class="n">compareTo</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">createdAt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">sorted</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>ListView.builder</code>에서 <code>_todos</code> 대신 <code>_sortedTodos</code>를 사용하면 됩니다. 완료 상태가 바뀌면 자동으로 재정렬되어 완료된 항목이 아래로 내려갑니다.</p>
+<h3 id="24-빈-상태-화면">2.4 빈 상태 화면<a href="#24-빈-상태-화면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>할 일이 하나도 없을 때 빈 화면을 보여주면 사용자가 당황할 수 있습니다. 안내 메시지를 표시해 봅시다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dart" data-lang="dart"><span class="line"><span class="cl"><span class="err">@</span><span class="n">override</span>
+</span></span><span class="line"><span class="cl"><span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s1">&#39;My Todo&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">body:</span> <span class="n">_todos</span><span class="p">.</span><span class="n">isEmpty</span>
+</span></span><span class="line"><span class="cl">        <span class="o">?</span> <span class="n">Center</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">child:</span> <span class="n">Column</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">              <span class="nl">mainAxisAlignment:</span> <span class="n">MainAxisAlignment</span><span class="p">.</span><span class="n">center</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nl">children:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Icon</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">Icons</span><span class="p">.</span><span class="n">checklist</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">size:</span> <span class="m">80</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">color:</span> <span class="n">Theme</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">outline</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">const</span> <span class="n">SizedBox</span><span class="p">(</span><span class="nl">height:</span> <span class="m">16</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Text</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                  <span class="s1">&#39;할 일이 없습니다.</span><span class="se">\n</span><span class="s1">아래 버튼을 눌러 추가해 보세요!&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">textAlign:</span> <span class="n">TextAlign</span><span class="p">.</span><span class="n">center</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">fontSize:</span> <span class="m">16</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nl">color:</span> <span class="n">Theme</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="n">colorScheme</span><span class="p">.</span><span class="n">outline</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="p">),</span>
+</span></span><span class="line"><span class="cl">              <span class="p">],</span>
+</span></span><span class="line"><span class="cl">            <span class="p">),</span>
+</span></span><span class="line"><span class="cl">          <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">:</span> <span class="n">ListView</span><span class="p">.</span><span class="n">builder</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">itemCount:</span> <span class="n">_sortedTodos</span><span class="p">.</span><span class="n">length</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="kd">final</span> <span class="n">todo</span> <span class="o">=</span> <span class="n">_sortedTodos</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">              <span class="k">return</span> <span class="n">TodoItem</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                <span class="nl">todo:</span> <span class="n">todo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nl">onToggle:</span> <span class="n">_toggleTodo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nl">onEdit:</span> <span class="n">_editTodo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nl">onDelete:</span> <span class="n">_deleteTodo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">          <span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">floatingActionButton:</span> <span class="n">FloatingActionButton</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">onPressed:</span> <span class="n">_addTodo</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nl">child:</span> <span class="kd">const</span> <span class="n">Icon</span><span class="p">(</span><span class="n">Icons</span><span class="p">.</span><span class="n">add</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>_todos.isEmpty</code> 조건으로 분기하여, 목록이 비어 있으면 아이콘과 안내 텍스트를 보여줍니다.</p>
+<hr>
+<h2 id="3-앱-아이콘-설정">3. 앱 아이콘 설정<a href="#3-앱-아이콘-설정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>기본 Flutter 아이콘 대신 나만의 앱 아이콘을 설정하려면 <code>flutter_launcher_icons</code> 패키지를 사용합니다.</p>
+<p>먼저 1024x1024 크기의 아이콘 이미지를 <code>assets/icon/</code> 디렉토리에 준비합니다. 그런 다음 <code>pubspec.yaml</code>에 설정을 추가합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">dev_dependencies</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">flutter_launcher_icons</span><span class="p">:</span><span class="w"> </span><span class="l">^0.14.3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">flutter_launcher_icons</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">android</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ios</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image_path</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;assets/icon/app_icon.png&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">adaptive_icon_background</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;#FFFFFF&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">adaptive_icon_foreground</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;assets/icon/app_icon_foreground.png&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>설정을 추가한 뒤 아래 명령어를 실행합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dart run flutter_launcher_icons
+</span></span></code></pre></div><p>이 명령어가 Android와 iOS 각 플랫폼에 맞는 크기의 아이콘을 자동으로 생성해 줍니다. Android의 경우 <code>adaptive_icon_background</code>와 <code>adaptive_icon_foreground</code>를 별도로 설정하면 Android 8.0 이상에서 사용되는 적응형 아이콘도 지원할 수 있습니다.</p>
+<hr>
+<h2 id="4-스플래시-스크린-설정">4. 스플래시 스크린 설정<a href="#4-스플래시-스크린-설정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>앱이 시작될 때 잠깐 보이는 스플래시 스크린도 <code>flutter_native_splash</code> 패키지로 간편하게 설정할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">dev_dependencies</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">flutter_native_splash</span><span class="p">:</span><span class="w"> </span><span class="l">^2.4.4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">flutter_native_splash</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;#FFFFFF&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">color_dark</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;#1A1A2E&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;assets/icon/splash_logo.png&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">android_12</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;assets/icon/splash_logo.png&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;#FFFFFF&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">color_dark</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;#1A1A2E&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>설정 후 아래 명령어를 실행합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dart run flutter_native_splash:create
+</span></span></code></pre></div><p><code>color</code>와 <code>color_dark</code>를 각각 지정하면 라이트/다크 모드에 맞는 스플래시 스크린이 자동으로 적용됩니다. Android 12 이상에서는 별도의 스플래시 스크린 API를 사용하므로 <code>android_12</code> 섹션도 함께 설정하는 것이 좋습니다.</p>
+<hr>
+<h2 id="5-빌드-설정">5. 빌드 설정<a href="#5-빌드-설정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="51-android-빌드">5.1 Android 빌드<a href="#51-android-빌드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<h4 id="서명-키-생성">서명 키 생성<a href="#서명-키-생성" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>Google Play에 배포하려면 서명 키가 필요합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">keytool -genkey -v -keystore ~/my-todo-key.jks <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -keyalg RSA -keysize <span class="m">2048</span> -validity <span class="m">10000</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -alias my-todo
+</span></span></code></pre></div><h4 id="keyproperties-설정">key.properties 설정<a href="#keyproperties-설정" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>프로젝트의 <code>android/</code> 디렉토리에 <code>key.properties</code> 파일을 생성합니다. <strong>이 파일은 반드시 <code>.gitignore</code>에 추가해야 합니다.</strong></p>
+<pre tabindex="0"><code>storePassword=&lt;비밀번호&gt;
+keyPassword=&lt;비밀번호&gt;
+keyAlias=my-todo
+storeFile=&lt;키 파일 경로&gt;
+</code></pre><h4 id="buildgradle-설정">build.gradle 설정<a href="#buildgradle-설정" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p><code>android/app/build.gradle</code>에 서명 설정을 추가합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="kt">def</span> <span class="n">keystoreProperties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="kt">def</span> <span class="n">keystorePropertiesFile</span> <span class="o">=</span> <span class="n">rootProject</span><span class="o">.</span><span class="na">file</span><span class="o">(</span><span class="s1">&#39;key.properties&#39;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">(</span><span class="n">keystorePropertiesFile</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">keystoreProperties</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">keystorePropertiesFile</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">android</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">signingConfigs</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">release</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">keyAlias</span> <span class="n">keystoreProperties</span><span class="o">[</span><span class="s1">&#39;keyAlias&#39;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">            <span class="n">keyPassword</span> <span class="n">keystoreProperties</span><span class="o">[</span><span class="s1">&#39;keyPassword&#39;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">            <span class="n">storeFile</span> <span class="n">keystoreProperties</span><span class="o">[</span><span class="s1">&#39;storeFile&#39;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">                <span class="o">?</span> <span class="n">file</span><span class="o">(</span><span class="n">keystoreProperties</span><span class="o">[</span><span class="s1">&#39;storeFile&#39;</span><span class="o">])</span> <span class="o">:</span> <span class="kc">null</span>
+</span></span><span class="line"><span class="cl">            <span class="n">storePassword</span> <span class="n">keystoreProperties</span><span class="o">[</span><span class="s1">&#39;storePassword&#39;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">buildTypes</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">release</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">signingConfig</span> <span class="n">signingConfigs</span><span class="o">.</span><span class="na">release</span>
+</span></span><span class="line"><span class="cl">            <span class="n">minifyEnabled</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">            <span class="n">proguardFiles</span> <span class="nf">getDefaultProguardFile</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">                <span class="s1">&#39;proguard-android-optimize.txt&#39;</span><span class="o">),</span>
+</span></span><span class="line"><span class="cl">                <span class="s1">&#39;proguard-rules.pro&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h4 id="apk--aab-빌드">APK / AAB 빌드<a href="#apk--aab-빌드" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># APK 빌드 (직접 설치용)</span>
+</span></span><span class="line"><span class="cl">flutter build apk --release
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># AAB 빌드 (Google Play 업로드용)</span>
+</span></span><span class="line"><span class="cl">flutter build appbundle --release
+</span></span></code></pre></div><p>Google Play Console에 업로드할 때는 AAB(Android App Bundle) 형식을 사용합니다. 빌드 결과물은 <code>build/app/outputs/</code> 디렉토리에 생성됩니다.</p>
+<h3 id="52-ios-빌드">5.2 iOS 빌드<a href="#52-ios-빌드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>iOS 빌드를 위해서는 macOS 환경과 Xcode가 필요합니다.</p>
+<h4 id="xcode-프로젝트-설정">Xcode 프로젝트 설정<a href="#xcode-프로젝트-설정" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p><code>ios/Runner.xcworkspace</code>를 Xcode에서 열고 다음 항목을 확인합니다.</p>
+<ul>
+<li><strong>Bundle Identifier</strong>: 고유한 앱 ID (예: <code>com.example.mytodo</code>)</li>
+<li><strong>Team</strong>: Apple Developer 계정 선택</li>
+<li><strong>Deployment Target</strong>: 지원할 최소 iOS 버전</li>
+<li><strong>Signing &amp; Capabilities</strong>: Automatically manage signing 체크</li>
+</ul>
+<h4 id="ios-빌드-명령어">iOS 빌드 명령어<a href="#ios-빌드-명령어" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># iOS 릴리스 빌드</span>
+</span></span><span class="line"><span class="cl">flutter build ios --release
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># IPA 파일 생성 (App Store 업로드용)</span>
+</span></span><span class="line"><span class="cl">flutter build ipa --release
+</span></span></code></pre></div><p><code>flutter build ipa</code> 명령이 성공하면 <code>build/ios/ipa/</code> 디렉토리에 <code>.ipa</code> 파일이 생성됩니다.</p>
+<hr>
+<h2 id="6-배포-개요">6. 배포 개요<a href="#6-배포-개요" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="61-google-play-store-배포">6.1 Google Play Store 배포<a href="#61-google-play-store-배포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><a href="https://play.google.com/console">Google Play Console</a> 에 개발자 계정을 등록합니다 (등록비 $25, 1회성).</li>
+<li>새 앱을 생성하고 앱 정보(이름, 설명, 스크린샷 등) 를 입력합니다.</li>
+<li>AAB 파일을 업로드합니다.</li>
+<li>콘텐츠 등급, 개인정보처리방침 등 필수 항목을 작성합니다.</li>
+<li>내부 테스트 또는 비공개 테스트 트랙에 먼저 배포하여 검증합니다.</li>
+<li>검증이 완료되면 프로덕션 트랙으로 출시합니다.</li>
+</ol>
+<h3 id="62-apple-app-store-배포">6.2 Apple App Store 배포<a href="#62-apple-app-store-배포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><a href="https://developer.apple.com/programs/">Apple Developer Program</a> 에 등록합니다 (연회비 $99).</li>
+<li>App Store Connect에서 새 앱을 등록합니다.</li>
+<li>IPA 파일을 Xcode의 Organizer 또는 <code>xcrun altool</code>을 통해 업로드합니다.</li>
+<li>TestFlight를 통해 베타 테스터에게 먼저 배포하여 피드백을 받습니다.</li>
+<li>앱 심사를 제출하고 승인을 기다립니다 (보통 1~3일 소요).</li>
+<li>심사 승인 후 App Store에 출시합니다.</li>
+</ol>
+<h3 id="63-배포-시-주의사항">6.3 배포 시 주의사항<a href="#63-배포-시-주의사항" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>서명 키 관리</strong>: Android의 keystore 파일과 iOS의 인증서/프로비저닝 프로파일은 분실하면 앱 업데이트가 불가능해질 수 있습니다. 안전한 곳에 백업해 두세요.</li>
+<li><strong>버전 관리</strong>: <code>pubspec.yaml</code>의 <code>version</code> 필드(예: <code>1.0.0+1</code>) 에서 빌드 번호를 업데이트해야 스토어에 새 버전을 업로드할 수 있습니다.</li>
+<li><strong>난독화</strong>: <code>flutter build apk --obfuscate --split-debug-info=build/debug-info</code> 옵션으로 코드 난독화를 적용하면 리버스 엔지니어링을 어렵게 만들 수 있습니다.</li>
+<li><strong>개인정보처리방침</strong>: 두 스토어 모두 개인정보처리방침 URL을 요구합니다. 간단한 페이지라도 준비해야 합니다.</li>
+</ul>
+<hr>
+<h2 id="7-시리즈-마무리">7. 시리즈 마무리<a href="#7-시리즈-마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>4개의 파트에 걸쳐 Flutter로 크로스플랫폼 To-Do 앱을 처음부터 끝까지 만들어 보았습니다. 전체 시리즈에서 다룬 내용을 정리하면 다음과 같습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Part</th>
+          <th>주요 내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Part 1</td>
+          <td>Flutter 소개, 개발 환경 설정, 프로젝트 생성</td>
+      </tr>
+      <tr>
+          <td>Part 2</td>
+          <td>위젯 구성, 상태 관리 (<code>setState</code>), 기본 UI 완성</td>
+      </tr>
+      <tr>
+          <td>Part 3</td>
+          <td><code>shared_preferences</code> 로컬 저장소 연동, CRUD 기능 완성</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td>다크 모드, UX 개선, 앱 아이콘/스플래시, 빌드 및 배포</td>
+      </tr>
+  </tbody>
+</table>
+<p>간단한 To-Do 앱이지만, 이 과정에서 Flutter 개발의 핵심 흐름을 대부분 경험했습니다. 위젯 조합으로 UI를 구성하고, 상태 관리로 데이터를 다루고, 로컬 저장소에 데이터를 영속화하고, 최종적으로 각 플랫폼에 맞게 빌드/배포하는 전체 사이클을 한 번 돌아본 셈입니다.</p>
+<h3 id="더-도전해볼-만한-것들">더 도전해볼 만한 것들<a href="#더-도전해볼-만한-것들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 앱을 기반으로 확장해 볼 수 있는 주제들을 소개합니다.</p>
+<ul>
+<li><strong>Firebase 연동</strong>: Firestore를 사용하면 클라우드 동기화가 가능합니다. 여러 기기에서 같은 할 일 목록을 공유할 수 있습니다.</li>
+<li><strong>알림 기능</strong>: <code>flutter_local_notifications</code> 패키지를 사용하면 마감일에 맞춰 알림을 보낼 수 있습니다.</li>
+<li><strong>상태 관리 고도화</strong>: 앱이 커지면 <code>setState</code> 만으로는 한계가 있습니다. <code>Riverpod</code>, <code>Bloc</code>, <code>Provider</code> 등의 상태 관리 라이브러리를 도입해 보세요.</li>
+<li><strong>카테고리/태그 기능</strong>: 할 일을 그룹으로 묶어 관리하면 더 실용적인 앱이 됩니다.</li>
+<li><strong>위젯 테스트</strong>: <code>flutter_test</code> 패키지를 활용하여 UI 단위 테스트를 작성하면 리팩터링 시 안정성을 확보할 수 있습니다.</li>
+<li><strong>CI/CD 파이프라인</strong>: GitHub Actions나 Codemagic을 활용하면 커밋할 때마다 자동으로 빌드와 배포가 이루어지도록 설정할 수 있습니다.</li>
+</ul>
+<p>Flutter는 하나의 코드베이스로 모바일뿐 아니라 웹, 데스크톱 앱까지 만들 수 있는 프레임워크입니다. 이 시리즈가 Flutter 개발을 시작하는 데 도움이 되었기를 바랍니다. 읽어 주셔서 감사합니다!</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-03/" class="button inline next">
+         [<span class="button__text">크로스플랫폼 To-Do 앱 만들기 Part 3: 상태 관리와 로컬 데이터 저장</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
