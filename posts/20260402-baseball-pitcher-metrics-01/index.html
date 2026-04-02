@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>투수 지표 가이드 Part 1: 전통 지표부터 세이버메트릭스까지 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="야구 투수의 주요 성적 지표를 전통 지표와 세이버메트릭스 지표로 나누어 소개하고, 실제 MLB 투수들의 데이터와 함께 각 지표의 의미와 한계를 깊이 있게 분석합니다." />
+<meta name="keywords" content="baseball, sabermetrics, sports, statistics" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260402-baseball-pitcher-metrics-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="투수 지표 가이드 Part 1: 전통 지표부터 세이버메트릭스까지">
+<meta property="og:description" content="야구 투수의 주요 성적 지표를 전통 지표와 세이버메트릭스 지표로 나누어 소개하고, 실제 MLB 투수들의 데이터와 함께 각 지표의 의미와 한계를 깊이 있게 분석합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260402-baseball-pitcher-metrics-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-02 08:54:03 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260402-baseball-pitcher-metrics-01/">투수 지표 가이드 Part 1: 전통 지표부터 세이버메트릭스까지</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-02</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/baseball/">baseball</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/sabermetrics/">sabermetrics</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/sports/">sports</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/statistics/">statistics</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>야구는 &ldquo;기록의 스포츠&quot;라고 불립니다. 특히 투수는 경기의 흐름을 좌우하는 핵심 포지션으로, 오랜 세월에 걸쳐 다양한 통계 지표가 개발되어 왔습니다. 전통적으로 승수(W)와 평균자책점(ERA)이 투수 평가의 기준이었지만, 2000년대 이후 세이버메트릭스의 부상과 함께 FIP, xFIP, SIERA 등 새로운 지표들이 투수의 실력을 더 정밀하게 측정하고 있습니다.</p>
+<p>이 시리즈에서는 투수 평가에 사용되는 주요 지표들을 체계적으로 정리하고, 이를 활용해 투수의 스타일을 분석하고 미래 성적을 예측하는 방법까지 다룹니다. 각 지표를 설명할 때마다 실제 MLB 투수들의 데이터를 함께 살펴보겠습니다.</p>
+<ul>
+<li><strong>Part 1</strong> (이번 글): 전통 지표와 세이버메트릭스 지표 소개</li>
+<li><strong>Part 2</strong>: 지표를 활용한 투수 스타일 분석과 미래 성적 예측</li>
+</ul>
+<hr>
+<h2 id="전통-지표-기본이지만-한계가-있는-수치들">전통 지표: 기본이지만 한계가 있는 수치들<a href="#전통-지표-기본이지만-한계가-있는-수치들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>전통 지표는 오랜 역사를 가지고 있으며, 팬들이 가장 먼저 접하는 숫자들입니다. 직관적이라는 장점이 있지만, 투수 본인의 능력 외적인 요소가 많이 개입된다는 한계를 가지고 있습니다.</p>
+<h3 id="승패-w-l-wins-losses">승패 (W-L, Wins-Losses)<a href="#승패-w-l-wins-losses" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 오래된 투수 평가 기준입니다. 과거에는 &ldquo;20승 투수&quot;가 에이스의 상징이었고, 사이영상 투표에서도 승수가 결정적인 역할을 했습니다.</p>
+<p><strong>한계</strong>: 승패는 투수의 능력보다 팀의 타선과 불펜 지원에 크게 좌우됩니다. 제이콥 디그롬(Jacob deGrom)의 2018시즌이 이를 극명하게 보여줍니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>팀</th>
+          <th>ERA</th>
+          <th>W-L</th>
+          <th>경기당 평균 득점 지원</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>제이콥 디그롬</td>
+          <td>NYM</td>
+          <td>1.70</td>
+          <td>10-9</td>
+          <td>3.5</td>
+      </tr>
+      <tr>
+          <td>맥스 슈어저</td>
+          <td>WSH</td>
+          <td>2.53</td>
+          <td>18-7</td>
+          <td>4.8</td>
+      </tr>
+  </tbody>
+</table>
+<p>디그롬은 역대급 ERA(1.70)를 기록하고도 10승에 그쳤습니다. 뉴욕 메츠의 빈약한 타선이 그가 등판한 경기에서 평균 3.5점밖에 뽑아주지 못했기 때문입니다. 그럼에도 사이영상을 수상한 것은 세이버메트릭스의 영향력이 커진 결과였습니다.</p>
+<p>2010년 시애틀 매리너스의 펠릭스 에르난데스도 비슷한 케이스입니다. ERA 2.27을 기록하고도 13승 12패에 그쳤지만, 같은 해 ERA 3.18의 CC 사바시아가 21승을 거둔 것과 대비되며, 승수의 한계를 잘 보여줍니다.</p>
+<p><strong>활용 가치</strong>: 현대 야구에서 승패는 투수 개인의 능력 지표로서는 거의 의미가 없습니다. 다만 팀의 전반적인 경쟁력을 간접적으로 보여주는 맥락 지표로는 참고할 수 있습니다.</p>
+<h3 id="평균자책점-era-earned-run-average">평균자책점 (ERA, Earned Run Average)<a href="#평균자책점-era-earned-run-average" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>투수가 9이닝당 허용한 자책점의 평균입니다.</p>
+<pre tabindex="0"><code>ERA = (자책점 × 9) / 투구 이닝
+</code></pre><p><strong>기준선</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>ERA</th>
+          <th>평가</th>
+          <th>대표 시즌</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2.00 이하</td>
+          <td>엘리트</td>
+          <td>페드로 마르티네스 2000 (1.74), 디그롬 2018 (1.70)</td>
+      </tr>
+      <tr>
+          <td>2.00~3.00</td>
+          <td>우수</td>
+          <td>클레이턴 커쇼 2015 (2.13), 맥스 슈어저 2017 (2.51)</td>
+      </tr>
+      <tr>
+          <td>3.00~4.00</td>
+          <td>평균 이상</td>
+          <td>리그 평균 수준의 선발투수</td>
+      </tr>
+      <tr>
+          <td>4.00~5.00</td>
+          <td>평균</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>5.00 이상</td>
+          <td>부진</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>페드로 마르티네스의 2000시즌(ERA 1.74, 217이닝)은 스테로이드 전성시대에 기록된 것이어서 더욱 경이롭습니다. 당시 아메리칸 리그 평균 ERA는 4.91이었으며, 페드로의 ERA+는 291로 역대 최고를 기록했습니다.</p>
+<p><strong>한계</strong>: ERA는 수비력의 영향을 크게 받습니다. 같은 투수라도 골드글러브 수비수들 뒤에서 던지면 ERA가 낮아지고, 수비가 약한 팀에서 던지면 ERA가 올라갑니다. 또한 &ldquo;자책점&quot;의 판정은 기록원의 주관이 개입되며, 실책 이후의 실점은 비자책점으로 처리되어 ERA에 반영되지 않는 불일치도 존재합니다.</p>
+<h3 id="whip-walks-plus-hits-per-inning-pitched">WHIP (Walks plus Hits per Inning Pitched)<a href="#whip-walks-plus-hits-per-inning-pitched" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이닝당 허용한 볼넷과 안타의 합계입니다.</p>
+<pre tabindex="0"><code>WHIP = (볼넷 + 피안타) / 투구 이닝
+</code></pre><p><strong>역대급 WHIP 시즌</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>WHIP</th>
+          <th>IP</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>페드로 마르티네스</td>
+          <td>2000</td>
+          <td>0.74</td>
+          <td>217</td>
+      </tr>
+      <tr>
+          <td>클레이턴 커쇼</td>
+          <td>2014</td>
+          <td>0.86</td>
+          <td>198.1</td>
+      </tr>
+      <tr>
+          <td>그렉 매덕스</td>
+          <td>1995</td>
+          <td>0.81</td>
+          <td>209.2</td>
+      </tr>
+      <tr>
+          <td>크리스 세일</td>
+          <td>2018</td>
+          <td>0.86</td>
+          <td>158</td>
+      </tr>
+  </tbody>
+</table>
+<p>페드로의 2000시즌 WHIP 0.74는 라이브볼 시대(1920년 이후) 최저 기록입니다. 9이닝당 볼넷과 안타를 합쳐 6.6개만 허용했다는 뜻입니다.</p>
+<p><strong>기준선</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>WHIP</th>
+          <th>평가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1.00 이하</td>
+          <td>엘리트</td>
+      </tr>
+      <tr>
+          <td>1.00~1.20</td>
+          <td>우수</td>
+      </tr>
+      <tr>
+          <td>1.20~1.40</td>
+          <td>평균</td>
+      </tr>
+      <tr>
+          <td>1.40 이상</td>
+          <td>부진</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>한계</strong>: 볼넷과 안타를 동일한 가중치로 취급합니다. 실제로 볼넷(1루)과 2루타의 영향은 크게 다릅니다. 또한 피안타에는 인필드 안타처럼 수비 영향이 있는 것들도 포함됩니다.</p>
+<h3 id="탈삼진율-k9-strikeouts-per-9-innings">탈삼진율 (K/9, Strikeouts per 9 Innings)<a href="#탈삼진율-k9-strikeouts-per-9-innings" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>9이닝당 기록한 삼진 수입니다.</p>
+<pre tabindex="0"><code>K/9 = (탈삼진 × 9) / 투구 이닝
+</code></pre><p><strong>역대급 K/9 시즌들</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>K/9</th>
+          <th>총 삼진</th>
+          <th>IP</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>거릿 콜</td>
+          <td>2019</td>
+          <td>13.82</td>
+          <td>326</td>
+          <td>212.1</td>
+      </tr>
+      <tr>
+          <td>크리스 세일</td>
+          <td>2017</td>
+          <td>12.93</td>
+          <td>308</td>
+          <td>214.1</td>
+      </tr>
+      <tr>
+          <td>랜디 존슨</td>
+          <td>2001</td>
+          <td>13.41</td>
+          <td>372</td>
+          <td>249.2</td>
+      </tr>
+      <tr>
+          <td>스펜서 스트라이더</td>
+          <td>2023</td>
+          <td>13.59</td>
+          <td>281</td>
+          <td>186.1</td>
+      </tr>
+  </tbody>
+</table>
+<p>랜디 존슨의 2001시즌은 249.2이닝을 소화하면서 372삼진을 기록한 경이로운 시즌이었습니다. 현대 야구에서는 이닝 제한이 엄격해져 200이닝 이상 던지며 이 수준의 K/9를 기록하는 것은 거릿 콜의 2019시즌이 거의 마지막이었습니다.</p>
+<p><strong>기준선</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>K/9</th>
+          <th>평가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>10.0 이상</td>
+          <td>엘리트</td>
+      </tr>
+      <tr>
+          <td>8.0~10.0</td>
+          <td>우수</td>
+      </tr>
+      <tr>
+          <td>6.0~8.0</td>
+          <td>평균</td>
+      </tr>
+      <tr>
+          <td>6.0 미만</td>
+          <td>낮음</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>한계</strong>: 삼진이 많다고 반드시 좋은 투수는 아닙니다. 삼진을 잡기 위해 투구 수가 늘어나면 이닝을 오래 소화하기 어려워집니다. 또한 K/9는 이닝 기반 지표이기 때문에, 같은 이닝 안에서도 많은 타자를 상대한 투수(볼넷이 많은 투수)가 유리하게 계산될 수 있습니다.</p>
+<h3 id="볼넷율-bb9-walks-per-9-innings">볼넷율 (BB/9, Walks per 9 Innings)<a href="#볼넷율-bb9-walks-per-9-innings" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>9이닝당 허용한 볼넷 수입니다.</p>
+<pre tabindex="0"><code>BB/9 = (볼넷 × 9) / 투구 이닝
+</code></pre><p><strong>제구의 달인들</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>BB/9</th>
+          <th>IP</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>그렉 매덕스</td>
+          <td>1997</td>
+          <td>1.20</td>
+          <td>232.2</td>
+      </tr>
+      <tr>
+          <td>필 휴스</td>
+          <td>2014</td>
+          <td>0.97</td>
+          <td>209.2</td>
+      </tr>
+      <tr>
+          <td>클리프 리</td>
+          <td>2012</td>
+          <td>1.27</td>
+          <td>211</td>
+      </tr>
+      <tr>
+          <td>커트 실링</td>
+          <td>2002</td>
+          <td>1.07</td>
+          <td>259.2</td>
+      </tr>
+  </tbody>
+</table>
+<p>그렉 매덕스는 커리어 전체에 걸쳐 BB/9 1.80을 기록했습니다. 90mph대 초반의 &ldquo;느린&rdquo; 패스트볼로도 통산 355승을 거둔 것은 역사적인 제구력 덕분이었습니다. 필 휴스의 2014시즌은 BB/9 0.97로, 209이닝 이상 던진 투수 중 역대 최저 기록입니다.</p>
+<p><strong>기준선</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>BB/9</th>
+          <th>평가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2.0 미만</td>
+          <td>엘리트</td>
+      </tr>
+      <tr>
+          <td>2.0~3.0</td>
+          <td>우수</td>
+      </tr>
+      <tr>
+          <td>3.0~4.0</td>
+          <td>평균</td>
+      </tr>
+      <tr>
+          <td>4.0 이상</td>
+          <td>부진</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="이닝-소화량-ip-innings-pitched">이닝 소화량 (IP, Innings Pitched)<a href="#이닝-소화량-ip-innings-pitched" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>시즌 동안 소화한 총 이닝 수입니다. 단독으로 쓰이기보다 다른 지표와 함께 맥락을 제공합니다.</p>
+<p><strong>의미</strong>: &ldquo;이닝 이터(Innings Eater)&ldquo;라 불리는 200이닝 이상 소화 투수는 불펜 부담을 줄이고 팀에 안정감을 줍니다. 저스틴 벌랜더는 2011시즌 251이닝을 소화하며 ERA 2.40, 24승 5패로 사이영상과 MVP를 동시 수상했습니다. 양과 질을 동시에 달성한 대표적인 시즌입니다.</p>
+<hr>
+<h2 id="세이버메트릭스-지표-투수-본연의-능력을-측정하다">세이버메트릭스 지표: 투수 본연의 능력을 측정하다<a href="#세이버메트릭스-지표-투수-본연의-능력을-측정하다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>세이버메트릭스(Sabermetrics) 지표들은 투수가 통제할 수 있는 요소에 집중하여, 수비와 운의 영향을 제거한 &ldquo;순수한 투수 능력&quot;을 측정하려고 합니다.</p>
+<h3 id="fip-fielding-independent-pitching">FIP (Fielding Independent Pitching)<a href="#fip-fielding-independent-pitching" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>FIP는 세이버메트릭스의 가장 대표적인 투수 지표입니다. 탈삼진, 볼넷, 피홈런이라는 세 가지 요소만으로 투수를 평가합니다. 이 세 가지는 투수가 수비의 도움 없이 직접 통제하는 결과물이라는 점에서 &ldquo;Three True Outcomes(TTO)&rdquo; 라고 불립니다.</p>
+<pre tabindex="0"><code>FIP = ((13 × 피홈런) + (3 × 볼넷) - (2 × 탈삼진)) / 투구이닝 + 상수
+</code></pre><p>여기서 상수(cFIP)는 리그 평균 ERA와 FIP를 맞추기 위한 보정값으로, 보통 3.10 전후입니다.</p>
+<p><strong>ERA와 FIP가 극단적으로 괴리된 실제 사례</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>ERA</th>
+          <th>FIP</th>
+          <th>차이</th>
+          <th>BABIP</th>
+          <th>LOB%</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>마르코 에스트라다</td>
+          <td>2015</td>
+          <td>3.13</td>
+          <td>4.28</td>
+          <td>-1.15</td>
+          <td>.236</td>
+          <td>78.8%</td>
+      </tr>
+      <tr>
+          <td>마커스 스트로만</td>
+          <td>2018</td>
+          <td>5.54</td>
+          <td>3.97</td>
+          <td>+1.57</td>
+          <td>.357</td>
+          <td>65.5%</td>
+      </tr>
+  </tbody>
+</table>
+<p>에스트라다는 2015시즌 ERA 3.13으로 훌륭해 보였지만, FIP는 4.28이었습니다. BABIP가 .236으로 극히 낮았는데, 이는 수비 운이 크게 작용한 결과였습니다. 예상대로 2016시즌 ERA는 3.48로 상승했습니다. 반대로 스트로만은 2018시즌 BABIP .357이라는 극도의 불운을 겪었고, 2019시즌 ERA 3.22로 큰 폭의 개선을 보여주었습니다.</p>
+<p><strong>한계</strong>: 피안타의 질(타구 유형)을 전혀 반영하지 않습니다. 예를 들어, 땅볼을 많이 유도하는 투수는 인플레이 타구가 안타가 될 확률이 낮은데, FIP는 이를 고려하지 않습니다. 또한 홈런에 13이라는 높은 가중치를 부여하기 때문에, 홈런 변동성이 큰 투수의 FIP는 시즌 간 변동이 클 수 있습니다.</p>
+<h3 id="xfip-expected-fielding-independent-pitching">xFIP (Expected Fielding Independent Pitching)<a href="#xfip-expected-fielding-independent-pitching" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>FIP에서 한 걸음 더 나아간 지표입니다. FIP의 피홈런 대신 &ldquo;예상 피홈런&quot;을 사용합니다. 구체적으로, 해당 투수의 플라이볼 수에 리그 평균 홈런/플라이볼 비율(HR/FB%)을 적용합니다.</p>
+<pre tabindex="0"><code>xFIP = ((13 × (플라이볼 × 리그평균 HR/FB%)) + (3 × 볼넷) - (2 × 탈삼진)) / 투구이닝 + 상수
+</code></pre><p><strong>HR/FB% 변동이 FIP에 미치는 영향 — 매트 하비 사례</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>시즌</th>
+          <th>ERA</th>
+          <th>FIP</th>
+          <th>xFIP</th>
+          <th>HR/FB%</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2013</td>
+          <td>2.27</td>
+          <td>2.00</td>
+          <td>2.69</td>
+          <td>5.4%</td>
+      </tr>
+      <tr>
+          <td>2015</td>
+          <td>2.71</td>
+          <td>3.22</td>
+          <td>2.94</td>
+          <td>11.4%</td>
+      </tr>
+  </tbody>
+</table>
+<p>매트 하비(Matt Harvey)의 2013시즌에는 HR/FB%가 5.4%로 극히 낮았습니다. FIP(2.00)는 이 낮은 홈런율을 그대로 반영했지만, xFIP(2.69)는 리그 평균 HR/FB%를 적용하여 더 현실적인 수치를 제시했습니다. 2015시즌에 HR/FB%가 11.4%로 정상화되면서 FIP가 3.22로 올랐지만, xFIP(2.94)와의 차이는 줄어들었습니다.</p>
+<p><strong>한계</strong>: 홈런이 순전히 운이라는 가정에 기반합니다. 하지만 실제로 일부 투수는 구질 특성상 지속적으로 높거나 낮은 HR/FB%를 기록합니다. 플라이볼 투수가 구장 효과(예: 콜로라도 쿠어스 필드) 와 결합하면 더 큰 괴리가 생길 수 있습니다.</p>
+<h3 id="siera-skill-interactive-era">SIERA (Skill-Interactive ERA)<a href="#siera-skill-interactive-era" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>FIP와 xFIP보다 더 정교한 지표입니다. 탈삼진, 볼넷, 땅볼 비율 사이의 상호작용을 반영합니다.</p>
+<p><strong>핵심 통찰</strong>: SIERA의 가장 중요한 아이디어는 &ldquo;같은 볼넷이라도 삼진이 많은 투수에게 더 해롭다&quot;는 것입니다. 삼진을 많이 잡는 투수는 풀 카운트까지 가는 경우가 많으므로, 볼넷 하나의 비용이 더 큽니다(투구 수 증가, 이닝 소화 감소). 반면 컨택트 투수(땅볼 유도형)는 적은 투구 수로 아웃을 잡기 때문에 볼넷의 영향이 상대적으로 적습니다.</p>
+<p><strong>SIERA가 FIP보다 더 정확했던 사례 — 달라스 카이클(2014~2015)</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>시즌</th>
+          <th>ERA</th>
+          <th>FIP</th>
+          <th>SIERA</th>
+          <th>K%</th>
+          <th>BB%</th>
+          <th>GB%</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2014</td>
+          <td>2.93</td>
+          <td>3.66</td>
+          <td>3.39</td>
+          <td>18.7%</td>
+          <td>6.3%</td>
+          <td>58.0%</td>
+      </tr>
+      <tr>
+          <td>2015</td>
+          <td>2.48</td>
+          <td>3.22</td>
+          <td>3.12</td>
+          <td>19.5%</td>
+          <td>5.7%</td>
+          <td>58.5%</td>
+      </tr>
+  </tbody>
+</table>
+<p>카이클은 극단적인 그라운드볼 투수(GB% 58%)로, 삼진이 적은 대신 땅볼 유도로 아웃을 잡았습니다. FIP는 낮은 K%를 과도하게 페널티로 반영했지만, SIERA는 높은 GB%와의 상호작용을 고려하여 카이클의 실제 ERA에 더 가까운 수치를 제시했습니다.</p>
+<h3 id="k--bb-탈삼진율--볼넷율-비율-기반">K% / BB% (탈삼진율 / 볼넷율 비율 기반)<a href="#k--bb-탈삼진율--볼넷율-비율-기반" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>K/9, BB/9의 이닝 기반 계산 대신, 상대한 타자 수 대비 비율로 계산한 지표입니다.</p>
+<pre tabindex="0"><code>K% = 탈삼진 / 상대 타자 수
+BB% = 볼넷 / 상대 타자 수
+</code></pre><p><strong>K/9 대비 장점</strong>: K/9는 이닝 기반이라, 볼넷을 많이 주는 투수가 같은 이닝에서 더 많은 타자를 상대하게 되어 수치가 부풀려질 수 있습니다. K%는 이 문제를 해결합니다.</p>
+<p><strong>K-BB% 엘리트 시즌들</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>K%</th>
+          <th>BB%</th>
+          <th>K-BB%</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>거릿 콜</td>
+          <td>2019</td>
+          <td>39.9%</td>
+          <td>6.0%</td>
+          <td>33.9%</td>
+      </tr>
+      <tr>
+          <td>코빈 번스</td>
+          <td>2021</td>
+          <td>35.6%</td>
+          <td>4.6%</td>
+          <td>31.0%</td>
+      </tr>
+      <tr>
+          <td>크리스 세일</td>
+          <td>2017</td>
+          <td>33.2%</td>
+          <td>5.3%</td>
+          <td>27.9%</td>
+      </tr>
+      <tr>
+          <td>셰인 비버</td>
+          <td>2020</td>
+          <td>36.2%</td>
+          <td>3.5%</td>
+          <td>32.7%</td>
+      </tr>
+  </tbody>
+</table>
+<p>거릿 콜의 2019시즌 K-BB% 33.9%는 현대 야구에서 거의 도달 불가능한 수준입니다. 상대 타자 10명 중 4명을 삼진으로 잡으면서 볼넷은 0.6명에게만 허용한 셈입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>K-BB%</th>
+          <th>평가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20% 이상</td>
+          <td>엘리트</td>
+      </tr>
+      <tr>
+          <td>15~20%</td>
+          <td>우수</td>
+      </tr>
+      <tr>
+          <td>10~15%</td>
+          <td>평균</td>
+      </tr>
+      <tr>
+          <td>10% 미만</td>
+          <td>부진</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="babip-batting-average-on-balls-in-play">BABIP (Batting Average on Balls In Play)<a href="#babip-batting-average-on-balls-in-play" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>인플레이 타구(홈런 제외)가 안타가 된 비율입니다.</p>
+<pre tabindex="0"><code>BABIP = (피안타 - 피홈런) / (타수 - 탈삼진 - 피홈런 + 희생플라이)
+</code></pre><p><strong>핵심 개념</strong>: 리그 평균 BABIP는 약 .300으로, 이 수치는 해마다 매우 안정적입니다. 개별 투수의 BABIP가 .250이면 수비 운이 좋았던 것이고, .340이면 수비 운이 나빴을 가능성이 높습니다.</p>
+<p><strong>BABIP 극단값과 다음 시즌 회귀 사례</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>BABIP</th>
+          <th>ERA</th>
+          <th>다음 시즌 BABIP</th>
+          <th>다음 시즌 ERA</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>짹 그레인키</td>
+          <td>2015</td>
+          <td>.245</td>
+          <td>1.66</td>
+          <td>.297</td>
+          <td>4.37</td>
+      </tr>
+      <tr>
+          <td>마커스 스트로만</td>
+          <td>2018</td>
+          <td>.357</td>
+          <td>5.54</td>
+          <td>.297</td>
+          <td>3.22</td>
+      </tr>
+  </tbody>
+</table>
+<p>그레인키의 2015시즌(ERA 1.66)은 역대급이었지만, BABIP .245는 지속 불가능한 수준이었습니다. 다음 해 BABIP가 .297로 정상화되면서 ERA는 4.37로 크게 올랐습니다.</p>
+<p><strong>주의사항</strong>: BABIP가 지속적으로 리그 평균보다 낮은 투수도 있습니다. 높은 탈삼진율, 강한 땅볼 성향, 높은 인필드 플라이 비율을 가진 투수는 구조적으로 낮은 BABIP를 유지할 수 있습니다. 클레이턴 커쇼는 커리어 BABIP .271로 지속적으로 리그 평균보다 낮았는데, 이는 그의 엘리트급 구위와 높은 인필드 플라이 비율 덕분이었습니다. 맹목적으로 BABIP .300 회귀를 가정하면 안 됩니다.</p>
+<h3 id="lob-left-on-base-percentage">LOB% (Left On Base Percentage)<a href="#lob-left-on-base-percentage" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>출루한 주자 중 득점하지 못하고 잔루로 남은 비율입니다.</p>
+<pre tabindex="0"><code>LOB% = (피안타 + 볼넷 + 사구 - 실점) / (피안타 + 볼넷 + 사구 - (1.4 × 피홈런))
+</code></pre><p><strong>리그 평균</strong>: 약 72~73%</p>
+<p><strong>의미</strong>: LOB%가 85% 이상이면 &ldquo;위기관리의 달인&quot;처럼 보이지만, 대부분의 경우 지속 불가능한 행운입니다. 반대로 LOB%가 60% 이하면 불운이 많았을 가능성이 높습니다. ERA와 FIP의 괴리가 클 때, BABIP와 LOB%를 함께 보면 그 원인을 파악할 수 있습니다.</p>
+<h3 id="hrfb-홈런플라이볼-비율">HR/FB% (홈런/플라이볼 비율)<a href="#hrfb-홈런플라이볼-비율" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>플라이볼 중 홈런이 된 비율입니다.</p>
+<p><strong>리그 평균</strong>: 약 10~13% (시즌과 공인구 사양에 따라 변동)</p>
+<p><strong>의미</strong>: 리그 평균에서 크게 벗어난 HR/FB%는 회귀할 가능성이 높습니다. 다만 구속, 구종 특성, 홈 구장에 따라 지속적으로 평균보다 높거나 낮은 투수도 존재합니다.</p>
+<h3 id="gb--fb--ld-타구-유형-비율">GB% / FB% / LD% (타구 유형 비율)<a href="#gb--fb--ld-타구-유형-비율" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>투수가 허용한 타구를 땅볼(GB), 플라이볼(FB), 라인드라이브(LD)로 분류한 비율입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>유형</th>
+          <th>리그 평균</th>
+          <th>의미</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>GB%</td>
+          <td>약 43~45%</td>
+          <td>높을수록 홈런 허용 감소, 단 내야 안타 증가 가능</td>
+      </tr>
+      <tr>
+          <td>FB%</td>
+          <td>약 34~36%</td>
+          <td>높을수록 홈런 위험 증가</td>
+      </tr>
+      <tr>
+          <td>LD%</td>
+          <td>약 20~21%</td>
+          <td>라인드라이브는 안타가 될 확률이 가장 높음 (약 .680)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>극단적 GB% 투수들</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>GB%</th>
+          <th>ERA</th>
+          <th>HR/9</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>달라스 카이클</td>
+          <td>2015</td>
+          <td>58.5%</td>
+          <td>2.48</td>
+          <td>0.51</td>
+      </tr>
+      <tr>
+          <td>잭 그레인키</td>
+          <td>2015</td>
+          <td>47.8%</td>
+          <td>1.66</td>
+          <td>0.48</td>
+      </tr>
+      <tr>
+          <td>브랜든 웹</td>
+          <td>2006</td>
+          <td>60.8%</td>
+          <td>3.10</td>
+          <td>0.59</td>
+      </tr>
+  </tbody>
+</table>
+<p>달라스 카이클과 브랜든 웹은 60% 안팎의 GB%를 기록한 대표적인 극단적 땅볼 투수입니다. GB%가 높을수록 HR/9가 낮아지는 상관관계가 명확하게 보입니다.</p>
+<hr>
+<h2 id="차세대-지표-statcast-시대의-데이터">차세대 지표: Statcast 시대의 데이터<a href="#차세대-지표-statcast-시대의-데이터" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2015년부터 MLB 전 구장에 도입된 Statcast 시스템은 투수의 모든 투구를 추적하여 이전에는 측정할 수 없었던 데이터를 제공합니다.</p>
+<h3 id="stuff--location--pitching">Stuff+ / Location+ / Pitching+<a href="#stuff--location--pitching" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>비교적 최근에 개발된 종합 모델 기반 지표입니다.</p>
+<ul>
+<li><strong>Stuff+</strong>: 구속, 회전수, 무브먼트 등 구질 자체의 질을 평가합니다. 100이 평균이며, 높을수록 좋습니다. 120 이상이면 엘리트 구질입니다.</li>
+<li><strong>Location+</strong>: 투구 위치의 질을 평가합니다. 스트라이크존 가장자리와 체이스 존(chase zone)에 얼마나 정확하게 던지는지를 측정합니다.</li>
+<li><strong>Pitching+</strong>: Stuff+와 Location+를 결합한 종합 지표입니다.</li>
+</ul>
+<p><strong>Stuff+와 Location+의 대비 — 두 가지 유형의 에이스</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>시즌</th>
+          <th>Stuff+</th>
+          <th>Location+</th>
+          <th>ERA</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>스펜서 스트라이더</td>
+          <td>2023</td>
+          <td>140+</td>
+          <td>95</td>
+          <td>3.86</td>
+      </tr>
+      <tr>
+          <td>잭 그레인키</td>
+          <td>2019</td>
+          <td>85</td>
+          <td>120+</td>
+          <td>2.93</td>
+      </tr>
+  </tbody>
+</table>
+<p>스트라이더는 압도적인 구질(Stuff+ 140+)로 삼진을 쏟아냈지만, 제구(Location+)가 평균 이하여서 ERA는 3.86에 머물렀습니다. 반대로 그레인키는 구질 자체는 리그 평균 이하였지만 정밀한 제구로 ERA 2.93을 기록했습니다.</p>
+<p><strong>활용</strong>: Stuff+가 높은데 성적이 나쁜 투수는 제구(Location+) 개선만으로 큰 성적 향상이 가능합니다. 반대로 Location+가 높지만 Stuff+가 낮은 투수는 노화에 따른 구속 저하에 취약할 수 있습니다.</p>
+<h3 id="csw-called-strike--whiff-">CSW% (Called Strike + Whiff %)<a href="#csw-called-strike--whiff-" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>투구가 헛스윙(Whiff) 또는 보고 스트라이크(Called Strike)가 된 비율입니다.</p>
+<pre tabindex="0"><code>CSW% = (Called Strikes + Whiffs) / 총 투구 수
+</code></pre><p><strong>기준선</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>CSW%</th>
+          <th>평가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>32% 이상</td>
+          <td>엘리트</td>
+      </tr>
+      <tr>
+          <td>29~32%</td>
+          <td>우수</td>
+      </tr>
+      <tr>
+          <td>27~29%</td>
+          <td>평균</td>
+      </tr>
+      <tr>
+          <td>27% 미만</td>
+          <td>부진</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>의미</strong>: 투수가 타자를 얼마나 효과적으로 압도하는지를 보여줍니다. 높은 CSW%는 높은 삼진율과 강한 상관관계가 있습니다. 코빈 번스의 2021시즌은 CSW% 35.4%로, 투구 3개 중 1개 이상이 헛스윙이거나 보고 스트라이크였습니다.</p>
+<h3 id="hard-hit--barrel">Hard Hit% / Barrel%<a href="#hard-hit--barrel" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>Hard Hit%</strong>: 타구 속도(Exit Velocity)가 95mph 이상인 타구의 비율</li>
+<li><strong>Barrel%</strong>: 이상적인 타구 속도와 발사각의 조합(&ldquo;배럴&rdquo;)이 된 타구의 비율</li>
+</ul>
+<p><strong>Statcast 지표로 본 엘리트 투수들 (2021시즌)</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>투수</th>
+          <th>Hard Hit%</th>
+          <th>Barrel%</th>
+          <th>ERA</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>코빈 번스</td>
+          <td>24.5%</td>
+          <td>3.1%</td>
+          <td>2.43</td>
+      </tr>
+      <tr>
+          <td>맥스 슈어저</td>
+          <td>29.5%</td>
+          <td>4.8%</td>
+          <td>2.46</td>
+      </tr>
+      <tr>
+          <td>리그 평균</td>
+          <td>38.6%</td>
+          <td>7.6%</td>
+          <td>4.26</td>
+      </tr>
+  </tbody>
+</table>
+<p>번스는 2021시즌 Hard Hit%와 Barrel% 모두 리그 최저 수준을 기록하며, 타자들이 그의 공을 제대로 때리지 못했음을 보여줍니다. 이 지표들은 ERA나 BABIP에 비해 더 빠르게 투수의 실제 피타 능력을 포착합니다.</p>
+<hr>
+<h2 id="전통-지표-vs-세이버메트릭스-지표-비교-요약">전통 지표 vs 세이버메트릭스 지표: 비교 요약<a href="#전통-지표-vs-세이버메트릭스-지표-비교-요약" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>측면</th>
+          <th>전통 지표</th>
+          <th>세이버메트릭스 지표</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>대표 지표</td>
+          <td>ERA, W-L, WHIP</td>
+          <td>FIP, xFIP, SIERA</td>
+      </tr>
+      <tr>
+          <td>수비 영향</td>
+          <td>포함됨</td>
+          <td>제거됨</td>
+      </tr>
+      <tr>
+          <td>운의 영향</td>
+          <td>포함됨</td>
+          <td>최소화됨</td>
+      </tr>
+      <tr>
+          <td>직관성</td>
+          <td>높음</td>
+          <td>낮음 (학습 필요)</td>
+      </tr>
+      <tr>
+          <td>예측력</td>
+          <td>낮음</td>
+          <td>높음</td>
+      </tr>
+      <tr>
+          <td>표본 크기 민감도</td>
+          <td>낮음</td>
+          <td>높음 (소표본에서 변동 큼)</td>
+      </tr>
+      <tr>
+          <td>최적 용도</td>
+          <td>결과 기술</td>
+          <td>능력 평가 및 예측</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 글에서는 투수 평가에 사용되는 주요 지표들을 전통 지표, 세이버메트릭스 지표, 그리고 Statcast 기반 차세대 지표로 나누어 살펴보았습니다. 각 지표는 고유한 강점과 한계를 가지고 있으며, 어떤 단일 지표도 투수의 능력을 완벽하게 설명하지 못합니다.</p>
+<p>Part 2에서는 이러한 지표들을 실제로 어떻게 조합하여 투수의 스타일을 분류하고, 미래 성적을 예측하는지 실제 MLB 투수들의 연도별 데이터를 비교하며 다루겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://library.fangraphs.com/pitching/">FanGraphs Pitching Statistics Guide</a></li>
+<li><a href="https://baseballsavant.mlb.com/">Baseball Savant (MLB Statcast)</a></li>
+<li><a href="https://library.fangraphs.com/pitching/fip/">FanGraphs: What is FIP?</a></li>
+<li><a href="https://library.fangraphs.com/pitching/siera/">FanGraphs: SIERA</a></li>
+<li><a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching/">Stuff+ Model Explanation</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260402-baseball-pitcher-metrics-02/" class="button inline prev">
+        &lt; [<span class="button__text">투수 지표 가이드 Part 2: 투수 스타일 분석과 미래 성적 예측</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260401-flutter-todo-app-guide-04/" class="button inline next">
+         [<span class="button__text">크로스플랫폼 To-Do 앱 만들기 Part 4: UI 다듬기와 빌드/배포</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
