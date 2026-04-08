@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>번역글: AI와 함께 더 빨리 실패하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pragmatic Programmers의 Dave Thomas가 AI를 활용한 개발의 함정을 이야기합니다. 기능 추가의 쾌감에 빠져 코드 위생을 잊었을 때, 18개월 걸릴 부패가 18시간 만에 찾아온다는 교훈." />
+<meta name="keywords" content="programming, AI, essay, translation, refactoring" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260408-failing-faster-with-ai-translation/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="번역글: AI와 함께 더 빨리 실패하기">
+<meta property="og:description" content="Pragmatic Programmers의 Dave Thomas가 AI를 활용한 개발의 함정을 이야기합니다. 기능 추가의 쾌감에 빠져 코드 위생을 잊었을 때, 18개월 걸릴 부패가 18시간 만에 찾아온다는 교훈." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260408-failing-faster-with-ai-translation/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-08 14:39:54 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260408-failing-faster-with-ai-translation/">번역글: AI와 함께 더 빨리 실패하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-08</time><span class="post-author">Dave Thomas</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/essay/">essay</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/translation/">translation</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/refactoring/">refactoring</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 번역되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<p><em>원문: Dave Thomas, Pragmatic Programmers Newsletter — &ldquo;Failing Faster With AI&rdquo;</em></p>
+<hr>
+<blockquote>
+<p>&ldquo;모든 거대한 컴퓨팅 재앙은 너무 많은 아이디어를 한곳에 집어넣으려다 생겨났습니다.&rdquo;</p>
+<p>— Gordon Bell</p>
+</blockquote>
+<p>지난 8년쯤 개인 프로젝트를 하나 진행해 왔습니다. 1970년대 중반의 오래된 PIC 언어를 구현하는 것으로 시작했습니다. 셀 수 없이 많은 반복을 거쳤는데, 순수한 PIC 언어로 출발해서 오늘날에는 프로토타입 기반 스크립팅 언어와 애니메이션 기능을 내장한 형태가 되었습니다.</p>
+<p>저는 항상 직접 손으로 코드를 작성해 왔습니다. 처음에는 그게 프로그래밍하는 방법이었기 때문이고, 최근에는 이런 개인 프로젝트야말로 직접 만지는 정성이 필요하다고 느꼈기 때문입니다.</p>
+<p>그런데 몇 주 전, 한 변형에서는 언어 기능을, 다른 변형에서는 애니메이션 아이디어를 가져와 합치고 싶어졌고, Claude에게 계획을 세워달라고 부탁해 보았습니다. Claude가 딱 맞는 답을 내놓았습니다. 한 시간 만에 모든 테스트가 통과했고, 저는 미친 듯이 애니메이션을 스크립팅하고 있었습니다.</p>
+<p>그래서 유혹에 굴복했습니다. 이봐 Claude, oklch 색상 지원을 추가해줄 수 있어? SVG 대시 길이 트릭을 이용한 선 애니메이션을 구현해줄래? 그렇게 기능 위에 기능이 쌓여갔습니다.</p>
+<p>superpowers 스킬을 사용하고 있었는데, 프로젝트 규율을 유지하는 데 꽤 괜찮은 역할을 하는 것 같았습니다. 일주일 동안은 새로운 기능이 쏟아져 나오는 속도에 취해 있었습니다.</p>
+<h2 id="부패의-시작">부패의 시작<a href="#부패의-시작" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>둘째 주에 접어들자, 기능 추가에 점점 더 오래 걸리기 시작했습니다. 변경 사항이 회귀 버그를 일으키고, A가 B를 깨뜨리고 B가 다시 A를 깨뜨리는 루프에 빠지기도 했습니다. 상황이 걷잡을 수 없어지는 느낌이었습니다.</p>
+<p>저는 그냥 쏘고 잊어버리는 식의 바이브 코딩을 한 게 아닙니다. 변경 사항을 검토하고 방향을 잡아가면서 진행했습니다. 그런데도 코드가 제가 허용했어야 할 수준보다 더 지저분해지고 말았습니다. 기능 추가를 멈추고 리팩터링을 시작할 때가 된 것입니다.</p>
+<h2 id="새로운-것은-오래된-것">새로운 것은 오래된 것<a href="#새로운-것은-오래된-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>코드를 읽어보니 온갖 끔찍한 것들이 눈에 들어왔습니다. 대량의 중복. 전역 문제에 대한 국소적 수정. 지나치게 많은 조건문. 그리고 특수 케이스. 수많은 특수 케이스.</p>
+<p>문득 깨달은 것이 있었습니다. 수년간 이런 모습의 코드를 자주 만나왔습니다. 컨설팅을 할 때면 거의 모든 코드베이스가 이런 상태였습니다. 팀들은 어김없이 &ldquo;재작성&quot;을 이야기했습니다.</p>
+<p>하지만 예전에는 그 지경에 이르기까지 18개월, 혹은 그 이상이 걸렸습니다.</p>
+<p>AI와 함께라면, 5일 저녁 동안 총 18시간이면 충분했습니다.</p>
+<p>이것이야말로 진보입니다.</p>
+<h2 id="여전히-프로그래밍일-뿐">여전히 프로그래밍일 뿐<a href="#여전히-프로그래밍일-뿐" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>코드를 깨끗하게 유지하려면 규율이 필요합니다. 기능과 위생 사이에서 균형을 잡아야 합니다. 코드는 자연스럽게 퇴화합니다. 그것을 막으려면 의식적인 노력을 기울여야 합니다.</p>
+<p>그런데 LLM 뒤의 프롬프트는 그런 지루한 일에 초점을 맞추지 않습니다. 대신 여러분의 참여와 만족을 유지하도록 설계되어 있습니다. &ldquo;멋진 아이디어네요, Dave!&rdquo;</p>
+<p>AI는 해결책을 제시하기 좋아합니다. 사소한 성공 하나하나에 &ldquo;이제 X를 구현해볼까요?&rdquo; 라고 덧붙입니다. 그런 면에서 AI는 강아지 같은 주니어 개발자와 비슷합니다. 기꺼이 일하려고 하지만, 주변을 꽤 어질러놓습니다.</p>
+<p>기능 추가의 엔도르핀에 취한 저는, 개발에 대해 알고 있던 것들을 잊어버렸습니다. 어쩌면 제 무의식은 그런 것들을 한 1년쯤은 생각하지 않아도 될 거라고 속삭이고 있었는지도 모릅니다.</p>
+<p>그렇다면 착각이었습니다. 18시간이 걸리든 18개월이 걸리든, 여전히 프로그래밍일 뿐입니다.</p>
+<p>즐기세요&hellip;</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260408-yoon-il-sang-hitmaker/" class="button inline next">
+         [<span class="button__text">히트곡 제조기, 작곡가 윤일상</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
