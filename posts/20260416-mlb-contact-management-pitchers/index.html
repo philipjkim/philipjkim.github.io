@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>맞춰잡는 투수의 미학: 현대 MLB 최고의 효율형 선발투수 3인 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="삼진 일변도의 현대 야구에서 오히려 효율적인 투구로 긴 이닝을 책임지는 &#39;맞춰잡는&#39; 유형의 투수들이 있습니다. 최근 5년(2021~2025) 데이터를 기반으로 조지 커비, 로건 웹, 프람버 발데스 세 투수의 피칭 스타일을 심층 분석합니다." />
+<meta name="keywords" content="mlb, baseball, research, sports" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260416-mlb-contact-management-pitchers/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="맞춰잡는 투수의 미학: 현대 MLB 최고의 효율형 선발투수 3인">
+<meta property="og:description" content="삼진 일변도의 현대 야구에서 오히려 효율적인 투구로 긴 이닝을 책임지는 &#39;맞춰잡는&#39; 유형의 투수들이 있습니다. 최근 5년(2021~2025) 데이터를 기반으로 조지 커비, 로건 웹, 프람버 발데스 세 투수의 피칭 스타일을 심층 분석합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260416-mlb-contact-management-pitchers/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-16 14:24:26 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260416-mlb-contact-management-pitchers/">맞춰잡는 투수의 미학: 현대 MLB 최고의 효율형 선발투수 3인</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-16</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/mlb/">mlb</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/baseball/">baseball</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/research/">research</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/sports/">sports</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="1-맞춰잡는-투수란-무엇인가">1. &lsquo;맞춰잡는 투수&rsquo;란 무엇인가<a href="#1-맞춰잡는-투수란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>현대 메이저리그는 삼진의 시대입니다. 160km를 넘나드는 포심 패스트볼과 날카로운 스위퍼로 타자의 방망이를 공중에 멈추게 하는 것이 대세가 된 지 오래입니다. 하지만 그 흐름 속에서 조금 다른 방식으로 승리를 쌓아가는 투수들이 있습니다. 바로 <strong>&lsquo;맞춰잡는(Contact Management)&rsquo; 유형의 선발투수</strong> 입니다.</p>
+<p>이 유형의 투수들은 삼진보다 <strong>범타(Weak Contact)</strong> 유도를 핵심 무기로 삼습니다. 타자의 배트에 공을 맞추되, 정타를 허용하지 않는 것이 철학입니다. 그 결과물은 명확합니다:</p>
+<ul>
+<li><strong>적은 투구수:</strong> 삼진을 잡으려면 최소 3구, 많으면 6~7구가 필요하지만, 범타나 땅볼은 1~2구 만에 아웃카운트를 만들 수 있습니다.</li>
+<li><strong>많은 이닝 소화:</strong> 투구수가 적으니 자연스럽게 6~7이닝을 넘겨 8이닝 이상까지 던질 수 있습니다. 이는 불펜 부담을 크게 줄여줍니다.</li>
+<li><strong>적은 볼넷:</strong> 맞춰잡는 투수들은 대체로 뛰어난 제구력을 갖추고 있습니다. 스트라이크 존을 적극적으로 공략하기 때문에 무의미한 볼넷으로 주자를 내보내는 일이 드뭅니다.</li>
+</ul>
+<h3 id="왜-이런-투수가-가치-있는가">왜 이런 투수가 가치 있는가<a href="#왜-이런-투수가-가치-있는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>야구 경기에서 선발투수가 긴 이닝을 책임지면 팀 전체에 미치는 긍정적 효과는 상당합니다. 불펜 투수들의 피로도를 관리할 수 있고, 특히 162경기라는 긴 정규시즌에서 불펜 자원의 보존은 시즌 후반 경쟁력을 좌우하는 핵심 요소입니다. 또한 투구수가 적다는 것은 투수의 어깨와 팔꿈치에 가해지는 누적 부하가 줄어든다는 의미이므로, 부상 위험도 상대적으로 낮습니다.</p>
+<h3 id="상대적-단점">상대적 단점<a href="#상대적-단점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>물론 장점만 있는 것은 아닙니다. 맞춰잡는 투수의 가장 큰 약점은 <strong>수비 의존도</strong>입니다. 삼진은 수비와 무관하게 아웃카운트를 만들지만, 범타와 땅볼은 야수들이 잘 처리해줘야만 아웃이 됩니다. 내야 수비가 불안한 팀에서는 이 유형의 투수가 제 실력을 발휘하기 어렵습니다.</p>
+<p>또한 타자가 때리도록 유도하는 피칭은 본질적으로 <strong>홈런 위험</strong> 을 안고 있습니다. 아무리 빗맞은 타구를 만들어도 확률적으로 정타가 나오는 순간이 있고, 그것이 홈런으로 이어지면 한 방에 경기 흐름이 바뀔 수 있습니다. 삼진 위주의 파워 피처 대비, 한 번의 실수에 대한 대가가 더 클 수 있는 것입니다.</p>
+<p>마지막으로, 포스트시즌처럼 상대 타선의 집중력이 극도로 높아지는 무대에서는 범타 유도 전략이 정규시즌만큼 효과적이지 않을 수 있다는 점도 고려해야 합니다.</p>
+<p>그럼에도 불구하고, 아래에서 소개할 세 투수는 이러한 한계를 자신만의 방식으로 극복하며 최근 5년간 MLB에서 독보적인 효율성을 보여주고 있습니다.</p>
+<hr>
+<h2 id="2-조지-커비-george-kirby--제구의-극치">2. 조지 커비 (George Kirby) — 제구의 극치<a href="#2-조지-커비-george-kirby--제구의-극치" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>시애틀 매리너스 | 우투 | 2022~현재</strong></p>
+<p>조지 커비는 이 카테고리에서 가장 순수한 형태의 &lsquo;맞춰잡는 투수&rsquo;입니다. 과거 그레그 매덕스가 보여줬던 칼같은 제구력을 현대적 구속과 결합한 완성형 투수라고 할 수 있습니다.</p>
+<h3 id="시즌별-주요-성적">시즌별 주요 성적<a href="#시즌별-주요-성적" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">시즌</th>
+          <th style="text-align: left">승-패</th>
+          <th style="text-align: left">ERA</th>
+          <th style="text-align: left">이닝</th>
+          <th style="text-align: left">볼넷</th>
+          <th style="text-align: left">삼진</th>
+          <th style="text-align: left">WHIP</th>
+          <th style="text-align: left">BB/9</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">2022</td>
+          <td style="text-align: left">8-5</td>
+          <td style="text-align: left">3.39</td>
+          <td style="text-align: left">130.0</td>
+          <td style="text-align: left">22</td>
+          <td style="text-align: left">133</td>
+          <td style="text-align: left">1.21</td>
+          <td style="text-align: left">1.52</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2023</td>
+          <td style="text-align: left">13-10</td>
+          <td style="text-align: left">3.35</td>
+          <td style="text-align: left">190.2</td>
+          <td style="text-align: left"><strong>19</strong></td>
+          <td style="text-align: left">172</td>
+          <td style="text-align: left">1.04</td>
+          <td style="text-align: left"><strong>0.90</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2024</td>
+          <td style="text-align: left">14-11</td>
+          <td style="text-align: left">3.53</td>
+          <td style="text-align: left">191.0</td>
+          <td style="text-align: left">23</td>
+          <td style="text-align: left">179</td>
+          <td style="text-align: left">1.07</td>
+          <td style="text-align: left">1.08</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2025</td>
+          <td style="text-align: left">10-8</td>
+          <td style="text-align: left">4.21</td>
+          <td style="text-align: left">126.0</td>
+          <td style="text-align: left">29</td>
+          <td style="text-align: left">137</td>
+          <td style="text-align: left">1.19</td>
+          <td style="text-align: left">2.07</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="무엇이-특별한가">무엇이 특별한가<a href="#무엇이-특별한가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>커비의 2023시즌 BB/9 <strong>0.90</strong> 은 경이로운 숫자입니다. 190이닝 이상을 던지면서 고작 19개의 볼넷만 허용했다는 것은, 9이닝 동안 평균 한 명의 타자도 공짜로 내보내지 않았다는 뜻입니다. 이는 현대 야구에서 거의 보기 힘든 수준의 제구력입니다.</p>
+<p>커비의 피칭 철학은 단순하면서도 명확합니다. &ldquo;볼넷을 줄 바에는 차라리 맞게 하겠다.&rdquo; 그는 불리한 카운트에서도 스트라이크 존 안으로 승부하며, 타자가 &ldquo;공격을 해야만 하는&rdquo; 상황을 강제합니다. 96mph대의 포심 패스트볼을 원하는 코너에 꽂아넣고, 슬라이더와 스플리터를 모두 스트라이크 존 경계에 걸치게 던질 수 있는 능력은 그가 이 리그에서 유일무이한 제구 머신으로 불리는 이유입니다.</p>
+<p>그 결과는 투구수의 효율성으로 직결됩니다. 2023~2024시즌 커비는 8이닝 이상을 90구대로 막아내는 경기를 여러 차례 기록했습니다. WHIP 1.04(2023) 역시 리그 최상위권으로, 이닝당 허용하는 주자의 수 자체가 극도로 적습니다.</p>
+<h3 id="주의할-점">주의할 점<a href="#주의할-점" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2025시즌은 개막 전 어깨 염증으로 부상자 명단에 오르며 126이닝에 그쳤고, BB/9도 2.07로 상승했습니다. 건강이 뒷받침되어야 진가를 발휘하는 투수라는 점은 유의해야 합니다. 다만 커리어 전체를 놓고 보면 637이닝 동안 총 93볼넷, 커리어 BB/9 약 <strong>1.31</strong> 은 동시대 선발투수 중 독보적인 수치입니다.</p>
+<hr>
+<h2 id="3-로건-웹-logan-webb--이닝을-먹는-철인">3. 로건 웹 (Logan Webb) — 이닝을 먹는 철인<a href="#3-로건-웹-logan-webb--이닝을-먹는-철인" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>샌프란시스코 자이언츠 | 우투 | 2019~현재</strong></p>
+<p>로건 웹은 &lsquo;이닝 이터(Innings Eater)&lsquo;라는 표현이 가장 잘 어울리는 투수입니다. 화려한 삼진쇼보다는 효율적인 땅볼과 범타를 양산하며 묵묵히 이닝을 쌓아가는, 팀에 가장 필요한 유형의 에이스입니다.</p>
+<h3 id="시즌별-주요-성적-1">시즌별 주요 성적<a href="#시즌별-주요-성적-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">시즌</th>
+          <th style="text-align: left">승-패</th>
+          <th style="text-align: left">ERA</th>
+          <th style="text-align: left">이닝</th>
+          <th style="text-align: left">볼넷</th>
+          <th style="text-align: left">삼진</th>
+          <th style="text-align: left">WHIP</th>
+          <th style="text-align: left">BB/9</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">2021</td>
+          <td style="text-align: left">11-3</td>
+          <td style="text-align: left">3.03</td>
+          <td style="text-align: left">148.1</td>
+          <td style="text-align: left">36</td>
+          <td style="text-align: left">158</td>
+          <td style="text-align: left">1.11</td>
+          <td style="text-align: left">2.18</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2022</td>
+          <td style="text-align: left">15-9</td>
+          <td style="text-align: left">2.90</td>
+          <td style="text-align: left">192.1</td>
+          <td style="text-align: left">49</td>
+          <td style="text-align: left">163</td>
+          <td style="text-align: left">1.16</td>
+          <td style="text-align: left">2.29</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2023</td>
+          <td style="text-align: left">11-13</td>
+          <td style="text-align: left">3.25</td>
+          <td style="text-align: left"><strong>216.0</strong></td>
+          <td style="text-align: left"><strong>31</strong></td>
+          <td style="text-align: left">194</td>
+          <td style="text-align: left"><strong>1.07</strong></td>
+          <td style="text-align: left"><strong>1.29</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2024</td>
+          <td style="text-align: left">13-10</td>
+          <td style="text-align: left">3.47</td>
+          <td style="text-align: left">204.2</td>
+          <td style="text-align: left">50</td>
+          <td style="text-align: left">172</td>
+          <td style="text-align: left">1.23</td>
+          <td style="text-align: left">2.20</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2025</td>
+          <td style="text-align: left">15-11</td>
+          <td style="text-align: left">3.22</td>
+          <td style="text-align: left">207.0</td>
+          <td style="text-align: left">46</td>
+          <td style="text-align: left">224</td>
+          <td style="text-align: left">1.24</td>
+          <td style="text-align: left">2.00</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="무엇이-특별한가-1">무엇이 특별한가<a href="#무엇이-특별한가-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2023~2025시즌 <strong>3년 연속 200이닝 이상</strong> 을 소화한 투수는 MLB 전체에서 웹이 유일합니다. 이것만으로도 그가 얼마나 뛰어난 내구성과 효율성을 갖췄는지 알 수 있습니다. 5년간 누적 <strong>968이닝</strong> 은 같은 기간 MLB 선발투수 중 최상위권에 해당합니다.</p>
+<p>웹의 핵심 무기는 <strong>싱커(Sinker)</strong> 입니다. 포심 패스트볼을 거의 던지지 않고, 싱커와 체인지업, 슬라이더를 중심으로 타자의 배트 아랫부분에 맞추는 피칭을 합니다. 2023시즌 <strong>62.1%</strong> 의 땅볼 비율은 양대 리그 선발투수 중 1위였으며, 2025시즌에도 약 53~57%대의 높은 땅볼 비율을 유지했습니다.</p>
+<p>특히 2023시즌은 웹의 커리어 하이라 할 수 있습니다. 216이닝을 던지면서 볼넷은 고작 31개(BB/9 1.29), WHIP 1.07을 기록하며 NL 사이영상 투표 2위에 오르는 퍼포먼스를 보여줬습니다.</p>
+<h3 id="주의할-점-1">주의할 점<a href="#주의할-점-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>웹은 삼진 비율이 상대적으로 낮은 투수입니다. K/9(9이닝당 삼진)이 7~8대에 머무는 시즌이 많았고(2025시즌 9.7로 크게 상승하긴 했습니다), 이는 앞서 언급한 것처럼 수비 의존도가 높다는 것을 의미합니다. 또한 땅볼 유도형 투수이기 때문에 마운드와 홈플레이트 사이의 짧은 거리에서 발생하는 강한 라인드라이브에 취약할 수 있습니다.</p>
+<hr>
+<h2 id="4-프람버-발데스-framber-valdez--중력의-지배자">4. 프람버 발데스 (Framber Valdez) — 중력의 지배자<a href="#4-프람버-발데스-framber-valdez--중력의-지배자" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>휴스턴 애스트로스(2018~2025) → 디트로이트 타이거스(2026~) | 좌투 | 2018~현재</strong></p>
+<p>프람버 발데스는 앞의 두 투수와 같은 &lsquo;맞춰잡는&rsquo; 카테고리에 속하면서도 가장 독특한 스타일을 가진 투수입니다. 그의 무기는 <strong>역사적 수준의 땅볼 비율</strong> 입니다.</p>
+<h3 id="시즌별-주요-성적-2">시즌별 주요 성적<a href="#시즌별-주요-성적-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">시즌</th>
+          <th style="text-align: left">승-패</th>
+          <th style="text-align: left">ERA</th>
+          <th style="text-align: left">이닝</th>
+          <th style="text-align: left">볼넷</th>
+          <th style="text-align: left">삼진</th>
+          <th style="text-align: left">WHIP</th>
+          <th style="text-align: left">BB/9</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">2021</td>
+          <td style="text-align: left">11-6</td>
+          <td style="text-align: left">3.14</td>
+          <td style="text-align: left">134.2</td>
+          <td style="text-align: left">58</td>
+          <td style="text-align: left">125</td>
+          <td style="text-align: left">1.25</td>
+          <td style="text-align: left">3.88</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2022</td>
+          <td style="text-align: left">17-6</td>
+          <td style="text-align: left"><strong>2.82</strong></td>
+          <td style="text-align: left"><strong>201.1</strong></td>
+          <td style="text-align: left">67</td>
+          <td style="text-align: left">194</td>
+          <td style="text-align: left">1.16</td>
+          <td style="text-align: left">2.99</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2023</td>
+          <td style="text-align: left">12-11</td>
+          <td style="text-align: left">3.45</td>
+          <td style="text-align: left">198.0</td>
+          <td style="text-align: left">57</td>
+          <td style="text-align: left">200</td>
+          <td style="text-align: left">1.13</td>
+          <td style="text-align: left">2.59</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2024</td>
+          <td style="text-align: left">15-7</td>
+          <td style="text-align: left">2.91</td>
+          <td style="text-align: left">176.1</td>
+          <td style="text-align: left">55</td>
+          <td style="text-align: left">169</td>
+          <td style="text-align: left"><strong>1.11</strong></td>
+          <td style="text-align: left">2.81</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2025</td>
+          <td style="text-align: left">13-11</td>
+          <td style="text-align: left">3.66</td>
+          <td style="text-align: left">192.0</td>
+          <td style="text-align: left">68</td>
+          <td style="text-align: left">187</td>
+          <td style="text-align: left">1.24</td>
+          <td style="text-align: left">3.19</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="무엇이-특별한가-2">무엇이 특별한가<a href="#무엇이-특별한가-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>발데스의 진가는 위 표의 숫자만으로는 온전히 드러나지 않습니다. 그의 핵심 지표는 <strong>땅볼 비율(Ground Ball Rate)</strong> 입니다:</p>
+<ul>
+<li>2021년: <strong>70.3%</strong> (MLB 전체 1위)</li>
+<li>2022년: <strong>66.3%</strong> (1988년 이래 최고 커리어 땅볼 비율 기록)</li>
+<li>2023년: <strong>61.8%</strong> (양대 리그 규정이닝 투수 중 1위)</li>
+<li>2024년: <strong>60.6%</strong></li>
+<li>2025년: <strong>72.9%</strong></li>
+</ul>
+<p>70%대 땅볼 비율이란, 인플레이 타구 10개 중 7개 이상이 땅볼이라는 뜻입니다. 이 정도 수치는 현대 야구에서는 거의 찾아볼 수 없는 역사적 수준입니다. 발데스의 싱커와 커브볼은 홈플레이트 근처에서 급격하게 아래로 떨어지며, 타자들은 배트의 윗부분으로 공을 맞출 수밖에 없습니다.</p>
+<p>이 폭발적인 땅볼 능력은 <strong>완투</strong> 라는 현대 야구에서 거의 멸종된 기록과도 연결됩니다. 발데스는 2020년대 들어 가장 많은 완투를 기록한 투수 중 한 명입니다(2022년 3완투, 2025년 1완투 등). 땅볼은 짧은 투구수로 아웃카운트를 만들 뿐 아니라, 병살타로 한 번에 두 개의 아웃을 잡을 수 있어 경기 후반까지 체력과 투구수를 아낄 수 있게 해줍니다.</p>
+<p>2022시즌은 발데스의 커리어 하이이자, 팀(휴스턴 애스트로스)의 월드시리즈 우승 시즌이기도 합니다. 그는 201이닝을 던지며 17승을 올렸고, <strong>25경기 연속 퀄리티 스타트</strong>라는 MLB 신기록을 세웠습니다. 월드시리즈에서도 2승을 거두며 우승의 주역이 되었습니다. 2023년 8월에는 클리블랜드 가디언즈를 상대로 <strong>노히트노런</strong> 을 달성하기도 했습니다.</p>
+<h3 id="주의할-점-2">주의할 점<a href="#주의할-점-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>솔직히 말해, 발데스는 &lsquo;볼넷이 적은&rsquo; 투수는 아닙니다. BB/9가 2.5~3.9 사이를 오가며, 커비나 웹에 비하면 볼넷 허용이 확실히 많습니다. 그가 이 글에 포함된 이유는 <strong>땅볼을 통한 효율적 이닝 소화</strong> 라는 다른 차원의 효율성 때문입니다. 볼넷이 다소 있더라도, 땅볼과 병살타로 위기를 빠르게 수습하고 이닝을 이어가는 능력은 결과적으로 긴 이닝 소화와 낮은 ERA로 이어집니다. 5년간 누적 <strong>902이닝</strong>, 커리어 ERA <strong>3.37</strong> 이 이를 증명합니다.</p>
+<hr>
+<h2 id="5-세-투수-비교-요약">5. 세 투수 비교 요약<a href="#5-세-투수-비교-요약" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">비교 항목</th>
+          <th style="text-align: left"><strong>조지 커비</strong></th>
+          <th style="text-align: left"><strong>로건 웹</strong></th>
+          <th style="text-align: left"><strong>프람버 발데스</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>핵심 키워드</strong></td>
+          <td style="text-align: left">칼제구, 무볼넷</td>
+          <td style="text-align: left">이닝 이터, 안정감</td>
+          <td style="text-align: left">중력 싱커, 완투형</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>주무기</strong></td>
+          <td style="text-align: left">포심(96mph), 슬라이더</td>
+          <td style="text-align: left">싱커, 체인지업</td>
+          <td style="text-align: left">싱커, 파워 커브</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>5년 누적 이닝</strong></td>
+          <td style="text-align: left">637.2 IP</td>
+          <td style="text-align: left">968.1 IP</td>
+          <td style="text-align: left">902.1 IP</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>5년 평균 BB/9</strong></td>
+          <td style="text-align: left">~1.31</td>
+          <td style="text-align: left">~2.00</td>
+          <td style="text-align: left">~3.05</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>최고 시즌 WHIP</strong></td>
+          <td style="text-align: left">1.04 (2023)</td>
+          <td style="text-align: left">1.07 (2023)</td>
+          <td style="text-align: left">1.11 (2024)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>차별화 포인트</strong></td>
+          <td style="text-align: left">투구수 관리 끝판왕</td>
+          <td style="text-align: left">압도적 이닝 소화력</td>
+          <td style="text-align: left">역사적 땅볼 비율</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>약점</strong></td>
+          <td style="text-align: left">부상 시 효율 급감</td>
+          <td style="text-align: left">낮은 삼진율</td>
+          <td style="text-align: left">높은 볼넷 허용</td>
+      </tr>
+  </tbody>
+</table>
+<p>커비가 투구수 최소화의 극단을, 웹이 안정적인 장이닝 소화의 극단을, 발데스가 땅볼을 통한 경기 지배의 극단을 각각 대표한다고 볼 수 있습니다.</p>
+<hr>
+<h2 id="6-마치며">6. 마치며<a href="#6-마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>현대 야구에서 선발투수의 평균 이닝이 5이닝대로 줄어들고, 불펜 데이(Bullpen Day)가 일상이 된 시대에 이 세 투수는 다른 흐름을 보여줍니다. 삼진이 아닌 효율로, 강속구가 아닌 제구와 무브먼트로 이닝을 쌓아가는 이들의 피칭은 야구의 또 다른 미학입니다.</p>
+<p>특히 팬의 시각에서 보면, 삼진 투수의 경기가 한 타자 한 타자마다 긴장감이 있다면, 맞춰잡는 투수의 경기는 <strong>리듬감</strong> 이 있습니다. 척척 아웃카운트가 쌓이고, 어느새 7회, 8회가 지나가는 템포 빠른 경기를 즐길 수 있습니다. 커비, 웹, 발데스의 경기를 직접 보시면 그 매력을 바로 느끼실 수 있을 것입니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://www.baseball-reference.com/players/k/kirbyge01.shtml">George Kirby - Baseball Reference</a></li>
+<li><a href="https://www.baseball-reference.com/players/w/webblo01.shtml">Logan Webb - Baseball Reference</a></li>
+<li><a href="https://www.baseball-reference.com/players/v/valdefr01.shtml">Framber Valdez - Baseball Reference</a></li>
+<li><a href="https://www.fangraphs.com/players/george-kirby/25436/stats/pitching">George Kirby - FanGraphs</a></li>
+<li><a href="https://www.fangraphs.com/players/logan-webb/17995/stats/pitching">Logan Webb - FanGraphs</a></li>
+<li><a href="https://www.fangraphs.com/players/framber-valdez/17295/stats/pitching">Framber Valdez - FanGraphs</a></li>
+<li><a href="https://blogs.fangraphs.com/framber-valdez-finally-knows-where-his-pitches-are-going/">Framber Valdez Finally Knows Where His Pitches Are Going - FanGraphs</a></li>
+<li><a href="https://blogs.fangraphs.com/logan-webb-talks-pitching/">Logan Webb Talks Pitching - FanGraphs</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260415-betting-game-design-guide/" class="button inline next">
+         [<span class="button__text">유저가 픽하는 게임의 밸런스 설계 가이드: 파리뮤추얼부터 AMM까지</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
