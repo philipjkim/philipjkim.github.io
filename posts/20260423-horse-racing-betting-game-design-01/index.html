@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>경마식 베팅 게임 설계 가이드 Part 1: 유래, 파리뮤추얼 구조, 승식 종류 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="경마식 베팅(파리뮤추얼)의 역사적 기원과 구조적 특징을 살펴보고, 단승식부터 삼쌍승식까지 승식(Bet Type) 체계를 정리합니다. 게임/서비스에 경마식 베팅을 도입하려는 기획자와 개발자를 위한 심화 가이드의 첫 편입니다." />
+<meta name="keywords" content="game-design, game-theory, math, strategy, research" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="경마식 베팅 게임 설계 가이드 Part 1: 유래, 파리뮤추얼 구조, 승식 종류">
+<meta property="og:description" content="경마식 베팅(파리뮤추얼)의 역사적 기원과 구조적 특징을 살펴보고, 단승식부터 삼쌍승식까지 승식(Bet Type) 체계를 정리합니다. 게임/서비스에 경마식 베팅을 도입하려는 기획자와 개발자를 위한 심화 가이드의 첫 편입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-23 10:14:36 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-01/">경마식 베팅 게임 설계 가이드 Part 1: 유래, 파리뮤추얼 구조, 승식 종류</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game-design/">game-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-theory/">game-theory</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/math/">math</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/research/">research</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이전 글 <a href="/posts/20260415-betting-game-design-guide/">유저가 픽하는 게임의 밸런스 설계 가이드: 파리뮤추얼부터 AMM까지</a> 에서는 픽 게임에서 활용할 수 있는 여섯 가지 배당 메커니즘을 훑어봤습니다. 그 중 <strong>파리뮤추얼(pari-mutuel)</strong> 은 한 줄로 요약하면 &ldquo;운영자가 몫을 떼고 남은 돈을 승자끼리 나눠 갖는 방식&rdquo; 입니다. 실제 현장에서 가장 오래 검증된 이 구조는 경마·경륜·경정 같은 공영 베팅의 근간이기도 합니다.</p>
+<p>그런데 현업에서 &ldquo;경마식 베팅을 우리 서비스에 넣자&rdquo; 는 요구가 들어오면, 단순히 &ldquo;파리뮤추얼로 계산하면 됩니다&rdquo; 만으로는 구현에 들어갈 수 없습니다. 단승·복승·쌍승·삼쌍승 같은 <strong>승식(Bet Type)</strong> 마다 풀과 계산식이 다르고, 승식별로 베터가 기대하는 배당 수준과 난이도가 천차만별이기 때문입니다.</p>
+<p>이 글은 두 편으로 나뉘는 가이드의 첫 편입니다.</p>
+<ul>
+<li><strong>Part 1 (이번 편)</strong>: 경마식 베팅의 유래, 파리뮤추얼의 구조적 특징, 주요 승식 종류</li>
+<li><strong>Part 2</strong>: 경마식 베팅을 도입할 때의 시스템 설계 고려사항, 초기 유동성 확보를 위한 봇 유저 시뮬레이션</li>
+</ul>
+<p>Part 1 은 &ldquo;왜 이렇게 생겼는가&rdquo; 와 &ldquo;어떤 종류가 있는가&rdquo; 에 초점을 맞춥니다. 설계보다는 개념 정리에 가깝지만, 승식 체계를 충분히 이해하지 않으면 Part 2 의 시스템 설계가 공중에 뜨기 때문에 먼저 토대를 깔아둡니다.</p>
+<hr>
+<h2 id="1-경마식-베팅은-어떻게-탄생했나">1. 경마식 베팅은 어떻게 탄생했나<a href="#1-경마식-베팅은-어떻게-탄생했나" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-1-고정-배당-북메이커의-시대-1719세기-초">1-1. 고정 배당 북메이커의 시대 (17~19세기 초)<a href="#1-1-고정-배당-북메이커의-시대-1719세기-초" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>경마 도박의 뿌리는 17세기 영국입니다. 당시 베팅은 <strong>북메이커(bookmaker)</strong> 가 주도하는 고정 배당 방식이었습니다. 북메이커는 경주마마다 자기 판단에 근거해 배당률을 정해 걸어두고, 베터는 그 오즈를 보고 베팅합니다. 베터가 이기면 고정된 배당을 받고, 지면 북메이커가 가져갑니다.</p>
+<p>이 방식은 북메이커의 <strong>사전 예측 정확도</strong> 가 곧 수익성을 좌우합니다. 인기마가 이기는 날이 많으면 북메이커가 손해를 보고, 이변이 터지면 이익을 봅니다. 즉, 북메이커 대 베터의 구도이자 제로섬 게임입니다.</p>
+<p>문제는 이 구조가 몇 가지 부작용을 낳았다는 점입니다.</p>
+<ul>
+<li><strong>북메이커의 운영 리스크가 큽니다.</strong> 큰 이변 한 방에 문을 닫는 북메이커가 적지 않았습니다.</li>
+<li><strong>오즈 조작 유인이 강합니다.</strong> 북메이커가 인기마의 컨디션 정보를 왜곡하면 유리한 오즈를 유도할 수 있습니다.</li>
+<li><strong>국가 입장에서 세수 확보가 어렵습니다.</strong> 수많은 북메이커를 일일이 관리/과세하기가 힘들었습니다.</li>
+</ul>
+<h3 id="1-2-파리뮤추얼의-탄생-1867">1-2. 파리뮤추얼의 탄생 (1867)<a href="#1-2-파리뮤추얼의-탄생-1867" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 구조적 문제를 한 번에 깨버린 사람이 <strong>피에르 올러(Pierre Oller)</strong> 입니다. 1865년경 프랑스 파리에서 향수 가게와 경마 베팅소를 겸하던 그는, 1867년 <strong>&ldquo;걸린 돈을 모아 승자끼리 나눠 갖는다&rdquo;</strong> 는 단순하지만 혁신적인 아이디어를 상용화합니다. 이것이 파리뮤추얼(pari-mutuel, 프랑스어로 &ldquo;상호 베팅&rdquo;) 의 시작입니다.</p>
+<p>핵심 아이디어는 이렇습니다.</p>
+<ol>
+<li>한 경주에 걸린 모든 베팅을 <strong>풀(pool)</strong> 에 모은다.</li>
+<li>풀에서 운영 마진(테이크아웃)을 먼저 뗀다.</li>
+<li>남은 돈을 이긴 말에 건 사람들끼리 베팅 금액 비율로 나눈다.</li>
+</ol>
+<p>이 구조에서는 <strong>운영자가 결과에 따른 리스크를 지지 않습니다.</strong> 어떤 말이 이기든 운영자는 항상 정해진 마진만 가져갑니다. 대신 <strong>최종 배당률은 마감 후에야 확정됩니다.</strong> 풀에 얼마가 모였고 이긴 쪽에 얼마가 걸렸는지를 모두 합산해야 계산이 가능하기 때문입니다.</p>
+<p>파리뮤추얼은 전자식 계산이 어려웠던 시대엔 운영 부담이 컸지만, 1913년 <strong>조지 줄리어스(George Julius)</strong> 가 발명한 <strong>토털리제이터(totalisator, 속칭 &ldquo;토트&rdquo;)</strong> 라는 자동 집계/오즈 계산 기계가 도입되면서 급속히 확산됩니다. 호주, 뉴질랜드를 시작으로 20세기 중반까지 전 세계 공영 경마의 표준 방식이 됩니다.</p>
+<h3 id="1-3-한국의-경우">1-3. 한국의 경우<a href="#1-3-한국의-경우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한국의 공영 경마는 1922년 <strong>조선경마구락부</strong> 설립이 시초이며, 현재는 <strong>한국마사회(KRA)</strong> 가 운영합니다. 한국마사회는 파리뮤추얼 방식을 채택하고 있으며, 경정·경륜도 동일합니다. 테이크아웃(공제율)은 법령에 따라 상한이 정해져 있고, 그 중 일부가 복지기금·축산발전기금 등으로 배분됩니다.</p>
+<blockquote>
+<p><strong>참고</strong>: 법적으로 한국에서 합법적인 경마식 베팅은 경마·경륜·경정 세 종목뿐입니다. 이 글은 공영 베팅을 권장하거나 사행성 서비스 설계를 안내하는 글이 아니라, 파리뮤추얼이라는 <strong>메커니즘 자체</strong> 를 게임/서비스 설계에 응용하려는 독자를 위한 기술 가이드입니다.</p>
+</blockquote>
+<hr>
+<h2 id="2-파리뮤추얼의-구조적-특징">2. 파리뮤추얼의 구조적 특징<a href="#2-파리뮤추얼의-구조적-특징" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>왜 파리뮤추얼이 한 세기 이상 살아남았는지 이해하려면 몇 가지 성질을 짚고 넘어가야 합니다. 이 성질들이 Part 2 에서 시스템을 설계할 때 제약 조건이 되기도 하고, 힌트가 되기도 합니다.</p>
+<h3 id="2-1-베터-대-베터의-제로섬-구조">2-1. 베터 대 베터의 제로섬 구조<a href="#2-1-베터-대-베터의-제로섬-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>북메이커 방식이 &ldquo;운영자 vs 베터&rdquo; 의 대결이라면, 파리뮤추얼은 <strong>&ldquo;베터 vs 베터&rdquo;</strong> 입니다. 운영자는 심판 겸 세금 징수자일 뿐, 경기 결과 자체에 이해관계가 없습니다.</p>
+<p>이 특성 때문에 파리뮤추얼 서비스는 <strong>조작 유인이 상대적으로 낮습니다.</strong> 운영자가 결과를 왜곡해 얻을 금전적 이득이 없기 때문입니다. (대신 경주 참가자 본인들이 담합하거나 조작할 유인은 여전히 남아 있습니다. 이건 별개 문제입니다.)</p>
+<h3 id="2-2-배당률--풀의-역수">2-2. 배당률 = 풀의 역수<a href="#2-2-배당률--풀의-역수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>단승식 기준으로, 이긴 말에 걸린 돈을 <code>W</code>, 전체 풀을 <code>P</code>, 테이크아웃 비율을 <code>t</code> 라고 하면 배당률은 다음과 같이 결정됩니다.</p>
+<pre tabindex="0"><code>1원당 배당 = P × (1 - t) / W
+</code></pre><p>즉, <strong>많이 몰린 쪽에 걸수록 배당이 낮고, 소수파에 걸수록 배당이 높습니다.</strong> 배당률의 &ldquo;원천&rdquo; 이 다른 베터의 돈이라는 점이 중요합니다. 운영자가 예측한 확률이 아니라, <strong>시장이 집단적으로 추정한 확률의 역수</strong> 가 배당에 반영됩니다.</p>
+<p>이는 파리뮤추얼 오즈가 일종의 <strong>예측 시장(prediction market)</strong> 역할을 한다는 뜻이기도 합니다. 실제로 경마 오즈는 전문가 예상보다 승률 추정치로서 정확한 경우가 많다는 연구가 여러 차례 보고됐습니다.</p>
+<h3 id="2-3-최종-배당은-마감-후에만-확정">2-3. 최종 배당은 마감 후에만 확정<a href="#2-3-최종-배당은-마감-후에만-확정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>파리뮤추얼의 약점이자 특징은 <strong>베팅 시점에 정확한 배당이 결정되지 않는다</strong> 는 점입니다. 마감 직전까지 풀이 계속 변하기 때문에, 베팅 창구에서 보이는 오즈는 &ldquo;지금까지의 풀 기준 예상 배당&rdquo; 일 뿐입니다.</p>
+<p>이 때문에 현장 서비스는 보통 다음 두 가지 장치를 둡니다.</p>
+<ul>
+<li><strong>실시간 예상 오즈</strong>: 대략 수 초~수십 초 간격으로 풀을 집계해 화면에 노출</li>
+<li><strong>마감 시각 고정</strong>: 경주 시작 직전 특정 시점에 풀을 동결하고 최종 오즈 확정</li>
+</ul>
+<p>Part 2 에서 다루겠지만, 이 &ldquo;실시간 예상 오즈 업데이트&rdquo; 는 엔지니어링 관점에서 제법 까다로운 요소입니다.</p>
+<h3 id="2-4-테이크아웃takeout">2-4. 테이크아웃(Takeout)<a href="#2-4-테이크아웃takeout" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>풀에서 운영자가 떼 가는 몫입니다. 한국마사회 기준으로 단승·복승·연승 등 <strong>단순 승식은 약 18%</strong>, 삼복승·삼쌍승 등 <strong>고배당 승식은 약 25%</strong> 로 다르게 책정되어 있습니다. 해외 경마장도 비슷한 범위에서 승식별 차등 테이크아웃을 운영합니다.</p>
+<p>서비스를 설계할 때는 다음을 생각해야 합니다.</p>
+<ul>
+<li><strong>너무 낮으면</strong>: 운영 비용 회수 어려움, 지속가능성 문제</li>
+<li><strong>너무 높으면</strong>: 유저 체감 배당이 떨어지고 이탈 증가</li>
+<li><strong>승식별 차등</strong>: 고배당 승식은 테이크아웃을 높여도 유저가 덜 민감하게 반응</li>
+</ul>
+<h3 id="2-5-라운딩과-환급률-보장">2-5. 라운딩과 환급률 보장<a href="#2-5-라운딩과-환급률-보장" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한국마사회는 배당금을 <strong>10원 단위로 절사</strong> 합니다. 즉 &ldquo;계산상 1,234원&rdquo; 이 나오더라도 <strong>1,230원으로 지급</strong> 하고 남는 4원은 운영자 몫입니다. 이걸 <strong>브레이크(breakage)</strong> 라고 합니다.</p>
+<p>반대로 풀이 너무 작아 계산상 배당이 원금 이하로 떨어지는 경우도 있습니다. 이때는 <strong>최저 배당 보장(minimum payout)</strong> 을 두어 &ldquo;1원당 최소 1.1원 지급&rdquo; 같은 플로어를 적용합니다. 이런 예외 처리는 Part 2 의 시스템 설계에서 다시 다룹니다.</p>
+<hr>
+<h2 id="3-승식bet-types-종류-상세">3. 승식(Bet Types) 종류 상세<a href="#3-승식bet-types-종류-상세" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기서부터가 경마식 베팅이 북메이커 방식과 가장 크게 달라지는 지점입니다. 파리뮤추얼은 <strong>한 경주에 대해 여러 종류의 풀</strong> 을 동시에 운영할 수 있습니다. 승식마다 풀이 따로 있고, 계산식도 다릅니다. 한국마사회 기준으로 대표적인 승식은 다음과 같습니다.</p>
+<h3 id="3-1-단승식-win">3-1. 단승식 (Win)<a href="#3-1-단승식-win" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 1등 말을 맞추면 적중</li>
+<li><strong>풀</strong>: 단승식 풀만 집계</li>
+<li><strong>난이도</strong>: 낮음 (말이 10두면 기본 확률 1/10 이지만 실제로는 인기마 편향)</li>
+</ul>
+<p>가장 단순한 승식입니다. 배당 계산도 앞서 본 공식을 그대로 적용합니다.</p>
+<blockquote>
+<p><strong>예시</strong>: 총 풀 1,000만원, 테이크아웃 18%, 1등 말 A 에 200만원이 걸림
+→ 배당 재원 = 1,000 × 0.82 = 820만원
+→ A 에 건 사람은 1원당 820 / 200 = 4.1원 환급</p>
+</blockquote>
+<h3 id="3-2-연승식-place--show">3-2. 연승식 (Place / Show)<a href="#3-2-연승식-place--show" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 지정한 말이 <strong>3등 이내에 들어오면</strong> 적중 (출주두수에 따라 2등 이내일 수도 있음)</li>
+<li><strong>풀</strong>: 연승식 풀</li>
+<li><strong>난이도</strong>: 단승식보다 낮음</li>
+</ul>
+<p>한국마사회는 출주두수가 7두 이하면 2등까지, 8두 이상이면 3등까지를 적중으로 봅니다. 영미권에서는 &ldquo;Place (2등 이내)&rdquo; 와 &ldquo;Show (3등 이내)&rdquo; 를 별개 승식으로 구분하는 경우가 많습니다.</p>
+<p>배당 계산은 단승식과 비슷하되, <strong>적중 대상이 여러 말</strong> 이라는 차이가 있습니다. 예를 들어 3등 이내에 든 세 마리가 각각 A, B, C 라면, 연승식 풀의 배당 재원을 <strong>세 말에 걸린 금액 비율로 분배</strong> 한 후, 각 말 내부에서 다시 베터별로 나눕니다.</p>
+<h3 id="3-3-복승식-quinella">3-3. 복승식 (Quinella)<a href="#3-3-복승식-quinella" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 1~2등을 <strong>순서 상관없이</strong> 맞추면 적중</li>
+<li><strong>풀</strong>: 복승식 풀</li>
+<li><strong>난이도</strong>: 중간</li>
+</ul>
+<p>&ldquo;A 와 B 가 1~2등에 들어온다&rdquo; 는 조합을 맞추는 승식입니다. 순서는 신경 쓰지 않습니다. 2두 조합 집합이므로 <code>n</code> 두 출주 시 가능한 조합은 <code>C(n, 2) = n(n-1)/2</code> 개입니다.</p>
+<h3 id="3-4-쌍승식-exacta">3-4. 쌍승식 (Exacta)<a href="#3-4-쌍승식-exacta" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 1등과 2등을 <strong>순서까지 정확히</strong> 맞추면 적중</li>
+<li><strong>풀</strong>: 쌍승식 풀</li>
+<li><strong>난이도</strong>: 복승식보다 높음</li>
+</ul>
+<p>&ldquo;A 가 1등, B 가 2등&rdquo; 을 맞춰야 합니다. 순서가 있는 순열이므로 <code>n</code> 두 출주 시 <code>n × (n-1)</code> 개 조합이 존재합니다. 복승식보다 맞추기 어려운 만큼 배당도 일반적으로 더 높습니다.</p>
+<h3 id="3-5-복연승식-wide--quinella-place">3-5. 복연승식 (Wide / Quinella Place)<a href="#3-5-복연승식-wide--quinella-place" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 지정한 <strong>2두 조합이 모두 3등 이내에 들어오면</strong> 적중 (순서 무관)</li>
+<li><strong>풀</strong>: 복연승식 풀</li>
+<li><strong>난이도</strong>: 복승식보다 낮음</li>
+</ul>
+<p>3등 이내 3두 중 2두를 맞추면 되므로, 복승식보다 난이도가 내려갑니다. 1~2등, 1~3등, 2~3등 세 가지 경우 중 어느 하나라도 맞으면 적중입니다.</p>
+<p>한국마사회는 이 승식을 운영하지 않지만 일본중앙경마회(JRA) 는 운영하며, 해외 경마장에서도 &ldquo;Quinella Place&rdquo; 라는 이름으로 발견됩니다.</p>
+<h3 id="3-6-삼복승식-trio">3-6. 삼복승식 (Trio)<a href="#3-6-삼복승식-trio" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 1~3등을 <strong>순서 상관없이</strong> 맞추면 적중</li>
+<li><strong>풀</strong>: 삼복승식 풀</li>
+<li><strong>난이도</strong>: 높음</li>
+</ul>
+<p>3두 조합이므로 <code>C(n, 3) = n(n-1)(n-2)/6</code> 개의 경우의 수. 예를 들어 12두 출주면 220 가지 조합이 나옵니다. 적중 난이도가 크게 올라가는 만큼 배당도 보통 큽니다.</p>
+<h3 id="3-7-삼쌍승식-trifecta">3-7. 삼쌍승식 (Trifecta)<a href="#3-7-삼쌍승식-trifecta" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>조건</strong>: 1, 2, 3등을 <strong>순서까지 정확히</strong> 맞추면 적중</li>
+<li><strong>풀</strong>: 삼쌍승식 풀</li>
+<li><strong>난이도</strong>: 매우 높음</li>
+</ul>
+<p>3두 순열이므로 <code>n × (n-1) × (n-2)</code> 개 조합. 12두 출주 시 1,320 가지. 경마에서 가장 대중적인 &ldquo;고배당 승식&rdquo; 이며, 한 번에 수백 배~수천 배 배당이 나오는 일도 있습니다.</p>
+<h3 id="3-8-기타-변형-승식">3-8. 기타 변형 승식<a href="#3-8-기타-변형-승식" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>각국 경마장마다 위 기본 승식 외에 다양한 변형 승식을 운영합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>영문 이름</th>
+          <th>한글 통칭</th>
+          <th>조건</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Superfecta</td>
+          <td>슈퍼펙타</td>
+          <td>1~4등을 순서대로 맞춤</td>
+      </tr>
+      <tr>
+          <td>Pick 3</td>
+          <td>픽 3</td>
+          <td>연속된 3경주의 우승마를 모두 맞춤</td>
+      </tr>
+      <tr>
+          <td>Pick 4/5/6</td>
+          <td>픽 4/5/6</td>
+          <td>연속된 4~6 경주 우승마</td>
+      </tr>
+      <tr>
+          <td>Daily Double</td>
+          <td>더블</td>
+          <td>연속 2경주 우승마</td>
+      </tr>
+      <tr>
+          <td>Jackpot</td>
+          <td>잭팟</td>
+          <td>Pick 시리즈의 특정 회차에 캐리오버가 쌓여 대형 배당</td>
+      </tr>
+  </tbody>
+</table>
+<p>픽 시리즈는 <strong>적중자 부족 시 캐리오버(carry-over)</strong> 가 다음 회차로 넘어가기 때문에, 로또 1등 잭팟처럼 동작합니다. 이 구조는 Part 2 에서 게이미피케이션 요소로 활용하는 방법을 살펴봅니다.</p>
+<h3 id="3-9-승식별-난이도배당테이크아웃-비교표">3-9. 승식별 난이도·배당·테이크아웃 비교표<a href="#3-9-승식별-난이도배당테이크아웃-비교표" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>감 잡기 쉽도록 대략적인 감각을 표로 정리합니다 (12두 출주 가정).</p>
+<table>
+  <thead>
+      <tr>
+          <th>승식</th>
+          <th>조합 수</th>
+          <th>난이도</th>
+          <th>평균 배당 (경험치)</th>
+          <th>테이크아웃 (한국마사회 기준)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>단승</td>
+          <td>12</td>
+          <td>낮음</td>
+          <td>5~15배</td>
+          <td>약 18%</td>
+      </tr>
+      <tr>
+          <td>연승</td>
+          <td>12</td>
+          <td>매우 낮음</td>
+          <td>1.5~4배</td>
+          <td>약 18%</td>
+      </tr>
+      <tr>
+          <td>복승</td>
+          <td>66</td>
+          <td>중간</td>
+          <td>10~40배</td>
+          <td>약 22%</td>
+      </tr>
+      <tr>
+          <td>쌍승</td>
+          <td>132</td>
+          <td>중간 이상</td>
+          <td>20~80배</td>
+          <td>약 22%</td>
+      </tr>
+      <tr>
+          <td>복연승</td>
+          <td>66</td>
+          <td>낮음</td>
+          <td>3~10배</td>
+          <td>해당 없음 (국내 미운영)</td>
+      </tr>
+      <tr>
+          <td>삼복승</td>
+          <td>220</td>
+          <td>높음</td>
+          <td>50~300배</td>
+          <td>약 25%</td>
+      </tr>
+      <tr>
+          <td>삼쌍승</td>
+          <td>1,320</td>
+          <td>매우 높음</td>
+          <td>100~5,000배</td>
+          <td>약 25%</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p><strong>주의</strong>: 위 배당 수치는 &ldquo;일반적인 경주 기준의 경험적 범위&rdquo; 일 뿐이며, 실제 경주별 편차가 큽니다. 소수파 조합이 적중했을 때는 위 범위를 벗어나는 대박 배당이 나올 수 있습니다.</p>
+</blockquote>
+<hr>
+<h2 id="4-승식-구조가-게임-설계에-시사하는-것들">4. 승식 구조가 게임 설계에 시사하는 것들<a href="#4-승식-구조가-게임-설계에-시사하는-것들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>경마가 왜 100년 이상 인기 있는 베팅 종목으로 살아남았는지를 승식 체계로 역추적해보면 몇 가지 힌트가 나옵니다.</p>
+<h3 id="4-1-난이도-스펙트럼이-넓다">4-1. 난이도 스펙트럼이 넓다<a href="#4-1-난이도-스펙트럼이-넓다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>연승식(3등 안에만 들면 됨) 부터 삼쌍승식(3등까지 순서 정확히 맞춰야 함) 까지 난이도가 매우 넓게 펼쳐져 있습니다. 초보 유저는 연승식/단승식에서 저배당·고적중률을 즐기고, 하드유저는 삼쌍승/픽6 에서 대박을 노리는 식으로 <strong>플레이어 타입별로 다른 경험을 설계</strong> 할 수 있습니다.</p>
+<p>이는 게임 설계의 &ldquo;난이도 곡선&rdquo; 원리와 비슷합니다. 튜토리얼 성격의 낮은 난이도 콘텐츠부터 엔드게임 콘텐츠까지 준비되어야 전 구간의 유저를 잡아둘 수 있습니다.</p>
+<h3 id="4-2-풀이-쪼개져도-유동성이-유지된다">4-2. 풀이 쪼개져도 유동성이 유지된다<a href="#4-2-풀이-쪼개져도-유동성이-유지된다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한 경주에 7~8개 승식 풀이 동시에 돌아가도 전체가 기능하는 이유는, <strong>같은 경주에서 승식 간 베팅이 자연스럽게 혼합되기 때문</strong> 입니다. 유저는 &ldquo;나는 A 를 1등으로 확신하니 단승식과 쌍승식을 동시에 건다&rdquo; 같은 전략을 구사합니다.</p>
+<p>다만 픽6 같은 <strong>저빈도·고배당 승식</strong> 은 풀이 얇아지기 쉬워 캐리오버 메커니즘이 필수입니다. Part 2 에서 이 부분을 다시 다룹니다.</p>
+<h3 id="4-3-통계적-역편향favorite-longshot-bias">4-3. 통계적 역편향(favorite-longshot bias)<a href="#4-3-통계적-역편향favorite-longshot-bias" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오랜 연구로 알려진 경마의 특이점입니다. 인기마는 시장 오즈 기준 기대수익률이 상대적으로 <strong>높고</strong>, 소수파(longshot) 는 상대적으로 <strong>낮습니다.</strong> 즉, 베터들이 &ldquo;대박 노리기&rdquo; 성향 때문에 소수파에 비이성적으로 많은 돈을 걸어 오즈가 낮아지는 현상입니다.</p>
+<p>이 편향은 &ldquo;사람이 어떻게 베팅하는가&rdquo; 를 모사하는 봇 시뮬레이션 설계에서 중요한 재료가 됩니다. 인기마에 균등하게 돈을 뿌리는 봇은 절대 사람처럼 보이지 않습니다.</p>
+<hr>
+<h2 id="5-이번-편-정리와-part-2-예고">5. 이번 편 정리와 Part 2 예고<a href="#5-이번-편-정리와-part-2-예고" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1 에서는 경마식 베팅의 정체성을 이해하기 위한 최소한의 역사·구조·승식 지식을 정리했습니다. 핵심만 다시 짚으면 이렇습니다.</p>
+<ul>
+<li>경마식 베팅 = <strong>파리뮤추얼</strong>. 운영자는 결과에 이해관계가 없고, 베터끼리 풀을 나눠 갖는 구조</li>
+<li><strong>단승·연승부터 삼쌍승까지 난이도와 배당이 다른 7~8가지 승식</strong> 이 함께 돌아가며 다양한 플레이어 타입을 수용</li>
+<li>특유의 <strong>favorite-longshot bias</strong> 와 <strong>마감 직전 오즈 변동</strong> 같은 행동 패턴이 존재</li>
+</ul>
+<p>Part 2 에서는 이 위에 다음 내용을 얹습니다.</p>
+<ul>
+<li>실제로 경마식 베팅 시스템을 서비스에 도입할 때의 엔지니어링/게이미피케이션 고려사항</li>
+<li>초기 유저가 적어 풀이 얇을 때 <strong>봇 유저로 풀을 채우는 시뮬레이션 방법론</strong>: 실제 사람의 베팅 성향을 어떻게 모델링하고, 어떻게 검증할 것인가</li>
+</ul>
+<p>Part 1 이 &ldquo;무엇이 있는가&rdquo; 의 지도였다면, Part 2 는 &ldquo;직접 만들 때 어디에서 넘어지기 쉬운가&rdquo; 의 지도입니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Parimutuel_betting">https://en.wikipedia.org/wiki/Parimutuel_betting</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Pierre_Oller">https://en.wikipedia.org/wiki/Pierre_Oller</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Totalisator">https://en.wikipedia.org/wiki/Totalisator</a></li>
+<li><a href="https://www.kra.co.kr/">https://www.kra.co.kr/</a></li>
+<li>Snyder, W. W. (1978). &ldquo;Horse racing: Testing the efficient markets model.&rdquo; <em>Journal of Finance</em>.</li>
+<li>Thaler, R. H., &amp; Ziemba, W. T. (1988). &ldquo;Parimutuel betting markets: Racetracks and lotteries.&rdquo; <em>Journal of Economic Perspectives</em>.</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-02/" class="button inline prev">
+        &lt; [<span class="button__text">경마식 베팅 게임 설계 가이드 Part 2: 시스템 구축과 봇 유저 시뮬레이션</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260420-oh-tae-ho-hitmaker/" class="button inline next">
+         [<span class="button__text">90년대 발라드의 설계자, 작곡가 오태호</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

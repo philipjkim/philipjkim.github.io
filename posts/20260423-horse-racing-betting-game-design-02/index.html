@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>경마식 베팅 게임 설계 가이드 Part 2: 시스템 구축과 봇 유저 시뮬레이션 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="경마식 베팅을 서비스에 도입할 때의 시스템 설계 고려사항을 정리하고, 초기 유저가 부족할 때 풀을 채울 봇 유저의 베팅 행동을 사람답게 시뮬레이션하는 방법을 살펴봅니다. Plackett-Luce 모델, 페르소나 설계, 품질 검증까지 다룹니다." />
+<meta name="keywords" content="game-design, game-theory, math, strategy, simulation" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="경마식 베팅 게임 설계 가이드 Part 2: 시스템 구축과 봇 유저 시뮬레이션">
+<meta property="og:description" content="경마식 베팅을 서비스에 도입할 때의 시스템 설계 고려사항을 정리하고, 초기 유저가 부족할 때 풀을 채울 봇 유저의 베팅 행동을 사람답게 시뮬레이션하는 방법을 살펴봅니다. Plackett-Luce 모델, 페르소나 설계, 품질 검증까지 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-23 10:15:36 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-02/">경마식 베팅 게임 설계 가이드 Part 2: 시스템 구축과 봇 유저 시뮬레이션</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game-design/">game-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-theory/">game-theory</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/math/">math</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/simulation/">simulation</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p><a href="/posts/20260423-horse-racing-betting-game-design-01/">Part 1</a> 에서 경마식 베팅의 유래·구조·승식 체계를 정리했습니다. 이번 편에서는 실제로 경마식 베팅을 서비스에 도입할 때 마주치는 <strong>엔지니어링/운영 이슈</strong> 와, 초기 유저가 부족할 때 풀을 채우기 위한 <strong>봇 유저 시뮬레이션</strong> 을 다룹니다.</p>
+<p>전자는 경험 많은 설계자라면 체크리스트처럼 훑어도 좋고, 후자는 간단해 보이지만 제대로 구현하려면 생각보다 품이 많이 드는 주제입니다. 특히 &ldquo;실제 사람이 건 것처럼&rdquo; 보이게 하려면 단순 랜덤 함수로는 한참 부족합니다.</p>
+<hr>
+<h2 id="1-시스템-설계-고려사항">1. 시스템 설계 고려사항<a href="#1-시스템-설계-고려사항" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-1-풀-데이터-모델">1-1. 풀 데이터 모델<a href="#1-1-풀-데이터-모델" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>경마식 베팅의 첫 관문은 <strong>&ldquo;승식별로 풀이 따로 존재한다&rdquo;</strong> 는 사실을 데이터 모델에 정확히 반영하는 것입니다.</p>
+<pre tabindex="0"><code>Race (한 경주)
+ ├─ WinPool            (단승식 풀)
+ │   ├─ HorsePool #1: 걸린 총액
+ │   ├─ HorsePool #2: 걸린 총액
+ │   └─ ...
+ ├─ PlacePool          (연승식 풀)
+ ├─ QuinellaPool       (복승식 풀)
+ │   ├─ CombinationPool {A,B}: 걸린 총액
+ │   ├─ CombinationPool {A,C}: 걸린 총액
+ │   └─ ...
+ ├─ ExactaPool         (쌍승식 풀)
+ ├─ TrioPool           (삼복승식 풀)
+ └─ TrifectaPool       (삼쌍승식 풀)
+</code></pre><p>여기서 실수하기 쉬운 포인트 몇 가지가 있습니다.</p>
+<ul>
+<li><strong>조합(combination) 키 정규화</strong>: 복승식 <code>{A,B}</code> 와 <code>{B,A}</code> 는 같은 조합입니다. 키를 저장할 때 항상 정렬된 형태 (예: 말 번호 오름차순) 로 넣어야 키 충돌과 중복 집계를 피할 수 있습니다.</li>
+<li><strong>승식별 개별 테이블 vs 단일 테이블</strong>: 로우 수가 많아지지만 <code>bet_type</code> 컬럼을 둔 단일 테이블이 운영상 편합니다. 승식별 쿼리는 인덱스로 해결합니다.</li>
+<li><strong>원자성</strong>: 한 베팅이 풀에 반영되는 트랜잭션과, 유저 잔액에서 차감되는 트랜잭션이 반드시 원자적으로 묶여야 합니다. 일부 베팅만 반영된 상태로 서버가 죽으면 풀과 잔액이 어긋납니다.</li>
+</ul>
+<h3 id="1-2-테이크아웃-정책">1-2. 테이크아웃 정책<a href="#1-2-테이크아웃-정책" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Part 1 에서 짚었듯 승식별로 테이크아웃 비율을 다르게 두는 것이 일반적입니다. 고배당 승식(삼쌍승, 픽6 등) 에 높은 비율을 매기는 이유는 두 가지입니다.</p>
+<ul>
+<li>고배당 승식의 <strong>한 번 당첨 시 체감 만족도가 크기 때문에</strong> 몇 퍼센트 더 떼어도 유저가 상대적으로 덜 민감합니다.</li>
+<li>적중자가 드물어 배당이 극단적으로 커질 수 있는데, 높은 테이크아웃이 풀의 <strong>변동성을 완충</strong> 합니다.</li>
+</ul>
+<p>실무에서는 테이크아웃을 <strong>단일 상수가 아니라 운영 구간별 파라미터</strong> 로 두는 것이 좋습니다. 예를 들어 출시 초기에는 15% 로 낮게 시작해 체감 배당을 높이고, 유저가 충분히 확보된 이후 18~20% 로 조정하는 식입니다. 단, 올리는 방향은 유저 저항이 크기 때문에 이벤트/프로모션으로 감쇄해야 합니다.</p>
+<h3 id="1-3-최소-배당-보장과-브레이크">1-3. 최소 배당 보장과 브레이크<a href="#1-3-최소-배당-보장과-브레이크" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>파리뮤추얼의 약점 중 하나는 <strong>극도로 많은 사람이 몰린 인기마</strong> 에 걸었을 때 배당이 원금 이하로 내려갈 수 있다는 점입니다. 다음 세 가지 장치로 보완합니다.</p>
+<ul>
+<li><strong>최저 배당(minimum payout)</strong>: &ldquo;1원당 최소 X원 지급&rdquo; 의 플로어. 한국마사회 단승식은 1원당 1.0원의 플로어가 있습니다(원금 보장).</li>
+<li><strong>브레이크(breakage)</strong>: 계산 결과를 10원 단위 등으로 절사. 운영자 이익이면서, 계산/지급을 단순하게 해주는 장치.</li>
+<li><strong>적중자 없음(refund/rollover)</strong>: 특정 조합에 적중자가 0명이면, 해당 풀을 다음 경주로 이월하거나 전액 환급하는 룰.</li>
+</ul>
+<p>이 세 가지는 서로 영향을 주기 때문에 하나만 정해서는 안 됩니다. 최저 배당을 보장하려면 운영자가 자기 자금으로 메워야 할 때가 있고, 이걸 테이크아웃에서 미리 덜어둘지, 별도 예비금 풀로 관리할지 결정해야 합니다.</p>
+<h3 id="1-4-오즈-업데이트-주기">1-4. 오즈 업데이트 주기<a href="#1-4-오즈-업데이트-주기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>실시간 서비스에서 가장 자주 부딪히는 엔지니어링 과제입니다.</p>
+<ul>
+<li><strong>너무 자주</strong>: 서버 부하 증가, 화면이 정신없이 깜빡거려 UX 나쁨</li>
+<li><strong>너무 뜸</strong>: 유저가 &ldquo;내가 봤을 땐 배당 50배였는데 확정은 20배&rdquo; 라며 혼란</li>
+</ul>
+<p>실무에선 보통 <strong>10~30초 간격 batch 집계</strong> + <strong>UI 애니메이션을 부드럽게</strong> 가 무난한 타협점입니다. 마감 직전 60초는 간격을 짧게(5~10초) 가져가고 화면에 &ldquo;마감 임박&rdquo; 같은 시각적 신호를 같이 주는 것이 좋습니다.</p>
+<p>풀 집계 자체는 Redis 같은 인메모리 스토어에 <strong>승식 × 조합 키 → 누적액</strong> 을 증분 업데이트하고, 주기적으로 스냅샷을 찍어 클라이언트에 푸시하는 구조가 일반적입니다.</p>
+<h3 id="1-5-마감과-동결">1-5. 마감과 동결<a href="#1-5-마감과-동결" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>경주 시작 T 초 전에 풀을 <strong>동결(freeze)</strong> 해야 합니다. 이때 몇 가지 시나리오를 정확히 처리해야 합니다.</p>
+<ul>
+<li><strong>동결 이후 들어온 베팅</strong>: 즉시 거부. 이미 요청 큐에 대기 중이던 베팅도 마감 시점 타임스탬프로 판단.</li>
+<li><strong>경주 취소</strong>: 전액 환급 처리. &ldquo;Refund&rdquo; 상태를 별도 관리해야 회계상 추적 가능.</li>
+<li><strong>중도 기권/실격</strong>: 해당 말에 걸린 베팅 처리 룰을 사전 정의. 연승식에서 실격한 말에 걸린 베팅은 보통 무효 환급.</li>
+</ul>
+<p>이런 케이스는 보통 테스트가 부족해서 문제가 터지는 영역입니다. <strong>엣지 케이스별 테스트 시나리오 문서</strong> 를 미리 만들어두는 걸 권장합니다.</p>
+<h3 id="1-6-담합조작-방지">1-6. 담합/조작 방지<a href="#1-6-담합조작-방지" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>운영자 대 베터의 제로섬이 아니므로 <strong>운영자의 결과 조작 유인은 낮지만</strong>, 다른 위험은 여전히 존재합니다.</p>
+<ul>
+<li><strong>내부자 정보</strong>: 경주 참가자의 컨디션 정보가 새면 오즈 공정성이 깨짐</li>
+<li><strong>자전거래(self-dealing)</strong>: 한 유저가 여러 계정으로 풀을 조작해 자기 소수파 배당을 키우는 행위. 이론상으론 풀이 제로섬이라 순 이득이 없어 보이지만, 실제로는 고배당 승식에서 <strong>테이크아웃을 상쇄할 정도의 베팅 규모</strong> 를 부어 소수 조합에 집중 베팅하면 타 베터의 돈을 흡수하는 패턴이 가능합니다.</li>
+</ul>
+<p>대응책으로는 IP/디바이스 핑거프린트 기반 <strong>복수 계정 탐지</strong>, 이상 집중 베팅 패턴 탐지, 베팅 상한 설정, KYC 같은 조치가 사용됩니다.</p>
+<h3 id="1-7-캐리오버와-게이미피케이션">1-7. 캐리오버와 게이미피케이션<a href="#1-7-캐리오버와-게이미피케이션" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>픽6, 잭팟류 승식은 당첨자가 없을 경우 다음 회차로 이월됩니다. 이것만으로 유저의 기대감이 눈덩이처럼 불어나는 강력한 심리 장치가 됩니다.</p>
+<p>게임 서비스라면 단순 이월을 넘어서 다음과 같은 메커닉을 얹을 수 있습니다.</p>
+<ul>
+<li><strong>누적 금액 공개</strong>: &ldquo;이번 주 잭팟 3억!&rdquo; 같은 강조</li>
+<li><strong>특별 이벤트일 보장 추첨</strong>: 이월이 일정 횟수 이상 지속되면 당첨자가 없어도 강제 지급 (로또의 2등 배당 분배 방식과 유사)</li>
+<li><strong>시즌 랭킹</strong>: 누적 적중 지수나 ROI 기반 리더보드</li>
+</ul>
+<h3 id="1-8-설계-체크리스트">1-8. 설계 체크리스트<a href="#1-8-설계-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>정리하자면 경마식 베팅 시스템을 만들 때의 의사결정 지점은 대략 다음과 같습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>결정 사항</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>승식 집합</td>
+          <td>단승/연승만? 쌍승까지? 삼쌍승까지?</td>
+      </tr>
+      <tr>
+          <td>테이크아웃</td>
+          <td>승식별 비율, 초기/운영기 차등</td>
+      </tr>
+      <tr>
+          <td>최저 배당</td>
+          <td>원금 보장 여부, 브레이크 단위</td>
+      </tr>
+      <tr>
+          <td>이월 정책</td>
+          <td>캐리오버 허용, 강제 지급 조건</td>
+      </tr>
+      <tr>
+          <td>풀 집계 주기</td>
+          <td>10초/30초, 마감 임박 가속</td>
+      </tr>
+      <tr>
+          <td>이상 거래 탐지</td>
+          <td>복수 계정/이상 패턴 룰</td>
+      </tr>
+      <tr>
+          <td>경주 취소/기권</td>
+          <td>환급 룰</td>
+      </tr>
+      <tr>
+          <td>베팅 상한</td>
+          <td>계정별/경주별 상한</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="2-초기-유동성-문제-왜-봇이-필요한가">2. 초기 유동성 문제: 왜 봇이 필요한가<a href="#2-초기-유동성-문제-왜-봇이-필요한가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>새로 경마식 베팅 서비스를 론칭했다고 해봅시다. 첫 날엔 유저가 열 명 남짓입니다. 이때 마주치는 문제는 다음과 같습니다.</p>
+<ul>
+<li><strong>풀이 너무 얇아서 배당이 극단적</strong> 입니다. 10명이 걸고 1명만 인기마에 걸었다면 그 사람 배당이 10배에 육박합니다. 확률적으로 비합리적인 배당이 자주 나오면 베터가 이탈합니다.</li>
+<li><strong>오즈의 의미가 사라집니다.</strong> 파리뮤추얼 오즈는 &ldquo;집단 지성 기반 확률 추정&rdquo; 이지만, 표본이 10명이면 추정 자체가 노이즈입니다.</li>
+<li><strong>고배당 승식은 풀 자체가 안 돌아갑니다.</strong> 삼쌍승에 아무도 걸지 않으면 풀이 0 원이 되어 적중자도 없고 배당도 계산 불가.</li>
+</ul>
+<p>해결 방법은 크게 세 가지입니다.</p>
+<ol>
+<li><strong>운영자가 초기 풀을 부어둔다</strong> (seed pool): 깔끔하지만 운영자가 리스크를 진다는 점에서 파리뮤추얼의 원리에서 벗어남.</li>
+<li><strong>최소 유저 수 확보 전까지 서비스 오픈 지연</strong>: 이상적이지만 닭/달걀 문제.</li>
+<li><strong>봇 유저가 사람처럼 베팅해 풀을 채운다</strong>: 실무에서 가장 자주 쓰이는 방식.</li>
+</ol>
+<p>이 글에서는 3번에 집중합니다. 단, 법적·윤리적 영역이 있음을 강조해둡니다. <strong>실제 현금이 오가는 도박성 서비스에서 운영자가 봇으로 풀을 조작하는 것은 사기에 해당할 수 있습니다.</strong> 이 글은 <strong>현금이 아닌 가상 포인트/재화</strong> 로 운영되는 게임성 서비스 (예: 판타지 경마 게임, 예측 기반 캐주얼 게임) 를 전제로 합니다.</p>
+<hr>
+<h2 id="3-사람-베터의-행동-특성-이해하기">3. 사람 베터의 행동 특성 이해하기<a href="#3-사람-베터의-행동-특성-이해하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>봇을 사람답게 만들려면 먼저 사람이 어떻게 베팅하는지를 알아야 합니다. 수십 년 간의 연구와 현장 관찰에서 반복적으로 발견되는 패턴이 있습니다.</p>
+<h3 id="3-1-favorite-longshot-bias">3-1. Favorite-Longshot Bias<a href="#3-1-favorite-longshot-bias" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 잘 알려진 편향입니다. <strong>인기마의 실제 승률은 오즈 기반 추정 승률보다 높고, 소수파는 낮습니다.</strong> 결과적으로 인기마에 건 사람의 기대 수익률이 소수파에 건 사람보다 높습니다.</p>
+<p>원인에 대해서는 &ldquo;소수파 베팅의 기대 효용이 높아서 (risk-seeking)&rdquo;, &ldquo;베터가 확률을 과대 추정 (probability weighting)&rdquo; 등 여러 가설이 있습니다. 원인이 뭐든, <strong>시뮬레이션에서는 소수파에 실제 확률보다 많이 돈이 걸리게 만들어야 현실적</strong> 입니다.</p>
+<h3 id="3-2-마감-직전-쏠림">3-2. 마감 직전 쏠림<a href="#3-2-마감-직전-쏠림" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>베팅 패턴을 시간 축으로 보면 <strong>마감 직전 수 분에 전체 풀의 30~60% 가 쏟아져 들어옵니다.</strong> 이유는 두 가지.</p>
+<ul>
+<li>유저가 오즈 변화를 관찰하다가 마지막 순간에 결정</li>
+<li>전문 베터(sharps) 가 마감 임박 시점에 대량 베팅을 던져 오즈를 흔듦</li>
+</ul>
+<p>봇 시뮬레이션에서도 이 타이밍 분포를 모사하지 않으면 &ldquo;오즈가 마감 한참 전에 안정화되어 있는&rdquo; 어색한 그래프가 나옵니다.</p>
+<h3 id="3-3-금액-분포는-log-normal">3-3. 금액 분포는 Log-normal<a href="#3-3-금액-분포는-log-normal" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한 베팅당 금액 분포는 정규분포가 아니라 <strong>로그 정규(log-normal) 에 가깝습니다.</strong> 대부분은 소액(최소 단위) 이지만 소수의 고액 베팅이 긴 꼬리를 이룹니다. 평균이 아닌 <strong>중앙값</strong> 기준으로 봐야 감각이 맞고, 99th percentile 은 중앙값의 수십 배에 달합니다.</p>
+<h3 id="3-4-승식-선호도-분포">3-4. 승식 선호도 분포<a href="#3-4-승식-선호도-분포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>현장 데이터 상 대략 다음과 같은 분포가 관찰됩니다 (경마장마다 편차 있음).</p>
+<table>
+  <thead>
+      <tr>
+          <th>승식</th>
+          <th>베팅 건수 비중</th>
+          <th>금액 비중</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>단승</td>
+          <td>20~30%</td>
+          <td>25~35%</td>
+      </tr>
+      <tr>
+          <td>연승</td>
+          <td>15~20%</td>
+          <td>10~15%</td>
+      </tr>
+      <tr>
+          <td>복승</td>
+          <td>15~20%</td>
+          <td>15~20%</td>
+      </tr>
+      <tr>
+          <td>쌍승</td>
+          <td>10~15%</td>
+          <td>10~15%</td>
+      </tr>
+      <tr>
+          <td>삼복승</td>
+          <td>10~15%</td>
+          <td>10~15%</td>
+      </tr>
+      <tr>
+          <td>삼쌍승</td>
+          <td>15~25%</td>
+          <td>10~20%</td>
+      </tr>
+  </tbody>
+</table>
+<p>삼쌍승은 <strong>건수 비중은 높지만 한 건당 금액은 낮은</strong> 특성이 있습니다. &ldquo;소액으로 로또 노리기&rdquo; 패턴이죠.</p>
+<h3 id="3-5-다중-베팅과-박싱">3-5. 다중 베팅과 박싱<a href="#3-5-다중-베팅과-박싱" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한 베터가 한 경주에 <strong>여러 조합에 분산 베팅</strong> 하는 것이 일반적입니다. 특히 삼쌍승에서 &ldquo;A 를 1등으로 고정하고 2,3 등은 B,C,D 중에서&rdquo; 같은 <strong>박스 베팅(box bet)</strong> 이 대중적입니다. 박스 베팅은 6개 조합을 동시에 거는 것과 같습니다.</p>
+<p>봇을 &ldquo;1 베팅 = 1 조합&rdquo; 으로 단순화하면 조합 수 분포가 사람과 크게 달라집니다. 박싱 패턴을 반드시 포함해야 합니다.</p>
+<h3 id="3-6-herding과-정보-반영">3-6. Herding과 정보 반영<a href="#3-6-herding과-정보-반영" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>오즈가 공개되어 있기 때문에 뒤늦게 베팅하는 사람은 앞선 베터들의 집단 판단에 영향을 받습니다. 결과적으로 오즈가 시간이 갈수록 <strong>수렴(convergence)</strong> 하는 경향이 있습니다. 봇 시뮬레이션에서도 초기에 변동성 있게 시작해 마감으로 갈수록 수렴하도록 설계하면 자연스럽습니다.</p>
+<hr>
+<h2 id="4-봇-시뮬레이션-모델-설계">4. 봇 시뮬레이션 모델 설계<a href="#4-봇-시뮬레이션-모델-설계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이제 위 관찰을 모델링할 차례입니다. 봇 시뮬레이션은 대략 다음 4 단계 파이프라인으로 구성합니다.</p>
+<pre tabindex="0"><code>[1] 각 말의 &#34;실제 승률&#34; 추정
+[2] 봇 페르소나별 &#34;인지 승률&#34; 생성 (노이즈, 편향 주입)
+[3] 봇별 승식 선택 → 조합 선택 → 금액 결정
+[4] 베팅 타이밍 결정 → 풀 반영
+</code></pre><h3 id="4-1-말별-승률-분포-plackett-luce">4-1. 말별 승률 분포: Plackett-Luce<a href="#4-1-말별-승률-분포-plackett-luce" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>경마는 &ldquo;순위&rdquo; 가 있는 경쟁이므로, 승률 모델로 흔히 쓰이는 것이 <strong>Plackett-Luce 모델</strong> 입니다. 각 말 <code>i</code> 에 실력 파라미터 <code>θ_i &gt; 0</code> 을 부여하면, 말 <code>i</code> 가 1등일 확률은</p>
+<pre tabindex="0"><code>P(i = 1st) = θ_i / Σ_j θ_j
+</code></pre><p>이고, 1등이 <code>i</code>, 2등이 <code>j</code> 일 확률은</p>
+<pre tabindex="0"><code>P(i, j) = ( θ_i / Σ_k θ_k ) × ( θ_j / Σ_{k ≠ i} θ_k )
+</code></pre><p>처럼 축차적으로 계산됩니다. 3등까지 확장하면 삼쌍승식 확률 분포를 그대로 얻을 수 있습니다.</p>
+<p>시뮬레이션에선 <code>θ_i</code> 를 경주마다 랜덤 샘플링(예: log-normal) 하고, 실제 결과도 이 분포에서 뽑으면 됩니다.</p>
+<h3 id="4-2-봇-페르소나">4-2. 봇 페르소나<a href="#4-2-봇-페르소나" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>모든 봇이 동일한 룰로 움직이면 다양성이 부족해집니다. 현장에서 자주 쓰는 페르소나 분류 예시.</p>
+<table>
+  <thead>
+      <tr>
+          <th>페르소나</th>
+          <th>비중</th>
+          <th>성향</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Casual</td>
+          <td>50~60%</td>
+          <td>인기마 위주, 소액, 단승/연승 선호</td>
+      </tr>
+      <tr>
+          <td>Analyst</td>
+          <td>15~20%</td>
+          <td>정보에 기반한 중앙값 베팅, 복승/쌍승 선호</td>
+      </tr>
+      <tr>
+          <td>Longshot</td>
+          <td>15~25%</td>
+          <td>소수파 선호, 삼쌍승 다수 조합 박싱, 소액</td>
+      </tr>
+      <tr>
+          <td>Whale</td>
+          <td>3~5%</td>
+          <td>고액, 인기마 위주, 다양한 승식 혼합</td>
+      </tr>
+      <tr>
+          <td>Chaser</td>
+          <td>5~10%</td>
+          <td>이전 경주 손실을 만회하려 금액 증가 (gambler&rsquo;s fallacy)</td>
+      </tr>
+  </tbody>
+</table>
+<p>페르소나를 분리해 두면 나중에 &ldquo;Whale 비중을 낮추자&rdquo; 같은 파라미터 튜닝이 쉽습니다.</p>
+<h3 id="4-3-인지-승률에-편향-주입">4-3. 인지 승률에 편향 주입<a href="#4-3-인지-승률에-편향-주입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Plackett-Luce 의 &ldquo;실제 승률&rdquo; 을 봇이 그대로 안다고 가정하면 승률에 비례한 깔끔한 오즈가 만들어져 <strong>너무 효율적</strong> 인 시장이 됩니다. 현실처럼 만들려면 몇 가지 노이즈와 편향을 주입해야 합니다.</p>
+<ul>
+<li><strong>인지 노이즈</strong>: 실제 <code>θ_i</code> 에 로그 정규 노이즈를 곱해 봇의 인지 파라미터를 만듭니다. 즉 <code>perceived_θ_i = θ_i × exp(ε_i)</code>, 여기서 <code>ε_i ~ Normal(0, σ²)</code>.</li>
+<li><strong>Longshot 편향</strong>: 페르소나에 따라 소수파 확률을 일부러 부풀립니다. 예컨대 인지 확률 <code>p_i</code> 를 <code>p_i^0.8</code> 로 거듭제곱한 뒤 재정규화하면 분포가 전반적으로 평평해지면서 소수파에 더 큰 가중치가 실립니다.</li>
+<li><strong>집단 정보 반영</strong>: 마감에 가까워질수록 이미 공개된 시장 오즈로 봇 추정을 블렌딩합니다. <code>perceived_p_i ← (1 - λ) × perceived_p_i + λ × market_p_i</code> (<code>λ</code> 는 마감까지 남은 시간에 반비례).</li>
+</ul>
+<h3 id="4-4-승식과-조합-선택">4-4. 승식과 조합 선택<a href="#4-4-승식과-조합-선택" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>승식 선택</strong>: 페르소나별 승식 분포에서 카테고리컬 샘플링</li>
+<li><strong>조합 선택</strong>: 해당 승식의 조합 공간에서, 인지 확률에 비례해 샘플링. 박싱 여부도 확률적으로 결정 (예: 30% 확률로 박스 베팅)</li>
+<li><strong>박싱 규모</strong>: 삼쌍승 박스는 3~6 마리 선택이 일반적</li>
+</ul>
+<h3 id="4-5-금액-샘플링">4-5. 금액 샘플링<a href="#4-5-금액-샘플링" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>로그 정규 분포 기반.</p>
+<pre tabindex="0"><code>X ~ LogNormal(μ_persona, σ_persona)
+</code></pre><p>최소 베팅 단위로 반올림하고, 페르소나별 상한을 적용합니다. Chaser 페르소나는 &ldquo;연속 손실 <code>k</code> 번 후 금액을 <code>1.5^k</code> 배&rdquo; 같은 조건부 증가 규칙을 추가합니다.</p>
+<h3 id="4-6-타이밍">4-6. 타이밍<a href="#4-6-타이밍" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>전체 마감 시간 <code>T</code> 를 <code>[0, 1]</code> 로 정규화하고, 베타 분포 <code>Beta(α, β)</code> 로 샘플링하면 자연스러운 꼬리 무거운 분포가 나옵니다. 예를 들어 <code>α = 5, β = 2</code> 는 오른쪽(마감 직전) 에 몰린 분포입니다. 페르소나별로 다르게 둘 수도 있습니다 (Whale 은 평균적으로 일찍 베팅, Casual 은 마감 직전 몰림 등).</p>
+<h3 id="4-7-의사코드-typescript">4-7. 의사코드 (TypeScript)<a href="#4-7-의사코드-typescript" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>설명한 조각들을 하나로 엮으면 대략 이렇게 생깁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="kr">type</span> <span class="nx">Persona</span> <span class="o">=</span> <span class="s2">&#34;casual&#34;</span> <span class="o">|</span> <span class="s2">&#34;analyst&#34;</span> <span class="o">|</span> <span class="s2">&#34;longshot&#34;</span> <span class="o">|</span> <span class="s2">&#34;whale&#34;</span> <span class="o">|</span> <span class="s2">&#34;chaser&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">interface</span> <span class="nx">Horse</span> <span class="p">{</span> <span class="nx">id</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">trueTheta</span>: <span class="kt">number</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kr">interface</span> <span class="nx">Bot</span> <span class="p">{</span> <span class="nx">id</span>: <span class="kt">string</span><span class="p">;</span> <span class="nx">persona</span>: <span class="kt">Persona</span><span class="p">;</span> <span class="nx">balance</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">lossStreak</span>: <span class="kt">number</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">simulateRace</span><span class="p">(</span><span class="nx">bots</span>: <span class="kt">Bot</span><span class="p">[],</span> <span class="nx">horses</span>: <span class="kt">Horse</span><span class="p">[],</span> <span class="nx">deadlineMs</span>: <span class="kt">number</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">bets</span>: <span class="kt">Bet</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">bot</span> <span class="k">of</span> <span class="nx">bots</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. 페르소나별 파라미터 조회
+</span></span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="nx">PERSONA_PARAMS</span><span class="p">[</span><span class="nx">bot</span><span class="p">.</span><span class="nx">persona</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. 인지 승률 계산 (노이즈 + 편향 주입)
+</span></span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">perceivedProbs</span> <span class="o">=</span> <span class="nx">perceive</span><span class="p">(</span><span class="nx">horses</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. 베팅 횟수 결정 (페르소나별 카테고리컬)
+</span></span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">numBets</span> <span class="o">=</span> <span class="nx">samplePoisson</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">betsPerRaceMean</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">numBets</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 4. 승식 선택
+</span></span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">betType</span> <span class="o">=</span> <span class="nx">sampleBetType</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">betTypePrefs</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">// 5. 조합 선택 (박싱 포함)
+</span></span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">combo</span> <span class="o">=</span> <span class="nx">sampleCombo</span><span class="p">(</span><span class="nx">betType</span><span class="p">,</span> <span class="nx">perceivedProbs</span><span class="p">,</span> <span class="nx">params</span><span class="p">.</span><span class="nx">boxingRate</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">// 6. 금액 샘플링 (Chaser 는 lossStreak 반영)
+</span></span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">stake</span> <span class="o">=</span> <span class="nx">sampleStake</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">bot</span><span class="p">.</span><span class="nx">lossStreak</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">// 7. 타이밍 샘플링 (Beta 분포)
+</span></span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">timestampMs</span> <span class="o">=</span> <span class="nx">sampleTiming</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">deadlineMs</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="nx">bets</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span> <span class="nx">bot</span>: <span class="kt">bot.id</span><span class="p">,</span> <span class="nx">betType</span><span class="p">,</span> <span class="nx">combo</span><span class="p">,</span> <span class="nx">stake</span><span class="p">,</span> <span class="nx">timestampMs</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 타임스탬프 순 정렬 후 풀에 차례대로 반영
+</span></span></span><span class="line"><span class="cl">  <span class="nx">bets</span><span class="p">.</span><span class="nx">sort</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">a</span><span class="p">.</span><span class="nx">timestampMs</span> <span class="o">-</span> <span class="nx">b</span><span class="p">.</span><span class="nx">timestampMs</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">bet</span> <span class="k">of</span> <span class="nx">bets</span><span class="p">)</span> <span class="nx">applyBetToPool</span><span class="p">(</span><span class="nx">bet</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">bets</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>실제 구현 시 주의할 점.</p>
+<ul>
+<li><strong>병렬성</strong>: 수만 봇을 시뮬레이션하려면 경주별 독립성을 이용해 CPU 병렬화</li>
+<li><strong>재현성</strong>: 경주 시드를 기록해두면 특정 경주 재현 가능. QA 와 A/B 테스트에 필수</li>
+<li><strong>파라미터 외부화</strong>: 페르소나 비중, 금액 분포 파라미터는 JSON/DB 로 분리해서 운영 중 조정 가능하게</li>
+</ul>
+<hr>
+<h2 id="5-봇-데이터-품질-검증">5. 봇 데이터 품질 검증<a href="#5-봇-데이터-품질-검증" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>&ldquo;만들었다&rdquo; 로 끝이 아닙니다. 봇이 사람처럼 보이는지를 <strong>정량적으로 검증</strong> 해야 합니다.</p>
+<h3 id="5-1-분포-일치성-지표">5-1. 분포 일치성 지표<a href="#5-1-분포-일치성-지표" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>실제 사람 베팅 데이터(다른 서비스의 공개 통계, 초기 베타 테스터 데이터 등) 와 봇 데이터를 아래 차원에서 비교합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>차원</th>
+          <th>비교 방법</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>승식별 건수 비중</td>
+          <td>카이제곱 검정 또는 단순 % 비교</td>
+      </tr>
+      <tr>
+          <td>금액 분포</td>
+          <td>KS 검정 (분포 자체 비교), QQ 플롯</td>
+      </tr>
+      <tr>
+          <td>타이밍 분포</td>
+          <td>KS 검정, 히스토그램 중첩</td>
+      </tr>
+      <tr>
+          <td>인기마/소수파 베팅 비중</td>
+          <td>오즈 구간별 집계 비교</td>
+      </tr>
+      <tr>
+          <td>조합당 베팅 수 (박싱)</td>
+          <td>히스토그램 비교</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="5-2-kl-divergence">5-2. KL Divergence<a href="#5-2-kl-divergence" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>두 분포 <code>P</code> (실제), <code>Q</code> (봇) 의 차이를 정량화하는 대표 지표.</p>
+<pre tabindex="0"><code>D_KL(P || Q) = Σ_x P(x) × log( P(x) / Q(x) )
+</code></pre><p>0 에 가까울수록 두 분포가 비슷합니다. 승식 선택처럼 카테고리컬 분포에 적용하기 좋습니다.</p>
+<h3 id="5-3-블라인드-리뷰">5-3. 블라인드 리뷰<a href="#5-3-블라인드-리뷰" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>정량 지표만으로는 놓치는 부분이 있습니다. 팀 내부에서 <strong>&ldquo;이 경주의 베팅 히스토리는 사람 것일까 봇 것일까?&rdquo;</strong> 블라인드 테스트를 하면 의외로 패턴을 잡아냅니다. 예를 들어 &ldquo;같은 봇이 비슷한 시점에 비슷한 조합을 고정적으로 건다&rdquo; 같은 인공적인 패턴은 정량 지표보다 육안으로 더 잘 잡힙니다.</p>
+<h3 id="5-4-리얼-유저-진입-후-페이드-아웃">5-4. 리얼 유저 진입 후 페이드 아웃<a href="#5-4-리얼-유저-진입-후-페이드-아웃" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>봇은 영구 장치가 아니라 <strong>유동성 부트스트랩 장치</strong> 여야 합니다. 실제 유저가 늘수록 봇 비중을 줄여가는 <strong>페이드 아웃 정책</strong> 을 미리 설계해둬야 합니다. 그렇지 않으면 &ldquo;봇이 사람 행세를 영구적으로 한다&rdquo; 는 윤리적 문제가 커집니다.</p>
+<p>기준 예시:</p>
+<ul>
+<li>인간 베팅 금액 비중이 풀 전체의 X% 를 넘으면 봇 비중 자동 감소</li>
+<li>각 경주별 봇/사람 비중을 대시보드로 상시 모니터링</li>
+<li>일정 시점 이후 봇 사용 종료 목표를 로드맵에 명시</li>
+</ul>
+<hr>
+<h2 id="6-운영상법적-유의점">6. 운영상/법적 유의점<a href="#6-운영상법적-유의점" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>마지막으로 Part 2 를 마무리하기 전에 반드시 짚어둘 부분입니다.</p>
+<ul>
+<li><strong>현금성 베팅은 법에 따라 운영 주체가 제한됩니다.</strong> 한국에서 현금 경마식 베팅은 마사회/경륜공단/경정공단만 합법입니다. 민간이 현금 경마식 서비스를 만들면 불법 사행 행위가 됩니다.</li>
+<li><strong>가상 재화 기반 서비스</strong> 도 환전 가능성이 있으면 규제 대상이 됩니다. 아이템, 토큰이 현금화 가능한 구조라면 사전 법률 검토가 필수입니다.</li>
+<li><strong>봇이 사람을 사칭하는 것 자체가 이용 약관 이슈</strong> 일 수 있습니다. 봇임을 명시하거나, &ldquo;초기 유동성 확보를 위한 시뮬레이션&rdquo; 임을 투명하게 공개하는 쪽이 장기적으로 안전합니다.</li>
+<li><strong>미성년자 접근 차단</strong>, <strong>환급 한도</strong>, <strong>플레이 시간 제한</strong> 같은 보호 장치도 함께 고려해야 합니다.</li>
+</ul>
+<p>기술적으로 잘 만든다고 끝나는 영역이 아닙니다. 게임 기획과 법무 검토가 동시에 진행되어야 합니다.</p>
+<hr>
+<h2 id="7-마치며">7. 마치며<a href="#7-마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1 과 Part 2 를 통해 경마식 베팅의 역사적 기원부터 시스템 설계 실무까지를 관통해 훑어봤습니다.</p>
+<ul>
+<li><strong>Part 1</strong>: 파리뮤추얼의 구조, 승식 체계, favorite-longshot bias 같은 특징</li>
+<li><strong>Part 2</strong>: 풀 데이터 모델, 테이크아웃/최저 배당/캐리오버 같은 설계 의사결정, 그리고 초기 유동성 확보를 위한 봇 시뮬레이션 파이프라인과 검증 기법</li>
+</ul>
+<p>제 경험상, 경마식 베팅을 도입한 게임/서비스에서 가장 흔한 실패 모드는 두 가지입니다.</p>
+<ol>
+<li><strong>승식 체계를 얕게 잡아서 유저 타입별 재미가 부족</strong> — 단승만 넣으면 금방 단조로워집니다.</li>
+<li><strong>초기 풀이 너무 얇아 오즈가 괴물처럼 널뛰어</strong> 유저가 이탈 — 봇 시뮬레이션을 처음부터 진지하게 설계하지 않으면 거의 필연적으로 만납니다.</li>
+</ol>
+<p>이 두 편의 가이드가 둘 중 어느 함정도 피하는 데 도움이 되기를 바랍니다. 경마식 베팅은 오래된 메커니즘인 만큼 수십 년의 현장 검증이 쌓여 있고, 그 지혜를 가져다 쓰면 완전히 새로운 설계를 혼자 만드는 것보다 훨씬 빠르고 안전하게 좋은 게임을 만들 수 있습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Plackett%E2%80%93Luce_model">https://en.wikipedia.org/wiki/Plackett%E2%80%93Luce_model</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Favourite%E2%80%93longshot_bias">https://en.wikipedia.org/wiki/Favourite%E2%80%93longshot_bias</a></li>
+<li>Ali, M. M. (1977). &ldquo;Probability and utility estimates for racetrack bettors.&rdquo; <em>Journal of Political Economy</em>.</li>
+<li>Ziemba, W. T., &amp; Hausch, D. B. (1986). <em>Betting at the Racetrack</em>.</li>
+<li><a href="https://www.kra.co.kr/">https://www.kra.co.kr/</a></li>
+<li><a href="https://www.japanracing.jp/en/">https://www.japanracing.jp/en/</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260423-horse-racing-betting-game-design-01/" class="button inline next">
+         [<span class="button__text">경마식 베팅 게임 설계 가이드 Part 1: 유래, 파리뮤추얼 구조, 승식 종류</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
