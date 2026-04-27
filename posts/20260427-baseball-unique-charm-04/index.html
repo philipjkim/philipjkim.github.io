@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>야구의 이상한 매력 Part 4: 데이터의 천국, 왜 너드들이 야구에 미치는가 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="야구는 모든 메이저 스포츠 중에서 데이터 분석가의 욕망을 가장 완벽하게 충족시키는 종목입니다. Bill James의 Sabermetrics, Moneyball, Statcast 시대의 발견들, Fantasy Baseball과 OOTP, 그리고 데이터로 야구에 입문하는 실용 가이드까지. 시리즈의 마지막 편입니다." />
+<meta name="keywords" content="baseball, mlb, sabermetrics, sports, statistics" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260427-baseball-unique-charm-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="야구의 이상한 매력 Part 4: 데이터의 천국, 왜 너드들이 야구에 미치는가">
+<meta property="og:description" content="야구는 모든 메이저 스포츠 중에서 데이터 분석가의 욕망을 가장 완벽하게 충족시키는 종목입니다. Bill James의 Sabermetrics, Moneyball, Statcast 시대의 발견들, Fantasy Baseball과 OOTP, 그리고 데이터로 야구에 입문하는 실용 가이드까지. 시리즈의 마지막 편입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260427-baseball-unique-charm-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-27 18:34:38 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260427-baseball-unique-charm-04/">야구의 이상한 매력 Part 4: 데이터의 천국, 왜 너드들이 야구에 미치는가</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-27</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/baseball/">baseball</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/mlb/">mlb</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/sabermetrics/">sabermetrics</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/sports/">sports</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/statistics/">statistics</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="영화-머니볼이-왜-야구에서만-만들어질-수-있었는가">영화 〈머니볼〉이 왜 야구에서만 만들어질 수 있었는가<a href="#영화-머니볼이-왜-야구에서만-만들어질-수-있었는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2011년 영화 〈머니볼(Moneyball)〉을 본 분들이 있을 겁니다. 브래드 피트가 오클랜드 애슬레틱스의 단장 빌리 빈(Billy Beane)을 연기하고, 조나 힐이 통계학자 피터 브랜드를 연기한 영화입니다. 가난한 팀이 데이터 분석으로 비싼 팀들을 이긴다는 이야기입니다.</p>
+<p>이 영화는 마이클 루이스(Michael Lewis)의 동명 논픽션을 원작으로 합니다. 그리고 이 책의 부제는 다음과 같습니다.</p>
+<blockquote>
+<p><strong>The Art of Winning an Unfair Game</strong>
+(불공정한 게임에서 이기는 기술)</p>
+</blockquote>
+<p>이 책이 폭발적인 반향을 일으킨 이유는 단순히 가난한 팀이 부자 팀을 이긴 스토리 때문만이 아닙니다. <strong>데이터 분석으로 운동 종목을 이렇게까지 정복할 수 있다는 사실 자체가 충격이었기 때문</strong>입니다.</p>
+<p>그런데 흥미로운 질문이 하나 생깁니다. 왜 〈머니볼〉은 야구 영화일까요? 왜 〈머니볼: 축구편〉은 없을까요? 〈머니볼: 농구편〉은 왜 만들기 어려울까요?</p>
+<p>답은 <a href="/posts/20260427-baseball-unique-charm-01/">Part 1</a>에서 이미 절반은 깔아 놓았습니다. 야구는 다른 메이저 스포츠와 본질적으로 다릅니다. 그리고 그 본질적 차이가 데이터 분석에 매우 유리한 환경을 만듭니다.</p>
+<p>이번 편에서는 야구가 왜 데이터의 천국인지, 어떻게 그 천국이 만들어졌는지, 그리고 그 천국을 일반 팬이 어떻게 즐길 수 있는지를 정리합니다. 시리즈의 마지막 편입니다.</p>
+<hr>
+<h2 id="야구가-데이터의-천국인-구조적-이유">야구가 데이터의 천국인 구조적 이유<a href="#야구가-데이터의-천국인-구조적-이유" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>축구나 농구 데이터 분석도 분명히 발전하고 있습니다. xG(Expected Goals), 트래킹 데이터 등 정교한 지표들이 나오고 있습니다. 하지만 깊이와 역사 면에서 야구는 다른 차원에 있습니다. 그 이유를 세 가지로 정리합니다.</p>
+<h3 id="이유-1-이산적discrete-이벤트의-연속">이유 1: 이산적(Discrete) 이벤트의 연속<a href="#이유-1-이산적discrete-이벤트의-연속" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>야구의 모든 행동은 명확하게 구분되는 단위입니다.</p>
+<p>한 번의 투구가 던져지면 결과가 나옵니다 — 스트라이크, 볼, 파울, 인플레이. 인플레이가 되면 다시 결과가 나옵니다 — 안타, 아웃, 실책. 그리고 한 번 결과가 나오면 게임이 멈춥니다.</p>
+<p>이게 데이터 분석에 왜 중요할까요? <strong>모든 이벤트가 깔끔하게 분리되어 기록될 수 있기 때문</strong>입니다.</p>
+<p>축구를 데이터로 분석하려면 &ldquo;메시가 받은 패스가 얼마나 좋은 패스였는가&quot;부터 정의해야 합니다. &ldquo;이 슛이 들어갈 확률은 얼마였는가&quot;를 계산하려면 슛 위치뿐 아니라 수비수 위치, 볼의 속도, 골키퍼 위치 등을 모두 모델링해야 합니다. 그러고도 노이즈가 큽니다.</p>
+<p>야구는 다릅니다. &ldquo;<strong>이 타자가 이 볼카운트에서 이 구종을 쳤을 때 결과가 안타였는가, 아웃이었는가</strong>&ldquo;는 100% 명확합니다. 변수 하나하나가 정확히 기록되고, 결과도 정확히 기록됩니다.</p>
+<p>분석할 사람 입장에서 야구는 깨끗하게 정리된 데이터셋입니다. 다른 종목은 분석하려면 먼저 데이터를 정리해야 하지만, 야구는 처음부터 정리되어 있습니다.</p>
+<h3 id="이유-2-거대한-표본">이유 2: 거대한 표본<a href="#이유-2-거대한-표본" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>MLB 한 시즌의 규모는 다음과 같습니다.</p>
+<ul>
+<li>30팀 × 162경기 = 시즌 총 2,430경기</li>
+<li>한 경기에 약 300투구 → 시즌 약 73만 투구</li>
+<li>한 경기에 약 80타석 × 2,430 = 시즌 약 19만 타석</li>
+<li>한 시즌에 양 팀 합쳐 약 4만 안타, 5천 홈런</li>
+</ul>
+<p>이게 한 시즌입니다. MLB는 1876년 이래 약 150년 동안 비슷한 규모의 시즌을 이어 왔습니다. 누적 데이터는 천문학적입니다.</p>
+<p>다른 종목과 비교해 봅시다.</p>
+<ul>
+<li>EPL: 20팀 × 38경기 = 760경기</li>
+<li>NBA: 30팀 × 82경기 = 2,460경기 (수는 비슷하지만 한 경기당 이벤트가 야구의 몇 분의 일)</li>
+<li>NFL: 32팀 × 17경기 = 272경기</li>
+</ul>
+<p>야구의 표본 크기는 다른 어떤 메이저 스포츠보다 압도적으로 큽니다. 통계 분석에서 표본 크기는 신뢰성과 직결됩니다. 야구는 어떤 분석을 해도 노이즈에 묻히지 않을 만큼의 데이터가 있습니다.</p>
+<h3 id="이유-3-100년-넘는-동일-규칙">이유 3: 100년 넘는 동일 규칙<a href="#이유-3-100년-넘는-동일-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>야구의 규칙은 1903년경 거의 현재 모습으로 정착됐습니다. 마운드와 홈플레이트의 거리(60피트 6인치 = 18.44m), 베이스 간 거리(90피트 = 27.43m), 9이닝, 27아웃, 4볼 3스트라이크. 이 기본 구조가 100년 넘게 거의 그대로입니다.</p>
+<p>이게 의미하는 건 <strong>1920년의 베이브 루스와 2025년의 오타니 쇼헤이를 같은 데이터로 비교할 수 있다</strong>는 것입니다. 중간에 약물 시대, 마운드 높이 변경, 공인구 차이 같은 변수들은 있지만, 본질적인 게임 구조는 같습니다.</p>
+<p>축구는 오프사이드 룰이 바뀌었고, 농구는 3점슛이 1979년에 도입됐습니다. 100년 단위로 같은 게임이라고 보기 어렵습니다. 야구는 가능합니다.</p>
+<p>이 100년 데이터의 가치는 어마어마합니다. 야구 분석가들은 1900년대 초의 타격 스타일과 2020년대 타격 스타일을 같은 통계로 비교합니다. 그게 가능한 종목은 야구뿐입니다.</p>
+<hr>
+<h2 id="sabermetrics의-진화사">Sabermetrics의 진화사<a href="#sabermetrics의-진화사" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>야구 데이터 분석에는 고유한 이름이 있습니다. <strong>세이버메트릭스(Sabermetrics)</strong>. 미국 야구 연구회 SABR(Society for American Baseball Research)에서 따온 이름입니다.</p>
+<p>세이버메트릭스의 역사는 1970년대 한 명의 통계학자 지망생에서 시작됩니다.</p>
+<h3 id="1970년대-bill-james의-자비출판">1970년대: Bill James의 자비출판<a href="#1970년대-bill-james의-자비출판" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>빌 제임스(Bill James)는 1970년대에 캔자스주의 한 통조림 공장에서 야간 경비원으로 일하던 사람이었습니다. 야구 통계가 너무 좋아서 자기가 직접 분석하고, 1977년부터 매년 〈베이스볼 애브스트랙트(Baseball Abstract)〉라는 책을 자비로 출판했습니다.</p>
+<p>이 책에서 제임스가 한 일은 단순했지만 혁명적이었습니다. <strong>기존 야구 통계가 측정하지 못하는 것들을 측정하기 시작</strong>한 것입니다.</p>
+<p>당시 야구의 표준 평가지표는 타율(AVG), 타점(RBI), 승수(W) 같은 것들이었습니다. 제임스는 이 지표들이 선수의 진짜 가치를 잘 반영하지 못한다는 것을 보여줬습니다.</p>
+<p>예를 들어:</p>
+<ul>
+<li><strong>타점(RBI)</strong>: 타자가 만든 점수. 그런데 이게 타자의 능력일까, 운일까? 같은 능력의 타자라도 앞에 출루한 주자가 많으면 RBI가 많이 나옵니다. 즉 RBI는 타자 본인의 능력보다 팀 상황에 더 의존합니다.</li>
+<li><strong>승수(W)</strong>: 투수의 승. 그런데 투수가 8이닝 1실점으로 잘 던졌어도 우리 팀이 0점 내면 패전 또는 무승부입니다. 투수가 5이닝 4실점으로 못 던졌어도 팀이 10점 내면 승리입니다. 즉 승수는 투수의 능력과 무관할 때가 많습니다.</li>
+</ul>
+<p>제임스는 이런 분석을 통해 새로운 지표들을 만들었습니다. 그중 가장 유명한 것이 <strong>출루율(OBP)</strong> 의 재발견입니다. 타자의 가장 본질적인 능력은 &ldquo;아웃되지 않고 베이스에 나가는 것&quot;이므로, 안타뿐 아니라 볼넷도 포함한 출루율이 타율보다 더 중요한 지표라는 주장이었습니다.</p>
+<p>처음에 야구계는 비웃었습니다. 통조림 공장 경비원이 무슨 야구 분석이냐는 시각이었습니다. 그런데 1980년대부터 일부 단장들이 제임스의 글을 읽기 시작했습니다.</p>
+<h3 id="2002년-moneyball-obp의-재발견">2002년: Moneyball, OBP의 재발견<a href="#2002년-moneyball-obp의-재발견" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>빌리 빈(Billy Beane)은 오클랜드 애슬레틱스의 단장이었습니다. 2002년 시즌, 오클랜드의 연봉 총액은 약 4,100만 달러였습니다. 같은 해 뉴욕 양키스의 연봉 총액은 약 1억 2,500만 달러였습니다. <strong>3배 차이</strong>.</p>
+<p>비싼 선수를 살 수 없던 빈은 빌 제임스의 분석에 주목했습니다. 그리고 한 가지 통찰을 발견했습니다.</p>
+<p><strong>시장은 출루율(OBP)을 저평가하고 있었습니다.</strong> 타율 .270에 출루율 .380인 타자(볼넷을 잘 얻어 출루)는 타율 .280에 출루율 .310인 타자(타격은 좋지만 볼넷이 적음)보다 훨씬 가치 있는데, 시장은 후자에 더 비싼 가격을 매기고 있었습니다.</p>
+<p>빈은 이 비효율을 노렸습니다. 출루율이 높지만 시장에서 저평가된 선수들을 싸게 사 모았습니다. 결과는?</p>
+<ul>
+<li>2002년 오클랜드: <strong>103승 59패. 아메리칸리그 서부지구 1위.</strong></li>
+<li>8월에는 <strong>20연승</strong>. MLB 역사상 최장 연승 기록.</li>
+</ul>
+<p>연봉이 양키스의 1/3인 팀이 양키스만큼 이긴 시즌이었습니다. 마이클 루이스가 이 이야기를 〈머니볼〉이라는 책으로 썼고, 9년 뒤 영화로 만들어졌습니다.</p>
+<p>이 사건의 진짜 의미는 단순히 &ldquo;오클랜드가 운이 좋았다&quot;가 아닙니다. <strong>데이터 분석이 종합적인 운동 능력 평가에서 전통적 스카우팅을 이길 수 있다</strong>는 사실이 증명된 것입니다. 그 후 모든 MLB 팀이 데이터 분석팀을 만들기 시작했습니다.</p>
+<h3 id="현대-지표-war-fip-wrc">현대 지표: WAR, FIP, wRC+<a href="#현대-지표-war-fip-wrc" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>세이버메트릭스가 정착한 이후 야구 분석에는 새로운 언어가 생겼습니다. 주요 현대 지표 몇 가지를 정리합니다.</p>
+<p><strong>WAR (Wins Above Replacement)</strong>: 한 선수가 &ldquo;대체 가능한 평균적인 마이너리그 콜업 선수&rdquo; 대비 팀에 몇 승을 더 가져다줬는지를 측정. 야구의 종합 능력 지표입니다.</p>
+<ul>
+<li>WAR 0 = 그저 그런 백업</li>
+<li>WAR 2 = 평범한 주전</li>
+<li>WAR 4 = 올스타급</li>
+<li>WAR 6+ = MVP 후보</li>
+<li>WAR 10 = 한 시대의 전설</li>
+</ul>
+<p>오타니의 2021년 WAR은 약 9.0이었습니다. 베이브 루스 1923년 WAR이 14.1로 역대 최고입니다.</p>
+<p><strong>FIP (Fielding Independent Pitching)</strong>: 투수의 ERA에서 수비 영향을 제거한 지표. 투수가 직접 통제할 수 있는 것(삼진, 볼넷, 홈런)만으로 ERA를 다시 계산합니다. 운이 좋은 투수와 진짜 잘 던지는 투수를 구분할 수 있습니다.</p>
+<p><strong>wRC+ (weighted Runs Created Plus)</strong>: 타자가 만든 점수를 리그 평균 100 기준으로 환산. 100이면 평균, 150이면 평균보다 50% 더 가치 있는 타자. 본즈의 2004년 wRC+는 244로 역대급이었습니다.</p>
+<p><strong>BABIP (Batting Average on Balls In Play)</strong>: 인플레이된 공의 안타 비율. 평균이 약 .300인데, 한 시즌에 .380이면 운이 좋았던 것이고 .250이면 운이 나빴던 것일 가능성이 큽니다. 다음 시즌의 회귀를 예측하는 데 쓰입니다.</p>
+<p>이 지표들이 등장하면서 야구의 평가는 완전히 달라졌습니다. 옛날 기준으로는 평범했던 선수가 wRC+로 보면 전설로 재평가되기도 하고, 옛날 기준으로 슈퍼스타였던 선수가 WAR로 보면 거품으로 드러나기도 합니다.</p>
+<hr>
+<h2 id="statcast-시대-2015-모든-공의-모든-것">Statcast 시대 (2015~): 모든 공의 모든 것<a href="#statcast-시대-2015-모든-공의-모든-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>세이버메트릭스가 1세대 데이터 혁명이라면, 2015년 이후는 2세대입니다. <strong>Statcast</strong> 라는 새로운 측정 시스템이 도입됐습니다.</p>
+<h3 id="statcast란">Statcast란<a href="#statcast란" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>MLB는 2015년부터 모든 구장에 레이더 추적 시스템과 카메라 시스템을 설치했습니다. 이 시스템은 다음을 모두 측정합니다.</p>
+<ul>
+<li><strong>모든 투구의 구속, 회전수, 회전축, 위치</strong></li>
+<li><strong>모든 타구의 발사각, 타구 속도, 비거리, 체공 시간</strong></li>
+<li><strong>모든 야수의 첫 발 반응 시간, 주력, 점프 거리</strong></li>
+<li><strong>모든 주자의 평균 시속, 가속도</strong></li>
+</ul>
+<p>이게 매 경기, 매 투구, 매 타구마다 기록됩니다. 시즌 73만 투구의 모든 데이터가 누적됩니다.</p>
+<p>이 데이터의 결과로 야구계는 새로운 발견을 쏟아냈습니다. 몇 가지 주요 사례를 보겠습니다.</p>
+<h3 id="발견-1-플라이볼-혁명-fly-ball-revolution">발견 1: 플라이볼 혁명 (Fly Ball Revolution)<a href="#발견-1-플라이볼-혁명-fly-ball-revolution" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2015년 이후 Statcast 데이터로 분석한 결과, 한 가지 놀라운 사실이 드러났습니다. <strong>타구의 발사각(Launch Angle)과 타구 속도(Exit Velocity)가 어느 조합일 때 안타나 홈런 확률이 가장 높은지가 정확히 측정되기 시작</strong>한 것입니다.</p>
+<p>기존 야구의 가르침은 &ldquo;땅볼을 강하게 쳐라&rdquo; 였습니다. 안전하기 때문이었습니다. 그런데 Statcast 분석은 정반대를 말했습니다. <strong>발사각 25도 ~ 35도, 타구 속도 95mph 이상</strong>이 모든 조합 중에서 가장 가치 높은 타구였습니다. 이 조합은 홈런이 되거나, 최소한 외야 안타가 됩니다.</p>
+<p>이 발견 후 MLB의 타격 스타일이 바뀌었습니다. 타자들은 의식적으로 타구를 띄우려고 노력하기 시작했습니다. 결과적으로:</p>
+<ul>
+<li>2014년 MLB 시즌 홈런: 4,186개</li>
+<li>2019년 MLB 시즌 홈런: <strong>6,776개</strong> (역대 최다)</li>
+</ul>
+<p>5년 만에 홈런이 60% 가까이 늘었습니다. Statcast 한 가지의 데이터 발견이 야구의 플레이 스타일 자체를 바꾼 것입니다.</p>
+<h3 id="발견-2-수비-시프트-defensive-shift">발견 2: 수비 시프트 (Defensive Shift)<a href="#발견-2-수비-시프트-defensive-shift" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>타자들의 타구 분포가 정확히 측정되자, 수비도 변했습니다. 어떤 좌타자가 타구의 80%를 1-2루 사이로 친다는 사실이 드러나면, 수비를 그쪽으로 몰아 배치합니다. 3루수가 거의 2루 옆에 가서 서고, 유격수가 2루 베이스 위에 섭니다.</p>
+<p>극단적인 시프트의 결과로 어떤 좌타자들의 BABIP가 .250대로 떨어졌습니다. 평소 .300 안타 머신이던 타자가 시프트 때문에 .250 타자가 됐습니다.</p>
+<p>이 추세가 너무 강해져서 MLB는 2023년부터 <strong>시프트 제한 룰</strong>을 도입했습니다. 내야수 4명 중 2명은 반드시 2루 베이스 양쪽에 한 명씩 배치해야 한다는 규칙입니다. 데이터가 게임 규칙을 바꾼 사례입니다.</p>
+<h3 id="발견-3-스위퍼-sweeper--새-구종의-발명">발견 3: 스위퍼 (Sweeper) — 새 구종의 발명<a href="#발견-3-스위퍼-sweeper--새-구종의-발명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2022년 MLB에 새로운 구종이 등장했습니다. <strong>스위퍼(Sweeper)</strong>. 슬라이더의 변형으로, 더 크게 옆으로 휘는 공입니다.</p>
+<p>스위퍼는 사실 새로운 동작이 아닙니다. 일본 프로야구에서는 오래전부터 비슷한 구종이 있었습니다. 그런데 Statcast 데이터로 회전축과 회전수를 정확히 측정할 수 있게 되자, MLB 투수들이 의도적으로 그런 회전을 만들어 던지는 법을 익히기 시작한 것입니다.</p>
+<p>2022년 이전엔 거의 없던 구종이 2023년에는 모든 팀에서 던지게 됐습니다. 데이터가 기존에 없던 구종을 발명해 낸 셈입니다.</p>
+<h3 id="발견-4-회전수의-의미">발견 4: 회전수의 의미<a href="#발견-4-회전수의-의미" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>직구도 Statcast로 분석되면서 새로운 측면이 드러났습니다. 같은 시속 95마일 직구라도 <strong>분당 회전수(RPM, Revolutions Per Minute)</strong> 가 다르면 효과가 다릅니다.</p>
+<ul>
+<li>회전수 2,200 RPM 직구: 평범. 가라앉음.</li>
+<li>회전수 2,500 RPM 직구: 떠오르는 듯한 착시. 헛스윙 유도.</li>
+<li>회전수 2,800 RPM 직구: 매우 위협적. 거의 수직으로 떠오름.</li>
+</ul>
+<p>저스틴 벌랜더(Justin Verlander), 게리트 콜(Gerrit Cole) 같은 에이스 투수들의 직구가 무서운 이유는 단순히 빠르기 때문이 아니라 <strong>회전수가 매우 높기 때문</strong>입니다.</p>
+<p>이 사실이 Statcast로 측정 가능해진 후, 모든 투수가 회전수를 늘리는 훈련을 시작했습니다. 직구의 평균 회전수는 매년 증가하고 있습니다.</p>
+<hr>
+<h2 id="게임이-된-야구">게임이 된 야구<a href="#게임이-된-야구" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 모든 데이터의 깊이 덕분에 야구는 단순히 보는 스포츠가 아니라 <strong>즐기는 게임</strong>이 됩니다. 야구를 게임으로 즐기는 방법 몇 가지를 소개합니다.</p>
+<h3 id="fantasy-baseball--통계로-하는-가상-gm">Fantasy Baseball — 통계로 하는 가상 GM<a href="#fantasy-baseball--통계로-하는-가상-gm" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>판타지 베이스볼은 실존 MLB 선수들로 가상 팀을 짜서 같은 리그 친구들과 경쟁하는 게임입니다. 미국 성인 4명 중 1명이 즐긴다는 거대한 시장입니다.</p>
+<p>게임 방식은 간단합니다. 시즌 시작 전에 친구들끼리 모여 드래프트를 합니다. 30~40명의 MLB 선수를 픽으로 가져와 자기 팀을 만듭니다. 시즌이 시작되면 자기 팀 선수들의 실제 MLB 성적이 누적되고, 그 누적 성적으로 다른 친구 팀과 매주 매치업을 합니다.</p>
+<p>판타지 베이스볼이 흥미로운 이유는 <strong>데이터 분석이 곧 실력</strong>이기 때문입니다. 어떤 선수가 BABIP .380으로 운이 좋았으니 다음 시즌엔 회귀할 것이다, 이 신인 투수는 FIP가 ERA보다 훨씬 낮으니 저평가되어 있다, 같은 분석을 잘하는 사람이 우승합니다.</p>
+<p>판타지 베이스볼을 5년 정도 하면 일반인도 어느 정도 야구 분석 전문가가 됩니다. 이게 미국에서 야구 문화가 그렇게 깊은 한 가지 이유입니다.</p>
+<h3 id="ootp--시뮬레이션의-끝판왕">OOTP — 시뮬레이션의 끝판왕<a href="#ootp--시뮬레이션의-끝판왕" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>OOTP(Out of the Park Baseball)</strong> 는 야구 시뮬레이션 게임의 정점입니다. 매년 새 버전이 나오며, MLB 라이선스를 보유하고 있습니다.</p>
+<p>OOTP에서 플레이어는 한 팀의 단장 또는 감독이 됩니다. 그리고 다음 모든 것을 직접 합니다.</p>
+<ul>
+<li>신인 드래프트 (수백 명의 가상 선수 중 픽)</li>
+<li>트레이드 (다른 팀과 선수 교환)</li>
+<li>자유계약(FA) 영입 (연봉 협상)</li>
+<li>마이너리그 운영 (40인 로스터 관리)</li>
+<li>라인업과 투수 교체 (경기 중 결정)</li>
+<li>30년 이상의 장기 운영 (선수 노화, 부상, 은퇴 모두 시뮬레이션)</li>
+</ul>
+<p>이 게임의 깊이는 상상을 초월합니다. 모든 가상 선수가 30개 이상의 능력치를 가지고 있고, 그 능력치가 시즌마다 변합니다. 통계는 실제 MLB와 동일한 형식으로 누적됩니다. 30년 시뮬레이션을 돌리면 가상의 명예의 전당이 만들어집니다.</p>
+<p>OOTP에 빠진 사람들은 한 시즌을 며칠에 걸쳐 시뮬레이션하고, 자기 팀의 통산 기록을 자랑합니다. 야구가 보드게임처럼 즐길 수 있는 종목인 이유 중 하나입니다.</p>
+<h3 id="mlb-the-show--아케이드도-데이터로">MLB The Show — 아케이드도 데이터로<a href="#mlb-the-show--아케이드도-데이터로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>콘솔 게임 〈MLB The Show〉는 PlayStation에서 매년 출시되는 야구 게임입니다. 화려한 그래픽과 액션 게임처럼 보이지만, 게임 내부는 모두 Statcast 데이터 기반입니다.</p>
+<ul>
+<li>각 선수의 스윙 모션이 실제 본인의 비디오로 캡처됨</li>
+<li>각 투수의 구종 회전, 속도, 움직임이 실제 Statcast 데이터로 모델링됨</li>
+<li>타격의 결과가 발사각, 타구 속도 모델로 계산됨</li>
+</ul>
+<p>야구 비디오게임을 하는 것이 사실상 Statcast 데이터로 시뮬레이션되는 야구를 즐기는 것입니다. 게임을 잘하려면 어떤 코스에 어떤 구종이 강한지를 알아야 합니다. 즉, 게임을 하면서도 야구 분석 능력이 늘어납니다.</p>
+<hr>
+<h2 id="입문-가이드-어떻게-시작할-것인가">입문 가이드: 어떻게 시작할 것인가<a href="#입문-가이드-어떻게-시작할-것인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기까지 읽으셨다면 야구가 어떤 매력을 가진 스포츠인지 어느 정도 감이 잡히셨을 겁니다. 그렇다면 어떻게 야구에 입문할 수 있을까요? 마지막으로 실용 가이드를 드립니다.</p>
+<h3 id="단계-1-한-팀을-정해라">단계 1: 한 팀을 정해라<a href="#단계-1-한-팀을-정해라" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>야구는 한 시즌 162경기입니다. 모든 팀, 모든 경기를 따라가는 건 불가능합니다. <strong>한 팀 한 선수</strong>를 정하는 게 먼저입니다.</p>
+<p>추천:</p>
+<ul>
+<li><strong>MLB 입문자</strong>: 좋아하는 도시 또는 좋아하는 선수가 있는 팀. 한국 팬이라면 다저스(오타니), 시카고 컵스, 토론토 등.</li>
+<li><strong>KBO 입문자</strong>: 살고 있는 지역의 연고 팀. 친구가 응원하는 팀.</li>
+</ul>
+<p>한 팀을 정하면 그 팀의 라인업, 투수진, 일정을 자연스럽게 외우게 됩니다. 그러면 야구가 갑자기 친근해집니다.</p>
+<h3 id="단계-2-한-경기를-진득하게-봐라">단계 2: 한 경기를 진득하게 봐라<a href="#단계-2-한-경기를-진득하게-봐라" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>처음에는 하이라이트만 보지 마세요. 한 경기를 처음부터 끝까지 진득하게 보세요. 9이닝을 다 보면 야구의 리듬을 느낄 수 있습니다.</p>
+<ul>
+<li>4월~5월의 평일 저녁 경기를 권합니다 (시즌 초반은 부담 없음)</li>
+<li>처음에는 라디오 중계 스타일로 듣는 것도 좋습니다 (야구는 라디오로도 즐길 수 있는 거의 유일한 스포츠)</li>
+<li>한국 KBO 중계는 해설이 친절합니다. 입문에 좋습니다.</li>
+</ul>
+<h3 id="단계-3-기본-통계만-익혀라">단계 3: 기본 통계만 익혀라<a href="#단계-3-기본-통계만-익혀라" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>처음부터 WAR, FIP 같은 고급 지표를 알 필요는 없습니다. 다음 7가지만 알면 충분합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>지표</th>
+          <th>보는 법</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>AVG (타율)</td>
+          <td>.300이면 슈퍼스타</td>
+      </tr>
+      <tr>
+          <td>HR (홈런)</td>
+          <td>시즌 30개면 강타자</td>
+      </tr>
+      <tr>
+          <td>RBI (타점)</td>
+          <td>시즌 100개면 클린업</td>
+      </tr>
+      <tr>
+          <td>ERA (방어율)</td>
+          <td>3.00 이하면 에이스</td>
+      </tr>
+      <tr>
+          <td>W-L (승-패)</td>
+          <td>한 투수의 시즌 승수</td>
+      </tr>
+      <tr>
+          <td>SO (삼진)</td>
+          <td>투수는 많을수록, 타자는 적을수록 좋음</td>
+      </tr>
+      <tr>
+          <td>OPS (출루+장타)</td>
+          <td>.800 이상이면 좋은 타자</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 7가지로 95% 이상의 야구 대화는 따라갈 수 있습니다.</p>
+<h3 id="단계-4-사이트-두-곳을-즐겨찾기">단계 4: 사이트 두 곳을 즐겨찾기<a href="#단계-4-사이트-두-곳을-즐겨찾기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>본격적으로 데이터를 보고 싶어지면 다음 두 사이트를 즐겨찾기 해 두세요.</p>
+<ul>
+<li><strong><a href="https://www.baseball-reference.com/">Baseball Reference</a></strong> — 야구 통계의 위키피디아. 모든 선수, 모든 경기, 모든 시즌의 데이터.</li>
+<li><strong><a href="https://www.fangraphs.com/">FanGraphs</a></strong> — 세이버메트릭스 분석 사이트. 현대 지표가 잘 정리되어 있음.</li>
+</ul>
+<p>KBO 데이터는 <strong><a href="http://www.statiz.co.kr/">Statiz</a></strong> 가 가장 좋습니다.</p>
+<h3 id="단계-5-가을야구를-기다려라">단계 5: 가을야구를 기다려라<a href="#단계-5-가을야구를-기다려라" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>10월의 MLB 포스트시즌(가을야구)은 야구의 정점입니다. 162경기 시즌의 모든 매치업, 모든 데이터, 모든 신화가 이 기간에 응축됩니다. 평소 야구를 안 보다가 월드시리즈만 보는 사람도 많습니다.</p>
+<p>만약 4월에 한 팀을 정해서 5개월 동안 따라가다가 그 팀이 가을야구에 진출하면, 그때 야구를 본격적으로 사랑하게 될 겁니다. 한 시즌의 162경기가 그 한 시리즈를 위해 쌓여 왔다는 걸 느낄 수 있기 때문입니다.</p>
+<h3 id="한국-독자에게--kbo--mlb의-시너지">한국 독자에게 — KBO + MLB의 시너지<a href="#한국-독자에게--kbo--mlb의-시너지" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한국 독자에게 한 가지 추천을 더 드립니다. <strong>KBO와 MLB를 동시에 즐기는 것</strong>이 의외로 큰 시너지를 만듭니다.</p>
+<p>이유:</p>
+<ul>
+<li>KBO 시즌은 4월~10월, MLB도 비슷합니다. 같은 시기에 두 리그를 따라가면 야구를 거의 매일 즐길 수 있습니다.</li>
+<li>KBO는 한국어 중계라 입문 부담이 적습니다. MLB는 더 깊은 통계와 슈퍼스타들의 전설을 즐길 수 있습니다.</li>
+<li>한국 선수들이 MLB에 가는 경우(류현진, 김하성, 이정후 등)가 늘어 두 리그가 자연스럽게 연결됩니다.</li>
+</ul>
+<p>KBO로 야구 문법을 익히고, MLB로 야구의 깊이를 즐기는 조합은 다른 어떤 스포츠 팬덤에서도 누리기 어려운 혜택입니다.</p>
+<hr>
+<h2 id="시리즈-마무리-시간을-멈춘-게임의-깊이">시리즈 마무리: 시간을 멈춘 게임의 깊이<a href="#시리즈-마무리-시간을-멈춘-게임의-깊이" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 4편 시리즈를 한 줄로 요약하면 다음과 같습니다.</p>
+<blockquote>
+<p>야구는 시간을 멈춘 채 1대1 대결을 무한히 반복하면서, 모든 행동을 데이터로 기록하고, 매 타석을 한 판의 체스로 만드는 게임입니다.</p>
+</blockquote>
+<p>각 편에서 다룬 핵심을 정리하면:</p>
+<ul>
+<li><strong>Part 1</strong>: 야구는 시간이 흐르지 않는, 공수가 분리된, 1대1의 무한 반복인 스포츠입니다.</li>
+<li><strong>Part 2</strong>: 한 팀 안에 투수와 타자라는 완전히 다른 두 직업이 공존합니다. 매덕스의 컨트롤, 리베라의 커터 한 구종, Ted Williams의 4할, 본즈의 OBP .609, 그리고 그 둘을 동시에 하는 오타니.</li>
+<li><strong>Part 3</strong>: 매 타석은 12가지 볼카운트, 좌투우타 매치업, 구종 시퀀싱, 포수의 사인이 작동하는 한 판의 체스입니다.</li>
+<li><strong>Part 4 (이번 글)</strong>: 모든 게 데이터로 기록되고 분석됩니다. Bill James의 세이버메트릭스, Moneyball, Statcast 시대의 발견, 그리고 Fantasy Baseball과 OOTP 같은 게임화된 즐거움까지.</li>
+</ul>
+<p>이 모든 게 한 종목에서 일어납니다. 그래서 야구에 한번 빠진 사람은 평생 빠지는 경우가 많습니다. 새로운 발견의 여지가 끝없이 있기 때문입니다.</p>
+<p>축구나 농구를 좋아하시는 분이라면 이 시리즈가 야구라는 다른 카테고리의 게임을 한번 시도해 보고 싶게 만들었기를 바랍니다. 4월의 한 평일 저녁, 좋아하는 도시의 팀 경기를 한 번 켜 보시면 좋겠습니다. 처음에는 답답할 수도 있습니다. 그런데 한 타석을 보면서 &ldquo;지금 이 카운트에서 투수는 무엇을 던질까?&ldquo;를 한 번이라도 궁금해진다면, 야구가 이미 시작된 것입니다.</p>
+<p>긴 시리즈 읽어주셔서 감사합니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Moneyball">Moneyball by Michael Lewis (2003) — Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Bill_James">Bill James Baseball Abstract history</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Sabermetrics">Sabermetrics overview (Wikipedia)</a></li>
+<li><a href="https://www.mlb.com/glossary/statcast">Statcast (MLB official)</a></li>
+<li><a href="https://library.fangraphs.com/misc/war/">WAR (Wins Above Replacement) explained — FanGraphs</a></li>
+<li><a href="https://blogs.fangraphs.com/the-fly-ball-revolution/">Fly ball revolution analysis — FanGraphs</a></li>
+<li><a href="https://www.baseball-reference.com/">Baseball Reference</a></li>
+<li><a href="https://www.fangraphs.com/">FanGraphs</a></li>
+<li><a href="http://www.statiz.co.kr/">Statiz (KBO 통계)</a></li>
+<li><a href="https://www.ootpdevelopments.com/">Out of the Park Baseball (OOTP)</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260427-baseball-unique-charm-03/" class="button inline next">
+         [<span class="button__text">야구의 이상한 매력 Part 3: 매 타석은 체스 한 판</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
