@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Agentic Coding 시대의 개발방법론 — 더 중요해진 5가지, 무용해진 5가지 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="에이전트가 코드를 대신 쓰는 시대에 어떤 개발방법론이 살아남고 어떤 것이 의미를 잃었는지, Kent Beck, Birgitta Böckeler, Simon Willison 등이 2025-2026년에 남긴 1차 자료를 바탕으로 정리합니다." />
+<meta name="keywords" content="agentic-coding, vibe-coding, programming, software-design, testing, methodology" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260428-agentic-coding-methodologies-survived-and-faded/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Agentic Coding 시대의 개발방법론 — 더 중요해진 5가지, 무용해진 5가지">
+<meta property="og:description" content="에이전트가 코드를 대신 쓰는 시대에 어떤 개발방법론이 살아남고 어떤 것이 의미를 잃었는지, Kent Beck, Birgitta Böckeler, Simon Willison 등이 2025-2026년에 남긴 1차 자료를 바탕으로 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260428-agentic-coding-methodologies-survived-and-faded/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-04-28 12:40:28 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260428-agentic-coding-methodologies-survived-and-faded/">Agentic Coding 시대의 개발방법론 — 더 중요해진 5가지, 무용해진 5가지</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-04-28</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/vibe-coding/">vibe-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/software-design/">software-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/methodology/">methodology</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며-사라진-것이-아니라-재배치되었다">들어가며: 사라진 것이 아니라 재배치되었다<a href="#들어가며-사라진-것이-아니라-재배치되었다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2025년 한 해를 거치면서 백엔드 개발자가 키보드 앞에서 보내는 시간의 모양이 크게 달라졌습니다. Claude Code, Cursor, Codex 같은 에이전트가 대부분의 코드를 직접 작성하고, 사람은 명세를 다듬고, 결과를 검증하고, 다음 작업을 지시하는 시간이 길어졌습니다. Stack Overflow의 <a href="https://stackoverflow.blog/2025/12/29/developers-remain-willing-but-reluctant-to-use-ai-the-2025-developer-survey-results-are-here/">2025 Developer Survey</a>는 응답자의 66%가 <em>almost-right AI code</em> 를 고치는 데 더 많은 시간을 쓰고 있다고 답했습니다.</p>
+<p>이 변화 앞에서 가장 자주 듣는 잘못된 결론이 <em>&ldquo;이제 SW 엔지니어링 방법론은 다 의미가 없어졌다&rdquo;</em> 입니다. 하지만 2025년 하반기에서 2026년 초까지 Kent Beck, Birgitta Böckeler, Simon Willison, Armin Ronacher, Steve Yegge처럼 실제로 에이전트와 매일 일하는 시니어 엔지니어들이 남긴 글을 읽어 보면 정반대 그림이 보입니다. <strong>방법론이 사라진 것이 아니라, 어떤 것은 더 중요해지고 어떤 것은 의미를 잃는 형태로 재배치되었습니다</strong>.</p>
+<p>판단 기준은 단순합니다. 기계가 검증할 수 있는 신호를 만드는 활동(테스트, 타입, 린트, 관측가능성, 작은 PR, 명세)은 거의 예외 없이 가치가 올라갔습니다. 반대로 그 자리에서 코드를 타이핑하는 사람의 인지 부담을 줄이기 위한 활동(영리한 추상화, 손으로 짜던 GoF 패턴, 코드 골프)은 의미가 퇴색됐습니다. 코드를 쓰는 주체가 인간이 아닐 때, &ldquo;사람을 위한 압축&quot;은 자산이 아니라 비용입니다.</p>
+<p>이 글에서는 그 재배치를 백엔드 개발자 관점에서 5+5로 정리합니다. 모든 인용과 사례는 2025년 6월 이후의 1차 자료를 우선합니다.</p>
+<hr>
+<h2 id="part-1-더-중요해진-5가지">Part 1. 더 중요해진 5가지<a href="#part-1-더-중요해진-5가지" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-test-driven-development-tdd">1. Test-Driven Development (TDD)<a href="#1-test-driven-development-tdd" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 의외의 결과는 TDD를 만든 본인에게서 나옵니다. Kent Beck은 2025년 6월 자신의 Substack에 <a href="https://tidyfirst.substack.com/p/augmented-coding-beyond-the-vibes">Augmented Coding: Beyond the Vibes</a>를 올리면서 &ldquo;vibe coding&quot;과 자신이 부르는 &ldquo;augmented coding&quot;을 구분합니다. 차이는 단 하나, <strong>레드/그린/리팩터 사이클을 에이전트가 절대 벗어나지 못하게 강제할 것</strong> 입니다.</p>
+<p>그는 에이전트가 폭주하는 신호 세 가지를 명시하는데, 그중 하나가 <em>&ldquo;테스트를 비활성화하거나 삭제하는 등의 cheating&rdquo;</em> 입니다. 즉 에이전트가 가장 손쉽게 잘못된 길로 빠지는 지점이 정확히 테스트 게이트이고, 따라서 TDD가 만들어 내는 &ldquo;빨간 테스트가 초록이 될 때까지 끝나지 않는다&quot;는 규율이 LLM 시대에 오히려 가장 강력한 가드레일이 됩니다. Beck은 본인의 VS Code 확장을 만들어 현재 사이클이 red/green/refactor 중 어디인지를 JSON 파일로 기록하고, 매 스텝마다 LLM이 그 파일을 읽고 다음 행동을 결정하도록 설계했습니다.</p>
+<p>구체 사례로 그는 같은 글에서 4주 동안 에이전트와 페어링하여 Rust + Python 바인딩으로 B+ Tree 라이브러리를 production-ready 수준으로 완성한 과정을 소개합니다. 이 작업이 가능했던 이유는 첫날 작성한 테스트가 4주 내내 회귀 안전망 역할을 했기 때문이었습니다. Simon Willison도 같은 결론에 도달합니다. 2025년 12월 <a href="https://simonwillison.net/2025/Dec/18/code-proven-to-work/">Your job is to deliver code you have proven to work</a>에서 그는 검증되지 않은 AI 코드를 그대로 머지하는 것을 <em>&ldquo;a dereliction of duty as a software developer&rdquo;</em> 라고 표현합니다.</p>
+<p><strong>핵심</strong>: 에이전트는 통과 가능한 신호만을 따라갑니다. 그 신호가 없으면 환각으로 수렴합니다. TDD는 그 신호를 만드는 가장 값싼 방법입니다.</p>
+<h3 id="2-vertical-slice-architecture-vsa">2. Vertical Slice Architecture (VSA)<a href="#2-vertical-slice-architecture-vsa" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>전통적인 N-tier 아키텍처(Controller → Service → Repository → DTO → Entity)는 한 가지 변경을 위해 5~7개 파일을 동시에 손대야 하는 구조입니다. 사람에게는 &ldquo;역할 분리&quot;라는 인지적 보상이 있지만, 에이전트에게는 <em>&ldquo;한 슬라이스를 위해 컨텍스트 윈도우에 무관한 수십 개 파일을 적재해야 하는&rdquo;</em> 비용입니다.</p>
+<p>Vladyslav Furdak가 2025년 말 <a href="https://www.furdak.net/articles/dotnet-vsa-webapi-skill">Vertical Slice Architecture for Claude Code</a>에서 이 점을 명확히 짚습니다. <em>&ldquo;한 슬라이스에만 집중함으로써 에이전트는 관련 컨텍스트만 로드하면 되므로 토큰을 절약하고 집중도가 올라간다.&rdquo;</em> LLMx의 <a href="https://llmx.tech/blog/ai-ready-codebase-claude-cursor-integration-guide/">AI-Ready Codebase Guide 2025</a>는 더 직설적으로 <em>&ldquo;VSA가 아닌 코드베이스에서는 에이전트가 한 변경을 하면서 주변까지 &lsquo;개선&rsquo;하기 시작한다&rdquo;</em> 라고 적습니다.</p>
+<p>Armin Ronacher는 <a href="https://lucumr.pocoo.org/2025/06/12/agentic-coding/">Agentic Coding Recommendations</a>에서 같은 원리를 한 줄로 요약합니다. <em>&ldquo;Have the agent do the dumbest possible thing that will work.&rdquo;</em> 추상층, 의존성 주입, 다이아몬드 상속이 줄어들수록 에이전트의 정확도는 올라갑니다.</p>
+<p><strong>구체 사례</strong>: feature-by-feature 폴더(<code>features/order-cancel/</code>, <code>features/refund-issue/</code>) 안에 핸들러, 유스케이스, 테스트가 모두 들어 있는 구조를 채택한 팀들은 같은 작업을 layered 구조에서 진행할 때 대비 에이전트 토큰 사용량이 30~50% 줄었다고 보고합니다. 백엔드 개발자가 익숙한 hexagonal/clean architecture가 무조건 틀린 것은 아니지만, <em>에이전트가 한 변경을 위해 들고 다녀야 하는 컨텍스트의 크기</em> 를 추가 평가 축으로 넣어야 합니다.</p>
+<h3 id="3-spec-driven-development-sdd">3. Spec-Driven Development (SDD)<a href="#3-spec-driven-development-sdd" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>작은 채팅 한 줄로 시작해 1~2시간 만에 망가지는 vibe coding 세션의 가장 흔한 원인은 사람과 에이전트의 머릿속에 있는 무언의 가정이 다르다는 점입니다. 2025년 하반기에 빠르게 정착한 처방이 SDD입니다. <code>requirements.md → design.md → tasks.md</code> 형태의 명세 파이프라인을 먼저 만들고, 그 위에서 에이전트가 작업하도록 합니다.</p>
+<p>Thoughtworks는 <a href="https://www.thoughtworks.com/radar/techniques/spec-driven-development">Tech Radar Vol. 33</a> (2025년 11월)에서 SDD를 Assess 링에 올리고 GitHub Spec-Kit, AWS Kiro, OpenSpec, Tessl 같은 프레임워크들을 함께 소개합니다. Addy Osmani의 <a href="https://addyosmani.com/blog/ai-coding-workflow/">My LLM coding workflow going into 2026</a>도 같은 패턴입니다. <em>&ldquo;명세를 먼저 쓰는 것이 너와 에이전트를 같은 페이지 위에 올려놓고 낭비되는 사이클을 막는다.&rdquo;</em></p>
+<p>다만 Thoughtworks는 같은 라다 항목에 솔직한 경고를 붙입니다. <em>&ldquo;이 분야는 — AI를 위해 디테일한 규칙을 손으로 만드는 일이 결국 확장되지 않는다는 — 쓰라린 교훈을 다시 배우고 있는 중일 수 있다.&rdquo;</em> 즉 SDD는 반드시 답이라기보다는, 현재 시점에서 가장 잘 작동하는 절충입니다.</p>
+<p><strong>구체 사례</strong>: Steve Yegge가 2025년 <a href="https://www.augmentcode.com/guides/steve-yegge-8-levels-ai-assisted-development">8 Levels of AI-Assisted Development</a> 프레임워크를 발표하면서, Level 6~8부터는 한 사람이 20~30개의 에이전트를 동시에 굴리기 때문에 명세 없이는 조율 자체가 불가능하다고 정리합니다. 그가 만든 Beads 이슈 트래커는 사람이 아니라 에이전트가 읽도록 설계된 도구입니다. 백엔드 컨텍스트에서 가장 즉시 효과가 나는 SDD 적용은, 새 기능을 시작할 때 <em>API 계약 + 도메인 invariant + 테스트 케이스 목록</em> 까지를 마크다운에 먼저 적고 그것을 에이전트의 입력으로 넣는 것입니다.</p>
+<h3 id="4-type-driven-design-강타입">4. Type-Driven Design (강타입)<a href="#4-type-driven-design-강타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>GitHub의 lead architect Anders Hejlsberg는 GitHub Blog 인터뷰 <a href="https://github.blog/developer-skills/programming-languages-and-frameworks/typescripts-rise-in-the-ai-era-insights-from-lead-architect-anders-hejlsberg/">TypeScript&rsquo;s rise in the AI era</a>에서 TypeScript가 2025년 GitHub 상에서 가장 많이 쓰인 언어가 됐고 전년 대비 +66% 성장했다는 데이터를 공개합니다. 같은 흐름이 백엔드에서는 Go, Rust, Kotlin의 점유율 상승으로 나타납니다.</p>
+<p>이유는 단순합니다. <strong>컴파일러는 에이전트가 자기 자신을 교정할 수 있는 가장 값싸고 빠른 deterministic feedback</strong> 입니다. Marc Love가 2025년 12월 <a href="https://marclove.com/blog/2025-12-13-rust-feedback-loop-catches-claude-code-hallucinations-dead-code-bugs/">How Rust&rsquo;s Compiler Catches What Coding Agents Get Wrong</a>에서 보여주는 사례가 직관적입니다. Claude Code가 dead code를 추가하거나 시그니처가 어긋나는 코드를 만들었을 때 Rust 컴파일러는 즉시 에러를 뱉었고, 같은 종류의 버그가 동적 타입 언어에서는 통합테스트를 풀로 돌려야 비로소 잡혔습니다.</p>
+<p>Ronacher는 <a href="https://lucumr.pocoo.org/2025/06/12/agentic-coding/">같은 글</a>에서 Go의 <em>&ldquo;structural interface가 LLM이 이해하기 정말 쉽다&rdquo;</em> 고 지적합니다. 인터페이스가 명시적으로 선언되지 않고 구조로 만족되기 때문에, 에이전트가 <em>&ldquo;이 함수가 이 타입을 받을 수 있는가&rdquo;</em> 를 추론할 때 단서가 코드 자체에 있다는 것입니다.</p>
+<p><strong>구체 사례</strong>: 백엔드에서 <code>interface{}</code>(또는 <code>any</code>) 남용, dynamic dispatch가 많은 Python/Ruby 코드, 자주 바뀌는 dict 스키마 위에 올린 비즈니스 로직 같은 패턴들은 에이전트가 사용할 때만 비용이 가시화되는 영역입니다. 같은 도메인 코드를 Pydantic v2 모델 + mypy strict 모드로 옮기는 작업이, 사람에게는 별 효용이 없어 보이지만 에이전트의 1차 결과물 품질을 즉시 끌어올립니다.</p>
+<h3 id="5-code-review-이제-시니어의-본-업">5. Code Review (이제 시니어의 본 업)<a href="#5-code-review-이제-시니어의-본-업" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Birgitta Böckeler가 2025년 7월 martinfowler.com에 올린 <a href="https://martinfowler.com/articles/exploring-gen-ai/i-still-care-about-the-code.html">I still care about the code</a>는 이 시대 시니어의 직무 정의를 다시 쓴 글입니다. 그는 <em>&ldquo;내가 이해하지 못하는 1,000~5,000줄짜리 변경을 너는 프로덕션에 배포할 수 있는가&rdquo;</em> 라는 질문을 던지고, <em>&ldquo;테스트 코드만큼은 끝까지 직접 보는 것이 내가 양보할 수 없는 최소선&rdquo;</em> 이라고 답합니다. 그가 사용하는 표현은 <em>&ldquo;GenAI in the software context is constant risk assessment&rdquo;</em> 입니다.</p>
+<p>데이터도 같은 방향입니다. CodeRabbit의 <a href="https://www.coderabbit.ai/blog/state-of-ai-vs-human-code-generation-report">State of AI vs Human Code Generation 2025</a>는 AI가 만든 PR이 사람이 만든 PR 대비 critical 등급의 리뷰 지적을 1.4~1.7배 더 많이 받는다는 통계를 공개합니다. Pullflow의 <a href="https://pullflow.com/state-of-ai-code-review-2025">State of AI Code Review 2025</a>는 <em>&ldquo;AI-assisted PR은 여전히 작고, 논리적으로 범위가 좁고, 사람이 직접 리뷰하고, 테스트 증거가 뒷받침되어야 한다&rdquo;</em> 고 정리합니다.</p>
+<p>코드 리뷰는 더 이상 <em>동료가 만든 PR에 코멘트를 다는 부수적 활동</em> 이 아니라, <strong>시니어 백엔드 엔지니어가 매일 가장 많은 시간을 쏟는 핵심 craft</strong> 가 됐습니다. 작성 속도가 10배가 됐다면, 작성을 검증하는 책임도 같은 비율로 커집니다.</p>
+<p><strong>구체 사례</strong>: 한 티켓당 <em>에이전트가 만든 1차 PR → 시니어 리뷰 → 에이전트의 자체 수정 → 시니어 재리뷰 → 머지</em> 의 두 사이클을 기본 워크플로로 채택한 팀들이 늘고 있습니다. 리뷰 시간만 보면 늘어난 것처럼 보이지만, 같은 사람이 <em>손으로 작성하던</em> 시간을 합치면 총 cycle time은 짧아집니다.</p>
+<hr>
+<h2 id="part-2-의미가-퇴색된-5가지">Part 2. 의미가 퇴색된 5가지<a href="#part-2-의미가-퇴색된-5가지" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-손으로-짜는-gof-디자인-패턴">1. 손으로 짜는 GoF 디자인 패턴<a href="#1-손으로-짜는-gof-디자인-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>GoF 23 패턴은 1994년에 <em>같은 구조의 코드를 매번 다시 타이핑하는 비용을 줄이고, 그 구조에 이름을 붙여 팀 안에서 의사소통하기 위한</em> 이중 목적의 산물이었습니다. 두 목적 중 후자(설계 어휘로서의 가치)는 여전히 유효합니다. 하지만 전자 — 손으로 타이핑하는 비용 — 는 사실상 0이 됐습니다.</p>
+<p>dev.to에 올라온 <a href="https://dev.to/tawe/design-patterns-after-the-singularity-rethinking-the-gang-of-four-for-an-ai-driven-stack-462e">Design Patterns After the Singularity</a>는 이 변화를 한 줄로 정리합니다. <em>&ldquo;패턴은 시대를 초월하지만, 그 패턴의 코드는 그렇지 않다.&rdquo;</em> 에이전트는 Visitor, Builder, Factory의 골격을 몇 초 만에 찍어냅니다. 따라서 <em>&ldquo;이 자리에 Strategy를 손으로 도입해야 한다&rdquo;</em> 라는 판단의 가치는 줄고, <em>&ldquo;여기서 어떤 패턴 어휘로 의도를 표현하면 다음 사람과 다음 에이전트가 쉽게 이해할 수 있을까&rdquo;</em> 라는 의사소통 차원의 판단만 남습니다.</p>
+<p><strong>구체 사례</strong>: 백엔드에서 자주 보는 <em>15개 파일에 걸쳐진 Decorator + Factory + Strategy 결합</em> 같은 코드는, 에이전트가 가장 자주 잘못 추론하는 영역이기도 합니다. 같은 동작을 하는 90줄짜리 직선 함수가 <em>Java 베스트 프랙티스</em> 책에는 안 나오지만 에이전트와 작업할 때는 더 견고합니다. 패턴을 <em>공부</em> 하는 일은 여전히 가치 있고, 패턴 카탈로그를 <em>외워서 손으로 적용</em> 하는 일은 가치가 떨어졌습니다.</p>
+<h3 id="2-극단적-dry와-성급한-추상화">2. 극단적 DRY와 성급한 추상화<a href="#2-극단적-dry와-성급한-추상화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>DRY 원칙의 원래 정의는 Andy Hunt와 Dave Thomas가 <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a>에서 적은 <em>&ldquo;every piece of knowledge must have a single, unambiguous, authoritative representation within a system&rdquo;</em> 입니다. 즉 <strong>지식</strong>의 중복을 줄이라는 것이지, 같은 모양의 코드 라인을 무조건 합치라는 뜻은 아니었습니다. 하지만 현장에서 자주 변형된 해석은 후자였고, 이 해석은 agentic coding과 가장 충돌합니다.</p>
+<p>Ronacher의 <a href="https://lucumr.pocoo.org/2025/06/12/agentic-coding/">Agentic Coding Recommendations</a>는 <em>&ldquo;plain SQL을 쓰고 상속과 영리한 hack을 피하라&rdquo;</em> 는 권고를 반복합니다. dev.to의 <a href="https://dev.to/alisa_plays_1455c6e6766d0/how-ai-broke-the-dry-principle-and-why-thats-a-good-thing-4ch9">How AI broke the DRY principle</a>은 더 도발적으로 <em>&ldquo;AI가 DRY를 깨뜨렸고 그것은 좋은 일&rdquo;</em> 이라는 입장을 제시합니다. 키 입력 비용이 사라졌으므로 <em>premature deduplication</em> 이 만드는 잘못된 추상의 비용만 남았다는 논리입니다.</p>
+<p>Beck도 <a href="https://tidyfirst.substack.com/p/augmented-coding-and-design">Augmented Coding &amp; Design</a>에서 <em>&ldquo;optionality를 보존하라&rdquo;</em> 고 말합니다. 즉 에이전트가 너무 일찍 추상화를 시도하지 못하게 막아야 하고, 추상은 중복이 <em>증명</em> 된 뒤에 사후적으로 추출해야 한다는 것입니다.</p>
+<p><strong>구체 사례</strong>: 비슷한 모양의 핸들러 3개를 보고 즉시 <code>BaseHandler&lt;T&gt;</code> + 제네릭 + 템플릿 메서드로 합치는 습관은, 에이전트와 일하는 코드베이스에서 거의 항상 후회로 이어집니다. 6개월 뒤 4번째 핸들러가 추가되며 베이스가 6번 깨지고, 매 변경마다 에이전트가 5~7개 파일에 걸친 호출 그래프를 따라가야 합니다. 90줄짜리 핸들러 3개가 그대로 있는 편이 모든 면에서 낫습니다.</p>
+<h3 id="3-깊은-mocking-기반-단위테스트-피라미드">3. 깊은 mocking 기반 단위테스트 피라미드<a href="#3-깊은-mocking-기반-단위테스트-피라미드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>테스트가 <em>더</em> 중요해진 시대인데, <em>어떤 종류의</em> 테스트인지가 갈립니다. 데이터베이스, HTTP 클라이언트, 외부 SDK를 깊이 모킹한 전통적 단위테스트 피라미드는 agentic coding 시대에 가장 위험한 형태로 작동합니다.</p>
+<p>arXiv의 <a href="https://arxiv.org/html/2602.00409">Are Coding Agents Generating Over-Mocked Tests? An Empirical Study</a>는 LLM 에이전트들이 <em>테스트를 통과시키기 위해</em> 모킹을 과도하게 추가하는 패턴을 정량화합니다. 에이전트는 <em>테스트가 그린이다</em> 라는 신호를 따라가도록 학습되어 있기 때문에, 같은 신호를 만들 수 있는 가장 손쉬운 방법(필요한 모든 의존성을 모킹)으로 수렴하는 경향이 있습니다.</p>
+<p>Willison의 <a href="https://simonwillison.net/2025/Sep/30/designing-agentic-loops/">Designing agentic loops</a>는 처방을 명시적으로 적습니다. <em>&ldquo;GitHub Codespaces 같은 sandboxed full container 환경이 즉석에서 제공되므로, 모킹보다는 진짜 의존성을 띄우는 통합테스트로 무게중심을 옮겨라.&rdquo;</em></p>
+<p><strong>구체 사례</strong>: 깊은 모킹 기반 테스트 1,000개가 모두 그린인데 프로덕션 마이그레이션이 부서지는 사고는 2025년에 매우 흔하게 보고됐습니다. Postgres testcontainer + 진짜 Redis + Wiremock 정도로 통합테스트를 짠 팀들이 에이전트의 실수를 가장 빨리 잡습니다. 단위테스트가 사라지는 것은 아니지만, <em>테스트 피라미드의 모양이 다이아몬드(통합 비중이 큰)에 가까워졌다</em> 가 더 정확한 묘사입니다.</p>
+<h3 id="4-코드-골프와-영리한-한-줄짜리">4. 코드 골프와 영리한 한 줄짜리<a href="#4-코드-골프와-영리한-한-줄짜리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>10줄을 1줄로 줄이는 <em>clever ternary</em> 는 사람이 키보드를 두드릴 때는 작은 자랑이었지만, 에이전트와 일하는 코드베이스에서는 비용 그 자체입니다. 다음 턴에 그 코드를 <em>읽는 주체</em> 는 시인이 아니라 추론기이고, 추론기는 토큰의 양이 아니라 의미의 명확성에 비례해 정확합니다.</p>
+<p>Ronacher는 <a href="https://lucumr.pocoo.org/2025/06/12/agentic-coding/">Agentic Coding Recommendations</a>에서 <em>&ldquo;clarity, readability, maintainability를 cleverness나 brevity보다 우선하라&rdquo;</em> 고 적습니다. 클래스보다 <em>&ldquo;명확하고 길고 서술적인 함수 이름&rdquo;</em> 을 권장하는 것도 같은 이유입니다. Self-documenting names는 에이전트가 다른 파일을 펼쳐서 정의를 다시 읽지 않아도 되도록 만드는 가장 값싼 방법입니다.</p>
+<p><strong>구체 사례</strong>: <code>flatMap(...).filter(...).reduce(...)</code> 8단 체인을 한 줄에 욱여넣은 코드는 두 가지 비용을 만듭니다. 첫째, 에이전트가 그 줄의 의도를 파악하기 위해 더 많은 토큰을 씁니다. 둘째, 에이전트의 1차 수정안이 거의 항상 <em>체인 중간 한 단계</em> 를 잘못 건드립니다. 같은 로직을 5~6줄에 걸쳐 풀어 쓰면 두 비용이 함께 사라집니다.</p>
+<h3 id="5-강제력-없는-산문-스타일-가이드">5. 강제력 없는 산문 스타일 가이드<a href="#5-강제력-없는-산문-스타일-가이드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><em>우리 팀은 이런 코드를 좋아합니다</em> 류의 60페이지짜리 위키 스타일 가이드는, 에이전트가 등장한 이후 거의 무용지물이 됐습니다. broken-robot.xyz의 <a href="https://www.brokenrobot.xyz/blog/the-renaissance-of-written-coding-conventions/">The renaissance of written coding conventions</a>는 한 줄로 요약합니다. <em>&ldquo;AI는 문서를 무시할 수 있지만, CI 파이프라인의 린트 에러를 무시할 수는 없다.&rdquo;</em></p>
+<p>여기서 <em>문서가 죽었다</em> 가 아니라, <strong>기계가 강제할 수 있는 형태로 인코딩된 규칙만이 살아남았다</strong> 가 정확한 표현입니다. 즉 같은 규칙이라도:</p>
+<ul>
+<li>60페이지 위키 + 분기별 brown-bag 발표 → <strong>죽은 자산</strong></li>
+<li>ESLint/Ruff/golangci-lint 룰 + pre-commit + CI 게이트 → <strong>살아남은 자산</strong></li>
+<li><code>AGENTS.md</code>, <code>CLAUDE.md</code>에 들어가 매 세션마다 컨텍스트로 주입되는 30줄 → <strong>새로 생긴 자산</strong></li>
+</ul>
+<p>으로 갈립니다. 2025년 8월부터 사실상 표준으로 자리잡은 <code>AGENTS.md</code> 컨벤션과, 강제력을 갖춘 린터(예: Ultracite)들이 함께 부상한 것은 우연이 아닙니다.</p>
+<p><strong>구체 사례</strong>: 한 백엔드 팀이 <em>우리는 항상 timezone-aware datetime만 쓴다</em> 라는 규칙을 위키에 적어 두었지만 에이전트가 매번 <code>datetime.now()</code> 를 만들어내던 문제가, 같은 규칙을 ruff 커스텀 룰 + <code>CLAUDE.md</code> 한 줄로 옮기자 사라졌다는 보고가 흔합니다. <em>규칙의 본질은 그대로지만 매체가 바뀌어야 한다</em> 는 것입니다.</p>
+<hr>
+<h2 id="마무리-세-가지-원칙">마무리: 세 가지 원칙<a href="#마무리-세-가지-원칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>다섯+다섯을 관통하는 패턴을 한 번 더 정리하면 다음 세 줄이 됩니다.</p>
+<ol>
+<li><strong>검증가능성 원칙</strong>: 결정적 pass/fail 신호를 만드는 활동(테스트, 타입, 린트, 관측가능성)은 위로, 사람의 미감(美感)에만 의존하는 활동(영리한 코드, 손 패턴, 산문 스타일 가이드)은 아래로.</li>
+<li><strong>컨텍스트 윈도우 원칙</strong>: 에이전트의 컨텍스트를 압축하는 활동(VSA, 서술적 이름, AGENTS.md, ADR)은 위로, 의도를 여러 파일에 흩뿌리는 활동(깊은 상속, 메타프로그래밍, 성급한 DRY)은 아래로.</li>
+<li><strong>비결정성 원칙(Böckeler)</strong>: <em>&ldquo;GenAI in the software context is constant risk assessment.&rdquo;</em> 모든 방법론은 <em>&ldquo;이것이 비결정적 협력자에 대한 리스크를 줄이는가&rdquo;</em> 로 다시 평가받아야 합니다.</li>
+</ol>
+<p>Beck은 자신의 글에서 LLM 에이전트를 <em>&ldquo;a genie&rdquo;</em> 라고 부릅니다. 지니가 등장했지만, 그 지니에게 무엇을 빌어야 하는지를 정확히 말하는 일, 그리고 지니가 가져온 결과를 검증하는 일은 결국 사람의 craft로 남습니다. <em>&ldquo;Yes programming changes with a genie, but it&rsquo;s still programming.&rdquo;</em> 이 한 문장이 2026년의 시니어 백엔드 개발자가 매일 출근할 때 읊어볼 만한 주문입니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1차-자료-named-senior-developers">1차 자료 (named senior developers)<a href="#1차-자료-named-senior-developers" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Kent Beck, <a href="https://tidyfirst.substack.com/p/augmented-coding-beyond-the-vibes">Augmented Coding: Beyond the Vibes</a>, Tidy First? Substack, 2025-06-25.</li>
+<li>Kent Beck, <a href="https://tidyfirst.substack.com/p/augmented-coding-and-design">Augmented Coding &amp; Design</a>, Tidy First? Substack, 2025.</li>
+<li>Birgitta Böckeler, <a href="https://martinfowler.com/articles/exploring-gen-ai/i-still-care-about-the-code.html">I still care about the code</a>, martinfowler.com, 2025-07-09.</li>
+<li>Simon Willison, <a href="https://simonwillison.net/2025/Sep/30/designing-agentic-loops/">Designing agentic loops</a>, 2025-09-30.</li>
+<li>Simon Willison, <a href="https://simonwillison.net/2025/Dec/18/code-proven-to-work/">Your job is to deliver code you have proven to work</a>, 2025-12-18.</li>
+<li>Armin Ronacher, <a href="https://lucumr.pocoo.org/2025/06/12/agentic-coding/">Agentic Coding Recommendations</a>, Lucumra, 2025-06-12.</li>
+<li>Steve Yegge, <a href="https://www.augmentcode.com/guides/steve-yegge-8-levels-ai-assisted-development">8 Levels of AI-Assisted Development (summary)</a>, 2025.</li>
+<li>Anders Hejlsberg, <a href="https://github.blog/developer-skills/programming-languages-and-frameworks/typescripts-rise-in-the-ai-era-insights-from-lead-architect-anders-hejlsberg/">TypeScript&rsquo;s rise in the AI era</a>, GitHub Blog.</li>
+<li>Addy Osmani, <a href="https://addyosmani.com/blog/ai-coding-workflow/">My LLM coding workflow going into 2026</a>.</li>
+<li>Andy Hunt &amp; Dave Thomas, <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer (20th Anniversary Edition)</a>.</li>
+</ul>
+<h3 id="보조-자료">보조 자료<a href="#보조-자료" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>Thoughtworks, <a href="https://www.thoughtworks.com/radar/techniques/spec-driven-development">Spec-driven development (Tech Radar Vol. 33)</a>, 2025-11.</li>
+<li>Vladyslav Furdak, <a href="https://www.furdak.net/articles/dotnet-vsa-webapi-skill">Vertical Slice Architecture for Claude Code</a>.</li>
+<li>LLMx, <a href="https://llmx.tech/blog/ai-ready-codebase-claude-cursor-integration-guide/">AI-Ready Codebase Guide 2025</a>.</li>
+<li>Marc Love, <a href="https://marclove.com/blog/2025-12-13-rust-feedback-loop-catches-claude-code-hallucinations-dead-code-bugs/">How Rust&rsquo;s Compiler Catches What Coding Agents Get Wrong</a>, 2025-12-13.</li>
+<li>CodeRabbit, <a href="https://www.coderabbit.ai/blog/state-of-ai-vs-human-code-generation-report">State of AI vs Human Code Generation 2025</a>.</li>
+<li>Pullflow, <a href="https://pullflow.com/state-of-ai-code-review-2025">State of AI Code Review 2025</a>.</li>
+<li>Stack Overflow, <a href="https://stackoverflow.blog/2025/12/29/developers-remain-willing-but-reluctant-to-use-ai-the-2025-developer-survey-results-are-here/">2025 Developer Survey</a>, 2025-12-29.</li>
+<li>arXiv, <a href="https://arxiv.org/html/2602.00409">Are Coding Agents Generating Over-Mocked Tests? An Empirical Study</a>.</li>
+<li>broken-robot.xyz, <a href="https://www.brokenrobot.xyz/blog/the-renaissance-of-written-coding-conventions/">The renaissance of written coding conventions</a>.</li>
+<li>dev.to, <a href="https://dev.to/tawe/design-patterns-after-the-singularity-rethinking-the-gang-of-four-for-an-ai-driven-stack-462e">Design Patterns After the Singularity</a>.</li>
+<li>dev.to, <a href="https://dev.to/alisa_plays_1455c6e6766d0/how-ai-broke-the-dry-principle-and-why-thats-a-good-thing-4ch9">How AI broke the DRY principle</a>.</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260427-baseball-unique-charm-04/" class="button inline next">
+         [<span class="button__text">야구의 이상한 매력 Part 4: 데이터의 천국, 왜 너드들이 야구에 미치는가</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
