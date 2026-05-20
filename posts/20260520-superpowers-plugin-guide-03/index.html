@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Superpowers 플러그인 가이드 Part 3: 품질 보증 스킬 — TDD, Systematic Debugging, Verification, Code Review :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Superpowers 의 가장 강력한 부분은 &#34;규율을 강제하는&#34; 품질 보증 스킬들입니다. 3편에서는 TDD Iron Law, 4단계 systematic debugging, verification-before-completion, code review 흐름을 Java 프로덕션 버그 시나리오와 함께 분석합니다." />
+<meta name="keywords" content="AI, LLM, programming, claude, agentic-coding, tools, guide, superpowers, testing" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Superpowers 플러그인 가이드 Part 3: 품질 보증 스킬 — TDD, Systematic Debugging, Verification, Code Review">
+<meta property="og:description" content="Superpowers 의 가장 강력한 부분은 &#34;규율을 강제하는&#34; 품질 보증 스킬들입니다. 3편에서는 TDD Iron Law, 4단계 systematic debugging, verification-before-completion, code review 흐름을 Java 프로덕션 버그 시나리오와 함께 분석합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-05-20 16:57:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-03/">Superpowers 플러그인 가이드 Part 3: 품질 보증 스킬 — TDD, Systematic Debugging, Verification, Code Review</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-05-20</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tools/">tools</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/superpowers/">superpowers</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p><a href="../20260520-superpowers-plugin-guide-01/">1편</a> 에서 Superpowers 의 개요와 설치를, <a href="../20260520-superpowers-plugin-guide-02/">2편</a> 에서 핵심 워크플로우를 다뤘습니다. 3편은 그 워크플로우 안에서 작동하면서 <strong>에이전트의 합리화와 빠져나갈 구멍을 차단</strong> 하는 품질 보증 스킬들을 자세히 들여다봅니다.</p>
+<p>이 스킬들은 모두 &ldquo;Iron Law&rdquo; 라는 이름의 명문화된 규칙을 갖고 있다는 공통점이 있습니다. 그리고 각 스킬의 문서 안에는 <strong>&ldquo;Red Flags&rdquo; 표</strong> 가 들어 있어, 에이전트가 빠져나가려 할 때 흔히 하는 합리화의 패턴들을 그대로 박아두었습니다. 이게 결과적으로 모델의 행동을 바꿉니다.</p>
+<hr>
+<h2 id="test-driven-development--테스트-없이-짠-코드는-삭제하라">Test-Driven Development — &ldquo;테스트 없이 짠 코드는 삭제하라&rdquo;<a href="#test-driven-development--테스트-없이-짠-코드는-삭제하라" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>test-driven-development</code> 스킬은 Superpowers 의 가장 엄격한 스킬 중 하나입니다. 슬로건은 단순합니다.</p>
+<blockquote>
+<p>Write the test first. Watch it fail. Write minimal code to pass.</p>
+</blockquote>
+<p>핵심 원칙도 짧습니다.</p>
+<blockquote>
+<p>If you didn&rsquo;t watch the test fail, you don&rsquo;t know if it tests the right thing.</p>
+</blockquote>
+<h3 id="iron-law">Iron Law<a href="#iron-law" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+</code></pre><p>규칙이 무자비할 정도로 강한 이유는, 모델이 &ldquo;이번 한 번만&rdquo; 이라는 식으로 빠져나가는 경향이 있기 때문입니다. 그래서 이렇게까지 박혀 있습니다.</p>
+<blockquote>
+<p>Write code before the test? Delete it. Start over.</p>
+<ul>
+<li>Don&rsquo;t keep it as &ldquo;reference&rdquo;</li>
+<li>Don&rsquo;t &ldquo;adapt&rdquo; it while writing tests</li>
+<li>Don&rsquo;t look at it</li>
+<li>Delete means delete</li>
+</ul>
+</blockquote>
+<p>&ldquo;참고용으로라도 남기지 마라, 보지도 마라&rdquo; 는 부분이 특히 인상적입니다. 모델이 자기가 짠 코드를 옆에 두면 결국 그 형태에 맞춰 테스트를 작성하게 되고, 그러면 &ldquo;테스트가 잘못된 걸 잡아낸다&rdquo; 는 TDD 의 본질이 깨지기 때문입니다.</p>
+<h3 id="red-green-refactor-사이클">RED-GREEN-REFACTOR 사이클<a href="#red-green-refactor-사이클" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[RED&lt;br/&gt;실패하는 테스트 작성] --&gt; B{올바르게&lt;br/&gt;실패하는가?}
+    B --&gt;|아니오| A
+    B --&gt;|예| C[GREEN&lt;br/&gt;최소 구현]
+    C --&gt; D{모든 테스트&lt;br/&gt;통과?}
+    D --&gt;|아니오| C
+    D --&gt;|예| E[REFACTOR&lt;br/&gt;정리]
+    E --&gt; F{여전히&lt;br/&gt;green?}
+    F --&gt;|아니오| E
+    F --&gt;|예| G[다음 사이클]
+    G --&gt; A
+
+    style A fill:#FFB6C1,color:#000000
+    style B fill:#FFD700,color:#000000
+    style C fill:#90EE90,color:#000000
+    style D fill:#FFD700,color:#000000
+    style E fill:#87CEEB,color:#000000
+    style F fill:#FFD700,color:#000000
+    style G fill:#DDA0DD,color:#000000
+</code></pre><p>각 단계가 별도의 작업으로 분리되어 있다는 점이 중요합니다. &ldquo;RED 와 GREEN 을 한 번에 처리&rdquo; 하지 않습니다. 테스트를 작성하고 → 실행해서 실패를 눈으로 본 다음에야 → 구현으로 넘어갑니다. 이 분리가 <a href="../20260520-superpowers-plugin-guide-02/">2편</a> 에서 본 &ldquo;bite-sized task&rdquo; 가 왜 5분 단위인지의 이유 중 하나입니다.</p>
+<h3 id="테스트-작성이-어려울-때-의-해석">&ldquo;테스트 작성이 어려울 때&rdquo; 의 해석<a href="#테스트-작성이-어려울-때-의-해석" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>코드를 짜다 보면 &ldquo;테스트 쓰기가 너무 어려운 케이스&rdquo; 가 등장합니다. 그럴 때 보통의 에이전트는 &ldquo;이건 테스트하기 어려운 영역이라&rdquo; 며 TDD 를 건너뜁니다. Superpowers 의 스킬은 이를 다르게 해석합니다.</p>
+<blockquote>
+<p>테스트하기 어렵다는 건, 그 코드의 설계가 잘못되었다는 신호다. 설계를 바꿀 기회로 받아들여라.</p>
+</blockquote>
+<p>테스트하기 어려운 코드는 대개 다음 중 하나입니다.</p>
+<ul>
+<li>책임이 너무 많이 얽혀 있다 (SRP 위반)</li>
+<li>외부 의존성이 직접 박혀 있다 (의존성 주입 부재)</li>
+<li>부수효과(side effect) 가 제어 불가능하다</li>
+</ul>
+<p>이 신호를 잡아 설계를 바꾸는 것이 TDD 의 본래 의도라는 점을, 스킬 문서가 단호하게 못박습니다.</p>
+<hr>
+<h2 id="systematic-debugging--추측하지-말고-root-cause-부터">Systematic Debugging — &ldquo;추측하지 말고 root cause 부터&rdquo;<a href="#systematic-debugging--추측하지-말고-root-cause-부터" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>systematic-debugging</code> 스킬은 버그가 발견되거나 테스트가 실패할 때 자동으로 호출됩니다. Iron Law 는 다음과 같습니다.</p>
+<pre tabindex="0"><code>NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+</code></pre><p>에이전트가 가장 자주 빠지는 함정은 &ldquo;이게 원인 같다&rdquo; 는 추측에 기반한 패치 남발입니다. 한 번 패치해 보고 안 되면 다른 패치, 또 안 되면 또 다른 패치 — 이러는 동안 코드는 점점 누더기가 되고 진짜 원인은 더 멀어집니다.</p>
+<h3 id="4단계-프로세스">4단계 프로세스<a href="#4단계-프로세스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>각 단계는 다음 단계로 넘어가기 전에 <strong>반드시 완료</strong> 되어야 합니다.</p>
+<h4 id="phase-1-root-cause-investigation">Phase 1: Root Cause Investigation<a href="#phase-1-root-cause-investigation" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<ol>
+<li><strong>에러 메시지를 정독한다.</strong> 스택 트레이스 전체를 본다. 라인 번호, 파일 경로, 에러 코드를 기록한다.</li>
+<li><strong>일관되게 재현한다.</strong> 재현이 안 되면 다음 단계로 갈 수 없다.</li>
+<li><strong>차이점을 좁힌다.</strong> 언제부터 깨졌나? 어떤 환경에서 깨지나? 무엇이 다른가?</li>
+<li><strong>가설을 세운다.</strong> 단, 가설은 &ldquo;fix 를 제안할 자격&rdquo; 이 아니다. 가설을 검증할 증거를 모은다.</li>
+</ol>
+<h4 id="phase-2-hypothesis-validation">Phase 2: Hypothesis Validation<a href="#phase-2-hypothesis-validation" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>가설을 검증하는 단계입니다. 로그 추가, 디버거 부착, 작은 실험. 가설이 맞는지 <strong>틀리는지</strong> 까지 확인합니다. 한 가설이 그럴듯해 보여도 다른 가설을 배제하지 않으면 위험합니다.</p>
+<h4 id="phase-3-fix-design">Phase 3: Fix Design<a href="#phase-3-fix-design" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>이 시점에서야 비로소 수정안을 설계합니다. 다음을 고려합니다.</p>
+<ul>
+<li>이 수정이 다른 부분에 영향을 주지 않는가?</li>
+<li>비슷한 root cause 가 다른 곳에도 있는가? (defense-in-depth)</li>
+<li>회귀 방지 테스트를 어떻게 추가할 것인가?</li>
+</ul>
+<h4 id="phase-4-fix-verification">Phase 4: Fix Verification<a href="#phase-4-fix-verification" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>수정 적용 후, 다음을 검증합니다.</p>
+<ul>
+<li>원래 증상이 재현되지 않는가?</li>
+<li>회귀 테스트가 RED-GREEN 사이클을 정확히 보여주는가?</li>
+<li>인접 영역의 테스트가 깨지지 않았는가?</li>
+</ul>
+<h3 id="한-번-더-패치해-볼까-합리화-차단">&ldquo;한 번 더 패치해 볼까&rdquo; 합리화 차단<a href="#한-번-더-패치해-볼까-합리화-차단" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>스킬의 Red Flags 표에는 다음과 같은 항목들이 들어 있습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>합리화</th>
+          <th>실제로는</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&ldquo;한 줄만 고치면 될 것 같은데&rdquo;</td>
+          <td>한 줄짜리 수정도 root cause 가 있다. 조사하라.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;시간이 없으니 일단 패치하고 나중에&rdquo;</td>
+          <td>추측 패치는 결과적으로 더 느리다. systematic 이 빠르다.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;이전 수정이 안 됐으니 다른 시도를&rdquo;</td>
+          <td>이전 수정이 왜 실패했는지부터 분석하라.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;이건 너무 단순한 버그라&rdquo;</td>
+          <td>단순해 보이는 버그도 root cause 가 있다.</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 표가 박혀있기 때문에, 에이전트가 &ldquo;이번엔 빨리 가자&rdquo; 며 빠져나가려 해도 즉시 자기 합리화를 자각하고 다시 프로세스로 돌아옵니다.</p>
+<hr>
+<h2 id="verification-before-completion--증거-없이-통과-주장-금지">Verification Before Completion — &ldquo;증거 없이 통과 주장 금지&rdquo;<a href="#verification-before-completion--증거-없이-통과-주장-금지" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>verification-before-completion</code> 스킬은 에이전트가 &ldquo;완료했습니다, 테스트 통과합니다&rdquo; 라고 말하기 전에 <strong>이번 메시지에서 검증 명령을 실행했는지</strong> 를 강제합니다.</p>
+<h3 id="iron-law-1">Iron Law<a href="#iron-law-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code>NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+</code></pre><p>&ldquo;이번 메시지에서 검증 명령을 실행하지 않았다면, 통과한다고 주장할 수 없다.&rdquo; 라는 의미입니다. 이전 메시지에서 통과했더라도, 그 이후에 코드를 한 줄이라도 수정했다면 다시 검증해야 합니다.</p>
+<h3 id="gate-function">Gate Function<a href="#gate-function" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>스킬은 다음과 같은 &ldquo;통과 함수&rdquo; 를 강제합니다.</p>
+<pre tabindex="0"><code>BEFORE claiming any status or expressing satisfaction:
+
+1. IDENTIFY: 이 주장을 증명할 명령이 무엇인가?
+2. RUN: 그 명령을 (신선하게, 전체) 실행한다.
+3. READ: 전체 출력을 읽고, exit code 와 실패 수를 확인한다.
+4. VERIFY: 출력이 주장을 뒷받침하는가?
+   - 아니면: 증거와 함께 실제 상태를 말한다.
+   - 맞으면: 증거와 함께 주장한다.
+5. ONLY THEN: 주장한다.
+</code></pre><h3 id="흔한-실패-패턴">흔한 실패 패턴<a href="#흔한-실패-패턴" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>스킬 안의 표가 정확합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>주장</th>
+          <th>필요한 증거</th>
+          <th>부족한 것</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>테스트 통과</td>
+          <td>테스트 명령 출력: 0 failures</td>
+          <td>이전 실행, &ldquo;통과할 것 같다&rdquo;</td>
+      </tr>
+      <tr>
+          <td>린터 깨끗</td>
+          <td>린터 출력: 0 errors</td>
+          <td>부분 확인, 추정</td>
+      </tr>
+      <tr>
+          <td>빌드 성공</td>
+          <td>빌드 명령: exit 0</td>
+          <td>린터 통과, 로그가 괜찮아 보임</td>
+      </tr>
+      <tr>
+          <td>버그 수정됨</td>
+          <td>원래 증상 테스트: 통과</td>
+          <td>코드 변경됨, &ldquo;수정됐겠지&rdquo;</td>
+      </tr>
+      <tr>
+          <td>회귀 테스트 작동</td>
+          <td>RED-GREEN 사이클 검증됨</td>
+          <td>테스트가 한 번 통과함</td>
+      </tr>
+      <tr>
+          <td>Agent 완료</td>
+          <td>VCS diff 가 변경을 보여줌</td>
+          <td>Agent 가 &ldquo;성공&rdquo; 보고</td>
+      </tr>
+  </tbody>
+</table>
+<p>특히 마지막 줄이 중요합니다. <strong>&ldquo;Agent 가 성공이라고 말했다&rdquo; 는 증거가 아닙니다.</strong> 메인 에이전트는 subagent 의 보고를 그대로 믿지 않고, <code>git diff</code> 등으로 실제 변경을 확인해야 합니다.</p>
+<h3 id="javago-백엔드에서의-적용">Java/Go 백엔드에서의 적용<a href="#javago-백엔드에서의-적용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Java 프로젝트라면 다음과 같은 명령을 매번 신선하게 실행해야 합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./gradlew clean <span class="nb">test</span>
+</span></span><span class="line"><span class="cl">./gradlew build
+</span></span></code></pre></div><p>Go 프로젝트라면:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">go <span class="nb">test</span> -race ./...
+</span></span><span class="line"><span class="cl">go build ./...
+</span></span><span class="line"><span class="cl">go vet ./...
+</span></span></code></pre></div><p>캐시된 결과나 부분 실행은 증거로 인정되지 않습니다. <code>-race</code> 같은 옵션도 한번 빼먹으면 race condition 버그가 끼어듭니다.</p>
+<hr>
+<h2 id="code-review--requesting--receiving">Code Review — Requesting &amp; Receiving<a href="#code-review--requesting--receiving" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Superpowers 는 코드 리뷰를 워크플로우의 정규 단계로 편입시킵니다. <code>requesting-code-review</code> 와 <code>receiving-code-review</code> 두 스킬이 짝을 이룹니다.</p>
+<h3 id="requesting-code-review">Requesting Code Review<a href="#requesting-code-review" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>언제 리뷰를 요청하는가?</p>
+<p><strong>Mandatory (필수):</strong></p>
+<ul>
+<li>subagent-driven development 의 각 태스크 완료 후</li>
+<li>주요 기능 구현 완료 후</li>
+<li>main 으로 merge 전</li>
+</ul>
+<p><strong>Optional but valuable (선택이지만 유익):</strong></p>
+<ul>
+<li>막혔을 때 (새로운 관점)</li>
+<li>리팩토링 전 (베이스라인 체크)</li>
+<li>복잡한 버그 수정 후</li>
+</ul>
+<p>리뷰 요청 방식은 다음과 같습니다.</p>
+<ol>
+<li>Git SHA 를 얻는다.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">BASE_SHA</span><span class="o">=</span><span class="k">$(</span>git rev-parse HEAD~1<span class="k">)</span>  <span class="c1"># or origin/main</span>
+</span></span><span class="line"><span class="cl"><span class="nv">HEAD_SHA</span><span class="o">=</span><span class="k">$(</span>git rev-parse HEAD<span class="k">)</span>
+</span></span></code></pre></div></li>
+<li>Task tool 로 code reviewer subagent 를 dispatch 한다. 다음 정보를 정확히 채워 넣은 프롬프트로:
+<ul>
+<li><code>{DESCRIPTION}</code> — 무엇을 만들었는지</li>
+<li><code>{PLAN_OR_REQUIREMENTS}</code> — 무엇을 했어야 하는지</li>
+<li><code>{BASE_SHA}</code> / <code>{HEAD_SHA}</code> — 리뷰 범위</li>
+</ul>
+</li>
+<li>Reviewer subagent 는 <strong>메인 세션의 컨텍스트를 받지 않습니다.</strong> 정확히 위 정보만 가지고 독립적으로 리뷰합니다.</li>
+</ol>
+<p>이 &ldquo;독립성&rdquo; 이 핵심입니다. 메인 에이전트가 &ldquo;내가 어떻게 짰는지&rdquo; 를 reviewer 에게 설명해버리면, reviewer 가 그 설명에 영향받아 &ldquo;그렇게 짠 이유가 있겠지&rdquo; 하고 넘어가 버립니다. 독립적 리뷰만이 진짜 이슈를 잡아냅니다.</p>
+<h3 id="severity-기반-리포트">Severity 기반 리포트<a href="#severity-기반-리포트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Code reviewer 는 발견한 이슈를 severity 별로 분류해 보고합니다.</p>
+<ul>
+<li><strong>Critical</strong> — merge 전에 반드시 수정해야 함 (보안 취약점, 데이터 손실 위험, 명백한 버그)</li>
+<li><strong>High</strong> — 수정 권장 (성능 이슈, 견고성 부족)</li>
+<li><strong>Medium</strong> — 개선 권장 (코드 품질, 가독성)</li>
+<li><strong>Low</strong> — 참고용 (스타일, 네이밍 제안)</li>
+</ul>
+<p>Critical 이슈가 있으면 다음 단계 진행이 차단됩니다.</p>
+<h3 id="receiving-code-review">Receiving Code Review<a href="#receiving-code-review" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>리뷰를 받았을 때의 흐름도 스킬화되어 있습니다. <code>receiving-code-review</code> 는 다음을 강조합니다.</p>
+<ul>
+<li>모든 코멘트를 평가하고 응답한다 (무시하지 않는다)</li>
+<li>&ldquo;이건 내 의도였다&rdquo; 라고 합리화하기 전에, 진짜로 reviewer 가 맞는 건 아닌지 검토한다</li>
+<li>동의하지 않는 경우 명확한 근거와 함께 응답한다</li>
+<li>동의한 경우 수정을 적용하고, 수정 후 다시 검증한다</li>
+</ul>
+<hr>
+<h2 id="실전-시나리오-프로덕션-버그-잡기">실전 시나리오: 프로덕션 버그 잡기<a href="#실전-시나리오-프로덕션-버그-잡기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 모든 스킬이 어떻게 어우러지는지, Java 백엔드 프로덕션 버그 시나리오로 살펴봅니다.</p>
+<p><strong>상황:</strong> Spring Boot 기반 API 서버에서 사용자 결제 트랜잭션이 가끔 중복으로 처리된다는 보고가 들어왔습니다. 일주일에 2~3건 발생합니다.</p>
+<pre tabindex="0"><code>사용자: 결제 중복 처리 버그가 났어. 일주일에 2~3건 정도. 로그는 여기야 [...]
+</code></pre><h3 id="phase-1-root-cause-investigation-systematic-debugging-자동-호출">Phase 1: Root Cause Investigation (systematic-debugging 자동 호출)<a href="#phase-1-root-cause-investigation-systematic-debugging-자동-호출" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에이전트는 곧바로 패치 시도를 하지 않습니다. 대신:</p>
+<ol>
+<li>로그를 정독합니다. 트랜잭션 ID, 타임스탬프, 요청 헤더를 모두 본다.</li>
+<li>재현을 시도합니다. 로컬에서 동시 요청을 보내는 부하 테스트를 작성한다.</li>
+<li><strong>재현 성공.</strong> 동시 요청 시 약 1% 확률로 같은 결제가 두 번 처리됨.</li>
+<li>차이점 분석. <code>PaymentService.process()</code> 내부에서 idempotency key 체크와 결제 실행 사이에 race window 가 존재.</li>
+<li>가설: 분산 락이나 DB unique constraint 가 누락되었을 것.</li>
+</ol>
+<h3 id="phase-2-hypothesis-validation-1">Phase 2: Hypothesis Validation<a href="#phase-2-hypothesis-validation-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에이전트는 다음을 확인합니다.</p>
+<ul>
+<li><code>payments</code> 테이블의 인덱스 확인: <code>idempotency_key</code> 에 UNIQUE 제약이 없음. <strong>가설 일치.</strong></li>
+<li>다른 가설(클라이언트 재시도 로직)도 점검 — 클라이언트 코드 확인 결과, 5초 timeout 후 재시도가 들어옴. 이게 race 와 결합해 중복을 일으킴.</li>
+</ul>
+<h3 id="phase-3-fix-design-1">Phase 3: Fix Design<a href="#phase-3-fix-design-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에이전트는 두 단계 방어를 제안합니다 (defense-in-depth).</p>
+<ol>
+<li>DB 레벨: <code>payments.idempotency_key</code> 에 UNIQUE 제약 추가 + 마이그레이션</li>
+<li>애플리케이션 레벨: <code>PaymentService.process()</code> 의 idempotency 처리 로직을 SELECT FOR UPDATE 기반으로 변경</li>
+</ol>
+<p>여기서 <code>brainstorming</code> 스킬이 한 번 더 트리거됩니다 — 마이그레이션은 dangerous 한 작업이라 사용자 승인이 필수입니다. 특히 운영 중인 테이블에 UNIQUE 제약을 추가할 때 기존 중복 행이 있으면 마이그레이션이 실패하므로, 그 처리 방안을 사용자와 합의해야 합니다.</p>
+<h3 id="phase-4-fix-verification--tdd">Phase 4: Fix Verification &amp; TDD<a href="#phase-4-fix-verification--tdd" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>test-driven-development</code> 가 자연스럽게 호출됩니다.</p>
+<ol>
+<li><strong>RED</strong>: 동시 요청 시 중복 결제를 재현하는 통합 테스트 작성, 실행 → 실패 확인.</li>
+<li><strong>GREEN</strong>: SELECT FOR UPDATE 적용. 테스트 실행 → 통과 확인.</li>
+<li><strong>REFACTOR</strong>: 중복된 idempotency 체크 로직 정리.</li>
+</ol>
+<p>이 과정에서 <code>verification-before-completion</code> 이 매 단계 자동 호출되어, &ldquo;테스트 통과합니다&rdquo; 라는 보고 전에 실제 명령 실행을 강제합니다.</p>
+<h3 id="code-review">Code Review<a href="#code-review" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>태스크가 완료되면 <code>requesting-code-review</code> 가 자동 호출됩니다. Code reviewer subagent 가 독립적으로 다음을 점검합니다.</p>
+<ul>
+<li>SELECT FOR UPDATE 가 deadlock 위험을 만들지 않는가?</li>
+<li>트랜잭션 timeout 설정이 적절한가?</li>
+<li>UNIQUE 제약 마이그레이션이 운영 환경에서 안전한가?</li>
+<li>회귀 테스트가 실제로 race 를 잡는가?</li>
+</ul>
+<p>Critical 이슈가 발견되면 다음 단계로 못 갑니다. 모두 해소되면 <code>finishing-a-development-branch</code> 가 호출되어 PR 을 만듭니다.</p>
+<hr>
+<h2 id="이-스킬들이-모이면-만드는-효과">이 스킬들이 모이면 만드는 효과<a href="#이-스킬들이-모이면-만드는-효과" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>각 스킬이 따로 보면 &ldquo;그냥 좋은 관행&rdquo; 처럼 보이지만, 함께 자동으로 작동하면 다음과 같은 효과가 나타납니다.</p>
+<ol>
+<li><strong>&ldquo;빠른 패치&rdquo; 의 유혹 차단</strong> — systematic-debugging 으로 인해 추측 패치 불가능</li>
+<li><strong>&ldquo;테스트 나중에&rdquo; 의 유혹 차단</strong> — TDD Iron Law 로 인해 코드 먼저 짤 수 없음</li>
+<li><strong>&ldquo;통과한 것 같아&rdquo; 의 유혹 차단</strong> — verification-before-completion 으로 인해 거짓 보고 불가</li>
+<li><strong>&ldquo;내가 짠 코드는 좋은 코드&rdquo; 의 유혹 차단</strong> — 독립 reviewer subagent 로 인해 자기 옹호 불가</li>
+</ol>
+<p>이 네 가지가 합쳐지면 결과적으로 <strong>사람이 옆에서 감독하지 않아도 결과 품질이 일정 수준 이상을 유지</strong> 합니다. 이게 Superpowers 의 가치 명제의 핵심입니다.</p>
+<hr>
+<h2 id="다음-편-미리보기">다음 편 미리보기<a href="#다음-편-미리보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="../20260520-superpowers-plugin-guide-04/">4편</a> 에서는 마지막으로 <strong>명시적 호출 vs 자동 트리거</strong> 를 비교 분석합니다.</p>
+<ul>
+<li><code>/superpowers:xxx</code> 형태로 직접 호출해야 하는 경우 (재호출 강제, 디버깅, skill 점검 등)</li>
+<li>자동 트리거에 맡겨도 되는 경우</li>
+<li>자동 트리거가 작동하지 않을 때의 트러블슈팅</li>
+<li>CLAUDE.md/AGENTS.md 로 동작을 오버라이드하는 방법</li>
+<li>Java/Go 백엔드 개발 현장에서의 실용 팁과 한계</li>
+</ul>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Superpowers 저장소: <a href="https://github.com/obra/superpowers">https://github.com/obra/superpowers</a></li>
+<li><code>test-driven-development</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/test-driven-development/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/test-driven-development/SKILL.md</a></li>
+<li><code>systematic-debugging</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/systematic-debugging/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/systematic-debugging/SKILL.md</a></li>
+<li><code>verification-before-completion</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md</a></li>
+<li><code>requesting-code-review</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/requesting-code-review/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/requesting-code-review/SKILL.md</a></li>
+<li><code>receiving-code-review</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/receiving-code-review/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/receiving-code-review/SKILL.md</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-04/" class="button inline prev">
+        &lt; [<span class="button__text">Superpowers 플러그인 가이드 Part 4: 명시 호출 vs 자동 트리거 — 실전 가이드와 한계</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-02/" class="button inline next">
+         [<span class="button__text">Superpowers 플러그인 가이드 Part 2: 핵심 워크플로우 — Brainstorming부터 Subagent-driven Development까지</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

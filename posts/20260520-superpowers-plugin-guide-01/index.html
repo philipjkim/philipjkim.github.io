@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Superpowers 플러그인 가이드 Part 1: 소개, 설치, 그리고 철학 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claude Code, Codex 등 코딩 에이전트에 &#34;바로 쓸 수 있는 개발 방법론&#34;을 주입하는 Superpowers 플러그인. 1편에서는 무엇이고 왜 만들어졌는지, 어떻게 자동 트리거되는지, 그리고 어떤 환경에 어떻게 설치하는지를 정리합니다." />
+<meta name="keywords" content="AI, LLM, programming, claude, agentic-coding, tools, guide, superpowers" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Superpowers 플러그인 가이드 Part 1: 소개, 설치, 그리고 철학">
+<meta property="og:description" content="Claude Code, Codex 등 코딩 에이전트에 &#34;바로 쓸 수 있는 개발 방법론&#34;을 주입하는 Superpowers 플러그인. 1편에서는 무엇이고 왜 만들어졌는지, 어떻게 자동 트리거되는지, 그리고 어떤 환경에 어떻게 설치하는지를 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-05-20 16:55:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-01/">Superpowers 플러그인 가이드 Part 1: 소개, 설치, 그리고 철학</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-05-20</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tools/">tools</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/superpowers/">superpowers</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Claude Code, Codex CLI, Cursor 등 코딩 에이전트(coding agent)를 매일 쓰는 백엔드 개발자라면 한 번쯤은 이런 경험이 있을 겁니다. &ldquo;간단한 기능 하나만 추가해줘&rdquo; 라고 했더니, 요구사항 정리 없이 코드를 우다다 쏟아내다가 절반쯤에서 길을 잃고, 테스트도 빠진 채 &ldquo;완료했습니다&rdquo; 라고 보고하는 경우 말입니다. 모델은 똑똑한데, 작업 방식이 들쭉날쭉해서 결과의 품질이 운에 좌우됩니다.</p>
+<p>Jesse Vincent 가 만든 <strong><a href="https://github.com/obra/superpowers">Superpowers</a></strong> 는 바로 이 지점을 노린 플러그인입니다. 모델을 더 똑똑하게 만드는 게 아니라, 모델이 <strong>언제, 어떤 순서로, 어떤 규율로</strong> 일해야 하는지를 강제하는 &ldquo;방법론(methodology)&rdquo; 자체를 플러그인 형태로 주입합니다.</p>
+<p>이 시리즈는 4편으로 나누어 Superpowers 를 깊게 다룹니다. 1편에서는 <strong>무엇이고, 어떻게 동작하며, 어떻게 설치하는지</strong> 까지를 정리합니다. Java/Go 기반 백엔드 서비스를 Claude Code, Codex 등으로 개발하고 있는 중급 이상의 개발자를 가정하고 글을 씁니다.</p>
+<hr>
+<h2 id="superpowers-란-무엇인가">Superpowers 란 무엇인가<a href="#superpowers-란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Superpowers 는 한 줄로 요약하면 <strong>&ldquo;코딩 에이전트를 위한 완성된 소프트웨어 개발 방법론&rdquo;</strong> 입니다. 저자 본인의 표현을 그대로 빌리자면:</p>
+<blockquote>
+<p>Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.</p>
+</blockquote>
+<p>여기서 핵심 단어는 두 개입니다.</p>
+<ul>
+<li><strong>Composable skills</strong>: 잘게 쪼개진 단위 스킬들의 묶음. 각 스킬은 한 가지 작업(브레인스토밍, 계획 작성, TDD, 디버깅 등)을 어떻게 해야 하는지에 대한 규약과 체크리스트를 담고 있습니다.</li>
+<li><strong>Initial instructions that make sure your agent uses them</strong>: 에이전트 세션이 시작될 때 &ldquo;관련 스킬이 있을 가능성이 1% 라도 있으면 무조건 먼저 호출하라&rdquo; 고 강제하는 부트스트랩 지시문.</li>
+</ul>
+<p>즉, Superpowers 는 &ldquo;방법론 문서&rdquo; 를 사람이 읽으라고 주는 게 아니라, <strong>에이전트가 매 턴마다 자동으로 따라야 할 규칙으로 주입</strong> 합니다. 사용자가 매번 &ldquo;이번엔 TDD 로 해줘&rdquo;, &ldquo;먼저 설계부터 같이 정리해줘&rdquo; 라고 말하지 않아도, 에이전트가 알아서 그 흐름을 따라갑니다.</p>
+<h3 id="어떤-스킬들이-들어-있나">어떤 스킬들이 들어 있나<a href="#어떤-스킬들이-들어-있나" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>저장소의 <code>skills/</code> 디렉터리에는 다음과 같은 스킬들이 들어 있습니다.</p>
+<p><strong>프로세스 스킬(워크플로우 전체 흐름)</strong></p>
+<ul>
+<li><code>brainstorming</code> — 코드 작성 전에 요구사항과 설계를 정리</li>
+<li><code>writing-plans</code> — 승인된 설계를 2~5분 단위의 태스크로 분해한 구현 계획서 작성</li>
+<li><code>executing-plans</code> — 사람이 중간 체크포인트를 두면서 계획을 실행</li>
+<li><code>subagent-driven-development</code> — 태스크별로 fresh subagent 를 띄워 자동 실행 + 2단계 리뷰</li>
+<li><code>dispatching-parallel-agents</code> — 서로 독립적인 작업을 병렬 서브에이전트로 분산</li>
+<li><code>using-git-worktrees</code> — 격리된 작업 공간(브랜치/worktree) 설정</li>
+<li><code>finishing-a-development-branch</code> — 완료 시 merge/PR/cleanup 결정 흐름</li>
+</ul>
+<p><strong>품질 보증 스킬</strong></p>
+<ul>
+<li><code>test-driven-development</code> — RED-GREEN-REFACTOR Iron Law 강제</li>
+<li><code>systematic-debugging</code> — 4단계 root cause 조사 프로세스</li>
+<li><code>verification-before-completion</code> — &ldquo;완료&rdquo; 주장 전에 검증 명령 실행 강제</li>
+<li><code>requesting-code-review</code> / <code>receiving-code-review</code> — 코드 리뷰 의뢰와 응답 흐름</li>
+</ul>
+<p><strong>메타 스킬</strong></p>
+<ul>
+<li><code>using-superpowers</code> — 모든 세션 시작 시 로드되는 부트스트랩 스킬</li>
+<li><code>writing-skills</code> — 새 스킬을 만들 때의 규약과 평가 방법</li>
+</ul>
+<p>각 스킬의 구체적인 동작은 2편과 3편에서 다룹니다. 1편에서는 &ldquo;이런 게 들어있구나&rdquo; 정도만 알아두면 됩니다.</p>
+<h3 id="hello-superpowers--첫-인상">Hello, Superpowers — 첫 인상<a href="#hello-superpowers--첫-인상" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>설치 직후 가장 인상적인 경험은 보통 이런 식입니다. Claude Code 에 다음과 같이 입력해 봅니다.</p>
+<pre tabindex="0"><code>Let&#39;s make a react todo list
+</code></pre><p>Superpowers 가 설치되지 않은 세션이라면, 에이전트는 곧장 <code>package.json</code> 을 만들고 컴포넌트 파일을 휘갈기기 시작합니다. 하지만 Superpowers 가 설치된 세션이라면, <strong>코드를 한 줄도 쓰기 전에</strong> 다음과 같은 일이 일어납니다.</p>
+<ol>
+<li><code>using-superpowers</code> 부트스트랩이 자동 로드되어 &ldquo;스킬을 먼저 확인하라&rdquo; 는 규칙이 활성화됩니다.</li>
+<li>&ldquo;기능을 만들자&rdquo; 는 의도가 감지되면 <code>brainstorming</code> 스킬이 자동으로 트리거됩니다.</li>
+<li>에이전트가 코드를 쓰는 대신, 한 번에 하나씩 질문을 던지기 시작합니다 — &ldquo;어떤 todo 항목을 다루나요? 그 항목의 필드는?&rdquo;, &ldquo;데이터는 메모리에만? 로컬스토리지? 서버?&rdquo;, &ldquo;스타일링 라이브러리는 정해두셨나요?&rdquo; …</li>
+<li>답변이 모이면 2~3개의 접근법을 비교 제시하고, 사용자 승인 후 설계 문서를 <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code> 로 저장합니다.</li>
+</ol>
+<p>이 과정을 사용자가 따로 요청하지 않아도 알아서 한다는 점이 Superpowers 의 출발점입니다.</p>
+<hr>
+<h2 id="왜-만들어졌는가--해결하려는-문제">왜 만들어졌는가 — 해결하려는 문제<a href="#왜-만들어졌는가--해결하려는-문제" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Superpowers 가 해결하려는 문제는 사실 코딩 에이전트를 깊게 써본 사람이라면 누구나 부딪히는 문제들입니다.</p>
+<h3 id="1-코드부터-쓰고-보는-성급함">1. 코드부터 쓰고 보는 성급함<a href="#1-코드부터-쓰고-보는-성급함" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>요구사항을 충분히 파악하기 전에 키보드부터 두드리는 습관은 사람에게도, 에이전트에게도 있습니다. 에이전트의 경우 더 심각한 것이, <strong>잘못된 가정으로 한 시간 작업한 결과물을 통째로 버려야 하는 일</strong> 이 종종 발생합니다. 컨텍스트도 그만큼 오염됩니다. <code>brainstorming</code> 스킬은 이 패턴을 깨기 위한 <strong>&ldquo;hard gate&rdquo;</strong> 로, 사용자가 명시적으로 설계를 승인하기 전까지 어떤 구현 액션도 차단합니다.</p>
+<h3 id="2-테스트는-나중에">2. &ldquo;테스트는 나중에&rdquo;<a href="#2-테스트는-나중에" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>TDD 가 좋다는 건 누구나 알지만, 에이전트에게 시키면 거의 항상 코드 먼저 작성하고 마지막에 테스트를 끼워 맞춥니다. <code>test-driven-development</code> 스킬의 Iron Law 는 이를 다음과 같이 못박습니다.</p>
+<pre tabindex="0"><code>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+</code></pre><p>테스트 없이 작성한 코드는 <strong>삭제하고 다시 시작</strong> 합니다. &ldquo;참고용으로 남겨두지 말 것, 보지도 말 것&rdquo; 까지 명시되어 있습니다. 이 정도로 강하게 박아두지 않으면 모델이 빠져나갈 구멍을 찾기 때문입니다.</p>
+<h3 id="3-검증-없는-완료-보고">3. 검증 없는 &ldquo;완료&rdquo; 보고<a href="#3-검증-없는-완료-보고" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에이전트가 &ldquo;테스트 모두 통과합니다, 빌드 성공입니다&rdquo; 라고 보고했는데 실제로는 명령을 한 번도 실행하지 않은 경우가 흔합니다. <code>verification-before-completion</code> 스킬은 다음을 강제합니다.</p>
+<pre tabindex="0"><code>NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+</code></pre><p>&ldquo;이번 메시지에서 검증 명령을 실행하지 않았다면, 통과한다고 주장할 수 없다.&rdquo; 라는 규칙입니다. Java 백엔드라면 <code>./gradlew test</code>, Go 라면 <code>go test ./...</code> 의 신선한 출력을 보지 않은 채로는 완료 보고를 못 합니다.</p>
+<h3 id="4-디버깅-시의-추측-남발">4. 디버깅 시의 추측 남발<a href="#4-디버깅-시의-추측-남발" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>버그가 발견되면 에이전트는 종종 &ldquo;이게 원인 같다&rdquo; 며 추측에 기반한 패치를 마구 던집니다. <code>systematic-debugging</code> 의 Iron Law:</p>
+<pre tabindex="0"><code>NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+</code></pre><p>증상 패치(symptom fix)는 실패로 간주되며, 4단계 root cause 조사 프로세스를 모두 거친 뒤에야 수정안을 제안할 수 있습니다.</p>
+<h3 id="5-컨텍스트-오염">5. 컨텍스트 오염<a href="#5-컨텍스트-오염" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>긴 작업에서 가장 큰 적은 컨텍스트 오염입니다. 한 세션에서 5개 태스크를 연달아 처리하면, 3번째 태스크 즈음에는 이전 시도의 실패 흔적, 다른 파일의 무관한 코드, 사용자의 잡담까지 모두 모델의 판단을 흐립니다. <code>subagent-driven-development</code> 는 <strong>태스크마다 fresh subagent 를 띄워서</strong> 정확히 필요한 정보만 주입하고, 그 결과만 받아오는 방식으로 이를 해결합니다.</p>
+<hr>
+<h2 id="자동-트리거의-비밀--using-superpowers-부트스트랩">자동 트리거의 비밀 — <code>using-superpowers</code> 부트스트랩<a href="#자동-트리거의-비밀--using-superpowers-부트스트랩" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Superpowers 를 처음 써본 사람이 가장 신기해하는 부분은 <strong>&ldquo;내가 아무것도 안 했는데 알아서 워크플로우를 따라간다&rdquo;</strong> 는 점입니다. 이게 어떻게 가능한가요?</p>
+<p>핵심은 <code>using-superpowers</code> 라는 메타 스킬입니다. 이 스킬은 세션이 시작되는 순간 로드되며, 다음과 같은 강력한 규칙을 에이전트의 행동 지침에 박아 넣습니다.</p>
+<blockquote>
+<p>If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.</p>
+</blockquote>
+<p>즉, 어떤 사용자 메시지를 받든 — 심지어 단순한 질문조차 — 에이전트는 <strong>먼저 관련 스킬이 있는지 확인</strong> 하고 호출해야 합니다. 그리고 각 스킬의 frontmatter 에는 <code>description</code> 필드에 &ldquo;이 스킬을 언제 써야 하는지&rdquo; 가 명시되어 있어, 에이전트가 사용자 의도와 매칭할 수 있게 되어 있습니다.</p>
+<p>예를 들어 <code>brainstorming</code> 스킬의 description 은:</p>
+<blockquote>
+<p>You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.</p>
+</blockquote>
+<p>&ldquo;기능 추가하자&rdquo;, &ldquo;이거 좀 바꿔보자&rdquo; 류의 메시지가 들어오면 description 매칭으로 <code>brainstorming</code> 이 자동 호출되고, 코드 한 줄 쓰기 전에 hard gate 가 걸리는 구조입니다.</p>
+<p>이 부트스트랩이 제대로 로드되었는지 여부가 <strong>&ldquo;진짜 통합&rdquo;</strong> 의 기준입니다. 저장소의 기여 가이드라인에서도 새 harness 지원 PR 에 대해 다음 수용 테스트를 명시하고 있습니다.</p>
+<blockquote>
+<p>깨끗한 세션을 열고 정확히 이 메시지를 보낸다: &ldquo;Let&rsquo;s make a react todo list&rdquo;
+정상 통합이라면 코드 작성 전에 <code>brainstorming</code> 스킬이 자동 트리거된다.</p>
+</blockquote>
+<p>설치 후 이 테스트만 통과하면 Superpowers 가 제대로 살아있는 것이고, 통과하지 못한다면 부트스트랩이 로드되지 않은 것입니다.</p>
+<hr>
+<h2 id="지원-환경과-설치">지원 환경과 설치<a href="#지원-환경과-설치" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Superpowers 는 단일 코딩 에이전트 도구에 종속되지 않습니다. 현재 다음 환경을 공식 지원합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Harness</th>
+          <th>설치 명령</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Claude Code (공식 마켓플레이스)</td>
+          <td><code>/plugin install superpowers@claude-plugins-official</code></td>
+      </tr>
+      <tr>
+          <td>Claude Code (Superpowers 마켓플레이스)</td>
+          <td><code>/plugin marketplace add obra/superpowers-marketplace</code> 후 <code>/plugin install superpowers@superpowers-marketplace</code></td>
+      </tr>
+      <tr>
+          <td>Codex CLI</td>
+          <td><code>/plugins</code> → <code>superpowers</code> 검색 → Install</td>
+      </tr>
+      <tr>
+          <td>Codex App</td>
+          <td>Plugins 사이드바 → Coding 섹션에서 <code>+</code> 클릭</td>
+      </tr>
+      <tr>
+          <td>Factory Droid</td>
+          <td><code>droid plugin marketplace add https://github.com/obra/superpowers</code> 후 <code>droid plugin install superpowers@superpowers</code></td>
+      </tr>
+      <tr>
+          <td>Gemini CLI</td>
+          <td><code>gemini extensions install https://github.com/obra/superpowers</code></td>
+      </tr>
+      <tr>
+          <td>OpenCode</td>
+          <td>OpenCode 채팅에 <code>Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md</code> 입력</td>
+      </tr>
+      <tr>
+          <td>Cursor</td>
+          <td>Cursor Agent 채팅에서 <code>/add-plugin superpowers</code></td>
+      </tr>
+      <tr>
+          <td>GitHub Copilot CLI</td>
+          <td><code>copilot plugin marketplace add obra/superpowers-marketplace</code> 후 <code>copilot plugin install superpowers@superpowers-marketplace</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>주의:</strong> 한 머신에서 여러 harness 를 같이 쓴다면 각 harness 별로 따로 설치해야 합니다. 설치가 공유되지 않습니다.</p>
+<h3 id="claude-code-사용자가-흔히-헷갈리는-두-마켓플레이스">Claude Code 사용자가 흔히 헷갈리는 두 마켓플레이스<a href="#claude-code-사용자가-흔히-헷갈리는-두-마켓플레이스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Claude Code 에는 Superpowers 가 두 마켓플레이스에 동시에 올라와 있습니다.</p>
+<ul>
+<li><strong>Anthropic 공식 마켓플레이스(<code>claude-plugins-official</code>)</strong>: Anthropic 이 관리. 안정 버전 위주. 업데이트가 한 박자 느릴 수 있습니다.</li>
+<li><strong>Superpowers 마켓플레이스(<code>superpowers-marketplace</code>)</strong>: 저자 Jesse Vincent 가 직접 관리. 최신 버전과 관련 추가 플러그인(예: 마켓플레이스의 다른 보조 도구) 접근 가능.</li>
+</ul>
+<p>최신 기능을 빨리 받고 싶다면 Superpowers 마켓플레이스를, 안정성을 우선한다면 공식 마켓플레이스를 추천합니다. 둘을 동시에 설치하면 충돌 가능성이 있으니 하나만 선택하세요.</p>
+<h3 id="설치-직후-동작-확인-체크리스트">설치 직후 동작 확인 체크리스트<a href="#설치-직후-동작-확인-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>설치 후 다음을 확인하면 부트스트랩이 살아있는지 알 수 있습니다.</p>
+<ol>
+<li>깨끗한 새 세션을 시작한다 (이전 대화 컨텍스트가 없도록).</li>
+<li><code>Let's make a react todo list</code> 와 같이 <strong>명확히 새 기능을 만들자</strong> 는 메시지를 보낸다.</li>
+<li>에이전트가 코드를 쓰기 전에 <code>brainstorming</code> 스킬을 호출하고 질문을 던지면 정상.</li>
+<li>곧장 <code>package.json</code> 을 만들거나 컴포넌트 코드를 작성하기 시작한다면, 부트스트랩이 로드되지 않은 것이므로 재설치가 필요합니다.</li>
+</ol>
+<hr>
+<h2 id="핵심-철학--네-줄로-요약">핵심 철학 — 네 줄로 요약<a href="#핵심-철학--네-줄로-요약" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Superpowers 가 명시적으로 표방하는 철학은 네 가지입니다.</p>
+<ul>
+<li><strong>Test-Driven Development</strong> — 테스트 먼저, 항상.</li>
+<li><strong>Systematic over ad-hoc</strong> — 추측보다는 프로세스.</li>
+<li><strong>Complexity reduction</strong> — 단순함을 일차 목표로.</li>
+<li><strong>Evidence over claims</strong> — 주장하기 전에 검증.</li>
+</ul>
+<p>이 네 가지는 단순한 슬로건이 아니라, 각 스킬 안에서 <strong>&ldquo;Iron Law&rdquo;</strong> 라는 이름의 강한 규칙으로 구현되어 있습니다. 에이전트가 &ldquo;이번엔 좀 빠르게 가자&rdquo; 며 빠져나가려 해도 스킬 내부의 &ldquo;Red Flags&rdquo; 표가 그 합리화를 차단합니다. 예를 들어 <code>using-superpowers</code> 의 Red Flags 표 일부:</p>
+<table>
+  <thead>
+      <tr>
+          <th>합리화하는 생각</th>
+          <th>실제로는</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&ldquo;이건 그냥 간단한 질문이잖아&rdquo;</td>
+          <td>질문도 태스크다. 스킬을 확인하라.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;먼저 컨텍스트를 좀 더 모아야겠어&rdquo;</td>
+          <td>스킬 확인이 질문보다 먼저다.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;코드베이스부터 살짝 둘러보자&rdquo;</td>
+          <td>스킬이 어떻게 둘러볼지 알려준다. 먼저 확인하라.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;이 스킬은 오버킬이야&rdquo;</td>
+          <td>단순한 일이 복잡해진다. 그냥 써라.</td>
+      </tr>
+      <tr>
+          <td>&ldquo;한 번만 빨리 처리하고 나서…&rdquo;</td>
+          <td>어떤 행동이든 전에 먼저 확인하라.</td>
+      </tr>
+  </tbody>
+</table>
+<p>이런 규칙들이 빽빽하게 박혀있기 때문에, 사용자는 &ldquo;이번엔 가볍게 가자&rdquo; 고 굳이 말하지 않는 한 자연스럽게 규율 잡힌 워크플로우 안에 머물게 됩니다.</p>
+<hr>
+<h2 id="다음-편-미리보기">다음 편 미리보기<a href="#다음-편-미리보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>1편에서는 Superpowers 가 무엇이고, 어떻게 자동 트리거되며, 어떻게 설치하는지를 다뤘습니다.</p>
+<p>다음 편(Part 2)에서는 <strong>핵심 워크플로우</strong> 를 자세히 들여다봅니다.</p>
+<ul>
+<li><code>brainstorming</code> 이 실제로 던지는 질문의 형태와 design doc 산출물</li>
+<li><code>using-git-worktrees</code> 가 격리 작업 공간을 만드는 방식</li>
+<li><code>writing-plans</code> 가 작업을 2~5분 단위로 쪼개는 기준</li>
+<li><code>subagent-driven-development</code> 와 <code>executing-plans</code> 의 차이와 선택 기준</li>
+<li>Go 백엔드 서비스에 새 API 엔드포인트를 추가하는 실전 시나리오</li>
+</ul>
+<p>3편에서는 TDD/디버깅/검증 같은 품질 보증 스킬들을, 4편에서는 <code>/superpowers:xxx</code> 명시 호출과 자동 트리거의 비교 분석 및 Java/Go 백엔드 개발 현장에서의 활용 팁을 다룰 예정입니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Superpowers 저장소: <a href="https://github.com/obra/superpowers">https://github.com/obra/superpowers</a></li>
+<li>Superpowers 마켓플레이스: <a href="https://github.com/obra/superpowers-marketplace">https://github.com/obra/superpowers-marketplace</a></li>
+<li>원작자 출시 발표: <a href="https://blog.fsck.com/2025/10/09/superpowers/">https://blog.fsck.com/2025/10/09/superpowers/</a></li>
+<li>Claude Plugin 공식 마켓플레이스 페이지: <a href="https://claude.com/plugins/superpowers">https://claude.com/plugins/superpowers</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-02/" class="button inline prev">
+        &lt; [<span class="button__text">Superpowers 플러그인 가이드 Part 2: 핵심 워크플로우 — Brainstorming부터 Subagent-driven Development까지</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260519-how-to-respect-yourself/" class="button inline next">
+         [<span class="button__text">번역글: 자신을 존중하는 방법</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Superpowers 플러그인 가이드 Part 2: 핵심 워크플로우 — Brainstorming부터 Subagent-driven Development까지 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Superpowers 의 핵심은 &#34;기능을 만들자&#34;는 한 마디로 시작되는 자동 워크플로우입니다. 2편에서는 brainstorming → writing-plans → subagent-driven-development 의 흐름을 Go 백엔드 API 추가 시나리오와 함께 따라가 봅니다." />
+<meta name="keywords" content="AI, LLM, programming, claude, agentic-coding, tools, guide, superpowers" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Superpowers 플러그인 가이드 Part 2: 핵심 워크플로우 — Brainstorming부터 Subagent-driven Development까지">
+<meta property="og:description" content="Superpowers 의 핵심은 &#34;기능을 만들자&#34;는 한 마디로 시작되는 자동 워크플로우입니다. 2편에서는 brainstorming → writing-plans → subagent-driven-development 의 흐름을 Go 백엔드 API 추가 시나리오와 함께 따라가 봅니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-05-20 16:56:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-02/">Superpowers 플러그인 가이드 Part 2: 핵심 워크플로우 — Brainstorming부터 Subagent-driven Development까지</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-05-20</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/claude/">claude</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tools/">tools</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/superpowers/">superpowers</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p><a href="../20260520-superpowers-plugin-guide-01/">1편</a> 에서는 Superpowers 가 무엇이고 어떻게 자동 트리거되는지를 다뤘습니다. 2편은 가장 핵심이라고 할 수 있는 <strong>개발 워크플로우 전체</strong> 를 깊게 들여다봅니다.</p>
+<p>전체 흐름은 다음과 같습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[brainstorming] --&gt; B[using-git-worktrees]
+    B --&gt; C[writing-plans]
+    C --&gt; D{독립 태스크?}
+    D --&gt;|yes| E[subagent-driven-development]
+    D --&gt;|no/사람 체크포인트 선호| F[executing-plans]
+    E --&gt; G[finishing-a-development-branch]
+    F --&gt; G
+
+    style A fill:#90EE90,color:#000000
+    style B fill:#87CEEB,color:#000000
+    style C fill:#FFD700,color:#000000
+    style D fill:#FFB6C1,color:#000000
+    style E fill:#DDA0DD,color:#000000
+    style F fill:#DDA0DD,color:#000000
+    style G fill:#FFA07A,color:#000000
+</code></pre><p>이 글에서는 각 스킬이 실제로 무엇을 하는지, 그리고 <strong>Go 기반 백엔드 서비스에 새 API 엔드포인트를 추가</strong> 하는 시나리오를 따라가며 흐름을 체험해 봅니다.</p>
+<hr>
+<h2 id="brainstorming--코드를-막는-첫-관문">Brainstorming — 코드를 막는 첫 관문<a href="#brainstorming--코드를-막는-첫-관문" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>brainstorming</code> 스킬은 &ldquo;기능 만들자&rdquo;, &ldquo;이거 바꾸자&rdquo;, &ldquo;추가하자&rdquo; 류의 의도가 감지되면 자동으로 호출됩니다. 그리고 다음과 같은 강력한 hard gate 가 걸립니다.</p>
+<blockquote>
+<p>Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it.</p>
+</blockquote>
+<p>즉, 사용자가 설계를 명시적으로 승인하기 전까지는 <strong>단 한 줄의 코드도 작성되지 않습니다.</strong> 이 규칙은 &ldquo;이건 너무 사소해서 설계 안 해도 돼&rdquo; 라는 합리화에도 적용됩니다. 한 줄짜리 유틸리티 함수든, todo 리스트든, config 변경이든 — 모두 동일한 절차를 거칩니다. 다만 설계 분량은 사안의 복잡도에 비례해 짧아질 수 있습니다.</p>
+<h3 id="brainstorming-의-체크리스트">Brainstorming 의 체크리스트<a href="#brainstorming-의-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>스킬 내부에는 다음과 같은 9단계 체크리스트가 박혀 있고, 에이전트는 각 항목을 todo 로 만들어 순서대로 처리합니다.</p>
+<ol>
+<li><strong>프로젝트 컨텍스트 탐색</strong> — 파일, 문서, 최근 커밋 확인</li>
+<li><strong>Visual companion 제안</strong> (시각적 요소가 필요한 경우)</li>
+<li><strong>명확화 질문</strong> — 한 번에 하나씩, 목적/제약/성공 기준 파악</li>
+<li><strong>2~3개 접근법 제안</strong> — 트레이드오프와 추천안 포함</li>
+<li><strong>설계 섹션 제시</strong> — 각 섹션마다 사용자 승인 받기</li>
+<li><strong>설계 문서 작성</strong> — <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code> 에 저장 및 커밋</li>
+<li><strong>Spec self-review</strong> — placeholder, 모순, 모호함, 범위 검토</li>
+<li><strong>사용자가 작성된 spec 검토</strong></li>
+<li><strong>구현 단계로 전환</strong> — <code>writing-plans</code> 스킬 호출</li>
+</ol>
+<p>특히 3번의 &ldquo;한 번에 하나씩&rdquo; 이라는 제약은 의외로 큰 차이를 만듭니다. 평소 에이전트는 한 메시지에 5~10개 질문을 몰아서 던지는데, 사람 입장에서는 그게 부담이 되어 대충 답하게 되고 결국 설계 품질이 떨어집니다. 한 질문씩 던지면 사용자도 한 번에 하나씩 진지하게 답합니다.</p>
+<h3 id="실전-시나리오-api-에-user-search-기능-추가">실전 시나리오: &ldquo;API 에 user search 기능 추가&rdquo;<a href="#실전-시나리오-api-에-user-search-기능-추가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Go 백엔드(예: Gin + GORM 기반)에 다음 요청을 보냈다고 가정해 봅니다.</p>
+<pre tabindex="0"><code>유저 검색 API 추가해줘. 닉네임 부분일치로 페이지네이션해서 반환.
+</code></pre><p><code>brainstorming</code> 이 자동 호출되어 다음과 같은 흐름이 펼쳐집니다.</p>
+<p><strong>1단계: 컨텍스트 탐색</strong></p>
+<p>에이전트는 먼저 <code>internal/handler/</code>, <code>internal/service/</code>, <code>internal/repository/</code> 디렉터리를 훑어 기존 API 의 구조를 파악합니다. 이 단계가 끝나야 다음으로 넘어갑니다.</p>
+<p><strong>2단계: 질문 (하나씩)</strong></p>
+<ul>
+<li>&ldquo;닉네임 부분일치라고 하셨는데, prefix 매칭인가요(LIKE &lsquo;foo%&rsquo;) 아니면 contains(LIKE &lsquo;%foo%&rsquo;) 인가요? 인덱스 효율과 직결됩니다.&rdquo;</li>
+<li>(답변 후) &ldquo;페이지네이션은 offset 기반(<code>?page=2&amp;size=20</code>)인가요, cursor 기반인가요? 기존 endpoint 들의 패턴과 맞춰드릴게요.&rdquo;</li>
+<li>(답변 후) &ldquo;검색 결과에 정렬 기준이 필요할까요? created_at desc 가 기본이면 될까요?&rdquo;</li>
+<li>(답변 후) &ldquo;권한은 어떻게 되나요? 모든 인증 사용자가 검색 가능한가요, 아니면 admin 전용?&rdquo;</li>
+</ul>
+<p><strong>3단계: 2~3개 접근법 제안</strong></p>
+<pre tabindex="0"><code>접근 A (추천): GORM 의 ILIKE + offset pagination. 가장 단순하고 기존 패턴과 일관.
+  - 트레이드오프: 데이터 수 100만 건 이상이면 deep pagination 성능 문제 가능.
+
+접근 B: PostgreSQL trigram 인덱스(pg_trgm) + ILIKE. 대용량 데이터에서 빠름.
+  - 트레이드오프: extension 설치/마이그레이션 필요, 운영 부담 증가.
+
+접근 C: 외부 검색 엔진(Meilisearch/Elasticsearch) 연동. 가장 유연.
+  - 트레이드오프: 인프라 추가, 동기화 로직 필요. 단순 닉네임 검색엔 과한 투자.
+
+추천: 현재 사용자 규모(~10만)와 닉네임 부분일치 사용 패턴을 고려할 때 A 가 최적.
+B 는 사용자가 100만을 넘어서고 검색 응답이 느려지기 시작할 때 마이그레이션 옵션으로 남겨둡니다.
+</code></pre><p><strong>4단계: 설계 섹션 제시 (각 섹션 승인 후 다음 진행)</strong></p>
+<ul>
+<li>엔드포인트 시그니처: <code>GET /api/users/search?q=foo&amp;page=1&amp;size=20</code></li>
+<li>응답 스키마: <code>{ items: [...], total: 1234, page: 1, size: 20 }</code></li>
+<li>DB 인덱스: <code>CREATE INDEX idx_users_nickname ON users (nickname)</code> (이미 존재 여부 확인)</li>
+<li>권한: 인증된 사용자만 접근</li>
+<li>에러 케이스: 빈 q, 너무 긴 q, 부적절한 페이지 값</li>
+</ul>
+<p><strong>5단계: 설계 문서로 저장</strong></p>
+<p><code>docs/superpowers/specs/2026-05-20-user-search-api-design.md</code> 에 위 내용이 정리된 마크다운으로 저장되고 커밋됩니다.</p>
+<p>여기까지 끝나야 비로소 <code>writing-plans</code> 단계로 넘어갑니다. 보통 한 번도 코드를 쓰지 않은 채로 10~20분이 흐릅니다. 처음 써본 사람은 &ldquo;왜 이렇게 안 쓰지&rdquo; 하고 답답해할 수 있지만, 한두 번 끝까지 가보면 <strong>이 시간이 결국 디버깅과 재작업 시간을 압도적으로 줄여준다</strong> 는 점을 체감하게 됩니다.</p>
+<hr>
+<h2 id="using-git-worktrees--격리된-작업-공간">Using Git Worktrees — 격리된 작업 공간<a href="#using-git-worktrees--격리된-작업-공간" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>설계가 승인되면 본격적인 구현 직전에 <code>using-git-worktrees</code> 스킬이 트리거됩니다. 핵심은 &ldquo;현재 작업 중인 브랜치를 오염시키지 말고, 격리된 공간에서 작업하라&rdquo; 입니다.</p>
+<p>이 스킬의 흥미로운 점은 <strong>자기 환경을 먼저 감지</strong> 한다는 것입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">GIT_DIR</span><span class="o">=</span><span class="k">$(</span><span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>git rev-parse --git-dir<span class="k">)</span><span class="s2">&#34;</span> 2&gt;/dev/null <span class="o">&amp;&amp;</span> <span class="nb">pwd</span> -P<span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">GIT_COMMON</span><span class="o">=</span><span class="k">$(</span><span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>git rev-parse --git-common-dir<span class="k">)</span><span class="s2">&#34;</span> 2&gt;/dev/null <span class="o">&amp;&amp;</span> <span class="nb">pwd</span> -P<span class="k">)</span>
+</span></span></code></pre></div><ul>
+<li>이미 worktree 안에 있다면(<code>GIT_DIR != GIT_COMMON</code>) 새 worktree 를 만들지 않고 그대로 진행합니다.</li>
+<li>harness 가 자체 worktree 도구(예: <code>EnterWorktree</code>) 를 제공한다면 그것을 우선 사용합니다.</li>
+<li>둘 다 없을 때만 <code>git worktree add</code> 로 fallback 합니다.</li>
+</ul>
+<p>이 &ldquo;내가 어디에 있는지 먼저 확인&rdquo; 패턴은 Superpowers 의 다른 스킬에서도 반복되는데, <strong>에이전트가 자기 환경을 가정하고 동작하다가 사고치는 패턴을 막기 위함</strong> 입니다.</p>
+<p>worktree 가 만들어지면 다음을 수행합니다.</p>
+<ol>
+<li>새 브랜치 생성 (예: <code>feature/user-search-api</code>)</li>
+<li>프로젝트 셋업 명령 실행 (예: <code>go mod tidy</code>, <code>make build</code>)</li>
+<li><strong>테스트 베이스라인 확인</strong> — 시작 시점에 모든 테스트가 통과하는지 검증</li>
+</ol>
+<p>테스트 베이스라인 확인이 중요한 이유는, 작업 중간에 테스트가 깨졌을 때 &ldquo;내가 깬 건지 원래 깨져 있었던 건지&rdquo; 를 헷갈리지 않게 하기 위함입니다.</p>
+<h3 id="worktree-를-쓰고-싶지-않을-때">Worktree 를 쓰고 싶지 않을 때<a href="#worktree-를-쓰고-싶지-않을-때" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>사용자가 명시적으로 거부할 수 있습니다. 단순한 디버깅이나 1~2줄 수정처럼 worktree 분리가 과한 경우, &ldquo;그냥 현재 디렉터리에서 작업해줘&rdquo; 라고 말하면 스킬이 이를 존중합니다. CLAUDE.md/AGENTS.md 에 &ldquo;worktree 사용 안 함&rdquo; 을 명시해두면 매번 묻지도 않습니다.</p>
+<hr>
+<h2 id="writing-plans--작업을-25분-단위로-쪼개기">Writing Plans — 작업을 2~5분 단위로 쪼개기<a href="#writing-plans--작업을-25분-단위로-쪼개기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>설계와 격리 공간이 갖춰지면 <code>writing-plans</code> 스킬이 호출됩니다. 이 스킬의 핵심 슬로건은 다음과 같습니다.</p>
+<blockquote>
+<p>컨텍스트가 전혀 없고, 판단력도 미숙하며, 테스트를 싫어하는 신입 엔지니어가 그대로 따라 할 수 있을 만큼 명확한 구현 계획을 작성하라.</p>
+</blockquote>
+<p>즉, 계획서는 <strong>fresh subagent 가 0의 컨텍스트에서 그대로 실행할 수 있어야</strong> 합니다. 다음을 모두 명시합니다.</p>
+<ul>
+<li>어떤 파일을 만들거나 수정하는지 (절대 경로)</li>
+<li>정확히 어떤 코드를 추가하는지 (스니펫)</li>
+<li>어떤 테스트를 어떻게 작성하는지</li>
+<li>검증 명령은 무엇인지</li>
+<li>어떤 문서를 참조해야 하는지</li>
+</ul>
+<h3 id="bite-sized-task-granularity">Bite-sized Task Granularity<a href="#bite-sized-task-granularity" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>스킬에서 정의한 &ldquo;한 작업의 적정 크기&rdquo; 는 2~5분입니다.</p>
+<ul>
+<li>&ldquo;실패하는 테스트를 작성한다&rdquo; — 작업</li>
+<li>&ldquo;실행해서 실패하는지 확인한다&rdquo; — 작업</li>
+<li>&ldquo;최소한의 구현 코드를 작성한다&rdquo; — 작업</li>
+<li>&ldquo;테스트가 통과하는지 확인한다&rdquo; — 작업</li>
+<li>&ldquo;커밋한다&rdquo; — 작업</li>
+</ul>
+<p>처음 보면 &ldquo;이건 너무 잘게 쪼갠 거 아닌가&rdquo; 싶지만, <strong>fresh subagent 가 컨텍스트 없이 그대로 실행</strong> 한다는 점을 떠올리면 납득이 됩니다. 한 태스크가 10분 이상 걸리는 작업이면 subagent 가 중간에 컨텍스트를 놓치거나 잘못된 방향으로 빠질 확률이 급증합니다.</p>
+<h3 id="plan-문서-포맷">Plan 문서 포맷<a href="#plan-문서-포맷" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>저장 경로는 <code>docs/superpowers/plans/YYYY-MM-DD-&lt;feature-name&gt;.md</code> 이고, 헤더는 다음과 같이 고정되어 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># User Search API Implementation Plan
+</span></span></span><span class="line"><span class="cl"><span class="k">
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">**For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">(recommended) or superpowers:executing-plans to implement this plan task-by-task.
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">Steps use checkbox (`- [ ]`) syntax for tracking.
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**Goal:**</span> 닉네임 부분일치 검색과 페이지네이션을 지원하는 user search API 추가
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**Architecture:**</span> Gin handler → service → GORM repository. ILIKE + offset 페이지네이션.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**Tech Stack:**</span> Go 1.22, Gin, GORM, PostgreSQL 15
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">---
+</span></span></code></pre></div><p>이후 본문은 다음과 같은 형태의 체크박스 리스트로 채워집니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gu">## Task 1: Repository 계층에 SearchByNickname 메서드 추가
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`internal/repository/user_repository_test.go`</span> 에 다음 테스트 추가:
+</span></span><span class="line"><span class="cl">      ``<span class="sb">`go
+</span></span></span><span class="line"><span class="cl"><span class="sb">      func TestUserRepository_SearchByNickname(t *testing.T) { ... }
+</span></span></span><span class="line"><span class="cl"><span class="sb">      `</span>`<span class="sb">`
+</span></span></span><span class="line"><span class="cl"><span class="sb">- [ ] 실행하여 실패 확인: `</span>go test ./internal/repository/... -run SearchByNickname<span class="sb">`
+</span></span></span><span class="line"><span class="cl"><span class="sb">- [ ] `</span>internal/repository/user_repository.go<span class="sb">` 에 최소 구현 추가:
+</span></span></span><span class="line"><span class="cl"><span class="sb">      `</span>`<span class="sb">`go
+</span></span></span><span class="line"><span class="cl"><span class="sb">      func (r *UserRepository) SearchByNickname(...) { ... }
+</span></span></span><span class="line"><span class="cl"><span class="sb">      `</span>`<span class="sb">`
+</span></span></span><span class="line"><span class="cl"><span class="sb">- [ ] 테스트 재실행하여 통과 확인
+</span></span></span><span class="line"><span class="cl"><span class="sb">- [ ] 커밋: `</span>feat(repo): add SearchByNickname method`
+</span></span></code></pre></div><p>이런 식으로 Task 1~N 이 나열됩니다. 보통 중간 규모 기능 하나가 10~30개 태스크로 분해됩니다.</p>
+<hr>
+<h2 id="subagent-driven-development-vs-executing-plans">Subagent-driven Development vs Executing Plans<a href="#subagent-driven-development-vs-executing-plans" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>계획이 완성되면 두 가지 실행 전략 중 하나를 선택합니다.</p>
+<h3 id="executing-plans--사람-체크포인트-모드">Executing Plans — 사람 체크포인트 모드<a href="#executing-plans--사람-체크포인트-모드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>executing-plans</code> 는 사용자가 직접 또는 메인 에이전트가 한 배치(보통 1~5개 태스크)씩 실행하고 사용자에게 보고/승인을 받는 방식입니다. 다음 경우 적합합니다.</p>
+<ul>
+<li>태스크들이 서로 강하게 결합되어 있어 사람의 판단이 중간중간 필요할 때</li>
+<li>도메인 지식이 강하게 요구되어 사용자가 옆에서 확인해야 할 때</li>
+<li>외부 시스템(스테이징 DB, API 키 등) 접근이 중간에 필요할 때</li>
+</ul>
+<h3 id="subagent-driven-development--자율-실행-모드">Subagent-driven Development — 자율 실행 모드<a href="#subagent-driven-development--자율-실행-모드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>subagent-driven-development</code> 는 더 공격적인 방식입니다. <strong>태스크마다 fresh subagent 를 띄워서</strong> 다음 사이클을 자동으로 돌립니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    A[Implementer subagent dispatch] --&gt; B[구현 + 테스트 + 커밋 + self-review]
+    B --&gt; C[Spec reviewer subagent]
+    C --&gt;|spec 불일치| D[Implementer 수정]
+    D --&gt; C
+    C --&gt;|승인| E[Code quality reviewer subagent]
+    E --&gt;|품질 이슈| F[Implementer 수정]
+    F --&gt; E
+    E --&gt;|승인| G[TodoWrite 완료 표시]
+    G --&gt; H{남은 태스크?}
+    H --&gt;|yes| A
+    H --&gt;|no| I[전체 final review]
+
+    style A fill:#FFB6C1,color:#000000
+    style B fill:#90EE90,color:#000000
+    style C fill:#87CEEB,color:#000000
+    style D fill:#FFD700,color:#000000
+    style E fill:#87CEEB,color:#000000
+    style F fill:#FFD700,color:#000000
+    style G fill:#DDA0DD,color:#000000
+    style H fill:#FFB6C1,color:#000000
+    style I fill:#FFA07A,color:#000000
+</code></pre><p>각 태스크마다 다음 세 종류의 subagent 가 순차로 일합니다.</p>
+<ol>
+<li><strong>Implementer subagent</strong> — 태스크 명세대로 코드 작성, 테스트 실행, 커밋, self-review</li>
+<li><strong>Spec reviewer subagent</strong> — 코드가 spec 과 일치하는지 검토 (구현 누락, 잘못된 해석 등)</li>
+<li><strong>Code quality reviewer subagent</strong> — 코드 품질 검토 (네이밍, 중복, 복잡도, edge case 등)</li>
+</ol>
+<p>각 subagent 는 <strong>메인 세션의 컨텍스트를 상속받지 않습니다.</strong> 메인 에이전트가 &ldquo;이 subagent 에게는 이것만 필요해&rdquo; 라고 정밀하게 컨텍스트를 구성해서 전달합니다. 이렇게 해야 subagent 가 산만해지지 않고 한 작업에만 집중할 수 있으며, 메인 세션의 컨텍스트도 보호됩니다.</p>
+<h3 id="체크인하지-마세요-규칙">&ldquo;체크인하지 마세요&rdquo; 규칙<a href="#체크인하지-마세요-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>subagent-driven-development</code> 스킬에는 다음과 같은 강한 규칙이 있습니다.</p>
+<blockquote>
+<p>Do not pause to check in with your human partner between tasks. Execute all tasks from the plan without stopping.</p>
+</blockquote>
+<p>평소 에이전트는 한 태스크 끝낼 때마다 &ldquo;이대로 계속할까요?&rdquo; 라고 물어보는 습관이 있는데, 이것이 자율 실행 모드에서는 큰 시간 낭비입니다. 사용자가 명시적으로 BLOCKED 상태이거나, 진짜로 진행이 막힐 정도의 모호함이 있을 때만 멈춥니다. 그 외에는 계획대로 끝까지 갑니다.</p>
+<p>저자는 &ldquo;Claude 가 두세 시간씩 자율적으로 작업하는 게 드문 일이 아니다&rdquo; 라고 설명하는데, 이 모드를 의도한 말입니다.</p>
+<h3 id="어느-쪽을-선택해야-하나">어느 쪽을 선택해야 하나<a href="#어느-쪽을-선택해야-하나" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th>추천 모드</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>태스크가 잘 분리되어 있고 사용자가 자리를 비울 예정</td>
+          <td>subagent-driven</td>
+      </tr>
+      <tr>
+          <td>도메인 지식이 강하게 필요해 사용자가 옆에서 보조해야 함</td>
+          <td>executing-plans</td>
+      </tr>
+      <tr>
+          <td>외부 시스템 접근이나 비밀 키가 중간에 필요</td>
+          <td>executing-plans</td>
+      </tr>
+      <tr>
+          <td>새 기능 추가, 리팩토링, 테스트 보강 등 정형 작업</td>
+          <td>subagent-driven</td>
+      </tr>
+      <tr>
+          <td>데이터 마이그레이션처럼 한 번 잘못되면 복구 어려움</td>
+          <td>executing-plans</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="finishing-a-development-branch--마무리-단계">Finishing a Development Branch — 마무리 단계<a href="#finishing-a-development-branch--마무리-단계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>모든 태스크가 완료되면 <code>finishing-a-development-branch</code> 스킬이 트리거됩니다. 다음 순서로 진행됩니다.</p>
+<ol>
+<li><strong>테스트 검증</strong> — 프로젝트 전체 테스트 스위트 실행 (Java: <code>./gradlew test</code>, Go: <code>go test ./...</code> 등). 실패가 있으면 여기서 멈춥니다.</li>
+<li><strong>환경 감지</strong> — GitHub PR 환경인지, 로컬 merge 인지, 아니면 worktree 만 정리할지 판단.</li>
+<li><strong>옵션 제시</strong> — 사용자에게 4가지 옵션을 보여줍니다.
+<ul>
+<li>main 으로 merge</li>
+<li>PR 생성</li>
+<li>브랜치 유지하고 다음 작업 계속</li>
+<li>작업 폐기</li>
+</ul>
+</li>
+<li><strong>선택 실행</strong> — 사용자가 고른 옵션을 수행하고 worktree 를 정리.</li>
+</ol>
+<p>이 마무리 단계가 의외로 가치가 큰 이유는, 자율 실행 모드에서 두 시간 작업한 결과를 어떻게 통합할지 결정하는 마지막 게이트이기 때문입니다. 이 시점에는 사용자가 반드시 개입합니다 — &ldquo;merge 할까요 PR 으로 갈까요&rdquo; 같은 결정은 모델이 임의로 내릴 수 없습니다.</p>
+<hr>
+<h2 id="전체-흐름을-한-번-더--시나리오-압축-요약">전체 흐름을 한 번 더 — 시나리오 압축 요약<a href="#전체-흐름을-한-번-더--시나리오-압축-요약" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>위에서 다룬 흐름을 user search API 시나리오로 압축하면 다음과 같습니다.</p>
+<pre tabindex="0"><code>[09:00] 사용자: &#34;유저 검색 API 추가해줘. 닉네임 부분일치로 페이지네이션.&#34;
+        에이전트: brainstorming 자동 호출, 컨텍스트 탐색 시작
+[09:03] 에이전트: 첫 질문 (prefix vs contains)
+[09:05] 사용자: contains
+[09:06] 에이전트: 두 번째 질문 (offset vs cursor)
+...
+[09:20] 에이전트: 2개 접근법 제안, 사용자 승인
+[09:25] 에이전트: design doc 작성 및 커밋
+[09:27] 에이전트: writing-plans 호출, 23개 태스크로 분해된 plan 문서 작성
+[09:32] 에이전트: using-git-worktrees 로 격리 공간 생성, 테스트 베이스라인 확인
+[09:33] 에이전트: subagent-driven-development 시작
+        Task 1: repository 테스트 작성 + 구현 + 커밋 (implementer → spec review → quality review)
+        Task 2: service 계층 추가 (...)
+        Task 3: handler 추가 (...)
+        ... (사용자는 다른 일을 함)
+[11:15] 에이전트: 23개 태스크 모두 완료. final review 통과.
+[11:16] 에이전트: finishing-a-development-branch 호출, 테스트 전체 통과 확인
+        &#34;PR 생성할까요, main 으로 바로 merge 할까요?&#34;
+[11:17] 사용자: PR 생성
+[11:18] 에이전트: PR 생성 완료
+</code></pre><p>사용자는 09:00~09:30 에 집중적으로 질문에 답한 뒤, 나머지 1시간 45분 동안 다른 일을 했습니다. 이게 Superpowers 의 핵심 가치 명제입니다.</p>
+<hr>
+<h2 id="다음-편-미리보기">다음 편 미리보기<a href="#다음-편-미리보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2편에서는 brainstorming → writing-plans → subagent-driven-development → finishing 까지의 핵심 흐름을 따라가 봤습니다.</p>
+<p><a href="../20260520-superpowers-plugin-guide-03/">3편</a> 에서는 이 흐름 안에서 작동하는 <strong>품질 보증 스킬들</strong> 을 자세히 다룹니다.</p>
+<ul>
+<li><code>test-driven-development</code> 의 Iron Law 와 RED-GREEN-REFACTOR 사이클</li>
+<li><code>systematic-debugging</code> 의 4단계 root cause 조사</li>
+<li><code>verification-before-completion</code> 으로 &ldquo;거짓 완료 보고&rdquo; 막기</li>
+<li><code>requesting-code-review</code> / <code>receiving-code-review</code> 흐름</li>
+<li>프로덕션 버그를 잡는 실전 시나리오</li>
+</ul>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Superpowers 저장소: <a href="https://github.com/obra/superpowers">https://github.com/obra/superpowers</a></li>
+<li><code>brainstorming</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/brainstorming/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/brainstorming/SKILL.md</a></li>
+<li><code>writing-plans</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md</a></li>
+<li><code>subagent-driven-development</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md</a></li>
+<li><code>using-git-worktrees</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md</a></li>
+<li><code>finishing-a-development-branch</code> 스킬: <a href="https://github.com/obra/superpowers/blob/main/skills/finishing-a-development-branch/SKILL.md">https://github.com/obra/superpowers/blob/main/skills/finishing-a-development-branch/SKILL.md</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-03/" class="button inline prev">
+        &lt; [<span class="button__text">Superpowers 플러그인 가이드 Part 3: 품질 보증 스킬 — TDD, Systematic Debugging, Verification, Code Review</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-01/" class="button inline next">
+         [<span class="button__text">Superpowers 플러그인 가이드 Part 1: 소개, 설치, 그리고 철학</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
