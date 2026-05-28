@@ -6,8 +6,22 @@
     <description>Recent content in Guide on philipjkim</description>
     <generator>Hugo</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 20 May 2026 16:58:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 28 May 2026 19:03:00 +0900</lastBuildDate>
     <atom:link href="https://philipjkim.github.io/tags/guide/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 2: Go &#43; Templ &#43; HTMX To-Do 앱으로 직접 만들어 보기</title>
+      <link>https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/</link>
+      <pubDate>Thu, 28 May 2026 19:03:00 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;&lt;a href=&#34;../20260528-repo-bootstrapping-guide-01/&#34;&gt;Part 1&lt;/a&gt; 에서는 2026년 5월 기준 de-facto 가 된 spec 문서들의 지형도와 best practices 를 정리했습니다. 2편에서는 가상의 Go + Templ + HTMX 기반 To-Do 앱 &lt;code&gt;gotodo&lt;/code&gt; 를 새로 부트스트래핑한다고 가정하고, 각 문서를 실제로 어떻게 채우는지 발췌 형태로 따라갑니다.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;가상-프로젝트-gotodo&#34;&gt;가상 프로젝트: &lt;code&gt;gotodo&lt;/code&gt;&lt;/h2&gt;&#xA;&lt;p&gt;스택은 다음과 같습니다.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Go 1.23&lt;/strong&gt; — 표준 라이브러리 중심&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://templ.guide&#34;&gt;templ&lt;/a&gt;&lt;/strong&gt; — Go 네이티브 SSR 템플릿 (type-safe)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://htmx.org&#34;&gt;HTMX 2.0&lt;/a&gt;&lt;/strong&gt; — 클라이언트 JS 최소화&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;SQLite + &lt;code&gt;modernc.org/sqlite&lt;/code&gt;&lt;/strong&gt; — CGO 없는 순수 Go 드라이버&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;목표는 단순합니다. 할 일 추가/완료/삭제만 되는 SSR 미니멀 앱. 1인 로컬 사용을 가정합니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 1: AGENTS.md 와 spec 문서 지형도</title>
+      <link>https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-01/</link>
+      <pubDate>Thu, 28 May 2026 19:02:00 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-01/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;들어가며-readme-한-장으로-안-되는-시대&#34;&gt;들어가며: README 한 장으로 안 되는 시대&lt;/h2&gt;&#xA;&lt;p&gt;신규 서비스를 위한 git repo 를 막 만들었다고 합시다. 2년 전이라면 &lt;code&gt;README.md&lt;/code&gt; 한 장에 빌드 명령과 디렉터리 구조를 적고, 나머지는 코드와 머릿속에서 합의된 관행으로 굴러갔습니다. 새 팀원이 들어오면 옆 자리 동료가 30분쯤 설명해 주고, 그걸로 충분했습니다.&lt;/p&gt;&#xA;&lt;p&gt;지금은 그 &amp;ldquo;옆 자리 동료&amp;rdquo; 역할의 절반 이상을 Claude Code, Codex CLI, Gemini CLI, Cursor 같은 에이전트가 맡고 있습니다. 그런데 에이전트는 옆 자리에 앉지 않습니다. 매 세션마다 처음 합류한 신입처럼 repo 에 들어와서, 우리가 적어 둔 텍스트만 읽고 일을 시작합니다. &lt;strong&gt;에이전트에게 &amp;ldquo;이 프로젝트는 이런 곳이고, 이런 규칙으로 일한다&amp;rdquo; 를 전달하는 문서가 부실하면, 에이전트가 만드는 결과물의 품질은 운에 좌우됩니다.&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Superpowers 플러그인 가이드 Part 4: 명시 호출 vs 자동 트리거 — 실전 가이드와 한계</title>
       <link>https://philipjkim.github.io/posts/20260520-superpowers-plugin-guide-04/</link>

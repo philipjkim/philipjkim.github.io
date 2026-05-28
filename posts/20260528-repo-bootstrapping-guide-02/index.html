@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 2: Go &#43; Templ &#43; HTMX To-Do 앱으로 직접 만들어 보기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Part 1 에서 정리한 spec 문서 지형도를 가상의 Go &#43; Templ &#43; HTMX To-Do 앱 gotodo 를 부트스트래핑하면서 실제로 채워 봅니다. README, AGENTS.md, ARCHITECTURE.md, ADR, DEVELOPMENT.md, 첫 feature spec 까지 발췌 형태로 살펴보고, 마지막에 Claude Code 로 검증한 뒤 가져다 쓸 수 있는 체크리스트로 마무리합니다." />
+<meta name="keywords" content="AI, LLM, programming, agentic-coding, tools, guide, AGENTS.md, bootstrapping, go, templ, htmx" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 2: Go &#43; Templ &#43; HTMX To-Do 앱으로 직접 만들어 보기">
+<meta property="og:description" content="Part 1 에서 정리한 spec 문서 지형도를 가상의 Go &#43; Templ &#43; HTMX To-Do 앱 gotodo 를 부트스트래핑하면서 실제로 채워 봅니다. README, AGENTS.md, ARCHITECTURE.md, ADR, DEVELOPMENT.md, 첫 feature spec 까지 발췌 형태로 살펴보고, 마지막에 Claude Code 로 검증한 뒤 가져다 쓸 수 있는 체크리스트로 마무리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-05-28 19:03:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/">Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 2: Go + Templ + HTMX To-Do 앱으로 직접 만들어 보기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-05-28</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/tools/">tools</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agents.md/">AGENTS.md</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/bootstrapping/">bootstrapping</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/go/">go</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/templ/">templ</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/htmx/">htmx</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p><a href="../20260528-repo-bootstrapping-guide-01/">Part 1</a> 에서는 2026년 5월 기준 de-facto 가 된 spec 문서들의 지형도와 best practices 를 정리했습니다. 2편에서는 가상의 Go + Templ + HTMX 기반 To-Do 앱 <code>gotodo</code> 를 새로 부트스트래핑한다고 가정하고, 각 문서를 실제로 어떻게 채우는지 발췌 형태로 따라갑니다.</p>
+<hr>
+<h2 id="가상-프로젝트-gotodo">가상 프로젝트: <code>gotodo</code><a href="#가상-프로젝트-gotodo" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>스택은 다음과 같습니다.</p>
+<ul>
+<li><strong>Go 1.23</strong> — 표준 라이브러리 중심</li>
+<li><strong><a href="https://templ.guide">templ</a></strong> — Go 네이티브 SSR 템플릿 (type-safe)</li>
+<li><strong><a href="https://htmx.org">HTMX 2.0</a></strong> — 클라이언트 JS 최소화</li>
+<li><strong>SQLite + <code>modernc.org/sqlite</code></strong> — CGO 없는 순수 Go 드라이버</li>
+</ul>
+<p>목표는 단순합니다. 할 일 추가/완료/삭제만 되는 SSR 미니멀 앱. 1인 로컬 사용을 가정합니다.</p>
+<hr>
+<h2 id="step-0-git-init-직후의-1차-골격">Step 0: <code>git init</code> 직후의 1차 골격<a href="#step-0-git-init-직후의-1차-골격" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>git init</code> 직후 가장 먼저 만드는 건 파일이 아니라 <strong>디렉터리 구조의 합의</strong> 입니다. Vertical Slice Architecture(VSA) 를 따른다는 가정으로 다음과 같이 잡습니다.</p>
+<pre tabindex="0"><code>gotodo/
+├── AGENTS.md
+├── CLAUDE.md          # -&gt; AGENTS.md (symlink)
+├── GEMINI.md          # -&gt; AGENTS.md (symlink)
+├── README.md
+├── ARCHITECTURE.md
+├── DESIGN.md
+├── DEVELOPMENT.md
+├── Makefile
+├── go.mod
+├── cmd/server/main.go
+├── features/
+│   └── task/                # feature slice: 한 폴더에 핸들러+스토어+뷰+테스트
+│       ├── handler.go
+│       ├── handler_test.go
+│       ├── store.go
+│       ├── store_test.go
+│       └── views.templ
+├── internal/
+│   ├── db/db.go
+│   └── server/server.go
+├── migrations/
+│   └── 001_create_tasks.sql
+├── static/
+│   └── htmx.min.js
+└── docs/
+    ├── adr/0001-htmx-over-spa.md
+    └── specs/001-task-crud.md
+</code></pre><p>VSA 채택 이유는 Part 1 에서 가볍게 언급했고, 곧 ADR-0001 로 다시 적습니다. 핵심만 짚으면, 한 변경을 위해 에이전트가 들고 다녀야 할 컨텍스트가 한 폴더 안에 닫혀 있다는 점입니다.</p>
+<hr>
+<h2 id="step-1-readmemd--agent-friendly-진입점">Step 1: <code>README.md</code> — agent-friendly 진입점<a href="#step-1-readmemd--agent-friendly-진입점" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>README 는 사람과 에이전트가 동시에 보는 진입점입니다. <strong>3줄 quick start + 무엇/무엇이 아닌지 + 다음에 볼 문서들</strong>, 이 세 블록이면 충분합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># gotodo
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">A minimal SSR-based To-Do app. Go + Templ + HTMX + SQLite.
+</span></span><span class="line"><span class="cl">Single-user, local-first. No JS framework, no build step.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Quick start
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">```bash
+</span></span><span class="line"><span class="cl">git clone https://github.com/example/gotodo
+</span></span><span class="line"><span class="cl">cd gotodo
+</span></span><span class="line"><span class="cl">make dev          # http://localhost:8080
+</span></span></code></pre></div><h2 id="what-it-is--what-it-isnt">What it is / What it isn&rsquo;t<a href="#what-it-is--what-it-isnt" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><strong>It is</strong>: 학습 목적의 미니멀 SSR 앱. HTMX 의 hypermedia 패턴을 실험합니다.</li>
+<li><strong>It isn&rsquo;t</strong>: 멀티 유저 SaaS, 모바일 앱, 오프라인 동기화 기능.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next<a href="#where-to-go-next" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="AGENTS.md"><code>AGENTS.md</code></a> — 에이전트가 따라야 할 규칙 (사람도 읽으세요)</li>
+<li><a href="ARCHITECTURE.md"><code>ARCHITECTURE.md</code></a> — 시스템 구조와 도메인 모델</li>
+<li><a href="DESIGN.md"><code>DESIGN.md</code></a> — 시각 디자인 시스템 (컬러, 타이포, 컴포넌트)</li>
+<li><a href="DEVELOPMENT.md"><code>DEVELOPMENT.md</code></a> — 매일 쓰는 명령어</li>
+<li><a href="docs/specs/"><code>docs/specs/</code></a> — 진행 중인 feature spec</li>
+<li><a href="docs/adr/"><code>docs/adr/</code></a> — 큰 의사결정의 기록</li>
+</ul>
+<pre tabindex="0"><code>
+README 가 1500줄이 되는 가장 흔한 이유는, &#34;혹시 누가 못 찾을까 봐&#34; 모든 걸 여기에 적기 때문입니다. **다른 문서로 위임하는 1줄 포인터** 가 더 친절합니다.
+
+---
+
+## Step 2: `AGENTS.md` + symlink 설정
+
+`AGENTS.md` 는 단일 진실 원본입니다. 다음은 `gotodo` 의 발췌입니다.
+
+```markdown
+# AGENTS.md
+
+이 문서는 사람과 에이전트(Claude Code, Codex CLI, Cursor 등)가
+이 repo 에서 일할 때 공통으로 따르는 규칙입니다.
+
+## 1. 프로젝트 한 줄 요약
+
+Go + Templ + HTMX + SQLite 로 만든 SSR 기반 미니멀 To-Do 앱.
+싱글 유저, 로컬 우선.
+
+## 2. 자주 쓰는 명령어
+
+| Task         | Command          |
+|--------------|------------------|
+| 개발 서버    | `make dev`       |
+| 테스트       | `make test`      |
+| 린트         | `make lint`      |
+| 빌드         | `make build`     |
+| DB 마이그레이션 | `make migrate` |
+
+세부는 `DEVELOPMENT.md` 참조.
+
+## 3. 디렉터리 한 줄 안내
+
+- `cmd/server/` — main 진입점
+- `features/&lt;name&gt;/` — feature slice (handler + store + view + test)
+- `internal/db/` — DB 초기화
+- `internal/server/` — HTTP 서버, 라우팅
+- `migrations/` — SQL 마이그레이션
+- `docs/` — ADR 와 spec
+
+자세한 구조와 의도는 `ARCHITECTURE.md` 참조.
+
+## 4. 작업 규칙
+
+### 4-1. Vertical Slice 안에서 일하라
+
+새 feature 는 `features/&lt;name&gt;/` 폴더 안에 닫아야 합니다.
+다른 feature 의 코드를 import 하지 마세요. 공통 로직이 필요해지면
+먼저 issue 를 열고 논의하세요.
+
+### 4-2. 테스트가 먼저
+
+핸들러와 스토어 변경은 항상 실패하는 테스트 → 통과로 갑니다.
+Templ 뷰의 텍스트 변경처럼 명백한 케이스는 예외입니다.
+
+### 4-3. SQL 은 인라인으로, ORM 금지
+
+`database/sql` 표준 라이브러리만 사용합니다. ORM/쿼리빌더는
+이 프로젝트의 범위에서 과합니다 (ADR-0002 참조).
+
+### 4-4. 클라이언트 JS 는 HTMX 외에 추가 금지
+
+ADR-0001 의 결정. 새 JS 라이브러리를 추가하고 싶다면 먼저 ADR 로 제안하세요.
+
+## 5. 작업 완료 전 체크리스트
+
+- [ ] `make test` 통과
+- [ ] `make lint` 통과 (exit code 0)
+- [ ] 변경된 feature 의 `*.templ` 가 `templ generate` 로 재생성됨
+- [ ] `docs/specs/` 에 해당하는 spec 이 있고 acceptance criteria 가 만족됨
+
+## 6. 보안/시크릿
+
+- `.env` 와 `*.db` 파일은 절대 커밋하지 않습니다.
+- DB 파일 경로는 `GOTODO_DB_PATH` 환경변수로만 받습니다.
+
+## 7. 도구별 보강
+
+### Claude Code
+- `~/.claude/commands/release.md` 에 `/release` 가 정의되어 있습니다.
+- 릴리스 전 항상 `/release dry-run` 을 먼저 실행하세요.
+
+### Cursor
+- `.cursor/rules/templ.mdc` 가 `*.templ` 파일 편집 시 자동 적용됩니다.
+- `templ generate` 를 빠뜨리지 않도록 강제합니다.
+</code></pre><p>symlink 설정은 다음 한 번이면 끝입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ln -s AGENTS.md CLAUDE.md
+</span></span><span class="line"><span class="cl">ln -s AGENTS.md GEMINI.md
+</span></span><span class="line"><span class="cl">git add AGENTS.md CLAUDE.md GEMINI.md
+</span></span></code></pre></div><p>이렇게 두면 Claude Code 든 Codex CLI 든 Gemini CLI 든 동일한 규칙을 읽습니다.</p>
+<h3 id="claude-code-의-글로벌-claudemd-와의-관계">Claude Code 의 글로벌 CLAUDE.md 와의 관계<a href="#claude-code-의-글로벌-claudemd-와의-관계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>~/.claude/CLAUDE.md</code> 에 사용자별 글로벌 규칙(예: &ldquo;한국어 경어체로 답변하라&rdquo;, &ldquo;git 커밋 메시지는 Conventional Commits 로&rdquo;) 이 있다면, 그것은 그대로 둡니다. 프로젝트의 <code>./CLAUDE.md</code>(→ <code>AGENTS.md</code>) 는 그 위에 쌓이므로, 프로젝트 규칙이 글로벌 규칙을 덮어쓰거나 보완합니다.</p>
+<hr>
+<h2 id="step-3-architecturemd--도메인-모델과-templ-컴포넌트-구조">Step 3: <code>ARCHITECTURE.md</code> — 도메인 모델과 Templ 컴포넌트 구조<a href="#step-3-architecturemd--도메인-모델과-templ-컴포넌트-구조" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>ARCHITECTURE 는 &ldquo;조립도&rdquo; 입니다. 다음은 발췌입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ARCHITECTURE
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 시스템 다이어그램
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s">```mermaid
+</span></span></span><span class="line"><span class="cl">flowchart LR
+</span></span><span class="line"><span class="cl">    Browser[&#34;Browser&lt;br/&gt;(HTMX)&#34;] -- HTTP --&gt; Server[&#34;Go HTTP Server&lt;br/&gt;(net/http)&#34;]
+</span></span><span class="line"><span class="cl">    Server --&gt; Feature[&#34;features/task&lt;br/&gt;handler+store+view&#34;]
+</span></span><span class="line"><span class="cl">    Feature --&gt; DB[(&#34;SQLite&lt;br/&gt;tasks.db&#34;)]
+</span></span><span class="line"><span class="cl">    style Browser fill:#87CEEB,color:#000000
+</span></span><span class="line"><span class="cl">    style Server fill:#90EE90,color:#000000
+</span></span><span class="line"><span class="cl">    style Feature fill:#FFD700,color:#000000
+</span></span><span class="line"><span class="cl">    style DB fill:#FFB6C1,color:#000000
+</span></span><span class="line"><span class="cl"><span class="s">```</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 도메인 모델
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">가장 중요한 엔티티는 <span class="sb">`Task`</span> 하나입니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s">```go
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Task</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">ID</span><span class="w">        </span><span class="kt">int64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Title</span><span class="w">     </span><span class="kt">string</span><span class="w">    </span><span class="c1">// 1..200 chars, trim</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Done</span><span class="w">      </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">CreatedAt</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="c1">// UTC</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="s">```</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">제약사항:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`Title`</span> 은 trim 후 빈 문자열이면 400 응답.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`Title`</span> 길이는 200자 초과 시 400.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`Done`</span> 토글은 idempotent.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## HTTP 라우트
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| Method | Path                  | 응답                          |
+</span></span><span class="line"><span class="cl">|--------|-----------------------|-------------------------------|
+</span></span><span class="line"><span class="cl">| GET    | <span class="sb">`/`</span>                   | 전체 페이지 (full page)        |
+</span></span><span class="line"><span class="cl">| POST   | <span class="sb">`/tasks`</span>              | 새 row partial (<span class="sb">`&lt;li&gt;`</span>)        |
+</span></span><span class="line"><span class="cl">| POST   | <span class="sb">`/tasks/{id}/toggle`</span>  | 갱신된 row partial             |
+</span></span><span class="line"><span class="cl">| DELETE | <span class="sb">`/tasks/{id}`</span>         | 빈 응답 (HTMX 가 row 제거)     |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HTMX 의 부분 응답 패턴(out-of-band swap)을 사용합니다. JSON 은 쓰지 않습니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Templ 컴포넌트 구조
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`views.Layout(title)`</span> — 전체 페이지 셸
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`views.TaskList(tasks)`</span> — <span class="sb">`&lt;ul&gt;`</span> 컨테이너
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`views.TaskRow(t)`</span> — 하나의 <span class="sb">`&lt;li&gt;`</span> (POST/toggle/delete 의 응답이 곧 이 컴포넌트)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`views.NewTaskForm()`</span> — 상단 입력 폼
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">핵심 원칙: <span class="gs">**HTTP 핸들러는 한 컴포넌트만 렌더링**</span> 한다. 페이지 한 덩어리를 통째로 반환하는 경로는 <span class="sb">`GET /`</span> 뿐.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 의존성 흐름
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s">```
+</span></span></span><span class="line"><span class="cl">cmd/server/main.go
+</span></span><span class="line"><span class="cl">  └─ internal/server.New(db)
+</span></span><span class="line"><span class="cl">       └─ features/task.NewHandler(store)
+</span></span><span class="line"><span class="cl">            └─ features/task.NewStore(db)
+</span></span><span class="line"><span class="cl">                 └─ internal/db.Open()
+</span></span><span class="line"><span class="cl"><span class="s">```</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">각 feature 패키지는 자기 <span class="sb">`Store`</span> 와 <span class="sb">`Handler`</span> 의 인터페이스를 자기 폴더 안에서 정의합니다.
+</span></span><span class="line"><span class="cl">다른 feature 의 internal 패키지를 import 하지 않습니다.
+</span></span></code></pre></div><blockquote>
+<p>Tip: Mermaid 다이어그램의 배경색을 밝게 쓸 때는 <code>color:#000000</code> 을 함께 지정해야 다크 테마에서도 글자가 보입니다. 이 블로그의 CLAUDE.md 에도 같은 규칙이 적혀 있습니다.</p>
+</blockquote>
+<hr>
+<h2 id="step-4-designmd--시각-디자인-시스템">Step 4: <code>DESIGN.md</code> — 시각 디자인 시스템<a href="#step-4-designmd--시각-디자인-시스템" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>DESIGN.md</code> 는 비교적 새 컨벤션입니다. 2025년 후반 Google Stitch 가 <a href="https://stitch.withgoogle.com/docs/design-md/format/">표준 포맷</a> 을 제안했고, VoltAgent 의 <a href="https://github.com/VoltAgent/awesome-design-md">awesome-design-md</a> 가 Linear, Vercel, Stripe, Notion 등 73개 사이트의 실제 DESIGN.md 를 모아 사실상 보급의 허브 역할을 하고 있습니다.</p>
+<p>역할은 한 문장으로 정리됩니다. <strong><code>AGENTS.md</code> 는 &ldquo;어떻게 빌드하는가&rdquo;, <code>DESIGN.md</code> 는 &ldquo;어떤 모양인가&rdquo;</strong> 입니다. 새 화면이나 컴포넌트를 추가할 때 에이전트가 매번 &ldquo;버튼 색은 뭘로 할까&rdquo;, &ldquo;간격은 얼마로 할까&rdquo; 를 새로 결정하지 않고, 이 파일을 단일 진실 원본으로 참조하게 만드는 게 목표입니다.</p>
+<p>다음은 <code>gotodo</code> 의 발췌입니다. 1인 로컬 앱이라 의도적으로 작게 잡았습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># DESIGN
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 1. Visual Theme &amp; Atmosphere
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**Terminal-minimal**</span>. CLI 도구를 GUI 로 옮긴 듯한 인상.
+</span></span><span class="line"><span class="cl">이미지 없음, 그라데이션 없음, 애니메이션 최소. 정보 밀도와 빠른 조작감이 미관보다 우선.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 2. Color Palette &amp; Roles
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| Token         | Hex       | Role                                |
+</span></span><span class="line"><span class="cl">|---------------|-----------|--------------------------------------|
+</span></span><span class="line"><span class="cl">| <span class="sb">`--bg`</span>        | <span class="sb">`#0E1116`</span> | 페이지 배경                          |
+</span></span><span class="line"><span class="cl">| <span class="sb">`--surface`</span>   | <span class="sb">`#161B22`</span> | 카드/리스트 항목 배경                |
+</span></span><span class="line"><span class="cl">| <span class="sb">`--fg`</span>        | <span class="sb">`#E6EDF3`</span> | 기본 텍스트                          |
+</span></span><span class="line"><span class="cl">| <span class="sb">`--muted`</span>     | <span class="sb">`#8B949E`</span> | 보조 텍스트, 완료된 task             |
+</span></span><span class="line"><span class="cl">| <span class="sb">`--accent`</span>    | <span class="sb">`#3FB950`</span> | 활성 상태, primary button            |
+</span></span><span class="line"><span class="cl">| <span class="sb">`--danger`</span>    | <span class="sb">`#F85149`</span> | 삭제, 에러 상태                      |
+</span></span><span class="line"><span class="cl">| <span class="sb">`--border`</span>    | <span class="sb">`#30363D`</span> | 1px 분할선                           |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">다크 테마만 지원합니다. 라이트 테마는 v2 에서 검토 예정.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 3. Typography Rules
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">전부 시스템 모노스페이스 스택. 별도 웹폰트를 다운로드하지 않습니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s">```css
+</span></span></span><span class="line"><span class="cl"><span class="nt">font-family</span><span class="o">:</span> <span class="nt">ui-monospace</span><span class="o">,</span> <span class="nt">SFMono-Regular</span><span class="o">,</span> <span class="s2">&#34;SF Mono&#34;</span><span class="o">,</span> <span class="nt">Menlo</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">             <span class="nt">Consolas</span><span class="o">,</span> <span class="s2">&#34;Liberation Mono&#34;</span><span class="o">,</span> <span class="nt">monospace</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="s">```</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| Element     | Size | Weight | Line-height |
+</span></span><span class="line"><span class="cl">|-------------|------|--------|--------------|
+</span></span><span class="line"><span class="cl">| <span class="sb">`&lt;h1&gt;`</span>      | 24px | 600    | 1.3          |
+</span></span><span class="line"><span class="cl">| 본문        | 16px | 400    | 1.5          |
+</span></span><span class="line"><span class="cl">| Task title  | 16px | 400    | 1.4          |
+</span></span><span class="line"><span class="cl">| Hint/meta   | 13px | 400    | 1.4          |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 4. Component Stylings
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Button — Primary (`+ Add`)
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> bg: <span class="sb">`--accent`</span>, fg: <span class="sb">`--bg`</span>, padding: <span class="sb">`8px 16px`</span>, radius: <span class="sb">`4px`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Hover: opacity 0.9
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Disabled: opacity 0.4, cursor not-allowed
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Button — Danger (`✕`)
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> bg: transparent, fg: <span class="sb">`--danger`</span>, radius: <span class="sb">`4px`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Hover: bg <span class="sb">`rgba(248, 81, 73, 0.1)`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Text Input
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> bg: <span class="sb">`--surface`</span>, fg: <span class="sb">`--fg`</span>, border: 1px solid <span class="sb">`--border`</span>, radius: <span class="sb">`4px`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Focus: border-color <span class="sb">`--accent`</span>, outline 없음
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Placeholder: <span class="sb">`--muted`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Task Row (`&lt;li&gt;`)
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 가로 layout: <span class="sb">`[checkbox] [title] ........ [delete]`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> padding: <span class="sb">`12px 16px`</span>, border-bottom: 1px solid <span class="sb">`--border`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 완료된 task: title 에 <span class="sb">`text-decoration: line-through`</span>, color <span class="sb">`--muted`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 5. Layout Principles
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> **Spacing scale**: 4 / 8 / 12 / 16 / 24 / 32 (8px base, 4 와 12 만 예외)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> **Container**: max-width 640px, 가운데 정렬 (1인 앱은 좁은 폭이 자연스럽다)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> **Whitespace**: 항목 사이 0, 섹션 사이 24px. 빽빽함을 두려워하지 않는다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 6. Depth &amp; Elevation
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">평면적 디자인을 유지합니다. shadow 는 다음 두 경우만 허용합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> focus 가 들어간 input: <span class="sb">`0 0 0 2px rgba(63, 185, 80, 0.3)`</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 에러 토스트(있다면): <span class="sb">`0 4px 12px rgba(0, 0, 0, 0.4)`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 7. Do&#39;s and Don&#39;ts
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**Do**</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 모노스페이스 폰트로 일관된 그리드 정렬을 유지한다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 상태 변화는 색으로 표현한다 (애니메이션 대신).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 모든 상호작용은 키보드로도 가능해야 한다 (Tab/Enter/Space).
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**Don&#39;t**</span>
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 그라데이션, 이미지, 아이콘 폰트를 추가하지 않는다 (절대).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 라이트 테마용 색을 임의로 도입하지 않는다 (ADR 로 제안 후).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> transition 시간을 200ms 보다 길게 두지 않는다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 8. Responsive Behavior
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">단일 컬럼 레이아웃이라 별도 breakpoint 가 거의 필요 없습니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`&lt; 480px`</span>: container padding 16px → 8px
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 터치 타깃 최소 44×44px (delete 버튼 포함)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 9. Agent Prompt Guide
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">새 UI 컴포넌트를 만들 때 에이전트에 던질 짧은 프롬프트 템플릿:
+</span></span><span class="line"><span class="cl"><span class="k">
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">Style this component using the tokens in `DESIGN.md`.
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">Use `--accent` only for the primary action. Match the existing
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">`TaskRow` density. Mono font, no images, no gradients.
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">색만 빨리 참조하고 싶을 때:
+</span></span><span class="line"><span class="cl"><span class="k">
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">Primary action → `--accent` (#3FB950). Destructive → `--danger` (#F85149).
+</span></span></span><span class="line"><span class="cl"><span class="k">&gt; </span><span class="ge">Surfaces → `--bg` / `--surface`. Text → `--fg` / `--muted`.
+</span></span></span></code></pre></div><h3 id="왜-이-9개-섹션인가">왜 이 9개 섹션인가<a href="#왜-이-9개-섹션인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>awesome-design-md 의 모든 예제가 같은 9개 섹션을 가집니다. 처음에는 &ldquo;한 페이지짜리 앱에 9개나?&rdquo; 싶지만, 막상 적어 보면 각 섹션이 매우 짧아도 충분합니다(<code>gotodo</code> 의 위 예제는 전체가 100줄 이하). 중요한 건 <strong>에이전트가 헤매지 않도록 미리 결정해 두는 것</strong> 이지, 결정의 양이 아닙니다.</p>
+<h3 id="templ-컴포넌트가-토큰을-참조하게-만들기">Templ 컴포넌트가 토큰을 참조하게 만들기<a href="#templ-컴포넌트가-토큰을-참조하게-만들기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>DESIGN.md 만 두면 잊혀집니다. 토큰을 실제 CSS 로 옮기고, Templ 컴포넌트가 그 토큰만 사용하게 강제해야 살아 있는 문서가 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="c">&lt;!-- static/tokens.css : DESIGN.md 의 토큰을 그대로 옮긴 단일 파일 --&gt;</span>
+</span></span><span class="line"><span class="cl">:root {
+</span></span><span class="line"><span class="cl">  --bg: #0E1116;
+</span></span><span class="line"><span class="cl">  --surface: #161B22;
+</span></span><span class="line"><span class="cl">  --fg: #E6EDF3;
+</span></span><span class="line"><span class="cl">  --muted: #8B949E;
+</span></span><span class="line"><span class="cl">  --accent: #3FB950;
+</span></span><span class="line"><span class="cl">  --danger: #F85149;
+</span></span><span class="line"><span class="cl">  --border: #30363D;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// features/task/views.templ (발췌)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">templ</span><span class="w"> </span><span class="nf">TaskRow</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">Task</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">&lt;</span><span class="nx">li</span><span class="w"> </span><span class="nx">class</span><span class="p">=</span><span class="s">&#34;task-row&#34;</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="nx">button</span><span class="w"> </span><span class="nx">class</span><span class="p">=</span><span class="s">&#34;btn-toggle&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">hx</span><span class="o">-</span><span class="nx">post</span><span class="p">={</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;/tasks/%d/toggle&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">ID</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">hx</span><span class="o">-</span><span class="nx">target</span><span class="p">=</span><span class="s">&#34;closest li&#34;</span><span class="w"> </span><span class="nx">hx</span><span class="o">-</span><span class="nx">swap</span><span class="p">=</span><span class="s">&#34;outerHTML&#34;</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Done</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">☑</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">☐</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="o">/</span><span class="nx">button</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="nx">span</span><span class="w"> </span><span class="nx">class</span><span class="p">={</span><span class="w"> </span><span class="s">&#34;title&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">templ</span><span class="p">.</span><span class="nf">KV</span><span class="p">(</span><span class="s">&#34;done&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Done</span><span class="p">)</span><span class="w"> </span><span class="p">}&gt;{</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="p">}&lt;</span><span class="o">/</span><span class="nx">span</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">&lt;</span><span class="nx">button</span><span class="w"> </span><span class="nx">class</span><span class="p">=</span><span class="s">&#34;btn-danger&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">hx</span><span class="o">-</span><span class="nx">delete</span><span class="p">={</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;/tasks/%d&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">ID</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">hx</span><span class="o">-</span><span class="nx">target</span><span class="p">=</span><span class="s">&#34;closest li&#34;</span><span class="w"> </span><span class="nx">hx</span><span class="o">-</span><span class="nx">swap</span><span class="p">=</span><span class="s">&#34;delete&#34;</span><span class="p">&gt;</span><span class="err">✕</span><span class="p">&lt;</span><span class="o">/</span><span class="nx">button</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">&lt;</span><span class="o">/</span><span class="nx">li</span><span class="p">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이러면 새 컴포넌트를 만들 때도 에이전트가 <code>tokens.css</code> 의 변수만 쓰게 됩니다.</p>
+<h3 id="awesome-design-md-활용-팁">awesome-design-md 활용 팁<a href="#awesome-design-md-활용-팁" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>처음 <code>DESIGN.md</code> 를 쓰는 사람에게 가장 막막한 부분은 &ldquo;톤&rdquo; 입니다. 그럴 때는 awesome-design-md 에서 자기 프로젝트의 톤과 가까운 사이트를 골라 <strong>그 DESIGN.md 를 그대로 복사한 뒤 토큰만 바꿔 시작</strong> 하는 게 빠릅니다. 예를 들어 <code>gotodo</code> 처럼 미니멀/모노스페이스 톤이라면 <a href="https://getdesign.md/vercel/design-md">Vercel</a> 이나 <a href="https://getdesign.md/ollama/design-md">Ollama</a> 의 DESIGN.md 가 좋은 출발점입니다.</p>
+<blockquote>
+<p>한 가지 주의. awesome-design-md 의 DESIGN.md 들은 마케팅 사이트 기준이라 섹션이 풍부합니다. 1인 앱이나 내부 도구에는 그대로 가져오면 과합니다. <strong>자기 프로젝트 규모에 맞춰 5~10% 까지 줄이는 것을 두려워하지 마세요.</strong></p>
+</blockquote>
+<hr>
+<h2 id="step-5-첫-adr--docsadr0001-htmx-over-spamd">Step 5: 첫 ADR — <code>docs/adr/0001-htmx-over-spa.md</code><a href="#step-5-첫-adr--docsadr0001-htmx-over-spamd" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>ADR 은 짧을수록 좋습니다. Michael Nygard 포맷을 거의 그대로 씁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># ADR-0001: HTMX over SPA
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Status
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Accepted (2026-05-28)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Context
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="sb">`gotodo`</span> 는 1인 로컬 사용을 가정한 학습 프로젝트입니다.
+</span></span><span class="line"><span class="cl">SPA 를 채택하면 다음이 따라옵니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Node.js 빌드 파이프라인 (vite/esbuild)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 클라이언트 라우팅
+</span></span><span class="line"><span class="cl"><span class="k">-</span> JSON API 와 SSR 의 이원화
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">이 모든 비용이 학습 목적과 1인 사용 가정에 비추어 과합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Decision
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">다음을 채택합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 모든 페이지/부분 응답은 서버에서 HTML 로 렌더링한다 (templ).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 인터랙션은 HTMX 의 attribute 만으로 작성한다 (<span class="sb">`hx-post`</span>, <span class="sb">`hx-target`</span>, <span class="sb">`hx-swap`</span>).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 추가 클라이언트 JS 라이브러리는 금지한다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Consequences
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Positive
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 빌드 파이프라인이 <span class="sb">`make build`</span> 한 줄로 끝난다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 핸들러가 반환하는 응답이 곧 사용자에게 보이는 화면이라 디버깅이 쉽다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 에이전트가 &#34;JSON 응답을 SPA 가 어떻게 그릴까&#34; 를 추측할 필요가 없다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### Negative
+</span></span></span><span class="line"><span class="cl"><span class="k">-</span> 복잡한 클라이언트 상태가 필요한 화면(드래그앤드롭, 오프라인 큐 등)이 생기면 재검토 필요.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> HTMX 의 OOB swap 패턴에 익숙해지는 학습 비용.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Alternatives considered
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> **Next.js (App Router)** — 빌드 파이프라인 비용 과다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> **Alpine.js + plain JSON API** — 응답 형태 이원화로 핸들러가 두 가지 모드를 가져야 함.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> **Vanilla JS + fetch** — 작성 비용은 낮지만 일관된 패턴을 강제하기 어려움.
+</span></span></code></pre></div><p>ADR 을 적어 두면, 6개월 뒤 에이전트에게 &ldquo;React 로 바꿔 줘&rdquo; 라는 요청이 들어왔을 때 &ldquo;이 결정은 ADR-0001 에 의해 이미 거부된 옵션입니다&rdquo; 라고 답할 근거가 생깁니다.</p>
+<hr>
+<h2 id="step-6-developmentmd--매일-쓰는-명령어">Step 6: <code>DEVELOPMENT.md</code> — 매일 쓰는 명령어<a href="#step-6-developmentmd--매일-쓰는-명령어" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>AGENTS.md</code> 의 명령어 표는 매우 짧게, 자세한 흐름은 <code>DEVELOPMENT.md</code> 에 둡니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># DEVELOPMENT
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 사전 요구사항
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> Go 1.23+
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`templ`</span> CLI (<span class="sb">`go install github.com/a-h/templ/cmd/templ@latest`</span>)
+</span></span><span class="line"><span class="cl"><span class="k">-</span> <span class="sb">`golangci-lint`</span> (<span class="sb">`brew install golangci-lint`</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 자주 쓰는 명령어
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s">```bash
+</span></span></span><span class="line"><span class="cl">make dev          <span class="c1"># templ generate --watch + air (http://localhost:8080)</span>
+</span></span><span class="line"><span class="cl">make <span class="nb">test</span>         <span class="c1"># go test ./...</span>
+</span></span><span class="line"><span class="cl">make lint         <span class="c1"># golangci-lint run</span>
+</span></span><span class="line"><span class="cl">make build        <span class="c1"># CGO_DISABLED=1 go build -o bin/gotodo ./cmd/server</span>
+</span></span><span class="line"><span class="cl">make migrate      <span class="c1"># 누적된 migrations/*.sql 을 순서대로 적용</span>
+</span></span><span class="line"><span class="cl">make clean        <span class="c1"># bin/, *.db, templ 생성물 제거</span>
+</span></span><span class="line"><span class="cl"><span class="s">```</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 환경변수
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| 변수                | 기본값         | 설명                |
+</span></span><span class="line"><span class="cl">|---------------------|----------------|---------------------|
+</span></span><span class="line"><span class="cl">| <span class="sb">`GOTODO_DB_PATH`</span>    | <span class="sb">`./gotodo.db`</span>  | SQLite 파일 경로     |
+</span></span><span class="line"><span class="cl">| <span class="sb">`GOTODO_LISTEN_ADDR`</span>| <span class="sb">`:8080`</span>        | 서버 바인딩 주소     |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="sb">`.env.example`</span> 를 복사해서 <span class="sb">`.env`</span> 를 만들면 <span class="sb">`make dev`</span> 가 자동으로 로드합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 테스트 작성 규칙
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 핸들러 테스트는 <span class="sb">`httptest.NewServer`</span> 로 실제 라우터에 붙입니다 (mock 금지).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 스토어 테스트는 임시 SQLite 파일로 돌립니다 (<span class="sb">`t.TempDir()`</span>).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 통합 테스트가 5\~10초 안에 끝나는 한, 모킹보다 실제 의존성을 선호합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 커밋 컨벤션
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">Conventional Commits</span>](<span class="na">https://www.conventionalcommits.org/</span>).
+</span></span><span class="line"><span class="cl">PR 제목도 같은 규칙을 따릅니다. <span class="sb">`commitlint`</span> 가 CI 에서 검증합니다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s">```
+</span></span></span><span class="line"><span class="cl">feat(task): add toggle endpoint
+</span></span><span class="line"><span class="cl">fix(store): handle empty title after trim
+</span></span><span class="line"><span class="cl">docs(adr): record HTMX-over-SPA decision
+</span></span><span class="line"><span class="cl"><span class="s">```</span>
+</span></span></code></pre></div><hr>
+<h2 id="step-7-첫-feature-spec--docsspecs001-task-crudmd">Step 7: 첫 feature spec — <code>docs/specs/001-task-crud.md</code><a href="#step-7-첫-feature-spec--docsspecs001-task-crudmd" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>feature 단위 spec 은 짧고 검증 가능해야 합니다. 다음은 발췌입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># SPEC-001: Task CRUD
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Background
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="sb">`gotodo`</span> 의 최소 기능 단위. 사용자가 할 일을 추가/완료/삭제할 수 있어야 한다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Goals
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 한 페이지에서 할 일을 입력하고 즉시 목록에 추가한다 (페이지 새로고침 없이).
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 각 항목을 클릭/체크하면 완료 상태가 토글된다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 삭제 버튼으로 항목을 제거한다.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 모든 변경은 SQLite 에 즉시 반영된다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Non-goals
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 사용자 인증
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 마감일/우선순위
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 다중 사용자, 다중 디바이스 동기화
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Acceptance criteria
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`GET /`</span> 가 현재 할 일 목록과 새 항목 입력 폼을 렌더링한다.
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`POST /tasks`</span> 가 <span class="sb">`title`</span> 폼 값을 받아 새 항목을 저장하고, <span class="sb">`TaskRow`</span> 부분 응답을 반환한다.
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`title`</span> 이 trim 후 빈 문자열이면 400 을 반환한다.
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`title`</span> 길이가 200자 초과면 400 을 반환한다.
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`POST /tasks/{id}/toggle`</span> 이 <span class="sb">`Done`</span> 을 뒤집고 갱신된 <span class="sb">`TaskRow`</span> 를 반환한다.
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> <span class="sb">`DELETE /tasks/{id}`</span> 가 항목을 제거하고 빈 응답을 반환한다 (HTMX 가 DOM 에서 제거).
+</span></span><span class="line"><span class="cl"><span class="k">- [ ]</span> 위 모든 동작에 대한 핸들러/스토어 테스트가 있다.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Open questions
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 동일한 title 을 가진 항목을 허용할 것인가? → <span class="gs">**허용**</span>. 사용자가 일부러 둘 수 있음.
+</span></span><span class="line"><span class="cl"><span class="k">-</span> 정렬 기준은? → <span class="sb">`CreatedAt DESC`</span> 로 시작. 나중에 spec 으로 분리 가능.
+</span></span></code></pre></div><p>이 spec 1장이 있으면, 에이전트가 첫 작업을 시작할 때 어디까지가 범위이고 어디부터가 다른 spec 인지 명확해집니다.</p>
+<hr>
+<h2 id="검증-claude-code-에-작업을-시켜-보기">검증: Claude Code 에 작업을 시켜 보기<a href="#검증-claude-code-에-작업을-시켜-보기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기까지 부트스트래핑이 끝났습니다. 진짜 가치가 나오는 건 다음 순간입니다. 빈 <code>features/task/</code> 폴더로 가서, 에이전트에게 이렇게만 던집니다.</p>
+<pre tabindex="0"><code>docs/specs/001-task-crud.md 를 보고 task feature 를 구현해 주세요.
+</code></pre><p>부트스트래핑이 잘 되어 있는 repo 에서 에이전트가 보이는 행동은 대략 다음과 같습니다.</p>
+<ol>
+<li><strong><code>AGENTS.md</code> 부터 읽고</strong>, &ldquo;VSA 안에서 일하라&rdquo;, &ldquo;테스트 먼저&rdquo;, &ldquo;ORM 금지&rdquo;, &ldquo;HTMX 외 JS 금지&rdquo; 같은 규칙을 컨텍스트에 적재합니다.</li>
+<li><strong><code>ARCHITECTURE.md</code> 의 라우트 표와 Templ 컴포넌트 구조를 확인</strong>, 어떤 핸들러가 어떤 컴포넌트를 반환해야 하는지 파악합니다.</li>
+<li><strong><code>DESIGN.md</code> 의 토큰과 컴포넌트 스타일을 확인</strong>, 새 마크업에 임의의 색이나 폰트를 도입하지 않고 <code>tokens.css</code> 의 변수만 참조합니다.</li>
+<li><strong><code>docs/specs/001-task-crud.md</code> 의 acceptance criteria 를 그대로 테스트 케이스로 풀어</strong> 먼저 작성합니다.</li>
+<li>빨간 테스트를 통과시키는 최소 구현을 <code>features/task/</code> 안에서 작성합니다.</li>
+<li><code>make test</code> 와 <code>make lint</code> 를 직접 돌려 보고 결과를 확인합니다.</li>
+<li>ADR-0001 을 근거로, 도중에 &ldquo;여기서 Alpine.js 를 추가하면 편할 것 같은데&rdquo; 같은 일탈을 스스로 거부합니다.</li>
+</ol>
+<p>부트스트래핑이 부실하면 위 흐름의 절반 이상이 사용자와의 핑퐁(<em>&ldquo;테스트 먼저 작성해 주세요&rdquo;</em>, <em>&ldquo;ORM 쓰지 마세요&rdquo;</em>, <em>&ldquo;이 폴더 안에서만 작업해 주세요&rdquo;</em>) 으로 채워집니다. 매번 같은 말을 반복하는 대신, 문서에 한 번 적어 두는 편이 훨씬 쌉니다.</p>
+<hr>
+<h2 id="부트스트래핑-체크리스트">부트스트래핑 체크리스트<a href="#부트스트래핑-체크리스트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여러분의 다음 신규 프로젝트에 가져다 쓸 수 있는 한 장 짜리 체크리스트로 정리합니다.</p>
+<h3 id="day-1-git-init-직후">Day 1 (<code>git init</code> 직후)<a href="#day-1-git-init-직후" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> <code>README.md</code> — 3줄 quick start + 무엇/무엇이 아닌지 + 다음 문서 포인터</li>
+<li><input disabled="" type="checkbox"> <code>AGENTS.md</code> — 200~400줄 이내, 자주 쓰는 명령 표, 디렉터리 한 줄 안내, 작업 규칙, 완료 체크리스트</li>
+<li><input disabled="" type="checkbox"> <code>CLAUDE.md</code> / <code>GEMINI.md</code> — <code>AGENTS.md</code> 로의 symlink (또는 짧은 보강 파일)</li>
+<li><input disabled="" type="checkbox"> <code>ARCHITECTURE.md</code> — 시스템 다이어그램(Mermaid), 도메인 모델, 의존성 흐름</li>
+<li><input disabled="" type="checkbox"> <code>DESIGN.md</code> — UI 가 있는 프로젝트라면 Stitch 9개 섹션. awesome-design-md 의 유사 톤 사이트에서 출발해도 좋음</li>
+<li><input disabled="" type="checkbox"> <code>DEVELOPMENT.md</code> — 빌드/테스트/실행 명령, 환경변수, 커밋 컨벤션</li>
+<li><input disabled="" type="checkbox"> <code>Makefile</code> — <code>dev</code> / <code>test</code> / <code>lint</code> / <code>build</code> 최소 4개 타깃</li>
+<li><input disabled="" type="checkbox"> <code>.gitignore</code> — 시크릿/빌드 결과물/DB 파일 제외</li>
+</ul>
+<h3 id="첫-feature-시작-전">첫 feature 시작 전<a href="#첫-feature-시작-전" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> <code>docs/adr/0001-*.md</code> — 가장 큰 첫 의사결정(스택 선택, 아키텍처 패턴) 기록</li>
+<li><input disabled="" type="checkbox"> <code>docs/specs/001-*.md</code> — 첫 feature 의 Background/Goals/Non-goals/Acceptance criteria</li>
+</ul>
+<h3 id="자동-검증-장치-있으면-좋음">자동 검증 장치 (있으면 좋음)<a href="#자동-검증-장치-있으면-좋음" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> CI 에서 <code>README.md</code> 의 quick start 명령이 실제로 동작하는지 검증</li>
+<li><input disabled="" type="checkbox"> CI 에서 <code>make test</code> / <code>make lint</code> 강제</li>
+<li><input disabled="" type="checkbox"> commitlint 또는 PR title lint 로 커밋 메시지 컨벤션 강제</li>
+<li><input disabled="" type="checkbox"> <code>templ generate</code> 같은 코드젠 출력물의 dirty diff 검출</li>
+</ul>
+<h3 id="12개월-뒤-주기적으로-점검">1~2개월 뒤 주기적으로 점검<a href="#12개월-뒤-주기적으로-점검" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><input disabled="" type="checkbox"> <code>AGENTS.md</code> 가 600줄을 넘기지 않았는가? → 넘었다면 분리</li>
+<li><input disabled="" type="checkbox"> 같은 정보가 두 문서에 중복되어 있지 않은가?</li>
+<li><input disabled="" type="checkbox"> 완료된 spec 은 <code>docs/specs/archive/</code> 로 이동했는가?</li>
+<li><input disabled="" type="checkbox"> ADR 이 6개월 이상 새 항목 없이 멈춰 있지는 않은가? (의사결정 자체가 멈췄는지 점검)</li>
+</ul>
+<hr>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2년 전이라면 신규 git repo 의 1일 차 작업은 &ldquo;README 작성 + go mod init&rdquo; 두 줄로 끝났습니다. 지금은 <code>AGENTS.md</code> 를 시작으로 한 spec 문서 셋이 그만큼의 자리를 차지합니다. 부담스럽게 들릴 수 있지만, 실제로는 정반대입니다. 매 세션마다 같은 규칙을 사람이 반복해서 말하지 않게 만드는 일회성 비용입니다.</p>
+<p>핵심은 다음 세 가지로 요약됩니다.</p>
+<ol>
+<li><strong><code>AGENTS.md</code> 를 단일 진실 원본으로</strong> 두고 도구별 파일은 symlink 또는 짧은 보강으로.</li>
+<li><strong>정보 유형별로 1차 거주지 1곳</strong> — 같은 문장을 두 문서에 적지 말기.</li>
+<li><strong>검증 가능한 명령어와 acceptance criteria</strong> — 에이전트는 실행해서 결과를 보는 쪽으로 자연스럽게 흐릅니다.</li>
+</ol>
+<p>이 정도만 지키면, 에이전트가 만드는 결과물의 품질이 운에서 규율로 옮겨갑니다. 여러분의 다음 신규 프로젝트에서 시도해 보시면, 첫 PR 의 모양이 꽤 달라질 겁니다.</p>
+<p>다음 새 repo 만들 때 위 체크리스트를 한 번 꺼내 보시기 바랍니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-01/" class="button inline next">
+         [<span class="button__text">Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 1: AGENTS.md 와 spec 문서 지형도</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
