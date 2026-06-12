@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>2025.06 vs 2026.06, AGI는 얼마나 가까워졌나 Part 1: 측정값으로 본 1년 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2025년 6월과 2026년 6월 사이, AI의 능력은 벤치마크와 자율 작업 시간지평으로 측정했을 때 얼마나 달라졌는가. 팩트 기반 3부작의 첫 편." />
+<meta name="keywords" content="AI, LLM, AGI, research" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260612-agi-progress-one-year-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="2025.06 vs 2026.06, AGI는 얼마나 가까워졌나 Part 1: 측정값으로 본 1년">
+<meta property="og:description" content="2025년 6월과 2026년 6월 사이, AI의 능력은 벤치마크와 자율 작업 시간지평으로 측정했을 때 얼마나 달라졌는가. 팩트 기반 3부작의 첫 편." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260612-agi-progress-one-year-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-06-12 16:22:41 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260612-agi-progress-one-year-01/">2025.06 vs 2026.06, AGI는 얼마나 가까워졌나 Part 1: 측정값으로 본 1년</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-06-12</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agi/">AGI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/research/">research</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며-1년이라는-자">들어가며: 1년이라는 자<a href="#들어가며-1년이라는-자" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>&ldquo;AGI가 가까워졌다&quot;는 말은 너무 자주, 너무 가볍게 쓰입니다. 정작 검증하기는 어렵습니다. 기준 시점이 모호하고, 누가 무엇을 근거로 말하는지가 흐릿하기 때문입니다.</p>
+<p>이 글은 그 모호함을 줄이기 위해 두 개의 고정된 시점을 잡습니다. <strong>2025년 6월</strong> 과 <strong>2026년 6월</strong> 입니다. 정확히 1년 간격을 두고, 그 사이에 AI의 능력이 측정 가능한 지표로 얼마나 달라졌는지, 그리고 AGI 실현에 대한 전문가들의 예상이 어떻게 이동했는지를 따라가 봅니다.</p>
+<p>전체는 3부작입니다.</p>
+<ul>
+<li><strong>Part 1 (이 글)</strong>: 능력. 벤치마크와 자율 작업 시간지평이라는 &ldquo;측정값&quot;으로 본 1년의 변화.</li>
+<li><strong>Part 2</strong>: 전망. named 엔지니어·연구자들이 AGI 시계를 어떻게 다시 맞췄는가, 예측시장과 전문가 설문은 어디를 가리키는가.</li>
+<li><strong>Part 3</strong>: 현실. 실전 배치·경제·노동 데이터로 본 &ldquo;검증된 진보 vs 보도자료 과장&quot;의 대비, 그리고 종합.</li>
+</ul>
+<p>한 가지 원칙을 먼저 밝힙니다. 이 분야의 숫자에는 <strong>벤더가 직접 발표한 값</strong> 과 <strong>독립 기관이 검증한 값</strong> 이 섞여 있고, 둘의 신뢰도는 다릅니다. 가능한 한 출처를 구분하고, 검증이 약한 항목은 &ldquo;보도에 따르면&rdquo; 또는 범위로 표기했습니다. 본문의 모든 주장에는 끝의 References에 대응하는 출처가 있습니다.</p>
+<hr>
+<h2 id="모델-릴리스-간격이-11일로-줄었다">모델 릴리스: 간격이 11일로 줄었다<a href="#모델-릴리스-간격이-11일로-줄었다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>먼저 양적인 사실부터 봅니다. 2025년 6월 시점의 프론티어는 대략 OpenAI o3, Claude Opus 4, Google Gemini 2.5 Pro 세 줄기였습니다. 1년이 지난 2026년 6월에는 그 명단이 거의 전부 교체됐습니다.</p>
+<p>주요 릴리스를 시간순으로 추리면 다음과 같습니다.</p>
+<ul>
+<li><strong>2025-07</strong> — xAI <strong>Grok 4 / Grok 4 Heavy</strong>. Humanity&rsquo;s Last Exam(HLE)에서 처음으로 50%대(Heavy, 도구 사용)에 도달.</li>
+<li><strong>2025-08</strong> — OpenAI <strong>GPT-5</strong>. 빠른 모델과 추론 모델을 실시간 라우터로 묶은 통합 시스템.</li>
+<li><strong>2025-09 ~ 11</strong> — Anthropic <strong>Claude Sonnet 4.5 → Opus 4.5</strong>. Opus 4.5가 SWE-bench Verified 80%를 처음 돌파(80.9%).</li>
+<li><strong>2025-11</strong> — Google <strong>Gemini 3 Pro</strong>. LMArena Elo 1500을 처음 넘김(1501).</li>
+<li><strong>2026-02 ~ 04</strong> — Google <strong>Gemini 3 Deep Think / 3.1 Pro</strong>, OpenAI <strong>GPT-5.2 → GPT-5.5</strong>, DeepSeek <strong>V4</strong>, Qwen <strong>3.7 Max</strong>.</li>
+<li><strong>2026-05 ~ 06</strong> — Anthropic <strong>Claude Opus 4.8 → Fable 5</strong>.</li>
+</ul>
+<p>한 데이터 집계에 따르면 2026년 들어 선도 랩 사이의 프론티어 모델 릴리스 간격 중앙값은 <strong>약 11일</strong> 까지 줄었습니다 (2026-04 기준). 1년 전 분기 단위로 굵직한 모델이 나오던 리듬과 비교하면 체감 속도가 크게 달라졌습니다.</p>
+<p>여기서 주의할 점이 하나 있습니다. <strong>릴리스 빈도는 능력 향상과 같은 말이 아닙니다.</strong> 자주 나온다고 더 똑똑해지는 것은 아니므로, 실제 변화는 벤치마크로 따로 확인해야 합니다.</p>
+<hr>
+<h2 id="벤치마크가-무너지는-속도">벤치마크가 무너지는 속도<a href="#벤치마크가-무너지는-속도" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>지난 1년의 가장 두드러진 패턴은 &ldquo;어려운 벤치마크를 새로 만드는 속도보다 그것을 깨는 속도가 더 빨랐다&quot;는 것입니다. 대표적인 지표 몇 가지를 2025년 6월 무렵과 2026년 6월 무렵으로 나란히 놓습니다.</p>
+<h3 id="arc-agi-2">ARC-AGI-2<a href="#arc-agi-2" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>추상적 추론을 측정하도록 설계된 ARC-AGI-2는 2025년 3월 출시 당시 거의 모든 프론티어 모델이 <strong>0%</strong> 에 가까웠습니다. 2025년 7월 Grok 4가 약 16%로 당시 공개 모델 최고 수준이었습니다. 그러나 2026년 6월 공개 리더보드(연산 제약 없음) 기준으로는 GPT-5.5가 <strong>85.0%</strong>, Gemini 3.1 Pro가 77.1%를 기록합니다. 1년이 채 안 되는 사이에 약 5배가 오른 셈입니다.</p>
+<p>다만 이 숫자에는 중요한 단서가 붙습니다. <strong>공개 평가 세트(무제한 추론 연산)와 준비공개·검증 세트의 점수가 크게 다릅니다.</strong> 같은 ARC-AGI-2라도 ARC Prize의 2025년 공식 대회(연산 효율 제약)에서는 1위가 24% 수준에 그쳤고, 85% 이상을 요구하는 Grand Prize는 미달성이었습니다. &ldquo;충분한 연산을 쏟아부으면 85%, 효율을 제약하면 24%&ldquo;라는 이 격차는 Part 3에서 회의론을 다룰 때 다시 등장합니다.</p>
+<h3 id="frontiermath">FrontierMath<a href="#frontiermath" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Epoch AI가 만든 연구 수준 수학 벤치마크입니다. 가장 어려운 Tier 4(50문제)는 2025년 7월 공개 당시 최고 점수가 약 6%였습니다. 2026년 초 GPT-5.2 Pro가 31%, 이후 보도 기준으로 30%대 초중반까지 올라왔습니다. 다만 Epoch는 2026년 5월, AI 보조 재검토에서 Tier 1~4 문제 중 약 1/3에 &ldquo;치명적 오류&quot;가 있음을 발표했습니다. 즉 현재의 FrontierMath 점수는 <strong>잠정치로 받아들여야</strong> 합니다.</p>
+<h3 id="이미-포화된-것들">이미 포화된 것들<a href="#이미-포화된-것들" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>반대편에는 사실상 천장에 닿은 벤치마크들이 있습니다.</p>
+<ul>
+<li><strong>AIME(미국 수학 경시)</strong>: 정상급 추론 모델이 약 100%에 수렴.</li>
+<li><strong>GPQA Diamond(대학원 수준 과학)</strong>: 약 94%까지 올라와, 라벨 노이즈 한계에 근접.</li>
+<li><strong>ARC-AGI-1</strong>: 사실상 포화.</li>
+</ul>
+<p>포화된 벤치마크는 더 이상 모델을 변별하지 못하므로 은퇴 수순을 밟고, 그 자리를 ARC-AGI-3, SWE-bench Pro, FrontierMath Tier 4 같은 더 어려운 시험이 채웁니다.</p>
+<h3 id="swe-bench-verified">SWE-bench Verified<a href="#swe-bench-verified" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>실제 GitHub 이슈를 코드로 해결하는 능력을 보는 벤치마크입니다. 코딩 에이전트의 발전을 가장 직접적으로 보여주는 지표라 따로 떼어 봅니다.</p>
+<ul>
+<li>Claude 3.5 Sonnet: 약 49%</li>
+<li>Claude Sonnet 4 (2025-05): 72.7%</li>
+<li>Claude Opus 4.5 (2025-11): 80.9% — 80% 첫 돌파</li>
+<li>Claude Opus 4.8 (2026-05): 88.6% (벤더 발표)</li>
+</ul>
+<p>약 1년 만에 49%에서 80%대 후반으로 올라왔습니다. 단, 90%대 일부 수치는 1차 출처가 점수표를 이미지로만 제공해 직접 확인이 어렵고, OpenAI가 자체 감사에서 일부 과제의 정답 패치가 학습 데이터에 유출됐을 가능성을 발견했다는 보도도 있습니다. 그래서 &ldquo;거의 포화에 가깝다&quot;까지는 신뢰도가 높지만, 정확한 90%대 숫자는 다소 걸러 들을 필요가 있습니다.</p>
+<hr>
+<h2 id="metr-시간지평-1시간에서-5시간으로">METR 시간지평: 1시간에서 5시간으로<a href="#metr-시간지평-1시간에서-5시간으로" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>벤치마크 점수는 직관적이지 않습니다. &ldquo;GPQA 94%&ldquo;가 현실에서 무엇을 뜻하는지 와닿지 않기 때문입니다. 그래서 저는 METR(Model Evaluation &amp; Threat Research)의 지표를 1년 변화를 보여주는 가장 좋은 자(尺)로 봅니다.</p>
+<p>METR의 핵심 지표는 <strong>&ldquo;50% 작업 완료 시간지평(time horizon)&rdquo;</strong> 입니다. 풀어 쓰면, <em>AI가 약 50% 확률로 성공하는 작업을, 인간 전문가가 수행하면 얼마나 걸리는가</em> 입니다. 이 값이 길수록 AI가 더 길고 복잡한 작업을 자율적으로 끝낼 수 있다는 뜻입니다.</p>
+<ul>
+<li><strong>2025년 3월 원 논문</strong>: 당시 프론티어였던 Claude 3.7 Sonnet의 시간지평이 약 <strong>1시간(60분)</strong>. 더블링 주기는 2019~2025년 기준 약 7개월.</li>
+<li><strong>2026년 1월 업데이트(Time Horizon 1.1)</strong>: Claude Opus 4.5가 약 <strong>320분(5.3시간)</strong>, GPT-5가 214분.</li>
+</ul>
+<p>핵심은 추세선입니다. 전체 기간으로는 더블링이 여전히 약 7개월이지만, <strong>2024년 이후 구간만 떼어 보면 약 89일(3개월)</strong> 로 빨라졌습니다. 커뮤니티에서는 이를 &ldquo;연 10배&quot;로 요약하기도 합니다. 1시간에서 5시간으로, 약 5~10배 늘어난 1년이었습니다.</p>
+<p>다만 METR 본인의 단서를 빠뜨리면 안 됩니다.</p>
+<ol>
+<li><strong>가속은 시사되지만 통계적으로 확정된 것은 아닙니다.</strong> 빨라진 더블링 값이 기존 추정의 신뢰구간 안에 들어오기 때문입니다.</li>
+<li><strong>16시간을 넘는 작업은 현재 측정 도구로 신뢰하기 어렵습니다.</strong> 8시간 이상 작업의 표본 자체가 적습니다.</li>
+<li><strong>50% 지평은 점프했지만 80% 지평은 거의 정체</strong> 입니다. Opus 4.5의 80% 시간지평은 약 27분으로, 50% 지평이 5시간대로 뛴 것과 대조됩니다. &ldquo;절반의 확률로 5시간짜리를 해내지만, 높은 신뢰도로는 여전히 30분 남짓&quot;이라는 해석이 가능합니다.</li>
+</ol>
+<p>2026년 봄 이후 모델들의 더 긴 시간지평(8~11시간대) 수치도 돌아다니지만, 이는 대부분 비공식 추정이거나 3자 블로그의 값이라 METR 공식 수치로 인용하기는 어렵습니다. 그래서 여기서는 공식적으로 확인되는 &ldquo;약 5시간&quot;까지만 단단한 사실로 두겠습니다.</p>
+<hr>
+<h2 id="올림피아드-초인화의-1년">올림피아드: 초인화의 1년<a href="#올림피아드-초인화의-1년" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>추상적 점수보다 직관적인 사건들도 있었습니다. 인간 최정상이 겨루는 경시대회에서 모델이 한 일들입니다.</p>
+<h3 id="수학-imo-2025-금메달">수학 (IMO 2025, 금메달)<a href="#수학-imo-2025-금메달" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2025년 7월, OpenAI와 Google DeepMind가 거의 동시에 국제수학올림피아드(IMO) 금메달 수준에 도달했습니다. 두 곳 모두 6문제 중 5문제를 풀어 35/42점, 인간과 동일한 조건(시험당 4.5시간, 도구·인터넷 없음, 자연어 증명)이었습니다. DeepMind 쪽은 IMO 측의 공식 인증을 받았습니다. 참고로 2025년 인간 참가자 630여 명 중 금메달은 67명이었습니다.</p>
+<h3 id="정보-ioi-2025-금메달">정보 (IOI 2025, 금메달)<a href="#정보-ioi-2025-금메달" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2025년 8월 국제정보올림피아드(IOI)에서 OpenAI의 추론 시스템이 금메달 점수로 인간 330명 중 6위에 해당하는 성적을 냈습니다. IOI 전용으로 학습하지 않은 범용 모델이었습니다.</p>
+<h3 id="대학-프로그래밍-icpc-world-finals-2025">대학 프로그래밍 (ICPC World Finals 2025)<a href="#대학-프로그래밍-icpc-world-finals-2025" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 극적인 장면은 2025년 9월 ICPC 세계대회였습니다. OpenAI 시스템이 <strong>12문제를 전부</strong> 풀어 139개 엘리트 대학팀 중 유일하게 만점을 기록했습니다(만점 인간팀은 0). Google DeepMind의 Gemini는 10/12로 금메달급이었는데, <strong>인간팀 누구도 풀지 못한 한 문제를 약 30분 만에</strong> 해결했습니다.</p>
+<h3 id="codeforces-elo">Codeforces Elo<a href="#codeforces-elo" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>경쟁 프로그래밍 등급으로 보면 변화가 한눈에 들어옵니다. 2025년 초 o3가 약 2,724점(상위 0.2%)이었는데, 2026년 2월 Gemini 3 Deep Think가 도구 없이 <strong>3,455점</strong> 을 기록했습니다. 이는 현재 활동하는 인간 중 7명 남짓만이 넘는 수준입니다. 약 18개월 만에 &ldquo;강한 그랜드마스터&quot;에서 &ldquo;극소수 인간을 제외하면 사실상 최강&quot;으로 이동한 셈입니다.</p>
+<p>이런 마일스톤들은 화려하지만, 한 가지는 분명히 해 둘 필요가 있습니다. 경시대회 문제는 <strong>명확하게 정의된 닫힌 문제</strong> 입니다. 정답이 있고, 채점이 가능하며, 보통 몇 시간 안에 끝납니다. 현실의 일은 대부분 그렇지 않습니다. 그래서 올림피아드 금메달은 &ldquo;특정 종류의 추론이 인간 최정상을 넘었다&quot;는 강한 증거이되, &ldquo;범용 지능이 도래했다&quot;는 증거와는 거리가 있습니다.</p>
+<hr>
+<h2 id="part-1-정리">Part 1 정리<a href="#part-1-정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>측정값만 놓고 보면, 2025년 6월에서 2026년 6월 사이의 변화는 부정하기 어렵습니다.</p>
+<ul>
+<li>ARC-AGI-2가 약 16%에서 85%(공개 세트)로 올랐고, FrontierMath Tier 4가 6%에서 30%대로 올랐습니다.</li>
+<li>METR 자율 작업 시간지평이 약 1시간에서 5시간으로 늘었고, 더블링 주기는 7개월에서 3~4개월로 빨라진 정황이 있습니다.</li>
+<li>수학·정보·프로그래밍 경시대회에서 인간 최정상을 따라잡거나 넘어섰습니다.</li>
+</ul>
+<p>그러나 같은 데이터 안에 이미 신중론의 씨앗이 들어 있습니다. 공개 세트 85%와 제약 대회 24%의 간극, 50% 지평과 80% 지평의 정체, 닫힌 경시 문제와 열린 현실 문제의 차이가 그것입니다.</p>
+<p>그렇다면 이 측정값들을 가장 가까이서 지켜보는 사람들은 AGI 시계를 어떻게 다시 맞췄을까요. Part 2에서는 named 엔지니어·연구자들의 발언 변화와 예측시장, 전문가 설문을 따라가 보겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>OpenAI, Introducing GPT-5 (2025-08-07): <a href="https://openai.com/index/introducing-gpt-5/">https://openai.com/index/introducing-gpt-5/</a></li>
+<li>Anthropic, Claude Opus 4.5 (2025-11-24): <a href="https://www.anthropic.com/news/claude-opus-4-5">https://www.anthropic.com/news/claude-opus-4-5</a></li>
+<li>Google, Gemini 3 (2025-11-18): <a href="https://blog.google/products/gemini/gemini-3/">https://blog.google/products/gemini/gemini-3/</a></li>
+<li>Google, Gemini 3 Deep Think (2026-02-12): <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-deep-think/">https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-deep-think/</a></li>
+<li>officechai, 프론티어 릴리스 간격 데이터: <a href="https://officechai.com/ai/frontier-labs-are-releasing-new-models-faster-than-ever-shows-data/">https://officechai.com/ai/frontier-labs-are-releasing-new-models-faster-than-ever-shows-data/</a></li>
+<li>ARC Prize, 2025 Results &amp; Analysis: <a href="https://arcprize.org/blog/arc-prize-2025-results-analysis">https://arcprize.org/blog/arc-prize-2025-results-analysis</a></li>
+<li>ARC Prize, Leaderboard: <a href="https://arcprize.org/leaderboard">https://arcprize.org/leaderboard</a></li>
+<li>Epoch AI, FrontierMath Tier 4: <a href="https://epoch.ai/benchmarks/frontiermath-tier-4">https://epoch.ai/benchmarks/frontiermath-tier-4</a></li>
+<li>METR, Measuring AI Ability to Complete Long Tasks (2025-03-19): <a href="https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/">https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/</a></li>
+<li>METR, Time Horizon 1.1 (2026-01-29): <a href="https://metr.org/blog/2026-1-29-time-horizon-1-1/">https://metr.org/blog/2026-1-29-time-horizon-1-1/</a></li>
+<li>DeepMind, IMO 2025 Gold: <a href="https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/">https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/</a></li>
+<li>The Decoder, IOI 2025: <a href="https://the-decoder.com/openais-ai-system-wins-a-gold-medal-level-score-at-the-international-olympiad-in-informatics-2025/">https://the-decoder.com/openais-ai-system-wins-a-gold-medal-level-score-at-the-international-olympiad-in-informatics-2025/</a></li>
+<li>The Decoder, ICPC World Finals 2025: <a href="https://the-decoder.com/openai-outperforms-humans-and-the-worlds-top-collegiate-programming-contest/">https://the-decoder.com/openai-outperforms-humans-and-the-worlds-top-collegiate-programming-contest/</a></li>
+<li>Scale AI, SWE-bench Pro: <a href="https://scale.com/blog/swe-bench-pro">https://scale.com/blog/swe-bench-pro</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260612-agi-progress-one-year-02/" class="button inline prev">
+        &lt; [<span class="button__text">2025.06 vs 2026.06, AGI는 얼마나 가까워졌나 Part 2: 전문가들은 시계를 어떻게 다시 맞췄나</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260611-album-review-ayaka-yuon-club-2nd-grade/" class="button inline next">
+         [<span class="button__text">음반 소개: 아야카(絢香) - 遊音倶楽部 〜2nd grade〜 (2020): 7년 만에 돌아온 두 번째 음악 동아리</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
