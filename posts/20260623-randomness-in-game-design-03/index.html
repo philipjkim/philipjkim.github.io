@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>게임 디자인과 랜덤성의 수학 Part 3: 게임이론과 시뮬레이션으로 밸런스를 검증하기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="가위바위보의 내쉬 균형은 왜 무작위화를 강제하는가. 비추이적 밸런스, 포커 GTO, 몬테카를로 시뮬레이션과 AI 자가 대전까지. 현대 스튜디오가 밸런스를 검증하는 de-facto 테크트리를 정리합니다. 게임 디자인과 랜덤성의 수학 3부작 완결편." />
+<meta name="keywords" content="game, game-design, game-theory, AI, statistics, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="게임 디자인과 랜덤성의 수학 Part 3: 게임이론과 시뮬레이션으로 밸런스를 검증하기">
+<meta property="og:description" content="가위바위보의 내쉬 균형은 왜 무작위화를 강제하는가. 비추이적 밸런스, 포커 GTO, 몬테카를로 시뮬레이션과 AI 자가 대전까지. 현대 스튜디오가 밸런스를 검증하는 de-facto 테크트리를 정리합니다. 게임 디자인과 랜덤성의 수학 3부작 완결편." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-06-23 14:01:04 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-03/">게임 디자인과 랜덤성의 수학 Part 3: 게임이론과 시뮬레이션으로 밸런스를 검증하기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-06-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-design/">game-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-theory/">game-theory</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/statistics/">statistics</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p><a href="../20260623-randomness-in-game-design-01/">1편</a>에서 랜덤성의 역할과 실패 사례를, <a href="../20260623-randomness-in-game-design-02/">2편</a>에서 확률 분포의 수학을 다뤘습니다. 완결편인 3편에서는 무대를 옮깁니다. 지금까지의 무작위성이 &ldquo;주사위&rdquo; 였다면, 이번엔 <strong>상대가 있는 무작위성</strong> — 즉 <strong>게임이론(game theory)</strong> 입니다. 그리고 그렇게 설계한 밸런스가 실제로 작동하는지 검증하는, 현대 스튜디오의 <strong>시뮬레이션 기반 검증 테크트리</strong> 를 정리합니다.</p>
+<p>핵심 질문 두 개를 미리 던져 두겠습니다. <strong>&ldquo;왜 최적의 가위바위보 플레이는 무작위화를 <em>강제</em> 하는가?&rdquo;</strong> 그리고 <strong>&ldquo;수백만 판을 사람이 할 수 없다면, 밸런스는 어떻게 검증하는가?&rdquo;</strong></p>
+<hr>
+<h2 id="1-게임이론-기초--내쉬-균형-순수-전략과-혼합-전략">1. 게임이론 기초 — 내쉬 균형, 순수 전략과 혼합 전략<a href="#1-게임이론-기초--내쉬-균형-순수-전략과-혼합-전략" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><strong>내쉬 균형(Nash equilibrium)</strong> 은 &ldquo;어떤 플레이어도 혼자만 전략을 바꿔서는 이득을 볼 수 없는&rdquo; 전략 조합입니다. 여기서 <strong>순수 전략(pure strategy)</strong> 은 하나의 행동을 결정론적으로 고르는 것이고, <strong>혼합 전략(mixed strategy)</strong> 은 여러 행동에 확률을 배분하는 것입니다.</p>
+<p>게임 디자인에 결정적인 정리가 하나 있습니다. John Nash(1950)는 <strong>유한 게임(플레이어·행동이 유한)이라면, 혼합 전략을 허용하는 한 내쉬 균형이 반드시 적어도 하나 존재한다</strong> 는 것을 증명했습니다. 어떤 게임은 <strong>순수 전략 균형이 아예 없지만</strong>(가위바위보가 대표적), 혼합 전략 균형은 늘 존재합니다.</p>
+<p>이 &ldquo;순수 전략 균형이 없다&quot;는 성질이야말로 무작위성이 전략에 깊이를 주는 수학적 뿌리입니다. 곧바로 가위바위보로 확인해 보겠습니다.</p>
+<hr>
+<h2 id="2-가위바위보--무작위화가-균형이-되는-순간">2. 가위바위보 — 무작위화가 균형이 되는 순간<a href="#2-가위바위보--무작위화가-균형이-되는-순간" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가위바위보는 영합(zero-sum) 게임입니다. 행 플레이어의 보수를 승=+1, 패=−1, 무=0으로 두면 보수 행렬은 다음과 같습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>(행 \ 열)</th>
+          <th style="text-align: right">바위</th>
+          <th style="text-align: right">보</th>
+          <th style="text-align: right">가위</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>바위</strong></td>
+          <td style="text-align: right">0</td>
+          <td style="text-align: right">−1</td>
+          <td style="text-align: right">+1</td>
+      </tr>
+      <tr>
+          <td><strong>보</strong></td>
+          <td style="text-align: right">+1</td>
+          <td style="text-align: right">0</td>
+          <td style="text-align: right">−1</td>
+      </tr>
+      <tr>
+          <td><strong>가위</strong></td>
+          <td style="text-align: right">−1</td>
+          <td style="text-align: right">+1</td>
+          <td style="text-align: right">0</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>순수 전략 균형이 없는 이유</strong>: 어떤 결정론적 선택을 하든 상대에게 그것을 이기는 결정론적 카운터가 존재합니다. 따라서 어떤 순수 조합도 안정적이지 않습니다(항상 이득이 되는 이탈이 존재).</p>
+<h3 id="21-무차별-원리로-유일-균형-유도하기">2.1 무차별 원리로 유일 균형 유도하기<a href="#21-무차별-원리로-유일-균형-유도하기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>혼합 전략 균형에서는, 내가 상대의 <strong>모든 행동을 무차별(indifferent)</strong> 하게 만들어야 합니다. 그렇지 않으면 상대는 더 나은 쪽으로 확률을 몰아 나를 착취(exploit)할 수 있기 때문입니다. 상대가 <code>(r, p, s)</code> (바위·보·가위, <code>r+p+s=1</code>)로 낸다고 할 때, 내 각 행동의 기대 보수는,</p>
+<ul>
+<li><code>E[바위] = 0·r + (−1)·p + (+1)·s = s − p</code></li>
+<li><code>E[보] = (+1)·r + 0·p + (−1)·s = r − s</code></li>
+<li><code>E[가위] = (−1)·r + (+1)·p + 0·s = p − r</code></li>
+</ul>
+<p>무차별 조건 <code>s − p = r − s = p − r</code> 을 <code>r+p+s=1</code> 과 함께 풀면 <strong><code>r = p = s = 1/3</code></strong> 이 유일 해입니다. 게임의 값(value)은 0, 즉 공정합니다.</p>
+<h3 id="22-왜-무작위화가-강제-되는가">2.2 왜 무작위화가 &ldquo;강제&rdquo; 되는가<a href="#22-왜-무작위화가-강제-되는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 게임 디자인의 핵심 통찰이 나옵니다. <strong>착취당하지 않는(unexploitable) 유일한 방법은 예측 불가능해지는 것</strong> 입니다. 균등분포 <code>(1/3, 1/3, 1/3)</code> 에서 조금이라도 벗어나는 순간, 그 편향을 감지한 상대가 카운터 혼합 전략으로 나를 상대로 양(+)의 기댓값을 법니다. 무작위화는 멋이 아니라 <strong>균형 그 자체</strong> 입니다. 이것이 격투 게임의 심리전, 카드 게임의 블러핑이 작동하는 수학적 근거입니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    R[&#34;바위&#34;] --&gt;|이김| S[&#34;가위&#34;]
+    S --&gt;|이김| P[&#34;보&#34;]
+    P --&gt;|이김| R
+    style R fill:#FFD700,color:#000000
+    style P fill:#90EE90,color:#000000
+    style S fill:#87CEEB,color:#000000
+</code></pre><h3 id="23-그런데-실제-인간은-균형대로-안-한다">2.3 그런데 실제 인간은 균형대로 안 한다<a href="#23-그런데-실제-인간은-균형대로-안-한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>흥미롭게도 현실의 인간은 내쉬 균형대로 플레이하지 않습니다. Wang·Xu·Zhou 의 대규모 실험(360명, 300라운드 반복 가위바위보, <em>Scientific Reports</em> 2014)에 따르면, 사람들은 <strong>&ldquo;이기면 유지, 지면 전환(win-stay, lose-shift)&rdquo;</strong> 의 조건부 반응을 보이며, 그 결과 집단 수준에서 <strong>바위→보→가위→바위</strong> 의 순환적 패턴이 지속적으로 나타났습니다. 즉 사람의 플레이는 착취 가능합니다. 이론적 최적(균등 무작위)과 실제 행동의 이 간극이, 뒤에서 볼 AI 가 인간을 압도하는 지점이기도 합니다.</p>
+<hr>
+<h2 id="3-비추이적-밸런스--메타게임은-거대한-가위바위보">3. 비추이적 밸런스 — 메타게임은 거대한 가위바위보<a href="#3-비추이적-밸런스--메타게임은-거대한-가위바위보" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가위바위보의 교훈은 비대칭 경쟁 게임 설계로 일반화됩니다. <em>스타크래프트 2</em> 의 종족, 격투 게임의 캐릭터 로스터, MOBA 의 픽 구성은 모든 것을 수학적으로 동등하게 만들기보다, <strong>비추이적(intransitive) 밸런스</strong> — A 는 B 를, B 는 C 를, C 는 A 를 이기는 순환 — 를 지향합니다. 이 순환이 단일 지배 전략의 등장을 막는 &ldquo;비상 제동장치&rdquo; 역할을 합니다.</p>
+<ul>
+<li><strong>하드 카운터(hard counter)</strong>: 거의 결정론적인 우위(예: 공중 유닛을 확정적으로 잡는 유닛)</li>
+<li><strong>소프트 카운터(soft counter)</strong>: 통계적·상황적 우위</li>
+</ul>
+<p>게임 디자이너 David Sirlin 은 이렇게 정리합니다. 단순한 가위바위보식 카운터 시스템도 <strong>&ldquo;바위·보·가위가 서로 다른 리스크/보상을 제공하는 한&rdquo;</strong> 전략 게임의 훌륭한 토대가 된다고요. 깊이는 순환을 깨는 데서가 아니라 <strong>보상의 비대칭</strong> 에서 나옵니다.</p>
+<hr>
+<h2 id="4-미니맥스-정리와-yomi">4. 미니맥스 정리와 Yomi<a href="#4-미니맥스-정리와-yomi" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-폰-노이만의-미니맥스-정리">4.1 폰 노이만의 미니맥스 정리<a href="#41-폰-노이만의-미니맥스-정리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>게임이론의 역사적 출발점은 폰 노이만(von Neumann, 1928)의 <strong>미니맥스 정리</strong> 입니다. <strong>모든 유한한 2인 영합 게임에는 값 <code>v*</code> 가 존재</strong> 하여, 행 플레이어는 최소 <code>v*</code> 를 보장할 수 있고 열 플레이어는 행 플레이어를 최대 <code>v*</code> 로 묶을 수 있습니다(maximin = minimax). 최적 전략은 혼합 전략일 수 있습니다. 가위바위보의 값은 0이고, 이는 &ldquo;공정하며 최적 플레이는 균등 무작위&quot;임을 다시 확인해 줍니다.</p>
+<h3 id="42-yomi--격투-게임의-혼합-전략">4.2 Yomi — 격투 게임의 혼합 전략<a href="#42-yomi--격투-게임의-혼합-전략" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Sirlin 은 격투 게임의 심리전을 <strong>Yomi(読み, &ldquo;읽기&rdquo;)</strong> 라는 개념으로 정식화했습니다. 상대의 선택을 읽고, 그것을 읽은 나를 상대가 다시 읽는 — 층층이 쌓인 추측 게임은 정확히 실시간 혼합 전략 상호작용입니다. 던지기·막기·테크 같은 선택지를 무작위화하지 않으면 읽혀서 착취당하므로, &ldquo;읽히지 않으려면 섞어라&quot;는 가위바위보의 원리가 격투 게임에서 그대로 구현됩니다.</p>
+<hr>
+<h2 id="5-포커-gto--가장-값비싼-혼합-전략의-응용">5. 포커 GTO — 가장 값비싼 혼합 전략의 응용<a href="#5-포커-gto--가장-값비싼-혼합-전략의-응용" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>혼합 전략이 수십억 원이 오가는 실전에서 어떻게 쓰이는지 보여주는 사례가 포커의 <strong>GTO(game-theory-optimal)</strong> 플레이입니다. GTO 란 균형 잡힌 핸드 레인지와 정밀한 블러핑 빈도로, <strong>상대가 누구든 착취당하지 않는</strong> 내쉬/미니맥스 전략을 말합니다. 여기서 블러핑 빈도를 무작위화하는 것은 가위바위보에서 손을 섞는 것과 정확히 같은 원리입니다.</p>
+<p>학술적으로 검증된 이정표들이 있습니다.</p>
+<ul>
+<li><strong>헤즈업 리밋 홀덤은 &ldquo;풀렸다(solved)&rdquo;</strong>: Bowling 외, &ldquo;Heads-up limit hold&rsquo;em poker is solved&rdquo;, <em>Science</em>(2015). 인간이 경쟁적으로 즐기던 불완전 정보 게임 중 처음으로 (본질적으로) 해결된 사례로, <strong>CFR+</strong> 알고리즘을 도입했습니다.</li>
+<li><strong>Libratus</strong>: Brown &amp; Sandholm(CMU), 헤즈업 <strong>노리밋</strong> 홀덤에서 최상위 프로 4명을 12만 핸드에 걸쳐 제압, <em>Science</em>(2018).</li>
+<li><strong>Pluribus</strong>: 같은 연구진, <strong>6인</strong> 노리밋 홀덤에서 초인간 수준 달성, <em>Science</em>(2019). 2인 영합을 벗어난 다인 게임에서의 첫 초인간 결과입니다.</li>
+</ul>
+<p>포커 봇들이 보여준 것은, 무작위화된 균형 전략이 단지 이론이 아니라 <strong>계산 가능하고, 실전에서 인간을 압도한다</strong> 는 사실입니다.</p>
+<hr>
+<h2 id="6-몬테카를로-시뮬레이션--밸런스를-수치로-검증하기">6. 몬테카를로 시뮬레이션 — 밸런스를 수치로 검증하기<a href="#6-몬테카를로-시뮬레이션--밸런스를-수치로-검증하기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이제 검증의 영역입니다. 닫힌 수식으로 풀기 어려운 복잡한 상호작용은, <strong><code>N</code> 번의 무작위 시행을 돌려 표본 평균으로 추정</strong> 합니다. 추정값의 오차(표준오차)는 <code>1/√N</code> 으로 줄어듭니다.</p>
+<blockquote>
+<p><code>SE = σ / √N</code></p>
+</blockquote>
+<p>승패 같은 이항 결과(승률 <code>p</code>)라면 <code>σ = √(p(1−p))</code> 이므로 <code>SE = √(p(1−p)/N)</code> 입니다.</p>
+<p><strong>얼마나 많이 돌려야 하나?</strong> 승률을 <strong>95% 신뢰수준에서 ±1% 오차</strong> 로 추정하려면, 반폭 <code>1.96·SE = 0.01</code> 을 풀어,</p>
+<blockquote>
+<p><code>N = (1.96)² · p(1−p) / (0.01)²</code></p>
+</blockquote>
+<p>최악(<code>p=0.5</code>)에서 <code>N = 3.8416 × 0.25 / 0.0001 = 9,604</code> 판입니다. 즉 <strong>약 9,600판</strong> 이면 승률을 ±1%로 잡습니다. 직관적으로 중요한 점은, <strong>오차 막대를 절반으로 줄이려면 시뮬레이션을 4배</strong> 돌려야 한다는 것입니다(정밀도의 비용은 제곱으로 증가).</p>
+<blockquote>
+<p>자주 인용되는 정정 하나. David Silver 의 &ldquo;Monte-Carlo Simulation Balancing&rdquo;(ICML 2009)은 제목과 달리 <strong>스튜디오가 게임 콘텐츠를 밸런싱하는 연구가 아닙니다.</strong> 여기서 &ldquo;balancing&quot;은 바둑 MCTS 의 <strong>롤아웃(시뮬레이션) 정책</strong> 을, 결과 분포가 정확해지도록 조정한다는 뜻입니다. &ldquo;시뮬레이션의 파라미터를 학습해 시뮬레이션이 진실을 말하게 한다&quot;는 개념적 뿌리로서 의미가 있을 뿐, 게임 밸런싱 사례로 오인하면 안 됩니다.</p>
+</blockquote>
+<p>보드게임·테이블탑 디자인에서도 스프레드시트로 수백~수천 회 몬테카를로를 돌리는 것이 흔합니다. 다만 실무자들도 한결같이 경고합니다. 몬테카를로는 &ldquo;전투 하나, 덱 하나&rdquo; 같은 <strong>고립된 질문</strong> 에는 답하지만, <strong>게임 전체의 재미를 밸런싱해 주지는 않으며</strong>, 결국 숙련된 플레이테스터에게 의존해야 한다고요.</p>
+<hr>
+<h2 id="7-ai-자가-대전--사람이-못-도는-판을-ai-가-돈다">7. AI 자가 대전 — 사람이 못 도는 판을 AI 가 돈다<a href="#7-ai-자가-대전--사람이-못-도는-판을-ai-가-돈다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>최근 대형 스튜디오는 사람이 수백만 판을 할 수 없는 문제를, <strong>AI 에이전트의 자가 대전(self-play)</strong> 으로 풉니다. 검증된 산업 사례들입니다.</p>
+<ul>
+<li><strong>Riot — <em>Teamfight Tactics</em></strong>: GDC 2023 발표(Ran Cao). 라이브 클라이언트보다 훨씬 싼 <strong>경량 시뮬레이터</strong> 와 <strong>신경망 RL 에이전트</strong> 를 만들어, 출시 전에 조합과 경제를 대규모로 압박 테스트합니다. (널리 퍼진 &ldquo;Riot 이 주당 약 400만 판을 시뮬레이션한다&quot;는 수치는 신뢰할 만한 1차 출처가 없어 여기서는 인용하지 않습니다.)</li>
+<li><strong>Ubisoft — <em>Roller Champions</em></strong>: 다중 에이전트 강화학습(arXiv 2012.06031). 밸런스 변경 후 <strong>1~4일 만에</strong> 에이전트를 재학습시킬 만큼 빠르며, 부수적으로 익스플로잇을 발견해 밸런싱을 돕습니다(밸런스 보조는 주목적이 아닌 보너스로 기술됨).</li>
+<li><strong>Square Enix — &ldquo;Balancing Nightmares&rdquo;</strong>: GDC 2019. 장비 조합 공간이 무려 <strong>10^100</strong> 을 넘는 게임에서, <strong>유전 알고리즘</strong> 으로 밸런스를 깨는 조합을 탐색했습니다.</li>
+</ul>
+<p>방법이 실제로 작동한다는 증거는 학계의 이정표들이 줍니다. <strong>DeepMind 의 AlphaStar</strong>(<em>스타크래프트 2</em>, <em>Nature</em> 2019)는 끊임없이 서로를 카운터하는 전략들의 <strong>리그(league)</strong> 로 자가 대전해 그랜드마스터(상위 0.2%)에 도달했는데, 이는 사실상 <strong>내부에 비추이적 메타게임을 만들어</strong> 과강한 전략을 노출시킨 셈입니다. <strong>OpenAI Five</strong>(<em>도타 2</em>, 2019)는 10개월의 자가 대전 끝에 e스포츠 세계 챔피언을 꺾은 첫 AI 가 되었고, AI 가 발견한 전략을 인간이 역으로 채택하기도 했습니다.</p>
+<p>다만 한계도 분명합니다. 에이전트는 <strong>이기는 것</strong> 을 최적화하지 <strong>재미</strong> 를 최적화하지 않습니다. 초인간적이거나 기형적인 전략은 실제 플레이어에게는 도달 불가능하거나 불쾌할 수 있고, 학습·재학습 비용도 큽니다.</p>
+<hr>
+<h2 id="8-텔레메트리와-통계-검증--데이터의-함정">8. 텔레메트리와 통계 검증 — 데이터의 함정<a href="#8-텔레메트리와-통계-검증--데이터의-함정" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>출시 후에는 실제 플레이 데이터(텔레메트리)로 밸런스를 본격 조율합니다. 여기엔 통계의 함정이 곳곳에 있습니다.</p>
+<h3 id="81-slay-the-spire-의-두-지표">8.1 Slay the Spire 의 두 지표<a href="#81-slay-the-spire-의-두-지표" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><em>Slay the Spire</em> 의 Mega Crit 은 GDC 2019 에서 핵심 지표 두 개를 공개했습니다.</p>
+<ol>
+<li><strong>제시됐을 때 선택되는 비율(pick rate)</strong> — 너무 낮으면 &ldquo;사실상 게임에 없는 카드&rdquo;</li>
+<li><strong>승리 덱에 포함된 비율</strong> — 너무 높으면 OP</li>
+</ol>
+<p>90개 넘는 그래프를 추적하되, <strong>정량 데이터를 Discord 커뮤니티의 정성 피드백과 병행</strong> 해 &ldquo;체감&quot;을 지켰습니다.</p>
+<h3 id="82-리그-오브-레전드-챔피언-밸런스-프레임워크">8.2 리그 오브 레전드 챔피언 밸런스 프레임워크<a href="#82-리그-오브-레전드-챔피언-밸런스-프레임워크" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Riot 의 공식 프레임워크(2019)는 챔피언을 <strong>4개 실력 구간</strong>(Average, Skilled, Elite, Professional)으로 나누고, <strong>어느 한 구간에서라도 상한을 넘으면 OP, 모든 구간에서 하한 아래면 약함</strong> 으로 판정합니다(어느 한 곳에서라도 억압적이면 너프, 모든 곳에서 약해야만 버프 — 의도적으로 비대칭).</p>
+<blockquote>
+<p>흔히 퍼진 두 가지를 바로잡습니다. 첫째, 항간의 &ldquo;데이터에 <em>주도(driven)</em> 되지 않고 데이터로 <em>판단을 보강(informed)</em> 한다&quot;는 표현은 Riot 의 철학을 요약한 패러프레이즈이지, 이 공식 문서의 직접 인용구가 아닙니다. 둘째, 널리 회자되는 &ldquo;45/48/52/55% 승률 컷오프&quot;는 어림짐작(folklore)입니다. 실제 임계값은 구간별로 더 세분화되어 있고(예: Average 구간 상한 54.5% ~ 하한 49%), 특히 Elite·Professional 구간은 순수 승률이 아니라 <strong>출전·밴 비율(presence/ban rate)</strong> 로 판정합니다.</p>
+</blockquote>
+<h3 id="83-클래시-로얄과-ab-테스트의-함정">8.3 클래시 로얄과 A/B 테스트의 함정<a href="#83-클래시-로얄과-ab-테스트의-함정" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Supercell 의 <em>클래시 로얄</em> 은 카드 사용률을 <strong>~5~15%</strong> 의 건강한 구간으로 유지하는 것을 목표로 삼습니다.</p>
+<p>A/B 테스트에는 두 개의 큰 함정이 있습니다.</p>
+<ul>
+<li><strong>통계적 유의성 ≠ 실질적 유의성</strong>: 라이브 게임의 거대한 표본에서는 사소한 차이도 &ldquo;통계적으로 유의&quot;해집니다. <strong>효과 크기(effect size)</strong> 를 함께 봐야 합니다.</li>
+<li><strong>엿보기(peeking) 문제</strong>: 테스트를 반복해서 들여다보다 <code>p &lt; 0.05</code> 가 처음 뜨는 순간 멈추면, 거짓 양성률이 5%가 아니라 30%까지 치솟을 수 있습니다. 해법은 표본 크기를 사전 등록하거나 순차 검정(sequential testing)을 쓰는 것입니다. <strong>다중 비교(multiple comparisons)</strong> 도 같은 위험을 키우므로 Bonferroni 등으로 보정합니다.</li>
+</ul>
+<hr>
+<h2 id="9-종합--밸런싱-검증-테크트리성숙도-사다리">9. 종합 — 밸런싱 검증 테크트리(성숙도 사다리)<a href="#9-종합--밸런싱-검증-테크트리성숙도-사다리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>1편에서 소개한 검증 테크트리를, 이제 각 단계가 <strong>무엇을 더해 주고 어떤 한계를 물려받는지</strong> 로 정리합니다. 이 사다리는 대체가 아니라 누적입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>단계</th>
+          <th>더해 주는 것</th>
+          <th>한계</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>1. 스프레드시트</strong></td>
+          <td>즉각적인 닫힌 수식 점검(DPS·곡선·EV), 비용 0</td>
+          <td>상호작용·플레이어 행동을 무시</td>
+      </tr>
+      <tr>
+          <td><strong>2. 몬테카를로</strong></td>
+          <td>닫힌 식이 없을 때 수치 답(<code>1/√N</code> 수렴)</td>
+          <td>고립된 질문만, 모델이 틀리면 무의미</td>
+      </tr>
+      <tr>
+          <td><strong>3. 플레이테스트</strong></td>
+          <td>사람의 행동·재미·&ldquo;체감&rdquo;</td>
+          <td>표본이 작고 비싸며 재현 불가</td>
+      </tr>
+      <tr>
+          <td><strong>4. 텔레메트리</strong></td>
+          <td>수백만 실제 매치(pick·win·usage rate)</td>
+          <td><em>무엇</em> 인지만 알려주고 <em>왜</em> 는 모름</td>
+      </tr>
+      <tr>
+          <td><strong>5. A/B 테스트</strong></td>
+          <td>인과 추론(단일 변경의 효과 분리)</td>
+          <td>엿보기·다중비교 함정, 거대 <code>N</code> 필요</td>
+      </tr>
+      <tr>
+          <td><strong>6. AI 자가 대전</strong></td>
+          <td>사람이 못 도는 전략 공간 탐색, 익스플로잇 노출</td>
+          <td>재미가 아닌 승리를 최적화, 학습 비용</td>
+      </tr>
+      <tr>
+          <td><strong>7. 라이브 데이터 밸런싱</strong></td>
+          <td>라이브 인구 대상 지속 조율</td>
+          <td>메타가 패치에 적응(움직이는 표적)</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="마치며--시리즈를-닫으며">마치며 — 시리즈를 닫으며<a href="#마치며--시리즈를-닫으며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>3부작을 단 한 문장으로 압축하면 이렇습니다. <strong>게임의 랜덤성은 수학으로 설계하고 데이터로 검증하지만, 끝내 &ldquo;느낌&quot;은 인간만이 판단할 수 있다.</strong></p>
+<p>1편에서 우리는 진짜 무작위가 &ldquo;조작처럼&rdquo; 느껴지는 인식의 문제를 봤습니다. 2편에서는 그 인식을 다스리기 위해 기댓값을 지키고 분산을 깎는 분포의 수학을 익혔습니다. 3편에서는 상대가 있는 무작위성(게임이론)과, 그렇게 만든 밸런스를 수백만 판으로 검증하는 시뮬레이션 사다리를 올랐습니다.</p>
+<p>그런데 사다리 꼭대기에서도 1편의 그 문제가 되돌아옵니다. 2025년 <em>Slay the Spire 2</em> 의 사례가 가장 선명합니다. 데이터상 합리적이었던 밸런스 변경이, 그것도 옵트인 베타에만 적용됐는데도 24시간 만에 9천 개가 넘는 부정적 리뷰를 불렀습니다(다만 이 수치에는 다른 피드백 창구가 마땅찮은 중국 플레이어 비중 같은 구조적 요인도 일부 섞여 있습니다). 수학은 &ldquo;그 카드가 너무 강하다&quot;고 말했지만, 플레이어는 &ldquo;그걸 잃는 느낌이 나쁘다&quot;고 답한 것입니다.</p>
+<p><strong>숫자와 데이터는 확률을 알려줄 뿐, 그것이 어떻게 <em>느껴지는지</em> 까지는 말해 주지 않습니다.</strong> 게임 디자인에서 랜덤성의 수학이 그토록 어렵고, 또 그만큼 매력적인 이유입니다. 좋은 디자이너는 양쪽 언어를 모두 구사합니다 — 분포와 균형의 수학, 그리고 플레이어의 마음. 이 시리즈가 그 두 언어를 잇는 작은 다리가 되었기를 바랍니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>&ldquo;The Game Theory Math Behind Rock-Paper-Scissors&rdquo; (Quanta) — <a href="https://www.quantamagazine.org/the-game-theory-math-behind-rock-paper-scissors-20180402/">https://www.quantamagazine.org/the-game-theory-math-behind-rock-paper-scissors-20180402/</a></li>
+<li>Wang, Xu &amp; Zhou, &ldquo;Social cycling and conditional responses in the Rock-Paper-Scissors game&rdquo;, <em>Scientific Reports</em> (2014) — <a href="https://www.nature.com/articles/srep05830">https://www.nature.com/articles/srep05830</a></li>
+<li>&ldquo;Minimax theorem&rdquo; (Wikipedia) — <a href="https://en.wikipedia.org/wiki/Minimax_theorem">https://en.wikipedia.org/wiki/Minimax_theorem</a></li>
+<li>David Sirlin, &ldquo;Rock, Paper, Scissors in Strategy Games&rdquo; — <a href="http://oldsite.sirlin.net/articles/rock-paper-scissors-in-strategy-games.html">http://oldsite.sirlin.net/articles/rock-paper-scissors-in-strategy-games.html</a></li>
+<li>David Sirlin, &ldquo;Balancing Multiplayer Games, Part 1: Definitions&rdquo; — <a href="https://www.sirlin.net/articles/balancing-multiplayer-games-part-1-definitions">https://www.sirlin.net/articles/balancing-multiplayer-games-part-1-definitions</a></li>
+<li>David Sirlin, &ldquo;Playing to Win — Spies of the Mind&rdquo; — <a href="https://www.sirlin.net/ptw-book/7-spies-of-the-mind">https://www.sirlin.net/ptw-book/7-spies-of-the-mind</a></li>
+<li>Bowling et al., &ldquo;Heads-up limit hold&rsquo;em poker is solved&rdquo;, <em>Science</em> (2015) — <a href="https://www.science.org/doi/10.1126/science.1259433">https://www.science.org/doi/10.1126/science.1259433</a></li>
+<li>Brown &amp; Sandholm, &ldquo;Superhuman AI for heads-up no-limit poker: Libratus&rdquo;, <em>Science</em> (2018) — <a href="https://www.science.org/doi/10.1126/science.aao1733">https://www.science.org/doi/10.1126/science.aao1733</a></li>
+<li>Brown &amp; Sandholm, &ldquo;Superhuman AI for multiplayer poker: Pluribus&rdquo;, <em>Science</em> (2019) — <a href="https://www.science.org/doi/10.1126/science.aay2400">https://www.science.org/doi/10.1126/science.aay2400</a></li>
+<li>David Silver &amp; Gerald Tesauro, &ldquo;Monte-Carlo Simulation Balancing&rdquo;, ICML 2009 — <a href="https://icml.cc/Conferences/2009/papers/500.pdf">https://icml.cc/Conferences/2009/papers/500.pdf</a></li>
+<li>Ran Cao, &ldquo;Simulating Teamfight Tactics Using Deep Learning&rdquo;, GDC 2023 — <a href="https://media.gdcvault.com/gdc2023/Slides/Simulating&#43;&#43;Teamfight&#43;Tactics_Cao_Ran.pdf">https://media.gdcvault.com/gdc2023/Slides/Simulating++Teamfight+Tactics_Cao_Ran.pdf</a></li>
+<li>&ldquo;Reinforcement Learning Agents for Ubisoft&rsquo;s Roller Champions&rdquo; (arXiv) — <a href="https://arxiv.org/abs/2012.06031">https://arxiv.org/abs/2012.06031</a></li>
+<li>&ldquo;Balancing Nightmares: An AI Approach&rdquo; (GDC Vault) — <a href="https://www.gdcvault.com/play/1026365/Balancing-Nightmares-An-AI-Approach">https://www.gdcvault.com/play/1026365/Balancing-Nightmares-An-AI-Approach</a></li>
+<li>Vinyals et al., &ldquo;Grandmaster level in StarCraft II&rdquo;, <em>Nature</em> (2019) — <a href="https://www.nature.com/articles/s41586-019-1724-z">https://www.nature.com/articles/s41586-019-1724-z</a></li>
+<li>OpenAI et al., &ldquo;Dota 2 with Large Scale Deep Reinforcement Learning&rdquo; (arXiv) — <a href="https://arxiv.org/abs/1912.06680">https://arxiv.org/abs/1912.06680</a></li>
+<li>&ldquo;Slay the Spire: Metrics Driven Design and Balance&rdquo; (GDC Vault) — <a href="https://www.gdcvault.com/play/1025731/-Slay-the-Spire-Metrics">https://www.gdcvault.com/play/1025731/-Slay-the-Spire-Metrics</a></li>
+<li>Riot Games, &ldquo;Dev: Champion Balance Framework&rdquo; — <a href="https://www.leagueoflegends.com/en-us/news/dev/dev-champion-balance-framework/">https://www.leagueoflegends.com/en-us/news/dev/dev-champion-balance-framework/</a></li>
+<li>Johari et al., &ldquo;Peeking at A/B Tests&rdquo;, KDD 2017 — <a href="http://library.usc.edu.ph/ACM/KKD%202017/pdfs/p1517.pdf">http://library.usc.edu.ph/ACM/KKD%202017/pdfs/p1517.pdf</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-02/" class="button inline next">
+         [<span class="button__text">게임 디자인과 랜덤성의 수학 Part 2: 확률 분포로 드랍률·가챠·천장 설계하기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

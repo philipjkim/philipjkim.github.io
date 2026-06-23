@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>게임 디자인과 랜덤성의 수학 Part 1: 랜덤성은 왜 게임의 심장이자 지뢰밭인가 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="현대 게임에서 랜덤성이 맡는 역할, 잘못 설계했을 때 벌어진 실제 실패 사례들, 그리고 실패를 피하기 위한 확률·통계·게임이론의 기초와 밸런싱 검증 테크트리를 거시적으로 살펴봅니다. 게임 디자인과 랜덤성의 수학 3부작 중 1편." />
+<meta name="keywords" content="game, game-design, probability, statistics, game-theory, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="게임 디자인과 랜덤성의 수학 Part 1: 랜덤성은 왜 게임의 심장이자 지뢰밭인가">
+<meta property="og:description" content="현대 게임에서 랜덤성이 맡는 역할, 잘못 설계했을 때 벌어진 실제 실패 사례들, 그리고 실패를 피하기 위한 확률·통계·게임이론의 기초와 밸런싱 검증 테크트리를 거시적으로 살펴봅니다. 게임 디자인과 랜덤성의 수학 3부작 중 1편." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-06-23 13:26:50 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-01/">게임 디자인과 랜덤성의 수학 Part 1: 랜덤성은 왜 게임의 심장이자 지뢰밭인가</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-06-23</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-design/">game-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/probability/">probability</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/statistics/">statistics</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-theory/">game-theory</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<p>주사위를 굴리고, 카드를 섞고, 전리품 상자를 여는 순간. 우리가 게임에서 가장 짜릿하거나 가장 분통 터지는 경험을 하는 거의 모든 장면에는 <strong>랜덤성(randomness)</strong> 이 숨어 있습니다. 그런데 이 랜덤성은 단순히 &ldquo;난수 생성기를 호출하는 코드 한 줄&quot;이 아닙니다. 잘못 다루면 수백만 명이 등을 돌리고, 잘 다루면 같은 게임을 수천 시간 반복하게 만드는, 게임 디자인에서 가장 미묘하고 위험한 영역입니다.</p>
+<p>이 글은 <strong>게임 디자인과 랜덤성의 수학</strong> 3부작의 1편입니다. 이번 편에서는 거시적인 관점에서 다음을 다룹니다.</p>
+<ul>
+<li>현대 게임에서 랜덤성이 실제로 맡는 역할</li>
+<li>랜덤성을 제대로 설계·구현하지 못해 벌어진 게임 업계의 실제 실패 사례들</li>
+<li>왜 &ldquo;진짜 무작위&quot;가 오히려 플레이어에게 &ldquo;조작된 느낌&quot;을 주는가</li>
+<li>실패하지 않기 위한 접근법들(확률·통계·게임이론의 도구 상자)</li>
+<li>게임 밸런싱을 위한 실험·검증 테크트리(de-facto)</li>
+</ul>
+<p>2편에서는 확률 분포·PRD·천장 시스템 같은 수학적 도구를 깊이 파고들고, 3편에서는 게임이론과 시뮬레이션 기반 밸런싱을 다룰 예정입니다. 1편은 그 모든 것을 한눈에 조망하는 지도라고 생각하시면 됩니다.</p>
+<hr>
+<h2 id="1-랜덤성의-두-얼굴-입력-무작위성과-출력-무작위성">1. 랜덤성의 두 얼굴: 입력 무작위성과 출력 무작위성<a href="#1-랜덤성의-두-얼굴-입력-무작위성과-출력-무작위성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>게임 디자이너 Keith Burgun 은 랜덤성을 두 종류로 나눕니다. 이 구분은 이후 모든 논의의 출발점이 되므로 먼저 짚고 가겠습니다.</p>
+<ul>
+<li><strong>입력 무작위성(input randomness)</strong>: 플레이어가 <strong>의사결정을 내리기 전에</strong> 공개되는 무작위성. 예를 들어 로그라이크의 무작위 맵, 카드 게임에서 처음 받는 패, <em>문명(Civilization)</em> 의 무작위 시작 지형 등입니다. 플레이어는 주어진 무작위 상황을 <strong>보고 나서</strong> 전략을 세웁니다. 이런 무작위성은 매판을 새롭게 만들고 전략의 깊이를 더합니다.</li>
+<li><strong>출력 무작위성(output randomness)</strong>: 플레이어가 <strong>결정을 내린 후, 그 결과가 나오는 사이에</strong> 끼어드는 무작위성. <em>XCOM</em> 의 명중 판정, <em>리스크(Risk)</em> 의 전투 주사위, 크리티컬 확률, 전리품 드랍 등이 여기 속합니다. &ldquo;나는 최선의 수를 뒀는데 주사위가 배신했다&quot;는 경험이 바로 출력 무작위성입니다.</li>
+</ul>
+<p>Burgun 의 주장은 단호합니다. 전략 게임에서 <strong>출력 무작위성은 가급적 줄여야 한다</strong> 는 것입니다. 결정과 결과 사이의 인과관계를 흐려, 플레이어가 자기 실력으로 이겼는지 운으로 이겼는지 구분할 수 없게 만들기 때문입니다. (Burgun 의 원문은 Game Developer 에 공개되어 있습니다.)</p>
+<p>물론 이건 한쪽 극단의 견해이고, 출력 무작위성이 긴장감과 드라마를 만드는 긍정적 역할도 분명히 있습니다. 핵심은 <strong>&ldquo;어떤 종류의 무작위성을, 어디에, 얼마나&rdquo;</strong> 넣을지를 의식적으로 설계해야 한다는 점입니다. 이 구분 없이 그냥 <code>rand()</code> 를 뿌리는 순간 문제가 시작됩니다.</p>
+<hr>
+<h2 id="2-현대-게임에서-랜덤성이-하는-일">2. 현대 게임에서 랜덤성이 하는 일<a href="#2-현대-게임에서-랜덤성이-하는-일" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>랜덤성은 게임 곳곳에서 서로 다른 목적으로 동원됩니다.</p>
+<h3 id="21-재플레이성replayability--절차적-생성">2.1 재플레이성(replayability) — 절차적 생성<a href="#21-재플레이성replayability--절차적-생성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>같은 게임을 다시 해도 매번 다른 경험을 주는 가장 강력한 도구가 <strong>절차적 생성(procedural generation)</strong> 입니다. <em>마인크래프트</em> 의 시드 기반 월드, <em>No Man&rsquo;s Sky</em> 의 은하계 규모 생성이 대표적입니다. 여기서 중요한 것은 무작위성이 <strong>제약 조건과 결합</strong> 된다는 점입니다. <em>스펠렁키(Spelunky)</em> 는 4×4 격자에 손으로 만든 방 템플릿을 배치하되, <strong>반드시 출구까지 도달 가능한 경로를 보장</strong> 합니다. &ldquo;완전한 무작위&quot;가 아니라 &ldquo;통제된 무작위&quot;인 것이죠. 그리고 시드(seed)를 고정하면 동일한 결과를 재현할 수 있어, 이는 뒤에서 다룰 e스포츠·검증 용도로도 쓰입니다.</p>
+<h3 id="22-전리품크리티컬--보상의-변동성">2.2 전리품·크리티컬 — 보상의 변동성<a href="#22-전리품크리티컬--보상의-변동성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>드랍과 크리티컬은 전형적인 출력 무작위성입니다. 보상에 변동성을 줘서 &ldquo;한 번 더&quot;를 유도합니다. 그런데 순수한 독립 무작위는 필연적으로 <strong>뭉침(clustering)</strong> 을 낳습니다(같은 결과가 연달아 나오는 현상). 그래서 많은 게임이 장기 평균은 유지하면서 변동성만 깎는 통제된 무작위 기법(셔플백, PRD 등 — 5장 참고)을 도입합니다. 실제로 Apple 의 GameplayKit 같은 상용 SDK 에도 &ldquo;공정하게 느껴지는 무작위(fair-feeling randomness)&ldquo;가 1급 기능으로 들어 있습니다.</p>
+<h3 id="23-수익화--가챠와-전리품-상자">2.3 수익화 — 가챠와 전리품 상자<a href="#23-수익화--가챠와-전리품-상자" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가챠(gacha)와 전리품 상자(loot box)는 출력 무작위성을 <strong>수익화</strong> 하는 장치입니다. 심리학적으로 이는 <strong>변동 비율 강화 계획(variable-ratio reinforcement schedule)</strong>, 즉 도박과 같은 보상 구조에 기반합니다. 언제 터질지 모르기 때문에 계속 당기게 되는 것이죠. 바로 이 도박성 때문에 가챠는 강력한 규제의 대상이 되었고(4.6장), 천장(pity) 시스템 같은 완화 장치가 등장했습니다.</p>
+<h3 id="24-카드-섞기와-매치메이킹">2.4 카드 섞기와 매치메이킹<a href="#24-카드-섞기와-매치메이킹" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>디지털 카드 게임은 알고리즘으로 덱을 섞습니다. 그리고 경쟁 게임의 <strong>매치메이킹</strong> 은 숨겨진 실력 점수(MMR)를 이용해 양 팀의 승률이 ~50%에 수렴하도록 상대를 맞춥니다. 흥미롭게도 매치메이킹에서 <strong>변동성은 어느 정도 필요악</strong> 입니다. 단기적인 승패 노이즈에 과민 반응하지 않고, 충분히 많은 판을 거쳐야만 진짜 실력에 수렴하기 때문입니다(큰 수의 법칙, 6장 참고).</p>
+<hr>
+<h2 id="3-랜덤성이-무너질-때-실패-사례-갤러리">3. 랜덤성이 무너질 때: 실패 사례 갤러리<a href="#3-랜덤성이-무너질-때-실패-사례-갤러리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이제 본론입니다. 랜덤성을 잘못 설계하거나 구현했을 때 실제로 어떤 일이 벌어졌는지, 게임 업계의 유명한 사례들을 살펴봅니다. 각 사례는 서로 다른 <strong>실패의 유형</strong> 을 보여줍니다.</p>
+<h3 id="31-인식의-실패--xcom-의-95-명중인데-빗나갔다">3.1 인식의 실패 — XCOM 의 &ldquo;95% 명중인데 빗나갔다&rdquo;<a href="#31-인식의-실패--xcom-의-95-명중인데-빗나갔다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><em>XCOM: Enemy Unknown</em>(2012)은 &ldquo;확률 표시와 플레이어의 체감이 어긋날 때&rdquo; 무슨 일이 생기는지 보여주는 교과서적 사례입니다. 화면에 &ldquo;명중 확률 95%&ldquo;라고 떠 있는데 빗나가면, 플레이어는 5%의 불운을 겪은 것이지만 <strong>&ldquo;이 게임은 거짓말을 한다&rdquo;</strong> 고 느낍니다.</p>
+<p>흥미로운 건 개발사 Firaxis 의 대응입니다. 낮은 난이도(Easy, Normal)에서는 화면에 보이는 확률보다 <strong>실제로 플레이어에게 유리하게</strong> 보정을 합니다. 커뮤니티의 역공학에 따르면, 표시된 명중률의 약 120%를 실제 확률로 적용하고, 50% 이상이던 사격을 빗맞히면 다음 사격에 누적 보너스를 더하는 식입니다. 반대로 높은 난이도(Classic, Impossible)에서는 표시값 그대로의 정직한 난수를 쓰며, 오히려 외계인 쪽이 강화됩니다.</p>
+<p>다만 정확성을 위해 짚자면, 이 구체적인 수치(120%, 누적 보너스 폭)는 <strong>공식 발표가 아니라 커뮤니티가 게임을 뜯어 추정한 값</strong> 입니다. 디렉터 Jake Solomon 은 &ldquo;그 85%는 사실 85%가 아니라 95%에 가깝다&quot;며 <strong>보정의 존재 자체는 인정</strong> 했지만, 이 발언은 후속작 <em>XCOM 2</em> 에 관한 것입니다. 어느 쪽이든 교훈은 같습니다. <strong>확률은 수학의 문제이기 이전에 인식(perception)의 문제다.</strong> 정직한 95%보다, 그렇게 &ldquo;느껴지는&rdquo; 95%를 만드는 것이 더 어렵습니다.</p>
+<h3 id="32-모델링의-실패--문명의-창병이-탱크를-잡는다">3.2 모델링의 실패 — 문명의 &ldquo;창병이 탱크를 잡는다&rdquo;<a href="#32-모델링의-실패--문명의-창병이-탱크를-잡는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>&ldquo;Spearman beats tank(창병이 탱크를 격파)&ldquo;는 <em>문명</em> 시리즈의 전설적인 밈입니다. 원조는 <em>Civilization I</em>(1991)입니다. 당시 전투는 <strong>단 한 번의 굴림</strong> 으로 결판났습니다. 공격력과 방어력의 합 범위에서 난수 하나를 뽑아 승패를 정하고, 패자는 즉시 소멸했습니다. HP 개념이 없었던 것이죠. 그 결과 방어력 2의 팔랑크스가 공격력 10의 탱크를 약 16%(보너스 적용 전) 확률로 이기는, 직관에 어긋나는 결과가 나왔습니다.</p>
+<p>이는 <strong>확률 모델 자체가 잘못 설계된</strong> 사례입니다. 수정의 역사가 곧 해법을 보여줍니다. <em>Civilization II</em>(1996)는 HP·화력·다단계 전투를 도입했고, <em>Civilization V</em>(2010)는 한 타일당 한 유닛 + 0~100 HP 바(피해를 입으면 전투력이 깎임)를 도입해 단판 역전을 사실상 불가능하게 만들었습니다. 단, Civ V 의 전투에도 제한된 범위의 무작위 요소는 여전히 남아 있습니다. 무작위를 <strong>없앤</strong> 게 아니라, <strong>변동성의 범위를 합리적으로 가둔</strong> 것입니다.</p>
+<h3 id="33-분포의-실패--테트리스의-i-블록-가뭄">3.3 분포의 실패 — 테트리스의 &ldquo;I 블록 가뭄&rdquo;<a href="#33-분포의-실패--테트리스의-i-블록-가뭄" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>초기 <em>테트리스</em> 의 블록 생성기는 (거의) <strong>기억이 없는 균등 난수(memoryless uniform)</strong> 였습니다. 매번 7종의 블록 중 하나를 독립적으로 뽑은 것이죠. 수학적으로는 공정하지만, 그 결과 긴 <strong>&ldquo;I 블록 가뭄(drought)&rdquo;</strong> — 직선 블록이 한참 동안 안 나오는 현상 — 과 S/Z 블록만 쏟아지는 상황이 발생했습니다. 플레이어에게는 그저 부당하게 느껴졌습니다.</p>
+<p>해법은 <strong>&ldquo;Random Generator&rdquo;, 통칭 7-bag</strong> 시스템입니다. 7종의 블록을 한 봉지에 담아 섞은 뒤 하나씩 꺼내고, 봉지가 비면 다시 채웁니다. 이렇게 하면 모든 블록이 7개마다 정확히 한 번씩 등장하고, I 블록 사이 최대 간격은 12개로, S/Z 연속은 최대 4개로 제한됩니다. 분포의 꼬리(극단적 가뭄)를 잘라낸 것입니다.</p>
+<p>여기서 흔한 오해를 바로잡자면, <strong>7-bag 은 1980년대 원조 테트리스의 방식이 아닙니다.</strong> 봉지 개념은 <em>The New Tetris</em>(N64, 1999)에서 63-bag(각 블록 9개) 형태로 처음 등장했고, 7-bag 은 <em>Tetris Worlds</em>(2001) 이후 <strong>테트리스 가이드라인(Tetris Guideline)</strong> 으로 표준화되었습니다. (참고로 Arika 의 TGM 시리즈는 &ldquo;최근 4개 블록 기록&quot;을 보는 또 다른 방식을 씁니다.)</p>
+<h3 id="34-경제-설계의-실패--디아블로-3-의-경매장과-전리품">3.4 경제 설계의 실패 — 디아블로 3 의 경매장과 전리품<a href="#34-경제-설계의-실패--디아블로-3-의-경매장과-전리품" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><em>디아블로 3</em>(2012)는 런칭 시 <strong>현금 경매장(Real Money Auction House, RMAH)</strong> 을 도입했다가, 게임의 근간인 &ldquo;전리품 파밍의 재미&quot;를 스스로 망가뜨린 사례로 남았습니다. 문제의 핵심은 <strong>아이템 시스템이 경매장을 전제로 밸런싱</strong> 되었다는 점입니다. 최고 난이도(Inferno)가 &ldquo;직접 파밍하는 것보다 경매장에서 사는 게 빠르도록&rdquo; 튜닝되면서, 몬스터를 잡아 좋은 아이템을 얻는 핵심 보상 루프가 단락(short-circuit)되어 버린 것이죠.</p>
+<p>디렉터 Jay Wilson 은 GDC 2013 에서 경매장이 &ldquo;게임을 정말 해쳤고(really hurt the game)&rdquo;, &ldquo;아이템 보상을 망가뜨렸다&quot;고 인정했습니다. 결국 경매장은 2014년 3월 폐쇄되었고, 전리품 시스템을 전면 개편한 <strong>Loot 2.0</strong>(패치 2.0.1)과 확장팩 <em>Reaper of Souls</em> 가 게임을 되살렸습니다. 교훈: <strong>드랍률이라는 숫자 하나가 아니라, 그 숫자를 둘러싼 경제 시스템 전체가 보상의 체감을 결정한다.</strong></p>
+<h3 id="35-과잉의-실패--하스스톤의-rng-가-너무-많다">3.5 과잉의 실패 — 하스스톤의 &ldquo;RNG 가 너무 많다&rdquo;<a href="#35-과잉의-실패--하스스톤의-rng-가-너무-많다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><em>하스스톤</em> 은 출력 무작위성이 <strong>너무 많을 때</strong> 어떻게 되는지 보여줍니다. 대표적인 카드가 <strong>요그사론(Yogg-Saron, Hope&rsquo;s End)</strong>(2016)입니다. 그 게임에서 시전한 주문 수만큼 무작위 주문을 발동하는 이 카드를, Blizzard 스스로 <strong>&ldquo;우리가 만든 가장 논쟁적인 카드&rdquo;</strong> 라고 칭했습니다. 한 장의 카드가 승패를 통째로 무작위에 맡기다시피 했기 때문입니다(이후 너프됨). 그 이전의 <strong>닥터붐(Dr. Boom)</strong>(2014) 역시 &ldquo;닥터붐을 뽑느냐 마느냐&quot;가 게임을 가르는 폭발적 변동성으로 악명 높았습니다.</p>
+<p>여기서 배울 점은 <strong>변동성의 총량 관리</strong> 입니다. 적당한 무작위는 양념이지만, 플레이어의 실력 표현 공간을 통째로 덮을 만큼 커지면 게임은 &ldquo;내가 잘해서 이긴&rdquo; 느낌을 잃습니다. (플레이어들이 무작위의 신을 &ldquo;RNGesus&quot;라고 부르며 자조하는 슬랭이 괜히 생긴 게 아닙니다.)</p>
+<h3 id="36-규제의-실패--가챠와-확률-공개">3.6 규제의 실패 — 가챠와 확률 공개<a href="#36-규제의-실패--가챠와-확률-공개" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가챠의 무작위 수익화는 결국 각국 정부의 개입을 불렀습니다.</p>
+<ul>
+<li><strong>일본 &ldquo;컴플리트 가챠(コンプガチャ)&rdquo; 금지(2012)</strong>: 무작위 아이템의 <strong>세트를 완성</strong> 해야 특별 보상을 주는 방식으로, 수집가의 비용을 무한정 끌어올리는 함정이었습니다. 일본 소비자청은 2012년 이를 위법으로 판단했는데, 주목할 점은 <strong>도박법이 아니라 경품표시법(부당경품류 및 부당표시 방지법)</strong> 위반으로 규제했다는 점입니다(흔한 오해 주의).</li>
+<li><strong>중국 확률 공개 의무화(2017)</strong>: 중국은 2017년 5월 1일부터 모든 무작위 아이템의 이름·속성·<strong>획득 확률</strong> 을 공개하도록 의무화했습니다. 확률 공개를 법으로 강제한 최초의 사례입니다.</li>
+</ul>
+<p>이 흐름이 오늘날 거의 모든 가챠 게임이 확률을 공개하고 <strong>천장 시스템</strong> 을 갖추게 된 직접적 배경입니다.</p>
+<h3 id="37-구현의-실패--섞기-알고리즘의-보안-구멍">3.7 구현의 실패 — 섞기 알고리즘의 보안 구멍<a href="#37-구현의-실패--섞기-알고리즘의-보안-구멍" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>랜덤성의 실패는 디자인뿐 아니라 <strong>코드 레벨</strong> 에서도 일어납니다. 가장 유명한 사례가 1999년 온라인 포커 사이트 PlanetPoker 의 셔플 취약점입니다. 보안 연구자들(이후 Cigital 이 되는 회사)이 공개된 셔플 코드를 분석했는데, 덱을 섞는 난수의 시드가 <strong>&ldquo;자정 이후 경과한 밀리초&rdquo;</strong> 였습니다. 즉 가능한 덱이 8640만 가지로 제한되어 있었던 것이죠. 연구자들은 자신의 시계를 서버와 동기화하고, 화면에 보이는 카드 5장만 알면 후보 시드를 <strong>약 20만 개</strong> 로 좁혀 실시간으로 전체 카드를 알아낼 수 있었습니다.</p>
+<p>또 다른 단골 실수는 <strong>잘못 구현된 Fisher–Yates 셔플</strong> 입니다. 교환 대상을 &ldquo;남은 카드 범위&quot;가 아니라 &ldquo;덱 전체 범위&quot;에서 고르면, 모든 순열이 균등하게 나오지 않습니다(카드 3장이면 27가지 경우의 수가 6가지 순열로 균등하게 나뉘지 않습니다). 코드는 돌아가지만 통계적으로 편향된, 발견하기 어려운 버그입니다.</p>
+<h3 id="38-신뢰의-실패--이-게임은-조작됐다">3.8 신뢰의 실패 — &ldquo;이 게임은 조작됐다&rdquo;<a href="#38-신뢰의-실패--이-게임은-조작됐다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>마지막 유형은 다소 역설적입니다. <strong>실제로는 공정한데 플레이어가 조작이라고 믿는</strong> 경우입니다. <em>MTG Arena</em> 의 셔플러는 끊임없이 &ldquo;조작 의혹&quot;에 시달렸지만, 대규모 데이터 분석 결과 사실상 무작위로 작동함이 확인되었습니다(보도에 따르면 Fisher–Yates + Mersenne Twister 기반). 즉 문제는 알고리즘이 아니라 <strong>인간이 진짜 무작위의 뭉침을 견디지 못한다</strong> 는 데 있었습니다. 이 신뢰의 실패가 왜 생기는지가 다음 장의 주제입니다.</p>
+<hr>
+<h2 id="4-왜-이런-일이-생기는가-진짜-무작위는-조작처럼-느껴진다">4. 왜 이런 일이 생기는가: 진짜 무작위는 &ldquo;조작처럼&rdquo; 느껴진다<a href="#4-왜-이런-일이-생기는가-진짜-무작위는-조작처럼-느껴진다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>위 사례들을 관통하는 공통 원인이 있습니다. <strong>인간의 직관은 진짜 무작위를 무작위로 인식하지 못한다</strong> 는 것입니다.</p>
+<p>게임 밸런스 이론가 Ian Schreiber 의 유명한 사고 실험을 빌리겠습니다. 공정한 동전을 6번 던졌을 때 6번 모두 같은 면이 나올 확률은 약 1/32 입니다. 작아 보이지만, 320만 장이 팔린 게임이라면 <strong>첫 플레이 세션에서만 약 10만 명이</strong> 이 &ldquo;말도 안 되는&rdquo; 연속을 경험하고, &ldquo;이 게임의 난수는 고장 났다&quot;고 결론 내립니다. 통계적으로는 지극히 정상인 일이, 개별 플레이어에게는 명백한 증거가 되는 것입니다.</p>
+<p>이것이 <strong>도박사의 오류(gambler&rsquo;s fallacy)</strong> 와 맞물립니다. 독립 사건임에도 &ldquo;이만큼 안 나왔으니 이제 나올 때가 됐다&quot;고 느끼는 인지 편향이죠. 60번 상자를 까서 안 나왔으면 &ldquo;다음은 분명히 나온다&quot;고 믿지만, 확률은 매번 그대로입니다.</p>
+<p>그래서 노련한 게임 디자이너들은 역설적인 결론에 도달합니다. <strong>&ldquo;공정하게 느껴지려면, 오히려 통계적으로는 덜 무작위하게 만들어야 한다.&rdquo;</strong> 진짜 무작위의 뭉침을 인위적으로 억제하는 것, 이것이 다음 장에서 다룰 도구 상자의 핵심 철학입니다.</p>
+<hr>
+<h2 id="5-실패하지-않기-위한-접근법-통제된-무작위성의-도구-상자">5. 실패하지 않기 위한 접근법: 통제된 무작위성의 도구 상자<a href="#5-실패하지-않기-위한-접근법-통제된-무작위성의-도구-상자" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기서는 각 기법을 개념 수준으로 소개합니다(수학적 디테일은 2편에서 깊이 다룹니다). 관통하는 아이디어는 하나입니다. <strong>장기 평균(기댓값)은 그대로 유지하면서, 변동성(분산)과 극단적 streak 만 깎는다.</strong></p>
+<h3 id="51-의사-난수-분포pseudo-random-distribution-prd">5.1 의사 난수 분포(Pseudo Random Distribution, PRD)<a href="#51-의사-난수-분포pseudo-random-distribution-prd" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><em>Warcraft III</em> 의 DotA 에서 시작되어 <em>Dota 2</em> 가 계승한 기법입니다. 크리티컬·발동 확률 등에서 연속(streak)을 줄이기 위해, &ldquo;마지막 발동 이후 N번째 시도에서의 확률&quot;을 <code>P(N) = C × N</code> 으로 정의합니다. 시도할 때마다 확률이 점점 올라가다가 성공하면 0으로 리셋되는 방식입니다.</p>
+<p>핵심은 상수 <code>C</code> 를 <strong>표시된 확률보다 낮게</strong> 설정한다는 점입니다. 그래야 장기 평균이 명목 확률과 일치합니다. 예를 들어 &ldquo;25% 강타&quot;는 매 타격 25%가 아니라, C ≈ 8.5%로 설정해 첫 타에 ~8.5%, 둘째 타에 ~17%… 식으로 오르다가 약 12타째에 확정됩니다. <strong>화면의 &ldquo;X%&ldquo;는 매번의 확률이 아니라 평균값</strong> 이라는 발상의 전환입니다. (단, 구체적인 C 상수 값들은 Valve 가 공개한 게 아니라 커뮤니티가 역산한 것입니다.)</p>
+<h3 id="52-천장-시스템pity--bad-luck-protection">5.2 천장 시스템(pity / bad-luck protection)<a href="#52-천장-시스템pity--bad-luck-protection" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>&ldquo;아무리 운이 나빠도 N번 안에는 보장한다&quot;는 안전장치입니다.</p>
+<ul>
+<li><em>하스스톤</em> 은 확장팩당 40팩 이내에 전설 카드를 보장하고, 새 확장팩 첫 10팩 안에 전설 1장 이상을 보장합니다.</li>
+<li><em>원신(Genshin Impact)</em> 의 캐릭터 한정 배너는 공식 기준으로 5성 기본 확률 0.6%, (소프트 천장 포함) 종합 평균 1.6%, <strong>하드 천장 90회</strong>, 그리고 <strong>50/50</strong>(한정 배너 5성이 픽업 캐릭터일 확률 50%, 빗나가면 다음 5성은 픽업 확정)을 운영합니다. 최악의 경우 픽업 캐릭터 확정까지 최대 180회가 필요한 구조입니다. (소프트 천장이 시작되는 ~74회 지점은 공식 수치가 아니라 데이터마이닝으로 추정된 값입니다.)</li>
+</ul>
+<p>천장은 6장에서 볼 <strong>기하분포의 긴 꼬리</strong> 를 강제로 잘라내는 장치라고 이해하면 정확합니다.</p>
+<h3 id="53-셔플백shuffle-bag--봉지-무작위화">5.3 셔플백(shuffle bag) / 봉지 무작위화<a href="#53-셔플백shuffle-bag--봉지-무작위화" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>3.3에서 본 테트리스 7-bag 이 대표적입니다. 게임 밖의 사례도 흥미롭습니다. <strong>Spotify</strong> 는 2010년 출시 당시 진짜 무작위(Fisher–Yates) 셔플을 썼는데, 같은 아티스트 곡이 뭉쳐 나온다는 불만이 빗발쳤습니다. 그래서 2014년 엔지니어 Lukáš Poláček 이 <strong>같은 아티스트 곡을 의도적으로 고르게 분산</strong> 시키는 알고리즘을 도입했습니다. 정확히 &ldquo;더 무작위하게 느껴지도록 덜 무작위하게 만든&rdquo; 사례입니다. (널리 퍼진 &ldquo;스티브 잡스가 아이팟 셔플을 덜 무작위하게 만들었다&quot;는 이야기는 출처가 불분명한 일화이니 걸러 들으시길 권합니다.)</p>
+<h3 id="54-약화된-무작위성가중-분포">5.4 약화된 무작위성·가중 분포<a href="#54-약화된-무작위성가중-분포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>출력 범위 자체를 좁히거나, 만족스러운 결과 쪽으로 가중치를 주는 기법입니다. Schreiber 의 표현을 빌리면 &ldquo;75%라고 말하고 95%로 굴린다&quot;는 식입니다. <em>파이어 엠블렘</em> 의 2RN 시스템이 좋은 예입니다. 0~99 난수를 두 번 뽑아 평균을 내면 결과가 50 근처로 모입니다. 그 결과 <strong>표시 명중률이 50% 이상이면 실제 명중률은 그보다 높고, 50% 미만이면 더 낮아집니다.</strong> 99% 표시일 때 1RN 은 100번에 1번 빗나가지만 2RN 은 1만 번에 1번꼴로 빗나갑니다. 플레이어의 직관(&ldquo;높으면 거의 맞겠지&rdquo;)에 수치를 맞춘 것입니다.</p>
+<h3 id="55-시드-고정-rng--재현성과-공정성">5.5 시드 고정 RNG — 재현성과 공정성<a href="#55-시드-고정-rng--재현성과-공정성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>난수의 시드를 고정하면 동일한 무작위 시퀀스를 재현할 수 있습니다. <em>스펠렁키</em> 의 &ldquo;데일리 챌린지&quot;는 전 세계에 같은 시드를 주고 단 한 번의 도전 기회만 부여해, 운이 아니라 실력을 비교하게 만듭니다. <em>Slay the Spire</em>, <em>Balatro</em> 등도 시드 기반 경쟁과 검증 가능한 플레이를 지원합니다. e스포츠의 공정성, 버그 재현, 리플레이 검증에 모두 핵심적인 기법입니다.</p>
+<hr>
+<h2 id="6-알아야-할-수학컴퓨터과학-기초">6. 알아야 할 수학·컴퓨터과학 기초<a href="#6-알아야-할-수학컴퓨터과학-기초" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 도구들을 제대로 다루려면 결국 확률·통계의 기본기가 필요합니다. 1편에서는 &ldquo;무엇이 왜 중요한지&rdquo; 지도를 그리는 데 집중하고, 구체적인 계산은 2편에서 다룹니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>개념</th>
+          <th>게임에서의 의미</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>독립 사건</strong></td>
+          <td>각 전리품 굴림은 과거와 무관(기억 없음). <code>P(A∩B)=P(A)P(B)</code></td>
+      </tr>
+      <tr>
+          <td><strong>기댓값(EV)</strong></td>
+          <td>&ldquo;한 번 깔 때 평균 몇 골드?&rdquo; <code>E[X]=Σ x·P(x)</code></td>
+      </tr>
+      <tr>
+          <td><strong>분산·표준편차</strong></td>
+          <td>평균 DPS 가 같아도 분산이 다르면 체감이 전혀 다름</td>
+      </tr>
+      <tr>
+          <td><strong>균등분포</strong></td>
+          <td>공정한 주사위·카드 한 장 뽑기</td>
+      </tr>
+      <tr>
+          <td><strong>이항분포</strong></td>
+          <td>&ldquo;10연차에서 5성 몇 개?&rdquo; <code>C(n,k)pᵏ(1-p)ⁿ⁻ᵏ</code></td>
+      </tr>
+      <tr>
+          <td><strong>기하분포</strong></td>
+          <td>&ldquo;첫 드랍까지 몇 번?&rdquo; — 가장 중요</td>
+      </tr>
+      <tr>
+          <td><strong>음이항분포</strong></td>
+          <td>&ldquo;원하는 아이템 k개 모으려면 몇 번?&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>큰 수의 법칙</strong></td>
+          <td>한 판은 들쭉날쭉해도 전체는 설정 확률에 수렴</td>
+      </tr>
+      <tr>
+          <td><strong>몬테카를로</strong></td>
+          <td>닫힌 식이 어려우면 수백만 번 시뮬레이션으로 추정</td>
+      </tr>
+      <tr>
+          <td><strong>게임이론</strong></td>
+          <td>가위바위보에 왜 무작위가 필요한가</td>
+      </tr>
+      <tr>
+          <td><strong>마르코프 체인</strong></td>
+          <td>다음 상태가 현재 상태에만 의존</td>
+      </tr>
+  </tbody>
+</table>
+<p>특히 <strong>기하분포(geometric distribution)</strong> 는 게임에서 가장 자주 등장합니다. &ldquo;성공 확률 p 인 시도를 첫 성공까지 반복할 때 필요한 횟수&quot;를 다루기 때문입니다(시도 횟수 기준 표기에서 <code>E[X]=1/p</code>). 드랍률이 2%인 아이템이라면 기댓값은 50번이지만, <strong>중앙값은 약 34번</strong> 이고 꼬리가 매우 깁니다. 어떤 사람은 100번을 넘겨도 못 얻습니다. 천장 시스템이 잘라내는 게 바로 이 긴 꼬리입니다. (주의: 기하분포·음이항분포는 &ldquo;시도 횟수&rdquo; 기준과 &ldquo;성공 전 실패 횟수&rdquo; 기준 두 가지 표기법이 있어, 공식을 인용할 때 어느 쪽인지 반드시 확인해야 합니다. 2편에서 자세히 다룹니다.)</p>
+<p>게임이론도 빼놓을 수 없습니다. <strong>가위바위보에는 순수 전략 내쉬 균형이 없습니다.</strong> 어떤 결정론적 선택이든 카운터당하기 때문입니다. 무차별 원리(indifference principle)로 계산하면 유일한 내쉬 균형은 <code>(1/3, 1/3, 1/3)</code>, 즉 <strong>세 손을 똑같이 무작위로 내는 것</strong> 입니다. 최적 플레이가 무작위화를 <em>요구</em> 하는 것이죠. 이것이 격투 게임의 심리전, 카드 게임의 블러핑이 작동하는 수학적 근거입니다.</p>
+<p>마지막으로 <strong>마르코프 체인</strong> 의 재미있는 예. <em>모노폴리</em> 보드는 마르코프 체인으로 모델링할 수 있는데, 정상 분포를 계산하면 <strong>감옥(Jail)이 가장 많이 머무는 칸(약 5.9%)</strong> 이고, 그 덕분에 감옥에서 6~9칸 떨어진 주황색 부동산들이 통계적으로 가장 자주 밟히는 알짜 자산이 됩니다. 무작위 주사위 속에도 숨은 구조가 있다는 좋은 예시입니다.</p>
+<hr>
+<h2 id="7-게임-밸런싱-검증-테크트리-de-facto">7. 게임 밸런싱 검증 테크트리 (de-facto)<a href="#7-게임-밸런싱-검증-테크트리-de-facto" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>마지막으로, 실패하지 않기 위해 업계가 실제로 밟는 검증 단계를 사다리 형태로 정리합니다. 아래로 갈수록 비용과 정교함이 올라갑니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;1. 스프레드시트 모델링&lt;br/&gt;EV·DPS·비용 곡선&#34;] --&gt; B[&#34;2. 몬테카를로 시뮬레이션&lt;br/&gt;수백만 회 무작위 시행&#34;]
+    B --&gt; C[&#34;3. 플레이테스트&lt;br/&gt;전담 팀의 정성 평가&#34;]
+    C --&gt; D[&#34;4. 텔레메트리·분석&lt;br/&gt;실제 플레이 데이터 수집&#34;]
+    D --&gt; E[&#34;5. A/B 테스트&lt;br/&gt;통계적 유의성 검증&#34;]
+    E --&gt; F[&#34;6. AI 자가 대전 시뮬레이션&lt;br/&gt;에이전트 기반 대규모 검증&#34;]
+    F --&gt; G[&#34;7. 데이터 기반 라이브 밸런싱&lt;br/&gt;출시 후 지속 조정&#34;]
+    style A fill:#90EE90,color:#000000
+    style B fill:#87CEEB,color:#000000
+    style C fill:#FFD700,color:#000000
+    style D fill:#FFB6C1,color:#000000
+    style E fill:#DDA0DD,color:#000000
+    style F fill:#F0E68C,color:#000000
+    style G fill:#FFA07A,color:#000000
+</code></pre><p><strong>1. 스프레드시트 모델링.</strong> 가장 기본이자 가장 많이 쓰이는 도구입니다. 스탯·비용 곡선, 기댓값, DPS 를 표로 계산하고 <code>RAND()</code> 로 간단한 몬테카를로까지 돌립니다. 화려하지 않지만 모든 밸런싱의 출발점입니다.</p>
+<p><strong>2. 몬테카를로 시뮬레이션.</strong> 닫힌 수식으로 풀기 어려운 복잡한 상호작용을, 무작위 시행을 대량 반복해 추정합니다. David Silver 의 &ldquo;Monte-Carlo Simulation Balancing&rdquo;(ICML 2009)이 학술적 기반을 제공하며, 보드게임 디자인에서도 흔히 쓰입니다.</p>
+<p><strong>3. 플레이테스트.</strong> 숫자가 말해주지 못하는 &ldquo;체감&quot;을 사람이 직접 검증합니다. <em>Magic: The Gathering</em> 의 제작사 Wizards of the Coast 는 2017년 일련의 밸런스 실패(예: Splinter Twin) 이후 <strong>Play Design 전담 팀</strong> 을 신설해, 출시 약 1년 전부터 경쟁 환경의 건강성을 테스트합니다.</p>
+<p><strong>4. 텔레메트리·분석.</strong> 출시(또는 베타) 후 실제 플레이 데이터를 수집합니다. 모범 사례는 <em>Slay the Spire</em> 입니다. 개발사 Mega Crit 은 모든 플레이를 기록하는 분석 서버를 두고, 특히 <strong>&ldquo;카드가 제시됐을 때 선택되는 비율&rdquo;</strong> 과 <strong>&ldquo;승리 덱에 포함된 비율&rdquo;</strong> 이라는 두 지표를 핵심으로 삼아 90개 이상의 그래프로 밸런싱했습니다. 다만 이들도 &ldquo;숫자는 그게 어떻게 <em>느껴지는지</em> 는 말해주지 않는다&quot;며 Discord 정성 피드백과 병행했습니다.</p>
+<p><strong>5. A/B 테스트.</strong> 라이브 모바일 게임의 표준 기법으로, 두 버전을 동시에 운영해 차이를 측정합니다. 여기서 <strong>통계적 유의성</strong>(p-value 와 유의수준 α, 보통 0.05)이 중요하지만, &ldquo;통계적으로 유의하다&quot;는 것과 &ldquo;실질적으로 의미 있다&rdquo;(효과 크기)는 별개임을 늘 유의해야 합니다.</p>
+<p><strong>6. AI 자가 대전 시뮬레이션.</strong> 최근 대형 스튜디오가 적극 도입하는 단계입니다. Riot 은 <em>Teamfight Tactics</em> 밸런싱에 별도의 경량 시뮬레이터와 신경망 에이전트를 활용한 사례를 GDC 2023 에서 발표했고, Ubisoft 는 <em>Roller Champions</em> 에서 다중 에이전트 강화학습으로 패치 후 1~4일 만에 에이전트를 재학습시켜 밸런싱에 활용한 연구를 공개했습니다. 사람이 수백만 판을 플레이할 수 없으니, AI 가 대신 가상의 메타를 탐색하는 것입니다.</p>
+<p><strong>7. 데이터 기반 라이브 밸런싱.</strong> 출시 후 지속적 조정 단계입니다.</p>
+<ul>
+<li><em>리그 오브 레전드</em> 는 챔피언을 4개 실력 구간으로 나눠 분석하고, <strong>어느 한 구간에서라도 과하게 강하면 너프, 모든 구간에서 약하면 버프</strong> 하는 프레임워크를 운영합니다. 데이터에 <em>주도</em> 되기보다 데이터로 판단을 <em>보강</em> 하는 접근입니다(구체적 수치 기준은 3편에서 다룹니다).</li>
+<li><em>클래시 로얄</em> 은 카드 사용률을 ~5~15% 정도로 건강하게 유지하는 것을 목표로 삼습니다.</li>
+<li><em>하스스톤</em> 은 승률뿐 아니라 <strong>사용률(play rate)</strong> 까지 함께 봅니다. 적정 강도라도 너무 많이 쓰이면 너프 대상이 될 수 있습니다.</li>
+</ul>
+<p>다만 마지막에 경고 하나. 데이터 기반 밸런싱이 만능은 아닙니다. <em>Slay the Spire 2</em> 의 2025년 베타 밸런스 패치는 데이터상 합리적이었음에도 &ldquo;체감&quot;과 충돌해 24시간 만에 9천 개가 넘는 부정적 리뷰를 받았습니다. <strong>숫자는 강력한 도구이지만, 게임이 어떻게 <em>느껴지는지</em> 까지 말해주지는 않습니다.</strong> 4장에서 본 &ldquo;인식의 문제&quot;가 검증 단계에서도 그대로 되돌아오는 셈입니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>1편을 관통하는 메시지는 하나입니다. <strong>게임의 랜덤성은 수학의 문제이자 동시에 인식의 문제다.</strong> 확률을 정확히 계산하는 것만으로는 부족합니다. 진짜 무작위는 뭉치고, 인간은 그 뭉침을 불공정으로 읽습니다. 그래서 좋은 디자인은 기댓값을 보존하면서 변동성과 극단을 다듬고, 그 결과를 데이터와 플레이테스트로 끊임없이 검증합니다.</p>
+<p>다음 편에서는 이번에 개념만 짚은 도구들 — 확률 분포(특히 기하·음이항분포), PRD 의 수식, 천장 시스템의 수학적 설계 — 을 직접 계산하며 깊이 파고듭니다. 3편에서는 게임이론과 시뮬레이션 기반 밸런싱으로 이어집니다.</p>
+<p>여러분이 가장 &ldquo;운이 없다&quot;고 느꼈던 게임 속 순간은 어디였나요? 그 순간 뒤에 숨은 수학과 디자인 의도를, 이 시리즈를 통해 다시 보게 되시길 바랍니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Keith Burgun, &ldquo;Randomness and Game Design&rdquo; — <a href="https://www.gamedeveloper.com/design/randomness-and-game-design">https://www.gamedeveloper.com/design/randomness-and-game-design</a></li>
+<li>Ian Schreiber, &ldquo;Game Balance Concepts, Level 5: Probability&rdquo; — <a href="https://gamebalanceconcepts.wordpress.com/2010/08/04/level-5-probability-and-randomness-gone-horribly-wrong/">https://gamebalanceconcepts.wordpress.com/2010/08/04/level-5-probability-and-randomness-gone-horribly-wrong/</a></li>
+<li>&ldquo;Jake Solomon Explains the Careful Use of Randomness in XCOM 2&rdquo; — <a href="https://www.gamedeveloper.com/design/jake-solomon-explains-the-careful-use-of-randomness-in-i-xcom-2-i-">https://www.gamedeveloper.com/design/jake-solomon-explains-the-careful-use-of-randomness-in-i-xcom-2-i-</a></li>
+<li>UFOpaedia, &ldquo;Chance to Hit (EU2012)&rdquo; — <a href="https://www.ufopaedia.org/index.php/Chance_to_Hit_%28EU2012%29">https://www.ufopaedia.org/index.php/Chance_to_Hit_(EU2012)</a></li>
+<li>&ldquo;Spearman beats tank — original story&rdquo; (CivFanatics) — <a href="https://forums.civfanatics.com/threads/spearman-beats-tank-original-story.358312/">https://forums.civfanatics.com/threads/spearman-beats-tank-original-story.358312/</a></li>
+<li>Tetris Wiki, &ldquo;Random Generator&rdquo; — <a href="https://tetris.wiki/Random_Generator">https://tetris.wiki/Random_Generator</a></li>
+<li>Simon Laroche, &ldquo;The History of Tetris Randomizers&rdquo; — <a href="https://simon.lc/the-history-of-tetris-randomizers">https://simon.lc/the-history-of-tetris-randomizers</a></li>
+<li>&ldquo;Why Diablo 3 Shut Down the Auction House&rdquo; — <a href="https://www.gamedeveloper.com/business/why-diablo-3-shut-down-the-auction-house">https://www.gamedeveloper.com/business/why-diablo-3-shut-down-the-auction-house</a></li>
+<li>Hearthstone Wiki, &ldquo;Yogg-Saron, Hope&rsquo;s End&rdquo; — <a href="https://hearthstone.wiki.gg/wiki/Yogg-Saron,_Hope%27s_End">https://hearthstone.wiki.gg/wiki/Yogg-Saron,_Hope's_End</a></li>
+<li>&ldquo;Why &lsquo;Kompu Gacha&rsquo; Was Banned&rdquo; — <a href="https://www.gamedeveloper.com/business/why-quot-kompu-gacha-quot-was-banned">https://www.gamedeveloper.com/business/why-quot-kompu-gacha-quot-was-banned</a></li>
+<li>&ldquo;Online Games Will Be Required to Disclose Random Loot Box Odds in China&rdquo; — <a href="https://www.gamedeveloper.com/game-platforms/online-games-will-be-required-to-disclose-random-loot-box-odds-in-china">https://www.gamedeveloper.com/game-platforms/online-games-will-be-required-to-disclose-random-loot-box-odds-in-china</a></li>
+<li>HoYoverse, Genshin Impact 공식 확률 공지 — <a href="https://genshin.hoyoverse.com/en/news/public">https://genshin.hoyoverse.com/en/news/public</a></li>
+<li>Liquipedia, &ldquo;Pseudo-random Distribution (Dota 2)&rdquo; — <a href="https://liquipedia.net/dota2/Pseudo-random_Distribution">https://liquipedia.net/dota2/Pseudo-random_Distribution</a></li>
+<li>&ldquo;How We Learned to Cheat at Online Poker&rdquo; — <a href="https://www.datamation.com/entdev/article.php/616221/How-We-Learned-to-Cheat-at-Online-Poker-A-Study-in-Software-Security.htm">https://www.datamation.com/entdev/article.php/616221/How-We-Learned-to-Cheat-at-Online-Poker-A-Study-in-Software-Security.htm</a></li>
+<li>Mike Bostock, &ldquo;Fisher–Yates Shuffle&rdquo; — <a href="https://bost.ocks.org/mike/shuffle/">https://bost.ocks.org/mike/shuffle/</a></li>
+<li>Spotify R&amp;D, &ldquo;How to Shuffle Songs?&rdquo; — <a href="https://rnd.atspotify.com/how-to-shuffle-songs/">https://rnd.atspotify.com/how-to-shuffle-songs/</a></li>
+<li>Serenes Forest, &ldquo;True Hit (Fire Emblem)&rdquo; — <a href="https://serenesforest.net/general/true-hit/">https://serenesforest.net/general/true-hit/</a></li>
+<li>&ldquo;How Slay the Spire&rsquo;s Devs Use Data to Balance Their Roguelike&rdquo; — <a href="https://www.gamedeveloper.com/design/how-i-slay-the-spire-i-s-devs-use-data-to-balance-their-roguelike-deck-builder">https://www.gamedeveloper.com/design/how-i-slay-the-spire-i-s-devs-use-data-to-balance-their-roguelike-deck-builder</a></li>
+<li>Riot Games, &ldquo;Dev: Balance Framework Update&rdquo; — <a href="https://www.leagueoflegends.com/en-us/news/dev/dev-balance-framework-update/">https://www.leagueoflegends.com/en-us/news/dev/dev-balance-framework-update/</a></li>
+<li>Mark Rosewater, &ldquo;Vision Design, Set Design, and Play Design&rdquo; — <a href="https://magic.wizards.com/en/news/making-magic/vision-design-set-design-and-play-design-2017-10-23">https://magic.wizards.com/en/news/making-magic/vision-design-set-design-and-play-design-2017-10-23</a></li>
+<li>&ldquo;The Game Theory Math Behind Rock-Paper-Scissors&rdquo; (Quanta) — <a href="https://www.quantamagazine.org/the-game-theory-math-behind-rock-paper-scissors-20180402/">https://www.quantamagazine.org/the-game-theory-math-behind-rock-paper-scissors-20180402/</a></li>
+<li>&ldquo;The Most Landed-On Property in Monopoly&rdquo; — <a href="https://mindyourdecisions.com/blog/2014/01/21/game-theory-tuesdays-the-most-landed-property-in-monopoly/">https://mindyourdecisions.com/blog/2014/01/21/game-theory-tuesdays-the-most-landed-property-in-monopoly/</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-02/" class="button inline prev">
+        &lt; [<span class="button__text">게임 디자인과 랜덤성의 수학 Part 2: 확률 분포로 드랍률·가챠·천장 설계하기</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260622-cesaria-evora/" class="button inline next">
+         [<span class="button__text">맨발의 디바, 세자리아 에보라: 카보베르데가 맨발로 세계를 정복한 이야기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
