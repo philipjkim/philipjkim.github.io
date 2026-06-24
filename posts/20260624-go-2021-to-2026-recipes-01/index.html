@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>2021년의 Go를 2026년의 Go로 Part 1: 언어와 문법 레시피 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2021~22년 Go(1.16~1.18) 관용구에 멈춰 있는 코드를 2026년 Go 1.26의 신규 언어 기능으로 다시 쓰는 레시피. 제네릭, min/max/clear, 루프 변수 시맨틱, range-over-int, 이터레이터, 제네릭 타입 별칭을 Before/After로 정리합니다." />
+<meta name="keywords" content="golang, go, programming, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="2021년의 Go를 2026년의 Go로 Part 1: 언어와 문법 레시피">
+<meta property="og:description" content="2021~22년 Go(1.16~1.18) 관용구에 멈춰 있는 코드를 2026년 Go 1.26의 신규 언어 기능으로 다시 쓰는 레시피. 제네릭, min/max/clear, 루프 변수 시맨틱, range-over-int, 이터레이터, 제네릭 타입 별칭을 Before/After로 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-06-24 10:11:05 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-01/">2021년의 Go를 2026년의 Go로 Part 1: 언어와 문법 레시피</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-06-24</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/go/">go</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며-5년-동안-go에-무슨-일이-있었나">들어가며: 5년 동안 Go에 무슨 일이 있었나<a href="#들어가며-5년-동안-go에-무슨-일이-있었나" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2021~22년에 Go로 서비스를 짜던 시절을 떠올려 봅니다. 그때 우리가 쓰던 버전은 대략 Go 1.16~1.18 언저리였습니다. 제네릭이 없거나(1.18 이전), 갓 도입되어 아직 손에 익지 않았고, <code>interface{}</code> 와 <code>sort.Slice</code>, <code>for _, v := range xs { v := v; ... }</code> 같은 관용구가 일상이었습니다.</p>
+<p>그로부터 8개의 메이저 릴리스(1.19부터 1.26까지)가 지났습니다. 2026년 6월 현재 stable 버전은 <strong>2026년 2월에 나온 Go 1.26</strong> 입니다. 이 5년 사이에 언어 자체, 표준 라이브러리, 런타임, 툴체인이 모두 크게 달라졌습니다. 문제는 코드베이스가 그만큼 따라가지 못한다는 점입니다. 많은 프로덕션 코드가 여전히 &ldquo;그때 그렇게 짜던 방식&quot;으로 멈춰 있습니다.</p>
+<p>이 시리즈는 그런 코드를 위한 <strong>리팩토링 레시피집</strong> 입니다. &ldquo;2021년에는 이렇게 짰지만, 2026년에는 이렇게 짠다&quot;를 Before/After 형태로 정리합니다. 대상 독자는 Go를 3년 이상 다뤄 온 중급~중상급 개발자입니다. 기본 문법 설명은 생략하고, 관용구의 교체에 집중합니다.</p>
+<h3 id="버전-타임라인-한눈에-보기">버전 타임라인 한눈에 보기<a href="#버전-타임라인-한눈에-보기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>버전</th>
+          <th>출시</th>
+          <th>이 시리즈에서 다루는 주요 변화</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1.18</td>
+          <td>2022.03</td>
+          <td>제네릭, 퍼징, 워크스페이스</td>
+      </tr>
+      <tr>
+          <td>1.19</td>
+          <td>2022.08</td>
+          <td><code>GOMEMLIMIT</code>, atomic 타입</td>
+      </tr>
+      <tr>
+          <td>1.20</td>
+          <td>2023.02</td>
+          <td><code>errors.Join</code>, 다중 <code>%w</code> 래핑, PGO 프리뷰</td>
+      </tr>
+      <tr>
+          <td>1.21</td>
+          <td>2023.08</td>
+          <td><code>min</code>/<code>max</code>/<code>clear</code>, <code>slices</code>/<code>maps</code>/<code>cmp</code>, <code>log/slog</code>, <code>sync.OnceValue</code>, <code>context</code> 확장, PGO 정식</td>
+      </tr>
+      <tr>
+          <td>1.22</td>
+          <td>2024.02</td>
+          <td>루프 변수 per-iteration, range-over-int, <code>math/rand/v2</code>, <code>net/http</code> 라우팅 강화</td>
+      </tr>
+      <tr>
+          <td>1.23</td>
+          <td>2024.08</td>
+          <td>range-over-func(이터레이터), <code>iter</code>, <code>unique</code>, <code>slices</code>/<code>maps</code> 이터레이터 함수</td>
+      </tr>
+      <tr>
+          <td>1.24</td>
+          <td>2025.02</td>
+          <td>제네릭 타입 별칭, Swiss Tables 맵, <code>go.mod</code> tool 디렉티브, <code>os.Root</code>, <code>weak</code>, <code>omitzero</code>, <code>testing.B.Loop</code></td>
+      </tr>
+      <tr>
+          <td>1.25</td>
+          <td>2025.08</td>
+          <td>컨테이너 인식 <code>GOMAXPROCS</code>, <code>testing/synctest</code> 정식, <code>sync.WaitGroup.Go</code>, <code>encoding/json/v2</code>(실험), Green Tea GC(실험)</td>
+      </tr>
+      <tr>
+          <td>1.26</td>
+          <td>2026.02</td>
+          <td>Green Tea GC 기본 활성화, <code>new()</code> 표현식, 자기참조 제네릭, <code>go fix</code> modernizers, <code>errors.AsType</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>Part 1에서는 <strong>언어와 문법 레벨</strong> 의 변화를 다룹니다. 표준 라이브러리는 Part 2, 동시성·런타임·툴체인은 Part 3에서 이어집니다.</p>
+<hr>
+<h2 id="레시피-1-interface-와-코드-생성-대신-제네릭-118">레시피 1: <code>interface{}</code> 와 코드 생성 대신 제네릭 (1.18)<a href="#레시피-1-interface-와-코드-생성-대신-제네릭-118" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가장 큰 변화이자 가장 많은 레거시를 만들어 낸 지점입니다. 2021년에는 타입에 무관한 컬렉션 유틸리티를 만들려면 두 가지 선택지밖에 없었습니다. 런타임 타입 단언을 동반한 <code>interface{}</code>, 아니면 <code>go generate</code> 기반 코드 생성입니다.</p>
+<p><strong>Before (2021)</strong> — <code>interface{}</code> 기반 유틸리티는 타입 안전성을 포기하고 런타임 단언 비용을 치릅니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 호출부마다 .(int) 단언이 필요하고, 잘못된 타입은 런타임 panic.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">Map</span><span class="p">(</span><span class="nx">in</span><span class="w"> </span><span class="p">[]</span><span class="kd">interface</span><span class="p">{},</span><span class="w"> </span><span class="nx">f</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="kd">interface</span><span class="p">{})</span><span class="w"> </span><span class="kd">interface</span><span class="p">{})</span><span class="w"> </span><span class="p">[]</span><span class="kd">interface</span><span class="p">{}</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">out</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="kd">interface</span><span class="p">{},</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">in</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">out</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 타입 파라미터로 컴파일 타임 안전성과 인라이닝 친화적인 코드를 동시에 얻습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nx">Map</span><span class="p">[</span><span class="nx">T</span><span class="p">,</span><span class="w"> </span><span class="nx">U</span><span class="w"> </span><span class="kt">any</span><span class="p">](</span><span class="nx">in</span><span class="w"> </span><span class="p">[]</span><span class="nx">T</span><span class="p">,</span><span class="w"> </span><span class="nx">f</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="nx">U</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">U</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">out</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="nx">U</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">in</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">out</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">doubled</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">Map</span><span class="p">([]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">n</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">labels</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">Map</span><span class="p">(</span><span class="nx">users</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">u</span><span class="w"> </span><span class="nx">User</span><span class="p">)</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">u</span><span class="p">.</span><span class="nx">Name</span><span class="w"> </span><span class="p">})</span><span class="w">
+</span></span></span></code></pre></div><p>핵심은 &ldquo;모든 곳에 제네릭을 쓰라&quot;가 아닙니다. 제네릭이 빛나는 자리는 <strong>컨테이너 자료구조</strong>(셋, 순서 있는 맵, 링버퍼 등)와 <strong>컬렉션 변환 유틸리티</strong> 입니다. 반대로, 동작이 타입마다 달라지는 추상화에는 여전히 인터페이스가 정답입니다. &ldquo;데이터 구조에는 제네릭, 행위 추상화에는 인터페이스&quot;라는 기준을 두면 대부분의 설계 고민이 정리됩니다.</p>
+<blockquote>
+<p>참고로 2021~22년에 흔하던 <code>func(a, b interface{}) bool</code> 비교 콜백이나 빈 인터페이스 슬라이스(<code>[]interface{}</code>) 변환 코드는 거의 전부 제네릭으로 대체 가능합니다. Part 2에서 다룰 <code>slices</code>/<code>maps</code> 패키지가 이 작업의 상당 부분을 이미 표준으로 흡수했습니다.</p>
+</blockquote>
+<hr>
+<h2 id="레시피-2-직접-만든-minmax-헬퍼-대신-빌트인-121">레시피 2: 직접 만든 <code>min</code>/<code>max</code> 헬퍼 대신 빌트인 (1.21)<a href="#레시피-2-직접-만든-minmax-헬퍼-대신-빌트인-121" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go에 <code>min</code>, <code>max</code>, <code>clear</code> 가 <strong>언어 빌트인</strong> 으로 들어온 것은 1.21입니다. 그 전에는 프로젝트마다 작은 헬퍼가 굴러다녔습니다.</p>
+<p><strong>Before (2021)</strong> — 타입마다 헬퍼를 만들거나, 제네릭 도입 후에도 직접 정의했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">maxInt</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">b</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 맵 비우기: 키를 순회하며 delete</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">cache</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">delete</span><span class="p">(</span><span class="nx">cache</span><span class="p">,</span><span class="w"> </span><span class="nx">k</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 빌트인이라 임포트도, 정의도 필요 없습니다. <code>min</code>/<code>max</code> 는 가변 인자를 받고, <code>clear</code> 는 맵을 비우거나 슬라이스를 제로값으로 채웁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">hi</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="p">)</span><span class="w">       </span><span class="c1">// 인자 여러 개 가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">lo</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">clamped</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nb">clear</span><span class="p">(</span><span class="nx">cache</span><span class="p">)</span><span class="w">             </span><span class="c1">// 맵의 모든 엔트리 삭제</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nb">clear</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span><span class="w">               </span><span class="c1">// 슬라이스 원소를 전부 제로값으로</span><span class="w">
+</span></span></span></code></pre></div><p>사소해 보이지만, 사내 <code>pkg/util</code> 에 쌓여 있던 <code>MaxInt</code>, <code>MinInt64</code>, <code>MaxFloat</code> 류 함수들을 통째로 지울 수 있는 변화입니다. 코드 리뷰에서 &ldquo;이거 표준에 있는데요&quot;를 줄여 줍니다.</p>
+<hr>
+<h2 id="레시피-3-루프-변수-캡처-트릭의-졸업-122">레시피 3: 루프 변수 캡처 트릭의 졸업 (1.22)<a href="#레시피-3-루프-변수-캡처-트릭의-졸업-122" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go 입문자를 가장 많이 울린 버그가 1.22에서 언어 차원으로 해결됐습니다. 1.21 이전에는 루프 변수가 <strong>반복 전체에서 공유</strong> 되었기 때문에, 클로저나 고루틴이 루프 변수를 캡처하면 전부 마지막 값을 참조했습니다.</p>
+<p><strong>Before (2021)</strong> — <code>v := v</code> 섀도잉이 거의 의무였습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">item</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="c1">// 이 줄이 없으면 모든 고루틴이 마지막 item을 봄</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">go</span><span class="w"> </span><span class="kd">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nf">process</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — Go 1.22부터 루프 변수는 <strong>매 반복마다 새로 생성</strong> 됩니다. 섀도잉 줄이 필요 없습니다. 이는 <code>for range</code> 뿐 아니라 3-절 <code>for i := 0; ...</code> 형태에도 동일하게 적용됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">go</span><span class="w"> </span><span class="kd">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nf">process</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="c1">// item은 이번 반복 전용 변수. 안전.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>주의할 점이 하나 있습니다. 이 동작은 <strong><code>go.mod</code> 의 <code>go</code> 지시문이 1.22 이상</strong> 일 때만 켜집니다. 즉, 코드가 같아도 모듈이 선언한 Go 버전에 따라 의미가 달라집니다. 그래서 레거시 모듈을 올릴 때는 <code>go.mod</code> 의 <code>go 1.16</code> 을 그냥 올리기 전에, 이 시맨틱 변화를 의도적으로 검토해야 합니다. 실수로 <code>v := v</code> 에 의존하던 코드가 있다면 동작은 그대로지만(섀도잉은 여전히 합법), <code>vet</code> 이 불필요한 섀도잉을 알려줄 수 있습니다.</p>
+<p>또한 1.22에는 <code>go vet</code> 에 루프 변수가 함수 종료 후에도 참조되는 위험 패턴을 잡는 검사가 강화되어 있어, 업그레이드 후 <code>go vet ./...</code> 를 한 번 돌려 보는 것을 권합니다.</p>
+<hr>
+<h2 id="레시피-4-인덱스-카운터-루프-대신-range-over-int-122">레시피 4: 인덱스 카운터 루프 대신 range-over-int (1.22)<a href="#레시피-4-인덱스-카운터-루프-대신-range-over-int-122" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>&ldquo;N번 반복&quot;이라는 가장 흔한 패턴이 1.22에서 한 줄 짧아졌습니다.</p>
+<p><strong>Before (2021)</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 값이 필요 없는 반복</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">n</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">work</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 정수에 직접 <code>range</code> 를 걸 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 인덱스조차 필요 없으면 변수 생략</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">work</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>for range n</code> 형태는 &ldquo;정확히 n번 실행&quot;이라는 의도를 더 명확히 드러냅니다. 테스트 코드의 &ldquo;100번 반복해서 부하 주기&rdquo; 같은 곳에서 특히 가독성이 좋아집니다.</p>
+<hr>
+<h2 id="레시피-5-콜백슬라이스-반환-대신-이터레이터-123">레시피 5: 콜백·슬라이스 반환 대신 이터레이터 (1.23)<a href="#레시피-5-콜백슬라이스-반환-대신-이터레이터-123" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 시리즈에서 가장 &ldquo;새로운 사고방식&quot;을 요구하는 변화입니다. Go 1.23은 <strong>range-over-func</strong>, 즉 함수를 <code>for range</code> 로 순회하는 기능을 도입했습니다. 함께 들어온 <code>iter</code> 패키지가 <code>iter.Seq[T]</code> 와 <code>iter.Seq2[K, V]</code> 타입을 정의합니다.</p>
+<p>2021년에는 커스텀 컬렉션을 순회시키는 방법이 빈약했습니다. 슬라이스를 통째로 복사해 반환하거나(메모리 낭비), <code>Each(func(...) bool)</code> 같은 콜백 메서드를 노출하거나(<code>for</code> 와 이질적인 제어 흐름), 인덱스 기반 커서를 직접 관리해야 했습니다.</p>
+<p><strong>Before (2021)</strong> — 콜백 기반 순회. <code>break</code>/<code>continue</code> 가 자연스럽지 않고, 중첩 시 가독성이 떨어집니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Set</span><span class="p">[</span><span class="nx">T</span><span class="w"> </span><span class="nx">comparable</span><span class="p">]</span><span class="w"> </span><span class="kd">struct</span><span class="p">{</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="nx">T</span><span class="p">]</span><span class="kd">struct</span><span class="p">{}</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 호출자는 표준 for 문이 아니라 콜백 규약을 따라야 한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Set</span><span class="p">[</span><span class="nx">T</span><span class="p">])</span><span class="w"> </span><span class="nf">Each</span><span class="p">(</span><span class="nx">f</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">m</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nf">f</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">s</span><span class="p">.</span><span class="nf">Each</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// 계속하려면 true를 반환해야 한다는 규약</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — <code>iter.Seq[T]</code> 를 반환하는 <code>All()</code> 메서드를 노출하면, 호출자는 그냥 <code>for range</code> 를 씁니다. <code>break</code>, <code>continue</code>, <code>return</code> 이 전부 자연스럽게 동작합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;iter&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">Set</span><span class="p">[</span><span class="nx">T</span><span class="p">])</span><span class="w"> </span><span class="nf">All</span><span class="p">()</span><span class="w"> </span><span class="nx">iter</span><span class="p">.</span><span class="nx">Seq</span><span class="p">[</span><span class="nx">T</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">yield</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">m</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nf">yield</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nf">All</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">target</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">break</span><span class="w"> </span><span class="c1">// 표준 제어 흐름이 그대로 동작</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Go 표준 라이브러리의 컨벤션은 &ldquo;컨테이너 타입은 <code>All</code> 메서드로 이터레이터를 제공한다&quot;입니다. 이를 따르면 사용자가 &ldquo;직접 range를 걸어야 하나, 아니면 호출해서 값을 받아야 하나&quot;를 고민할 필요가 없습니다.</p>
+<p>처음 작성할 때 <code>func(yield func(T) bool)</code> 시그니처가 낯설게 느껴질 수 있습니다. 커뮤니티에서도 &ldquo;처음엔 머리가 꼬이지만, 한 번 써 보면 상태 머신을 직접 관리하는 것보다 훨씬 쉽다&quot;는 평이 지배적입니다. 무한 시퀀스, 페이지네이션, 스트리밍 파싱처럼 &ldquo;전부 메모리에 올리고 싶지 않은&rdquo; 경우에 특히 강력합니다.</p>
+<blockquote>
+<p>Part 2에서 다룰 <code>slices.Collect</code>, <code>slices.Sorted</code>, <code>maps.Keys</code> 등이 모두 이 이터레이터 위에 세워져 있어서, 1.23 이후의 표준 라이브러리는 이 개념을 모르면 절반만 쓰는 셈이 됩니다.</p>
+</blockquote>
+<hr>
+<h2 id="레시피-6-제네릭-타입-별칭과-최신-타입-시스템-124-126">레시피 6: 제네릭 타입 별칭과 최신 타입 시스템 (1.24, 1.26)<a href="#레시피-6-제네릭-타입-별칭과-최신-타입-시스템-124-126" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>제네릭이 1.18에 들어왔지만, <strong>타입 별칭(type alias)에는 타입 파라미터를 붙일 수 없다</strong> 는 제약이 오래 남아 있었습니다. 이 제약이 1.24에서 풀렸습니다.</p>
+<p><strong>Before (2022)</strong> — 별칭에 타입 파라미터를 못 붙이니, 별칭으로 짧게 쓰고 싶어도 새 정의 타입(defined type)을 만들어야 했고, 그러면 메서드 집합과 변환 규칙이 달라지는 부수 효과가 생겼습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 이건 컴파일 에러였다 (1.24 이전):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// type StringMap[V any] = map[string]V</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 그래서 어쩔 수 없이 새 타입을 정의하곤 했다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">StringMap</span><span class="p">[</span><span class="nx">V</span><span class="w"> </span><span class="kt">any</span><span class="p">]</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">V</span><span class="w"> </span><span class="c1">// 별칭이 아니라 별개 타입</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 타입 별칭에 타입 파라미터를 붙일 수 있습니다. 긴 제네릭 타입에 짧고 의미 있는 이름을 주면서도, 원본 타입과 완전히 호환됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">StringMap</span><span class="p">[</span><span class="nx">V</span><span class="w"> </span><span class="kt">any</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">V</span><span class="w">          </span><span class="c1">// 진짜 별칭</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Result</span><span class="p">[</span><span class="nx">T</span><span class="w"> </span><span class="kt">any</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">                  </span><span class="c1">// 복잡한 제네릭 구조에 별칭</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Value</span><span class="w"> </span><span class="nx">T</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Err</span><span class="w">   </span><span class="kt">error</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>여기에 1.26은 타입 시스템을 두 군데 더 다듬었습니다.</p>
+<p>첫째, <strong>자기참조 제네릭 타입</strong> 제약이 풀렸습니다. 타입 파라미터 목록에서 자기 자신을 참조하는, 이른바 CRTP 스타일의 인터페이스를 표현할 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go 1.26부터 합법. &#34;자기 자신과만 더해지는 타입&#34; 같은 제약을 표현.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Adder</span><span class="p">[</span><span class="nx">A</span><span class="w"> </span><span class="nx">Adder</span><span class="p">[</span><span class="nx">A</span><span class="p">]]</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">Add</span><span class="p">(</span><span class="nx">A</span><span class="p">)</span><span class="w"> </span><span class="nx">A</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>둘째, <strong><code>new()</code> 가 표현식을 받습니다.</strong> 초기값을 가진 포인터를 만들 때 흔히 쓰던 헬퍼 함수가 사라집니다.</p>
+<p><strong>Before (2021)</strong> — &ldquo;값을 가리키는 포인터&quot;를 만들려면 제네릭 헬퍼나 임시 변수가 필요했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nx">ptr</span><span class="p">[</span><span class="nx">T</span><span class="w"> </span><span class="kt">any</span><span class="p">](</span><span class="nx">v</span><span class="w"> </span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">T</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">v</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">cfg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Config</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Timeout</span><span class="p">:</span><span class="w"> </span><span class="nf">ptr</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Name</span><span class="p">:</span><span class="w">    </span><span class="nf">ptr</span><span class="p">(</span><span class="s">&#34;default&#34;</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — <code>new()</code> 에 표현식을 직접 넘깁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">cfg</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Config</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Timeout</span><span class="p">:</span><span class="w"> </span><span class="nb">new</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Name</span><span class="p">:</span><span class="w">    </span><span class="nb">new</span><span class="p">(</span><span class="s">&#34;default&#34;</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>ptr</code>/<code>ref</code>/<code>addrOf</code> 같은 헬퍼는 거의 모든 Go 코드베이스에 하나씩 있었는데, 1.26부터는 이걸 지울 수 있습니다.</p>
+<hr>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1에서 다룬 변화를 한 줄씩 정리하면 다음과 같습니다.</p>
+<ul>
+<li><strong>제네릭(1.18)</strong>: <code>interface{}</code> 와 코드 생성으로 만들던 컨테이너·컬렉션 유틸리티를 타입 안전하게 다시 씁니다.</li>
+<li><strong><code>min</code>/<code>max</code>/<code>clear</code>(1.21)</strong>: 사내 헬퍼를 빌트인으로 교체합니다.</li>
+<li><strong>루프 변수 per-iteration(1.22)</strong>: <code>v := v</code> 섀도잉 트릭을 졸업합니다(단, <code>go.mod</code> 버전 주의).</li>
+<li><strong>range-over-int(1.22)</strong>: <code>for i := range n</code> 으로 카운터 루프를 간결하게.</li>
+<li><strong>이터레이터(1.23)</strong>: 콜백·슬라이스 반환을 <code>iter.Seq</code> 로 대체해 표준 <code>for range</code> 제어 흐름을 회복합니다.</li>
+<li><strong>제네릭 타입 별칭(1.24)·<code>new()</code> 표현식·자기참조 제네릭(1.26)</strong>: 타입 시스템의 마지막 거친 모서리들을 다듬습니다.</li>
+</ul>
+<p>다음 <a href="../20260624-go-2021-to-2026-recipes-02/">Part 2</a>에서는 일상 코드에서 가장 자주 손이 가는 표준 라이브러리 — <code>slices</code>/<code>maps</code>/<code>cmp</code>, <code>log/slog</code>, <code>errors</code>, <code>encoding/json</code>, <code>net/http</code> 라우팅 — 의 레시피를 다룹니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://go.dev/doc/go1.21">Go 1.21 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.22">Go 1.22 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.23">Go 1.23 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.24">Go 1.24 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.26">Go 1.26 Release Notes</a></li>
+<li><a href="https://go.dev/blog/range-functions">Range Over Function Types (The Go Blog)</a></li>
+<li><a href="https://lobste.rs/s/tjqgjr/first_impressions_go_1_23_s_range_over_func">First impressions of Go 1.23&rsquo;s range-over-func feature (Lobsters discussion)</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-02/" class="button inline prev">
+        &lt; [<span class="button__text">2021년의 Go를 2026년의 Go로 Part 2: 표준 라이브러리 레시피</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260623-randomness-in-game-design-03/" class="button inline next">
+         [<span class="button__text">게임 디자인과 랜덤성의 수학 Part 3: 게임이론과 시뮬레이션으로 밸런스를 검증하기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

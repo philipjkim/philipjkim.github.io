@@ -6,8 +6,29 @@
     <description>Recent content in Guide on philipjkim</description>
     <generator>Hugo</generator>
     <language>en-US</language>
-    <lastBuildDate>Tue, 23 Jun 2026 14:01:04 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 10:15:25 +0900</lastBuildDate>
     <atom:link href="https://philipjkim.github.io/tags/guide/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2021년의 Go를 2026년의 Go로 Part 3: 동시성·런타임·운영 레시피</title>
+      <link>https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-03/</link>
+      <pubDate>Wed, 24 Jun 2026 10:15:25 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-03/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;들어가며&#34;&gt;들어가며&lt;/h2&gt;&#xA;&lt;p&gt;&lt;a href=&#34;../20260624-go-2021-to-2026-recipes-01/&#34;&gt;Part 1&lt;/a&gt;에서 언어와 문법을, &lt;a href=&#34;../20260624-go-2021-to-2026-recipes-02/&#34;&gt;Part 2&lt;/a&gt;에서 표준 라이브러리를 다뤘습니다. 시리즈의 마지막인 Part 3은 &lt;strong&gt;동시성·런타임·툴체인·운영&lt;/strong&gt; 입니다. 코드 한 줄의 변화라기보다, &amp;ldquo;서비스를 어떻게 돌리고 어떻게 검증하느냐&amp;quot;에 가까운 영역입니다.&lt;/p&gt;&#xA;&lt;p&gt;이 영역의 변화는 특히 컨테이너/쿠버네티스 환경에서 Go 서비스를 운영하는 팀에게 의미가 큽니다. 2021년에는 서드파티 라이브러리나 수작업으로 메우던 빈틈을, 이제 표준 런타임이 채워 줍니다.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;레시피-1-수동-취소타임아웃-관리-대신-context-신규-api-121&#34;&gt;레시피 1: 수동 취소·타임아웃 관리 대신 &lt;code&gt;context&lt;/code&gt; 신규 API (1.21)&lt;/h2&gt;&#xA;&lt;p&gt;&lt;code&gt;context&lt;/code&gt; 는 1.7부터 있었지만, 실무에서 반복되던 몇 가지 패턴을 표준으로 흡수한 것은 1.21입니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2021년의 Go를 2026년의 Go로 Part 2: 표준 라이브러리 레시피</title>
+      <link>https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-02/</link>
+      <pubDate>Wed, 24 Jun 2026 10:13:33 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-02/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;들어가며&#34;&gt;들어가며&lt;/h2&gt;&#xA;&lt;p&gt;&lt;a href=&#34;../20260624-go-2021-to-2026-recipes-01/&#34;&gt;Part 1&lt;/a&gt;에서는 제네릭, 이터레이터, 빌트인 등 언어와 문법 레벨의 변화를 다뤘습니다. Part 2는 일상 코드에서 가장 손이 자주 가는 &lt;strong&gt;표준 라이브러리&lt;/strong&gt; 의 레시피입니다.&lt;/p&gt;&#xA;&lt;p&gt;2021~22년의 Go 표준 라이브러리는 의외로 빈약했습니다. 슬라이스에서 원소를 찾으려면 &lt;code&gt;for&lt;/code&gt; 루프를 직접 돌렸고, 맵의 키를 모으려면 손으로 슬라이스를 채웠으며, 정렬은 &lt;code&gt;sort.Slice&lt;/code&gt; 에 비교 함수를 넘겼습니다. 구조적 로깅을 하려면 &lt;code&gt;logrus&lt;/code&gt;, &lt;code&gt;zap&lt;/code&gt; 같은 서드파티가 사실상 필수였고, HTTP 라우팅에서 메서드와 경로 파라미터를 다루려면 &lt;code&gt;gorilla/mux&lt;/code&gt; 를 깔았습니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2021년의 Go를 2026년의 Go로 Part 1: 언어와 문법 레시피</title>
+      <link>https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-01/</link>
+      <pubDate>Wed, 24 Jun 2026 10:11:05 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-01/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;들어가며-5년-동안-go에-무슨-일이-있었나&#34;&gt;들어가며: 5년 동안 Go에 무슨 일이 있었나&lt;/h2&gt;&#xA;&lt;p&gt;2021~22년에 Go로 서비스를 짜던 시절을 떠올려 봅니다. 그때 우리가 쓰던 버전은 대략 Go 1.16~1.18 언저리였습니다. 제네릭이 없거나(1.18 이전), 갓 도입되어 아직 손에 익지 않았고, &lt;code&gt;interface{}&lt;/code&gt; 와 &lt;code&gt;sort.Slice&lt;/code&gt;, &lt;code&gt;for _, v := range xs { v := v; ... }&lt;/code&gt; 같은 관용구가 일상이었습니다.&lt;/p&gt;&#xA;&lt;p&gt;그로부터 8개의 메이저 릴리스(1.19부터 1.26까지)가 지났습니다. 2026년 6월 현재 stable 버전은 &lt;strong&gt;2026년 2월에 나온 Go 1.26&lt;/strong&gt; 입니다. 이 5년 사이에 언어 자체, 표준 라이브러리, 런타임, 툴체인이 모두 크게 달라졌습니다. 문제는 코드베이스가 그만큼 따라가지 못한다는 점입니다. 많은 프로덕션 코드가 여전히 &amp;ldquo;그때 그렇게 짜던 방식&amp;quot;으로 멈춰 있습니다.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>게임 디자인과 랜덤성의 수학 Part 3: 게임이론과 시뮬레이션으로 밸런스를 검증하기</title>
       <link>https://philipjkim.github.io/posts/20260623-randomness-in-game-design-03/</link>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>2021년의 Go를 2026년의 Go로 Part 2: 표준 라이브러리 레시피 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2021~22년 Go 코드의 표준 라이브러리 관용구를 2026년 Go 1.26 기준으로 다시 쓰는 레시피. slices/maps/cmp, log/slog 구조적 로깅, errors.Join, math/rand/v2, encoding/json omitzero·v2, net/http 라우팅 강화를 Before/After로 정리합니다." />
+<meta name="keywords" content="golang, go, programming, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="2021년의 Go를 2026년의 Go로 Part 2: 표준 라이브러리 레시피">
+<meta property="og:description" content="2021~22년 Go 코드의 표준 라이브러리 관용구를 2026년 Go 1.26 기준으로 다시 쓰는 레시피. slices/maps/cmp, log/slog 구조적 로깅, errors.Join, math/rand/v2, encoding/json omitzero·v2, net/http 라우팅 강화를 Before/After로 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-06-24 10:13:33 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-02/">2021년의 Go를 2026년의 Go로 Part 2: 표준 라이브러리 레시피</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-06-24</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/go/">go</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="../20260624-go-2021-to-2026-recipes-01/">Part 1</a>에서는 제네릭, 이터레이터, 빌트인 등 언어와 문법 레벨의 변화를 다뤘습니다. Part 2는 일상 코드에서 가장 손이 자주 가는 <strong>표준 라이브러리</strong> 의 레시피입니다.</p>
+<p>2021~22년의 Go 표준 라이브러리는 의외로 빈약했습니다. 슬라이스에서 원소를 찾으려면 <code>for</code> 루프를 직접 돌렸고, 맵의 키를 모으려면 손으로 슬라이스를 채웠으며, 정렬은 <code>sort.Slice</code> 에 비교 함수를 넘겼습니다. 구조적 로깅을 하려면 <code>logrus</code>, <code>zap</code> 같은 서드파티가 사실상 필수였고, HTTP 라우팅에서 메서드와 경로 파라미터를 다루려면 <code>gorilla/mux</code> 를 깔았습니다.</p>
+<p>이 모든 것이 1.21~1.26 사이에 표준으로 흡수되었습니다. 의존성 목록을 한참 줄일 수 있는 변화입니다.</p>
+<hr>
+<h2 id="레시피-1-손으로-짠-슬라이스맵-헬퍼-대신-slicesmapscmp-121">레시피 1: 손으로 짠 슬라이스/맵 헬퍼 대신 <code>slices</code>/<code>maps</code>/<code>cmp</code> (1.21)<a href="#레시피-1-손으로-짠-슬라이스맵-헬퍼-대신-slicesmapscmp-121" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Go 1.21은 제네릭 위에 세워진 <code>slices</code>, <code>maps</code>, <code>cmp</code> 세 패키지를 표준에 추가했습니다. 그 전까지 모든 팀이 각자 만들던 유틸리티가 표준이 되었습니다.</p>
+<p><strong>Before (2021)</strong> — 직접 구현하거나 <code>sort.Slice</code> 에 의존했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 원소 포함 여부</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nx">xs</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">xs</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">target</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 정렬: 리플렉션 기반 sort.Slice</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">users</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">users</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Age</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">users</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Age</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 맵 키 모으기</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">keys</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">m</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">keys</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">keys</span><span class="p">,</span><span class="w"> </span><span class="nx">k</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 표준 함수로 대체합니다. <code>slices.SortFunc</code> 은 리플렉션 기반인 <code>sort.Slice</code> 보다 빠르고, 비교 함수도 <code>cmp.Compare</code> 를 활용해 의도가 명확합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;cmp&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;slices&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;maps&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">slices</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">xs</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">idx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">slices</span><span class="p">.</span><span class="nf">Index</span><span class="p">(</span><span class="nx">xs</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">slices</span><span class="p">.</span><span class="nf">SortFunc</span><span class="p">(</span><span class="nx">users</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">User</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Compare</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">Age</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Age</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 1.23+ 이터레이터로 키 모으기</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">keys</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">slices</span><span class="p">.</span><span class="nf">Collect</span><span class="p">(</span><span class="nx">maps</span><span class="p">.</span><span class="nf">Keys</span><span class="p">(</span><span class="nx">m</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">slices</span><span class="p">.</span><span class="nf">Sort</span><span class="p">(</span><span class="nx">keys</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><code>cmp.Compare</code> 는 <code>-1</code>, <code>0</code>, <code>1</code> 을 반환하므로 다중 기준 정렬이 깔끔해집니다. 또한 1.22에 추가된 <code>cmp.Or</code> 는 &ldquo;첫 번째 0이 아닌 값&quot;을 반환해, 타이브레이크 정렬에 유용합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">slices</span><span class="p">.</span><span class="nf">SortFunc</span><span class="p">(</span><span class="nx">users</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">User</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Or</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Compare</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">LastName</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">LastName</span><span class="p">),</span><span class="w">  </span><span class="c1">// 1순위: 성</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Compare</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">),</span><span class="w"> </span><span class="c1">// 2순위: 이름</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">cmp</span><span class="p">.</span><span class="nf">Compare</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">Age</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Age</span><span class="p">),</span><span class="w">             </span><span class="c1">// 3순위: 나이</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">})</span><span class="w">
+</span></span></span></code></pre></div><p>자주 쓰는 다른 함수들도 짚어 둡니다. <code>slices.Equal</code>/<code>slices.EqualFunc</code>(슬라이스 비교), <code>slices.Clone</code>(얕은 복사), <code>slices.Insert</code>/<code>slices.Delete</code>(중간 삽입·삭제), <code>slices.Concat</code>(1.22, 여러 슬라이스 연결), <code>slices.BinarySearch</code>(이진 탐색), <code>maps.Clone</code>, <code>maps.Equal</code> 등이 있습니다. 사내 <code>sliceutil</code>, <code>maputil</code> 패키지는 이제 대부분 지울 수 있습니다.</p>
+<hr>
+<h2 id="레시피-2-슬라이스-복사-변환-대신-이터레이터-함수-123">레시피 2: 슬라이스 복사 변환 대신 이터레이터 함수 (1.23)<a href="#레시피-2-슬라이스-복사-변환-대신-이터레이터-함수-123" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1의 이터레이터(레시피 5)가 표준 라이브러리에서 실제로 어떻게 쓰이는지 보여 주는 자리입니다. 1.23은 <code>slices</code> 와 <code>maps</code> 에 이터레이터 기반 함수들을 추가했습니다.</p>
+<p><strong>Before (2021)</strong> — 중간 슬라이스를 거치는 변환이 흔했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 맵의 값들을 정렬된 슬라이스로</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">vals</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">m</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">vals</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">vals</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">sort</span><span class="p">.</span><span class="nf">Ints</span><span class="p">(</span><span class="nx">vals</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 이터레이터를 직접 소비합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">vals</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">slices</span><span class="p">.</span><span class="nf">Sorted</span><span class="p">(</span><span class="nx">maps</span><span class="p">.</span><span class="nf">Values</span><span class="p">(</span><span class="nx">m</span><span class="p">))</span><span class="w">   </span><span class="c1">// 정렬까지 한 번에</span><span class="w">
+</span></span></span></code></pre></div><p>자주 쓰는 조합을 정리하면 다음과 같습니다.</p>
+<ul>
+<li><code>slices.Collect(seq)</code>: 이터레이터를 슬라이스로 수집</li>
+<li><code>slices.Sorted(seq)</code> / <code>slices.SortedFunc(seq, cmp)</code>: 수집하면서 정렬</li>
+<li><code>slices.Values(s)</code> / <code>slices.All(s)</code>: 슬라이스를 이터레이터로</li>
+<li><code>slices.Chunk(s, n)</code>: n개씩 끊어 읽는 이터레이터</li>
+<li><code>maps.Keys(m)</code> / <code>maps.Values(m)</code> / <code>maps.All(m)</code>: 맵을 이터레이터로</li>
+</ul>
+<p>이 함수들은 단독으로도 유용하지만, 직접 만든 이터레이터(<code>iter.Seq</code>)와 조합할 때 진가가 드러납니다. 예를 들어 데이터베이스 커서를 <code>iter.Seq[Row]</code> 로 노출하면, 그 위에 <code>slices.Collect</code> 를 씌워 일부만 메모리에 올리는 식의 조합이 가능합니다.</p>
+<hr>
+<h2 id="레시피-3-logprintf-와-서드파티-로거-대신-logslog-121">레시피 3: <code>log.Printf</code> 와 서드파티 로거 대신 <code>log/slog</code> (1.21)<a href="#레시피-3-logprintf-와-서드파티-로거-대신-logslog-121" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>운영 환경에서 로그를 검색·집계하려면 구조적 로깅이 필수입니다. 2021년에는 표준에 없어서 <code>logrus</code> 나 <code>zap</code> 을 썼습니다. Go 1.21이 <code>log/slog</code> 를 표준에 넣으면서, 적어도 &ldquo;구조적 로깅을 위해 의존성을 추가&quot;할 이유는 사라졌습니다.</p>
+<p><strong>Before (2021)</strong> — 문자열 포맷 로그는 grep은 되지만 필드 단위 질의가 안 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;request handled: method=%s path=%s status=%d duration=%dms&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">r</span><span class="p">.</span><span class="nx">Method</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">ms</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — <code>slog</code> 으로 키-값을 구조화합니다. JSON 핸들러를 쓰면 로그 수집 시스템에서 필드별 질의가 가능합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;log/slog&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">logger</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">slog</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">slog</span><span class="p">.</span><span class="nf">NewJSONHandler</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">slog</span><span class="p">.</span><span class="nf">SetDefault</span><span class="p">(</span><span class="nx">logger</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">slog</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;request handled&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;method&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Method</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;path&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;status&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s">&#34;duration_ms&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">ms</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><code>slog</code> 의 실전 포인트 몇 가지를 짚습니다.</p>
+<ul>
+<li><strong><code>With</code> 로 컨텍스트 고정</strong>: <code>reqLogger := logger.With(&quot;request_id&quot;, id)</code> 처럼 요청별 공통 필드를 한 번만 붙입니다.</li>
+<li><strong><code>slog.LogAttrs</code> 로 할당 최소화</strong>: 핫패스에서는 <code>slog.LogAttrs(ctx, slog.LevelInfo, msg, slog.Int(&quot;status&quot;, status))</code> 형태가 가변 인자 방식보다 할당이 적습니다.</li>
+<li><strong>레벨 동적 변경</strong>: <code>slog.LevelVar</code> 를 핸들러에 연결하면 런타임에 로그 레벨을 바꿀 수 있습니다.</li>
+<li><strong><code>context</code> 전파</strong>: <code>slog.InfoContext(ctx, ...)</code> 로 trace ID 등을 핸들러에서 꺼내 쓸 수 있습니다.</li>
+</ul>
+<p>그리고 1.26에는 <code>slog.NewMultiHandler</code> 가 추가되어, 같은 로그를 여러 핸들러(예: 콘솔 + 파일)로 동시에 보내는 일이 표준만으로 가능해졌습니다.</p>
+<p>다만 성능이 극단적으로 중요한 경우라면 <code>zap</code> 이 여전히 우위에 있을 수 있습니다. <code>slog</code> 의 선택 기준은 &ldquo;표준만으로 충분한가&quot;입니다. 신규 프로젝트나 의존성을 줄이고 싶은 프로젝트라면 <code>slog</code> 으로 시작하는 것이 합리적입니다.</p>
+<hr>
+<h2 id="레시피-4-수동-에러-집계-대신-errorsjoin-과-다중-래핑-120">레시피 4: 수동 에러 집계 대신 <code>errors.Join</code> 과 다중 래핑 (1.20)<a href="#레시피-4-수동-에러-집계-대신-errorsjoin-과-다중-래핑-120" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>fmt.Errorf(&quot;%w&quot;, err)</code> 로 단일 에러를 감싸는 것은 1.13부터 가능했지만, <strong>여러 에러를 한꺼번에</strong> 다루는 표준 방법은 1.20에야 생겼습니다.</p>
+<p><strong>Before (2021)</strong> — 여러 작업의 에러를 모으려면 직접 슬라이스에 담고 문자열을 이어 붙였습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">errs</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">tasks</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">task</span><span class="p">.</span><span class="nf">Run</span><span class="p">();</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">errs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">errs</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">errs</span><span class="p">)</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;some tasks failed: %s&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">errs</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;; &#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 문제: errors.Is/As로 개별 에러를 다시 검사할 수 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — <code>errors.Join</code> 으로 합치면 <code>errors.Is</code>/<code>errors.As</code> 가 합쳐진 에러 전부를 관통해 검사합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="kt">error</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">tasks</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">task</span><span class="p">.</span><span class="nf">Run</span><span class="p">())</span><span class="w"> </span><span class="c1">// nil은 자동으로 무시됨</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 호출부: 합쳐진 에러 안의 특정 센티넬도 검사 가능</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">ErrNotFound</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>fmt.Errorf</code> 도 1.20부터 <code>%w</code> 를 여러 개 받을 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">return</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;load config: %w (fallback also failed: %w)&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">primaryErr</span><span class="p">,</span><span class="w"> </span><span class="nx">fallbackErr</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>그리고 1.26은 <code>errors.As</code> 의 제네릭 버전인 <strong><code>errors.AsType</code></strong> 을 추가했습니다. 대상 변수를 미리 선언할 필요가 없어집니다.</p>
+<p><strong>Before</strong> — <code>errors.As</code> 는 포인터 대상 변수가 필요합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">perr</span><span class="w"> </span><span class="o">*</span><span class="nx">fs</span><span class="p">.</span><span class="nx">PathError</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nf">As</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">perr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">perr</span><span class="p">.</span><span class="nx">Path</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — <code>errors.AsType</code> 은 타입 파라미터로 받고 <code>(T, bool)</code> 을 반환합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="nx">perr</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">AsType</span><span class="p">[</span><span class="o">*</span><span class="nx">fs</span><span class="p">.</span><span class="nx">PathError</span><span class="p">](</span><span class="nx">err</span><span class="p">);</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">perr</span><span class="p">.</span><span class="nx">Path</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<h2 id="레시피-5-randseed-와-전역-시드-대신-mathrandv2-122">레시피 5: <code>rand.Seed</code> 와 전역 시드 대신 <code>math/rand/v2</code> (1.22)<a href="#레시피-5-randseed-와-전역-시드-대신-mathrandv2-122" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>math/rand</code> 의 오래된 함정이 하나 있었습니다. 프로그램 시작 시 <code>rand.Seed(time.Now().UnixNano())</code> 를 호출하지 않으면 매번 같은 난수열이 나왔습니다. 이걸 까먹어서 &ldquo;운영에서 항상 같은 값이 나오는&rdquo; 버그가 흔했습니다.</p>
+<p><code>math/rand/v2</code>(1.22)는 표준 라이브러리 최초의 v2 패키지입니다. 전역 생성기가 <strong>무조건 무작위로 시드</strong> 되므로, <code>Seed</code> 호출 자체가 사라졌습니다. (실제로 <code>math/rand.Seed</code> 는 1.24에서 no-op이 되었습니다.)</p>
+<p><strong>Before (2021)</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">rand</span><span class="p">.</span><span class="nf">Seed</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">())</span><span class="w"> </span><span class="c1">// 이걸 까먹으면 매번 같은 결과</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">n</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rand</span><span class="p">.</span><span class="nf">Intn</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 시드 불필요. 함수명도 정돈됐습니다(<code>Intn</code> → <code>IntN</code>).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;math/rand/v2&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">n</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rand</span><span class="p">.</span><span class="nf">IntN</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w">          </span><span class="c1">// 시드 호출 불필요</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">d</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rand</span><span class="p">.</span><span class="nf">N</span><span class="p">(</span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span><span class="w"> </span><span class="c1">// 제네릭 N: 임의 정수 타입에 동작</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">shuffle</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rand</span><span class="p">.</span><span class="nf">Perm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><code>rand.N[T]</code> 는 제네릭이라 <code>time.Duration</code> 같은 정수 기반 타입에 바로 동작합니다. 내부 알고리즘도 ChaCha8, PCG 같은 현대적 PRNG로 교체되어 더 빠르고 품질이 좋습니다. (단, 둘 다 암호학적 용도는 아니며, 그 경우는 <code>crypto/rand</code> 를 써야 합니다.)</p>
+<hr>
+<h2 id="레시피-6-omitempty-의-함정-대신-omitzero-그리고-jsonv2-124-125">레시피 6: <code>omitempty</code> 의 함정 대신 <code>omitzero</code>, 그리고 <code>json/v2</code> (1.24, 1.25)<a href="#레시피-6-omitempty-의-함정-대신-omitzero-그리고-jsonv2-124-125" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><code>encoding/json</code> 의 <code>omitempty</code> 는 오래된 골칫거리였습니다. 가장 악명 높은 사례가 <code>time.Time</code> 입니다. 제로값인 <code>time.Time{}</code> 도 <code>omitempty</code> 기준으로는 &ldquo;비어 있지 않은&rdquo; 값이라, 직렬화에서 빠지지 않았습니다. 0인 숫자를 생략하고 싶을 때도 <code>*int</code> 포인터로 바꾸는 우회가 필요했습니다.</p>
+<p><strong>Before (2021)</strong> — <code>omitempty</code> 가 의도대로 동작하지 않아 포인터로 우회했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Event</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Name</span><span class="w"> </span><span class="kt">string</span><span class="w">     </span><span class="s">`json:&#34;name&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">At</span><span class="w">   </span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`json:&#34;at,omitempty&#34;`</span><span class="w">  </span><span class="c1">// 포인터로 우회</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Qty</span><span class="w">  </span><span class="o">*</span><span class="kt">int</span><span class="w">       </span><span class="s">`json:&#34;qty,omitempty&#34;`</span><span class="w"> </span><span class="c1">// 0을 생략하려면 포인터</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 1.24의 <code>omitzero</code> 는 진짜 제로값을 기준으로 판단하며, 타입에 <code>IsZero() bool</code> 메서드가 있으면 그것을 사용합니다. <code>time.Time</code> 도 의도대로 생략됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Event</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Name</span><span class="w"> </span><span class="kt">string</span><span class="w">    </span><span class="s">`json:&#34;name&#34;`</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">At</span><span class="w">   </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="s">`json:&#34;at,omitzero&#34;`</span><span class="w"> </span><span class="c1">// 제로 time.Time이면 생략</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Qty</span><span class="w">  </span><span class="kt">int</span><span class="w">       </span><span class="s">`json:&#34;qty,omitzero&#34;`</span><span class="w"> </span><span class="c1">// 0이면 생략</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>더 큰 변화는 진행 중입니다. Go 1.25는 <code>encoding/json/v2</code> 를 <strong>실험적</strong> 으로 도입했습니다(<code>GOEXPERIMENT=jsonv2</code> 로 빌드 시 활성화). 저수준 처리를 위한 <code>encoding/json/jsontext</code> 패키지도 함께 들어왔습니다. 디코딩 성능이 크게 개선되었고, 옵션 기반의 유연한 설정을 제공합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// GOEXPERIMENT=jsonv2 환경에서</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;encoding/json/v2&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 옵션을 명시적으로 받는 새 API 형태</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">jsonOpts</span><span class="o">...</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>2026년 6월 현재 <code>json/v2</code> 는 아직 실험 단계이므로 프로덕션 도입은 신중해야 합니다. 다만 방향성은 분명하므로, 새 직렬화 로직을 설계할 때 이 흐름을 염두에 두는 것이 좋습니다. 당장 적용할 수 있는 것은 <code>omitzero</code> 이고, 이것만으로도 포인터 우회 코드를 상당히 걷어낼 수 있습니다.</p>
+<hr>
+<h2 id="레시피-7-gorillamux-대신-표준-nethttp-라우팅-122">레시피 7: <code>gorilla/mux</code> 대신 표준 <code>net/http</code> 라우팅 (1.22)<a href="#레시피-7-gorillamux-대신-표준-nethttp-라우팅-122" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>오랫동안 표준 <code>http.ServeMux</code> 는 메서드 구분도, 경로 파라미터도 지원하지 않아 실무에서 거의 안 썼습니다. <code>gorilla/mux</code>, <code>chi</code>, <code>gin</code> 같은 라우터가 사실상 필수였습니다. Go 1.22가 <code>ServeMux</code> 의 패턴 문법을 대폭 강화하면서 이 그림이 바뀌었습니다.</p>
+<p><strong>Before (2021)</strong> — 표준 mux로는 메서드/파라미터 처리가 불가능해 서드파티에 의존했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="s">&#34;github.com/gorilla/mux&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">mux</span><span class="p">.</span><span class="nf">NewRouter</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/items/{id}&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">getItem</span><span class="p">).</span><span class="nf">Methods</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/items&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">createItem</span><span class="p">).</span><span class="nf">Methods</span><span class="p">(</span><span class="s">&#34;POST&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 핸들러 내부</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">vars</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">mux</span><span class="p">.</span><span class="nf">Vars</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">vars</span><span class="p">[</span><span class="s">&#34;id&#34;</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></div><p><strong>After (2026)</strong> — 표준 <code>ServeMux</code> 가 <code>METHOD /path/{param}</code> 패턴과 <code>r.PathValue</code> 를 지원합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mux</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nf">NewServeMux</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">mux</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;GET /items/{id}&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">getItem</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">mux</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;POST /items&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">createItem</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">mux</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;GET /files/{path...}&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">serveFiles</span><span class="p">)</span><span class="w"> </span><span class="c1">// 나머지 경로 전체 매칭</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">mux</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;GET /exact/{$}&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">exactOnly</span><span class="p">)</span><span class="w">        </span><span class="c1">// 정확히 이 경로만</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 핸들러 내부</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">getItem</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nf">PathValue</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>패턴 문법을 정리하면 다음과 같습니다.</p>
+<ul>
+<li><code>GET /path</code>: 메서드 한정</li>
+<li><code>{id}</code>: 단일 경로 세그먼트 캡처 → <code>r.PathValue(&quot;id&quot;)</code></li>
+<li><code>{path...}</code>: 남은 경로 전체 캡처</li>
+<li><code>{$}</code>: 정확히 해당 경로만 매칭(후행 슬래시 하위 경로 제외)</li>
+</ul>
+<p>더 구체적인 패턴이 우선하며, 우선순위가 모호하게 겹치는 패턴은 등록 시점에 panic으로 충돌을 알려 줍니다.</p>
+<p>물론 미들웨어 체이닝, 그룹 라우팅 등 풍부한 기능이 필요하면 <code>chi</code> 같은 경량 라우터가 여전히 좋은 선택입니다. 하지만 &ldquo;메서드 + 경로 파라미터&rdquo; 정도가 전부인 다수의 서비스라면, 이제 표준만으로 충분합니다. 의존성 하나를 줄이는 것은 보안 패치 추적과 빌드 시간 측면에서 분명한 이득입니다.</p>
+<hr>
+<h2 id="마무리">마무리<a href="#마무리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 2에서 다룬 표준 라이브러리 레시피를 정리합니다.</p>
+<ul>
+<li><strong><code>slices</code>/<code>maps</code>/<code>cmp</code>(1.21)</strong>: 사내 슬라이스·맵 유틸리티를 표준으로 교체. <code>cmp.Or</code> 로 다중 기준 정렬.</li>
+<li><strong>이터레이터 함수(1.23)</strong>: <code>slices.Collect</code>/<code>Sorted</code>, <code>maps.Keys</code>/<code>Values</code> 로 중간 슬라이스 제거.</li>
+<li><strong><code>log/slog</code>(1.21)</strong>: 구조적 로깅을 표준으로. 1.26의 <code>NewMultiHandler</code> 까지.</li>
+<li><strong><code>errors.Join</code>(1.20)·<code>errors.AsType</code>(1.26)</strong>: 다중 에러 집계와 타입 검사를 표준 방식으로.</li>
+<li><strong><code>math/rand/v2</code>(1.22)</strong>: <code>rand.Seed</code> 졸업, 제네릭 <code>N</code>.</li>
+<li><strong><code>omitzero</code>(1.24)·<code>json/v2</code>(1.25 실험)</strong>: <code>omitempty</code> 의 함정 탈출.</li>
+<li><strong><code>net/http</code> 라우팅(1.22)</strong>: <code>gorilla/mux</code> 없이 메서드·경로 파라미터 처리.</li>
+</ul>
+<p>다음 <a href="../20260624-go-2021-to-2026-recipes-03/">Part 3</a>에서는 시리즈의 마지막으로 <strong>동시성·런타임·툴체인·운영</strong> 을 다룹니다. <code>context</code> 신규 API, <code>sync.WaitGroup.Go</code>, <code>testing/synctest</code>, 컨테이너 인식 <code>GOMAXPROCS</code>, PGO와 Green Tea GC, <code>go.mod</code> 의 tool 디렉티브, <code>os.Root</code> 등이 기다리고 있습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://go.dev/doc/go1.20">Go 1.20 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.21">Go 1.21 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.22">Go 1.22 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.23">Go 1.23 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.24">Go 1.24 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.25">Go 1.25 Release Notes</a></li>
+<li><a href="https://go.dev/doc/go1.26">Go 1.26 Release Notes</a></li>
+<li><a href="https://go.dev/blog/routing-enhancements">Routing Enhancements for Go 1.22 (The Go Blog)</a></li>
+<li><a href="https://go.dev/blog/slog">Structured Logging with slog (The Go Blog)</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-03/" class="button inline prev">
+        &lt; [<span class="button__text">2021년의 Go를 2026년의 Go로 Part 3: 동시성·런타임·운영 레시피</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260624-go-2021-to-2026-recipes-01/" class="button inline next">
+         [<span class="button__text">2021년의 Go를 2026년의 Go로 Part 1: 언어와 문법 레시피</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
