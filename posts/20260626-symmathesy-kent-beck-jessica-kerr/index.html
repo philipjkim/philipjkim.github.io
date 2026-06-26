@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>배우는 부분들로 이루어진 배우는 시스템 — Kent Beck × Jessica Kerr 대담 정리 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kent Beck 의 팟캐스트 Still Burning S1E07에서 Kent Beck 과 Jessica Kerr 가 나눈 대담을 정리했습니다. symmathesy(배우는 부분들로 이루어진 배우는 시스템)라는 렌즈로 AI 에이전트 시대의 소프트웨어 개발이 어떻게 달라지는지 살펴봅니다." />
+<meta name="keywords" content="AI, agentic-coding, programming, LLM, essay" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260626-symmathesy-kent-beck-jessica-kerr/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="배우는 부분들로 이루어진 배우는 시스템 — Kent Beck × Jessica Kerr 대담 정리">
+<meta property="og:description" content="Kent Beck 의 팟캐스트 Still Burning S1E07에서 Kent Beck 과 Jessica Kerr 가 나눈 대담을 정리했습니다. symmathesy(배우는 부분들로 이루어진 배우는 시스템)라는 렌즈로 AI 에이전트 시대의 소프트웨어 개발이 어떻게 달라지는지 살펴봅니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260626-symmathesy-kent-beck-jessica-kerr/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-06-26 09:56:51 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260626-symmathesy-kent-beck-jessica-kerr/">배우는 부분들로 이루어진 배우는 시스템 — Kent Beck × Jessica Kerr 대담 정리</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-06-26</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/llm/">LLM</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/essay/">essay</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<p><em>이 좋은 리소스를 귀띔해 주신 Luis 님께 감사드립니다. 덕분에 &lsquo;symmathesy&rsquo; 를 몇 번이나 소리 내어 발음해 봤는지 모릅니다 — 혀는 여전히 꼬이지만, 개념만큼은 또렷하게 남았습니다.</em></p>
+<hr>
+<p>Kent Beck 이 진행하는 팟캐스트 <a href="https://newsletter.kentbeck.com/p/a-learning-system-made-of-learning"><em>Still Burning</em></a> 의 일곱 번째 에피소드 <a href="https://www.youtube.com/watch?v=e9TABQqiDXU"><em>A Learning System Made of Learning Parts</em></a> 는, <em>&ldquo;여전히 마음을 쓰고(still care) 여전히 무언가를 하고 있는 괴짜들&rdquo;</em> 을 위한 자리라는 이 시리즈의 취지에 꼭 맞는 대담입니다. 손님은 Kent 의 오랜 친구이자 시스템 사고(systems thinking)로 잘 알려진 개발자 <strong>Jessica Kerr</strong>(jessitron) 입니다.</p>
+<p>47분 분량의 이 대화는 AI 에이전트가 일상이 된 시대에 <em>&ldquo;개발이라는 일이 어떻게 달라지는가&rdquo;</em> 를 다룹니다. 그 중심에는 <strong>symmathesy</strong> — 우리말로 옮기면 <em>&ldquo;배우는 부분들로 이루어진 배우는 시스템&rdquo;</em> — 이라는 개념이 있습니다. 이 글에서는 대담의 흐름을 따라가되, 핵심 주제별로 묶어 정리하고 약간의 해설을 더했습니다.</p>
+<hr>
+<h2 id="시계공의-시대는-끝났다">시계공의 시대는 끝났다<a href="#시계공의-시대는-끝났다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Kent 은 첫 IDE 를 봤을 때의 흥분을 기억합니다. 무엇이든 찾을 수 있고 어떤 코드든 바꿀 수 있다는 감각이었습니다. 하지만 그는 단언합니다.</p>
+<blockquote>
+<p>시계공처럼 코드를 한 땀 한 땀 다듬던 시대는 끝났습니다. 이제 대부분의 변경은 &lsquo;지니(genie)&rsquo; 가 만들어 낼 것입니다.</p>
+</blockquote>
+<p>함수를 정교하게 깎아 만드는 일에 대해 책까지 썼던 Kent 이지만, 이제 그런 작업에는 <em>레버리지(leverage)가 없다</em> 고 말합니다. 여전히 기분은 좋지만 — 마치 책장이나 식탁을 손수 짜는 목공(woodworking)처럼 — 그것은 하나의 <em>공예(craft)</em> 일 뿐입니다. 그리고 세상에는 <strong>IKEA</strong> 도 있습니다.</p>
+<p>Jessica 가 보기에 <em>&ldquo;소프트웨어 개발의 IKEA&rdquo;</em> 는 이미 도착했습니다. ChatGPT 나 Claude 가 바로 그것입니다. 회계팀이 자기네 스프레드시트 일부를 팀에서 함께 쓸 수 있는 진짜 프로그램으로 키우고 싶다면, 이제 브라우저에서 그렇게 할 수 있습니다. 코드를 이해할 필요조차 없습니다. 출력물을 보고 <em>&ldquo;이게 내가 원하던 것인가, 충분히 좋은가&rdquo;</em> 만 판단하면 됩니다.</p>
+<p>다만 Jessica 는 한 가지를 못 박습니다.</p>
+<blockquote>
+<p>무엇을 원하는지는 알아야 합니다. 그게 함정이죠.</p>
+</blockquote>
+<p>브라우저에서 코딩 에이전트에 접근할 수 있다는 것과, 그것으로 무엇을 해야 할지 아는 것은 전혀 다른 문제입니다. 지니는 소원을 들어주지만, <em>당신이 진짜 원하던 것</em> 을 주지는 않으니까요.</p>
+<hr>
+<h2 id="일자리가-사라진-게-아니라-완전히-바뀌었다">일자리가 사라진 게 아니라, 완전히 바뀌었다<a href="#일자리가-사라진-게-아니라-완전히-바뀌었다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기서 두 사람은 갈라지는 듯하다가 다시 합류합니다. <em>&ldquo;누구나 할 수 있으니 프로그래머의 일은 사라졌다&rdquo;</em> 는 메시지에 둘 다 강하게 반대합니다.</p>
+<blockquote>
+<p>우리 일은 완전히 달라졌습니다. 누군가는 IKEA 가구를 조립해야 하니까요.</p>
+</blockquote>
+<p>Jessica 는 자기 어머니가 직접 웹사이트를 만들 줄은 몰랐고 결국 자신이 만들어 줬다고 말합니다. 다만 일주일이 아니라 몇 시간 만에 끝냈을 뿐입니다. 코드를 깎는 일, 코드를 통해 소프트웨어를 이해하는 일 — 그 <em>부분</em> 은 commodity 가 되었습니다. 하지만 그것이 일의 전부는 아니었습니다.</p>
+<p>Kent 은 이 변화를 <strong>합성(synthetic) 기술에서 분석(analytic) 기술로의 이동</strong> 으로 정리합니다. 예전에는 <em>&ldquo;내 손가락(meat fingers)으로 프로그램을 만들어 내는&rdquo;</em> 합성 능력이 핵심이었다면, 이제는 <em>&ldquo;이미 만들어진 프로그램이 정말 제대로 된 것인지 분석하는&rdquo;</em> 능력이 중요해진다는 것입니다.</p>
+<p>흥미로운 지점은 Jessica 의 반론입니다. 그는 <em>&ldquo;유용한 소프트웨어를 얻기 위해 코드를 이해할 필요는 없다&rdquo;</em> 고 말합니다. 회계 담당자가 자기 자신을 위해 만든 소프트웨어는, 본인에게 잘 돌아가고 본인이 충분히 이해한다면 그걸로 됩니다. 문제는 그 다음입니다.</p>
+<hr>
+<h2 id="step-function-나를-위한-소프트웨어와-세상에-내놓는-소프트웨어">Step function: 나를 위한 소프트웨어와 세상에 내놓는 소프트웨어<a href="#step-function-나를-위한-소프트웨어와-세상에-내놓는-소프트웨어" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>대담에서 가장 단단한 통찰 중 하나는 <strong>계단 함수(step function)</strong> 비유입니다. <em>&ldquo;나에게 유용하고 내가 이해하니 충분하다&rdquo;</em> 에서 <em>&ldquo;많은 사람에게 유용한, 세상에 더해진 하나의 역량(capability)이다&rdquo;</em> 로 넘어가는 순간, 소프트웨어는 완전히 다른 수준에 있어야 합니다.</p>
+<ul>
+<li>다른 <strong>사람</strong> 이 의존하기 시작할 때</li>
+<li>다른 <strong>소프트웨어</strong> 가 의존하기 시작할 때</li>
+<li><strong>스케일</strong> 이 필요해질 때</li>
+</ul>
+<p>Kent 은 객체지향 초창기의 풍경을 떠올립니다. 어느 해운회사나 화학회사가 자기네 필요에 딱 맞는 좋은 소프트웨어를 만들고는, 주위를 둘러보며 <em>&ldquo;이걸 남들한테 팔면 되겠다&rdquo;</em> 고 생각합니다. 그리고 그 일은 방금 해낸 것보다 <em>최소 10배는 더 어렵습니다.</em></p>
+<blockquote>
+<p>&ldquo;우리에게 100만 달러의 가치가 있다&rdquo; 는 말은, <em>이 맥락, 이 시스템, 이 사람들, 이 기대</em> 안에서의 100만 달러입니다. 다른 기대와 다른 필요를 가진 세상으로 그것을 내놓는 일은 전혀 다른 차원이죠.</p>
+</blockquote>
+<p>그래서 결론은 다시 <strong>관계(relationship)</strong> 로 돌아옵니다. 세상에 무언가를 내놓으려면 그 사람들을 이해해야 하고, 그렇기에 사람을 이해하는 일은 그 어느 때보다 <em>더</em> 레버리지가 큰 기술이 됩니다. Jessica 의 표현을 빌리면, <em>&ldquo;무엇을 만들지 이해하는 것이 가장 어려운 부분&rdquo;</em> 입니다.</p>
+<p>Kent 은 자신이 수년간 고정해 둔 트윗을 인용합니다.</p>
+<blockquote>
+<p>나는 소프트웨어를 만들고 싶다기보다, <em>이해를 만들고 그것을 소프트웨어로 표현하고</em> 싶다.</p>
+</blockquote>
+<p>그리고 지금은 그 일을 그 어느 때보다 잘할 수 있다고 말합니다. 단, 다른 계층에서 해야 합니다. 코드를 직접 쓰는 것이 아니라, 그 이해를 <em>검증 계층(verification layer)</em> 으로 표현하는 것입니다. <em>&ldquo;여기엔 테스트가 충분치 않다&rdquo;</em> 고 말할 수 있는 분석 능력이 바로 그 자리에 들어옵니다.</p>
+<hr>
+<h2 id="symmathesy-배우는-부분들로-이루어진-배우는-시스템">Symmathesy: 배우는 부분들로 이루어진 배우는 시스템<a href="#symmathesy-배우는-부분들로-이루어진-배우는-시스템" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>대화의 중심 개념이 등장합니다. <strong>Symmathesy</strong> 는 Nora Bateson 이 만든 단어로, <em>배우는 부분들로 이루어진 배우는 시스템(a learning system made of learning parts)</em> 을 뜻합니다.</p>
+<p>이 단어는 그냥 <em>&ldquo;시스템(system)&rdquo;</em> 과 대비됩니다. 우리가 시스템을 떠올릴 때 흔히 기계적인 무언가를 생각하지만, symmathesy 는 그렇지 않습니다. Kent 은 (자신의 기억으로는 Russell Ackoff 의 말을 빌려) <em>&ldquo;시스템은 부분들의 합 이상이며, 중요한 것은 그 부분들 사이의 관계&rdquo;</em> 라고 짚습니다. Nora Bateson 은 여기서 한 걸음 더 나아갑니다.</p>
+<p>기계나 결정론적 소프트웨어에서는 모든 부분과 관계를 — 적어도 이론적으로는 — 이해할 수 있습니다. 복잡할 뿐입니다. 그러나 <strong>살아 있는 시스템</strong> 에서는 부분들도, 그 부분들 사이의 관계도 끊임없이 변합니다. Nora 는 이 변화를 <strong>학습의 흐름(flows of learning)</strong> 으로 봅니다.</p>
+<blockquote>
+<p>팀 안에서 우리는 늘 서로에게 배우고 서로를 바꿉니다. 소프트웨어도 거기에 참여합니다. 그래서 시스템 전체가 함께 배우고 함께 자라납니다. 당신은 그것을 모델링할 수 없습니다. 모든 부분과 관계를 예측할 수 없어요. 끊임없이 변하니까요.</p>
+</blockquote>
+<p>그러므로 생물학적이고 인간적이며 사회학적인 모든 것은 symmathesy 입니다. 그리고 이것이 핵심입니다 — <strong>우리는 분석 능력만으로는 이를 다룰 수 없습니다.</strong> 예측할 수 없기 때문에, 함께 흘러가야 합니다. symmathesy 를 연구하려면 그 안으로 들어가 사람들을 알아가고 그들이 어떻게 함께 일하는지 봐야 하며, 그렇게 들어가는 순간 당신은 이미 그 시스템에 영향을 미칩니다. Kent 은 이를 Hunter S. Thompson 의 곤조 저널리즘 — Hell&rsquo;s Angels 와 함께 오토바이를 탄 — 에 빗댑니다.</p>
+<hr>
+<h2 id="에이전트라는-제3의-노드">에이전트라는 제3의 노드<a href="#에이전트라는-제3의-노드" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Jessica 는 소프트웨어 팀이라는 symmathesy 에 원래 두 종류의 노드가 있었다고 말합니다. <strong>사람</strong> 과 <strong>코드</strong> 입니다. 코드도 시스템의 일부입니다. 당신이 바꾸기에 코드는 당신에게서 배우고, 예외를 던지거나 테스트가 깨질 때 당신은 코드에서 배웁니다. 그런데 이제 <strong>에이전트</strong> 라는, 완전히 세 번째 종류의 노드가 등장했습니다. <em>배우는 방식이 전혀 다르기 때문</em> 입니다.</p>
+<ul>
+<li><strong>코드와 달리</strong>, 에이전트에게는 <em>&ldquo;이제부터 이건 다르게 해&rdquo;</em> 라고 직접 프로그래밍하지 않습니다.</li>
+<li><strong>사람과 달리</strong>, 에이전트는 살면서 본 모든 것으로 태도와 취향이 빚어지지 않습니다. (학습 데이터 안에서는 그럴지 몰라도, 우리는 거기에 영향을 줄 수 없습니다. 그건 블랙박스입니다.)</li>
+<li>대신 우리는 <strong>컨텍스트(context)</strong> 를 통해 에이전트에 영향을 줍니다. 메모리, 코드의 생김새, 문서가 에이전트의 학습을 통째로 바꿉니다.</li>
+</ul>
+<p>그리고 에이전트의 학습은 <em>기묘하게 짧은 시간 척도</em> 위에서 일어납니다. 여기서 문서의 위상이 바뀝니다.</p>
+<blockquote>
+<p>사람은 프로젝트를 시작할 때만, 그것도 최후의 수단으로나 문서를 읽습니다. 새 사람이 들어오는 건 1년에 한두 번이죠. 그런데 에이전트는 15분, 혹은 한 시간마다 그 프로젝트를 처음부터 시작하며 문서를 읽습니다.</p>
+</blockquote>
+<p>문서가 비로소 <em>정기적으로 쓰이게</em> 되고, 그래서 최신으로 유지할 만한 가치가 생깁니다. 게다가 문서가 틀리면 우리는 <em>알아챕니다</em> — 에이전트가 멍청해지기(get dumb) 때문입니다. 에이전트가 멍청해지면 더 넓은 시스템을 살펴보게 됩니다. 그래서 우리는 <em>에이전트가 사는 환경의 청지기(steward)</em> 가 됩니다. Jessica 는 에이전트가 이상한 판단을 하면 <em>&ldquo;왜 그렇게 생각했어?&rdquo;</em> 라고 묻고, 보통은 <em>&ldquo;이 문서에 이렇게 쓰여 있어서&rdquo;</em> 라는 답을 듣습니다. 그러면 서브 에이전트를 띄워 그 문서를 고치거나, 아예 <code>/clear</code> 후 문서를 갱신하고 다시 시작합니다.</p>
+<p>여기서 Jessica 가 사랑하는 또 하나의 사실이 나옵니다.</p>
+<blockquote>
+<p>에이전트는 잊을 수 있고, 사람은 잊을 수 없습니다.</p>
+</blockquote>
+<p>코딩이 <em>공짜</em> 라는 점, 그리고 <code>/clear</code> 로 깨끗이 되돌릴 수 있다는 점은 사람과의 관계에서는 불가능한 일입니다. (만약 육아가 이렇게 된다면 — <em>&ldquo;방금 건 실패. <code>/clear</code>. 문 열고 들어오기 전으로 리로드&rdquo;</em> — 얼마나 좋겠냐는 농담이 오갑니다. 하지만 인간 관계는 그런 식으로 되돌릴 수 없습니다.)</p>
+<hr>
+<h2 id="루프의-주인--그리고-올가미가-되는-루프">루프의 주인 — 그리고 올가미가 되는 루프<a href="#루프의-주인--그리고-올가미가-되는-루프" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>에이전트가 셋째 노드가 되면서 <em>&ldquo;어떻게 에이전트가 우리에게 효과적으로 소통하게 만들 것인가&rdquo;</em> 가 활짝 열린 질문이 됩니다. 멀티 에이전트 시스템에서 서브 에이전트를 잔뜩 띄워 놓고 모든 것을 따라 읽으려 하면, 곧 <em>&ldquo;못 하겠다&rdquo;</em> 는 한계에 부딪힙니다.</p>
+<p>Kent 은 컨퍼런스 AliCon 에서 본 두 장면을 전합니다. <strong>Charity Majors</strong> 는 <em>&ldquo;human in the loop&rdquo;</em> 가 아니라 <em>&ldquo;it&rsquo;s my loop(이건 내 루프다)&rdquo;</em> 라고 강조했습니다. 내가 여기 책임자라는 것이죠. 반면 <strong>Corey Quinn</strong> 은 <em>&ldquo;때로 그 루프가 올가미(noose)가 될 수 있다&rdquo;</em> 고 했습니다.</p>
+<blockquote>
+<p>잘못된 수준에서 신경 쓰기 시작하면 — 에이전트가 한 모든 것을 이해하려 들면 — 그건 거의 도움이 안 됩니다. 그 수준까지 파고들면 안 됩니다.</p>
+</blockquote>
+<p>또 다른 올가미는 <em>&ldquo;내가 코딩했으니 네가 테스트해&rdquo;</em> 라고 에이전트에게 던지는 것입니다. 거기에 머리를 들이밀지 말라고 Kent 은 말합니다. 에이전트에게 <em>스스로</em> 테스트하게 시키고, 방법을 모른다면 그때가 바로 Playwright 스크립트 같은 것을 작성하게 할 때입니다.</p>
+<hr>
+<h2 id="학습의-가속-그리고-놓치기-쉬운-기술">학습의 가속, 그리고 놓치기 쉬운 기술<a href="#학습의-가속-그리고-놓치기-쉬운-기술" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>같은 도구가 반대편에서는 <strong>학습을 엄청나게 가속</strong> 합니다. Kent 은 Rust 를 한 번도 본 적 없어도 코딩하면서, 낯선 구문을 만나면 <em>&ldquo;이게 무슨 뜻이야?&rdquo;</em> 라고 물을 수 있다고 말합니다. 결정적인 차이는 그 질문을 <em>구체적인 상황에서, 내가 그것에 관심이 생긴 바로 그 순간에</em> 한다는 점입니다.</p>
+<blockquote>
+<p>구글링과 달리, 일반적인 예제를 내 상황으로 번역할 필요가 없습니다. 에이전트가 <em>내 실제 예제</em> 를 해석해 주니까요.</p>
+</blockquote>
+<p>Jessica 는 Honeycomb 의 젊은 개발자 Ruthie 의 이야기를 전합니다. 예전에는 질문에 답해 줄 사람의 가용성에 학습 속도가 묶여 있었습니다. 이제는 쉽고 일반적인 질문은 모두 Claude 에 던지고, <em>&ldquo;우리는 왜 이걸 이렇게 하지?&rdquo;</em> 같은 구체적인 질문만 충분한 배경을 갖춘 뒤 사람에게 가져갑니다. 게다가 <em>&ldquo;잘 모르겠어요, 다르게 설명해 주실 수 있어요?&rdquo;</em> 라고 했을 때 사람은 생각할 시간이 필요하지만, Claude 는 곧장 다른 설명을 내놓습니다.</p>
+<p>다만 두 사람은 <em>조건</em> 을 답니다 — <em>&ldquo;우리가 그렇게 한다면&rdquo;</em> 말입니다. 여기서 <strong>놓치기 쉬운 기술</strong> 이 드러납니다.</p>
+<blockquote>
+<p>언제, 어떻게, 얼마나 배울지 — 그게 빠져 있는 기술입니다. 배움이 이렇게 싸졌으니 훨씬 더 자주 할 수 있는데도, 그냥 가구를 조립해서 써 버리고 싶은 유혹이 크죠.</p>
+</blockquote>
+<p>만약 <em>같은 일을 더 빠르게</em> 하는 데만 집중한다면 우리는 계단 함수를 놓칩니다. 기능을 쏟아내는(outputting features) 것은 쉽습니다. 어려운 것은 기능을 <em>이해</em> 하고, 언어와 런타임을 이해하고, <em>무엇을 신경 써야 하는지</em> 아는 일입니다. (실제로 세상에 내놓으려면 요구사항을 충족하는 것만으로는 부족합니다. P99 지연 시간이 갑자기 중요해지고, JVM 전문성이 다시 한 묶음의 가치가 됩니다.)</p>
+<p>Kent 은 반쯤 농담으로, PR 을 머지하려면 <em>&ldquo;방금 한 작업에서 무엇을 배웠어야 했는가&rdquo;</em> 를 묻는 객관식 퀴즈를 통과해야 하는 pre-commit hook 을 만들고 싶다고 말합니다. Jessica 는 Nicole Forsgren 박사가 만든, 작업 중에 <em>&ldquo;배울 기회가 있는데 시간 좀 있어?&rdquo;</em> 라고 물어 오는 Claude 플러그인을 소개합니다. (성가시면 <em>&ldquo;꺼져&rdquo;</em> 라고 말할 수 있다는 점도요.)</p>
+<p>이 모든 <em>&ldquo;학습을 소홀히 하지 않기&rdquo;</em> 의 감각을, Kent 은 <strong>놀이(play)</strong> 라고 부릅니다.</p>
+<blockquote>
+<p>놀이처럼 느껴진다는 것은 무언가를 배우고 있다는 신호입니다. 지금 우리에겐 그게 아주 많이 필요합니다. 우리는 지금 무엇을 하고 있는지 모르니까요.</p>
+</blockquote>
+<p>이는 Kent 자신의 <strong>3x(Explore/Expand/Extract)</strong> 사고와 이어집니다. <em>탐색(explore)</em> 단계에서는 이리저리 깨작거리는(farting around) 것이 명백한 미덕입니다. 잃을 게 없으니까요. 반대로 정밀하게 튜닝된 대규모 시스템 — IKEA 가구를 조립해 세워 둔 상태 — 에서 함부로 <em>&ldquo;배포 설정 좀 만져 볼까&rdquo;</em> 하는 것은 곤란합니다. 놀 수는 있지만, <em>안전하게 노는 법</em> 을 찾아야 합니다. 그리고 <em>&ldquo;어, 혹시…(I wonder)&rdquo;</em> 하는 작은 목소리를 신뢰하는 법을 배우는 것 — 그게 좋은 신호입니다.</p>
+<hr>
+<h2 id="ai-를-향한-거부감-그리고-인센티브와-공정함">AI 를 향한 거부감, 그리고 인센티브와 공정함<a href="#ai-를-향한-거부감-그리고-인센티브와-공정함" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Kent 은 <em>&ldquo;이 AI 이야기 다 듣고 싶지 않다&rdquo;</em> 는 반발을 적잖이 받는다고 털어놓습니다. 흥미롭게도 Jessica 의 <em>아이들</em> 은 AI 를 한사코 쓰지 않으려 합니다. 기성세대가 고집을 부리고 아이들이 멋진 신문물을 받아들이는 통상의 구도가 뒤집힌 셈입니다. Jessica 의 진단은 이렇습니다.</p>
+<blockquote>
+<p>기업의 푸시가 워낙 거세고 AI 가 늘 그들 얼굴에 들이밀어지니, 아이들은 그것을 거부함으로써 반항하는 거죠.</p>
+</blockquote>
+<p>그럼에도 Jessica 는 <em>&ldquo;흥분하는 쪽을 택하겠다&rdquo;</em> 고 말합니다. 거대한 거품(bubble)의 한가운데에 있다는 것을 알면서도, 전에 못 하던 일을 할 수 있게 해 주는 이 도구가 너무 멋지기에 참여하겠다는 것입니다. 그리고 이 지점이 다시 symmathesy 로 이어집니다. <em>symmathesy 를 이해하고 개선하려면 그 안에 들어가야 하기 때문</em> 입니다. Jessica 는 <strong>symmathesist</strong> 를 <em>&ldquo;symmathesy 에 참여하면서 그것을 의식적으로 개선하려 애쓰는 사람&rdquo;</em> 으로 정의합니다.</p>
+<p>대담의 후반부는 <strong>저작자로서의 고민과 공정함</strong> 으로 향합니다. 저자인 Kent 의 일부가 모델들 속에 들어가 있다는 점에 대해, Jessica 는 의외로 담백합니다.</p>
+<blockquote>
+<p>제 모든 것을 가져가세요. 온 세상이 저처럼 더 많이 생각하면 좋겠습니다. 부디 제 결과물로 학습시켜 주세요.</p>
+</blockquote>
+<p>그는 책 쓰기가 원래 <em>사랑의 노동이자 봉사</em> 이며 돈을 위해 쓰는 것이 아니라고 말합니다. (Patreon 구독료가 8달러쯤 된다는 농담과 함께요.) 반면 Kent 의 고민은 더 날카롭습니다. 소프트웨어 설계와 augmented development 에 관한 책을 쓰던 중 안 좋은 소식을 듣고 멈춰서 자문했다고 합니다 — <em>&ldquo;내가 정말 이걸 하고 싶은가? 내 인센티브는 무엇인가?&rdquo;</em></p>
+<blockquote>
+<p>다른 누군가에게 큰돈을 벌어다 줄 맷돌의 곡식이 될 텐데, 남들은 경제적으로 이득을 보고 나는 못 본다는 그 느낌이 싫습니다.</p>
+</blockquote>
+<p>Jessica 의 대답은 이 대담에서 가장 철학적인 대목입니다.</p>
+<blockquote>
+<p>저는 그걸 넘어섰어요. 저한테는 그 &lsquo;공정함 버그&rsquo; 가 없습니다. 세상이 공정하다거나 공정해야 한다는 생각이야말로 많은 괴로움을 낳죠. 제 몫의 작은 세상을 더 공정하게 만들려 애써야 할까요? 네. 세상이 공정하기를 기대해야 할까요? 저는 비참해지고 싶지 않습니다.</p>
+</blockquote>
+<p>음악 산업에서 더 많은 돈이 레이블이 아니라 아티스트에게 가기를 바란다는 데에는 둘 다 동의합니다. 다만 Jessica 는 <em>&ldquo;인센티브&rdquo;</em> 보다 <em>&ldquo;자원(resources)&rdquo;</em> 이라는 틀을 선호합니다. 사람들에게 그저 충분한 자원이 주어진다면, 외적 보상이 없어도 영감을 받은 일을 할 것이라는 관점입니다. 그는 투표권이 있다면 돈이 아티스트에게 가도록 투표하겠지만, <em>&ldquo;충분히 공정하지 않다는 이유로 시스템에 참여하지 않는 일은 하지 않겠다&rdquo;</em> 고 정리합니다. Kent 의 마무리는 <em>&ldquo;우리가 하는 것은 일이지 그 열매가 아니다(Ours is the work, not the fruits)&rdquo;</em> 라는 바가바드기타의 한 구절입니다.</p>
+<hr>
+<h2 id="무엇이-잠-못-들게-하는가">무엇이 잠 못 들게 하는가<a href="#무엇이-잠-못-들게-하는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Kent 의 마지막 질문은 직설적입니다. <em>&ldquo;이 상황의 무엇이 당신을 한밤중에 깨울 만큼 두렵게 합니까?&rdquo;</em></p>
+<p>Jessica 의 답은 솔직합니다. 대학에 보내야 할 두 아이가 있는데, 더 이상 <em>&ldquo;원하는 도시 어디서든 원하는 만큼 버는 일자리가 있을 것&rdquo;</em> 이라고 장담할 수 없다는 것입니다. 일자리의 성격이 달라졌고, 시장이 달라졌습니다.</p>
+<blockquote>
+<p>소프트웨어에 대한 수요는 오늘보다 <em>극적으로</em> 늘어날 거라 생각합니다. 더 싸졌으니 훨씬 더 많은 소프트웨어를 만들겠죠. 하지만 그렇게 되기까지는 시간이 걸립니다. 그리고 지금 당장, 사람들이 실제로 수요하고 돈을 내는 소프트웨어는 적절한 상황에서 <em>10배 더 적은 인원</em> 으로 만들 수 있습니다.</p>
+</blockquote>
+<p>그래도 그는 비관에 머물지 않습니다. 누군가는 IKEA 가구를 <em>설계</em> 해야 하고, 조립 설명서를 쓰고 선반이 어떻게 맞물릴지 정하고 실제로 맞는지 확인해야 합니다. 공장 일을 로봇이 가져가면 누군가는 그 로봇을 설치하고 그 작동 방식을 알아야 합니다. Jessica 자신은 모델 개발에는 관심이 없지만, <em>하네스(harness)와 컨텍스트, 그리고 에이전트가 하는 일을 관찰하고 개선하는 것</em> 에는 깊은 흥미를 느낍니다. <em>&ldquo;할 일은 많다&rdquo;</em> 는 것입니다. 다만 시장이 예전 같지 않다는 사실은 여전히 그를 깨어 있게 합니다.</p>
+<p>대담은 짧은 인사로 닫힙니다. Jessica 의 <em>&ldquo;계속 마음 써 주셔서 고맙습니다&rdquo;</em> 에 Kent 은 <em>&ldquo;가끔은 너무 많이 신경 쓰는 게 탈&rdquo;</em> 이라 답하고, Jessica 는 받습니다 — <em>&ldquo;신경 안 쓰는 것보다는 낫죠. 아무것도 원하지 않는 것이야말로 최악 중 하나니까요.&rdquo;</em></p>
+<hr>
+<h2 id="정리하며">정리하며<a href="#정리하며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 대담을 한 문장으로 압축하면, <em>&ldquo;코드를 깎는 일은 commodity 가 되었지만, 배우는 시스템을 가꾸는 일은 오히려 더 중요해졌다&rdquo;</em> 가 될 것입니다. 사람·코드·에이전트가 서로에게서 배우며 끊임없이 변하는 symmathesy 안에서, 우리의 역할은 그 환경의 청지기이자 — Jessica 의 표현으로 — <em>그 시스템을 의식적으로 개선하는 symmathesist</em> 로 이동합니다.</p>
+<p>기능을 더 빠르게 쏟아내는 데 만족하면 계단의 다음 칸을 놓칩니다. 더 빨라진 학습의 기회를 붙잡고, 검증 계층을 설계하고, 에이전트가 잘 배울 수 있도록 컨텍스트와 문서를 가꾸는 것 — 그것이 Kent 과 Jessica 가 그리는, 여전히 마음 쓰는 개발자의 일입니다.</p>
+<blockquote>
+<p>모든 것은 그것을 어떻게 쓰느냐에 따라 악하기도 선하기도 합니다. 저는 좋은 방식으로 쓰겠습니다. (Jessica Kerr)</p>
+</blockquote>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li>Kent Beck, <a href="https://newsletter.kentbeck.com/p/a-learning-system-made-of-learning">A Learning System Made of Learning Parts</a> (Still Burning, 뉴스레터)</li>
+<li>영상: <a href="https://www.youtube.com/watch?v=e9TABQqiDXU">S1E07: A Learning System Made of Learning Parts</a> (YouTube, 47:02)</li>
+<li><a href="https://norabateson.wordpress.com/2015/11/03/symmathesy-a-word-in-progress/">Nora Bateson — Symmathesy</a> (개념의 원전)</li>
+<li>Jessica Kerr: <a href="https://jessitron.com/">jessitron.com</a>, <a href="https://graceful.dev/">graceful.dev</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260625-outsourcing-ai-and-a-little-hope-translation/" class="button inline next">
+         [<span class="button__text">번역글: 아웃소싱, AI, 그리고 작은 희망</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
