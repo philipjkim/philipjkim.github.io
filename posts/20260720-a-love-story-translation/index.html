@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>번역글: 어느 사랑 이야기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pragmatic Programmers의 Dave Thomas가 쓴 뉴스레터 &#39;A Love Story&#39;의 한국어 번역. Usenet에서 Ruby를 처음 만난 순간부터 25년 후 RubyConf까지, 한 언어를 향한 오랜 사랑에 대한 이야기입니다." />
+<meta name="keywords" content="programming, ruby, essay, translation" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260720-a-love-story-translation/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="번역글: 어느 사랑 이야기">
+<meta property="og:description" content="Pragmatic Programmers의 Dave Thomas가 쓴 뉴스레터 &#39;A Love Story&#39;의 한국어 번역. Usenet에서 Ruby를 처음 만난 순간부터 25년 후 RubyConf까지, 한 언어를 향한 오랜 사랑에 대한 이야기입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260720-a-love-story-translation/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-20 15:31:52 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260720-a-love-story-translation/">번역글: 어느 사랑 이야기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-20</time><span class="post-author">Dave Thomas</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ruby/">ruby</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/essay/">essay</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/translation/">translation</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 4.8 을 이용해 번역되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<p><em>원문: Dave Thomas, Pragmatic Programmers Newsletter — &ldquo;A Love Story&rdquo;</em></p>
+<hr>
+<p>1990년대, Reddit도 Twitter도 Facebook도 나오기 전, 사실상 그 무엇도 존재하기 전에, 새로운 프로그래밍 언어를 찾아보는 곳은 comp.lang.misc 라는 Usenet 그룹이었습니다.</p>
+<p>사람들은 자신의 최신 창작물을 소스 코드 형태로 올렸습니다. 그것은 uuencode로 인코딩되어 여러 조각으로 나뉘어 있었습니다 (게시물에는 최대 크기 제한이 있었기 때문입니다). 어떤 언어를 써보고 싶으면, uuencode된 조각들을 전부 내려받아 이어 붙인 다음 디코딩해야 했습니다. 그러면 tar 파일이 나오고, 그것을 풀면 소스 코드가 나왔습니다. 그다음에는 <code>./configure</code>를 돌아가게 만드는 즐거움이 기다리고 있었습니다.</p>
+<p>저는 중독되어 있었습니다. 일주일에 여러 개의 언어를 내려받곤 했습니다. 대부분은 README를 훑어보는 것조차 버텨내지 못했습니다. 몇몇은 빌드해서 한 시간쯤 가지고 놀았습니다. 그러던 어느 날, 아마 1998년이었을 겁니다, 일본에서 만들어진 Ruby라는 언어를 내려받았습니다.</p>
+<p>다른 탐험들과 달리, 이 녀석은 저를 사로잡았습니다. 저는 그날 하루 종일 그것을 가지고 놀았고, 다음 날도 그랬습니다. 저는 그 객체 모델과 확장성, 그리고 인간적인 문법을 사랑했습니다. 머지않아 Ruby는 제 일상적인 스크립팅 언어의 자리에서 Perl을 밀어냈습니다.</p>
+<hr>
+<p>그 무렵 Andy와 저는 <em>The Pragmatic Programmer</em> 초판의 마무리 작업을 하고 있었습니다. 그 원고를 Addison Wesley로 넘기고 나자, 저는 Ruby에 대한 글을 써야만 한다는 것을 깨달았습니다. 일종의 전도사 같은 열정이었습니다. 저는 다른 사람들도 이 보석 같은 존재를 알기를 바랐습니다.</p>
+<p>곡괭이 책(Pickaxe)의 초판은 2001년에 쿵 하고 세상에 떨어졌습니다. (<em>역주: Dave Thomas가 쓴 Ruby 입문서 &ldquo;Programming Ruby&quot;의 별명. 표지에 곡괭이 그림이 있어 이렇게 불립니다.</em>) 상업적으로 큰 성공을 거두지는 못했습니다. 하지만 그 책은 정말 영리한 몇몇 사람들의 눈길을 끌었고, 그들 역시 Ruby를 가지고 놀기 시작했습니다. 그리고 그 사람들은 한번 모여보고 싶어 했습니다. 그래서 (제 기억으로는) Chad Fowler와 David Black이 첫 RubyConf를 준비했습니다. 2001년 10월, 탬파(Tampa)에서였습니다. Matz를 포함해 약 30명이 그곳에 모였습니다.</p>
+<p>참석자 중 많은 이가 발표를 했고, 그 모든 발표가 이 놀라운 도구를 쓰는 새로운 방식들로 제 시야를 열어주었습니다. 그 첫 콘퍼런스가 끝난 뒤 Ruby Central이 결성되었고, 그때 이후로 줄곧 RubyConf를 운영해 오고 있습니다.</p>
+<p>저는 지금 라스베이거스에서 열리는 RubyConf에 와 있습니다. 그 첫 번째 콘퍼런스로부터 25년이 지난 시점입니다. 규모는 더 커졌고 조직도 더 잘 갖춰졌지만, 여전히 그 원형의 후손임을 알아볼 수 있습니다. 발표들은 여전히 제 생각을 넓혀주고, 사람들은 여전히 그때만큼이나 열정적이며 그저 순수하게 좋은 사람들입니다.</p>
+<p>그것은 언제나 집에 돌아오는 것 같은 기분입니다.</p>
+<hr>
+<p>저는 2015년 무렵까지는 거의 한 언어만 바라보며 살았습니다. 물론 다른 언어들도 가지고 놀았고, 제 마음을 꽤나 사로잡은 것들도 몇 있었습니다. 하지만 결국 저는 언제나 Ruby로 돌아왔습니다. 아마 거의 매일 Ruby 코드를 썼을 것이고, Ruby와 Rails에 대해 300번이 훌쩍 넘는 발표를 했다는 것도 알고 있습니다.</p>
+<p>오늘날 프로그래밍 언어에 관해서라면 선택지가 참 많습니다. Elixir처럼 환상적인 것들도 있습니다. 하지만 무언가를 해내야 할 때, 저는 언제나 그 첫사랑에 손을 뻗습니다.</p>
+<p>Ruby를 쓰는 일은 저를 행복하게 합니다. 그리고 그것이 바로 프로그래밍하며 살아가는 삶의 요점입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260716-http-rest-vs-grpc/" class="button inline next">
+         [<span class="button__text">HTTP REST(JSON) vs. gRPC(Protocol Buffers): 언제 무엇을 쓸까</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
