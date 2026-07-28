@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>에어컨이 있는 집에 제습기가 꼭 필요할까: 서울 13개월 온습도 데이터로 따져보기 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2025년 7월부터 2026년 7월까지 서울의 시간별 온습도 데이터 9,408시간을 분석해, 에어컨만으로 습도가 잡히는지 제습기가 정말 필요한지를 이슬점·절대습도·전력 소비 관점에서 팩트 위주로 따져봤습니다." />
+<meta name="keywords" content="climate, health, life, data, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260728-do-you-need-a-dehumidifier-with-air-conditioner/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="에어컨이 있는 집에 제습기가 꼭 필요할까: 서울 13개월 온습도 데이터로 따져보기">
+<meta property="og:description" content="2025년 7월부터 2026년 7월까지 서울의 시간별 온습도 데이터 9,408시간을 분석해, 에어컨만으로 습도가 잡히는지 제습기가 정말 필요한지를 이슬점·절대습도·전력 소비 관점에서 팩트 위주로 따져봤습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260728-do-you-need-a-dehumidifier-with-air-conditioner/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-28 10:08:00 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260728-do-you-need-a-dehumidifier-with-air-conditioner/">에어컨이 있는 집에 제습기가 꼭 필요할까: 서울 13개월 온습도 데이터로 따져보기</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-28</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/climate/">climate</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/health/">health</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/life/">life</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/data/">data</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>장마철마다 반복되는 논쟁이 있습니다. 한쪽에서는 &ldquo;에어컨 틀면 습도 다 잡히는데 제습기를 왜 사냐&quot;고 하고, 다른 쪽에서는 &ldquo;제습기 없이 여름을 나는 건 곰팡이를 키우겠다는 얘기&quot;라고 합니다.</p>
+<p>두 주장 모두 부분적으로 맞고, 부분적으로 틀립니다. 문제는 이 논쟁이 대부분 체감과 경험담으로만 오간다는 점입니다. 그래서 <strong>2025년 7월 1일부터 2026년 7월 27일까지, 서울의 시간별 기온·습도 데이터 9,408시간분</strong> 을 직접 받아 다음을 숫자로 따져봤습니다.</p>
+<ol>
+<li>사계절을 모두 포함했을 때 서울의 습도 환경이 실제로 어떤지</li>
+<li>&ldquo;에어컨이 있으면 제습기는 필요 없다&quot;는 주장의 빈틈</li>
+<li>&ldquo;제습기는 무조건 있어야 한다&quot;는 주장의 빈틈</li>
+</ol>
+<p>미리 결론을 말씀드리면 이렇습니다. 13개월 9,408시간 중 <strong>에어컨이 해결해 줄 수 없는 &ldquo;덥지 않은데 습한&rdquo; 시간은 1,142시간(12.1%)</strong> 이었고, <strong>에어컨이 어차피 돌아갈 &ldquo;덥고 습한&rdquo; 시간은 1,020시간(10.8%)</strong> 이었습니다. 나머지 77%는 습도 자체가 문제되지 않는 시간입니다. 그리고 그 12.1%가 언제 몰려 있는지가 이 글의 핵심입니다.</p>
+<hr>
+<h2 id="1-데이터와-방법론">1. 데이터와 방법론<a href="#1-데이터와-방법론" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="사용한-데이터">사용한 데이터<a href="#사용한-데이터" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>기간</td>
+          <td>2025-07-01 ~ 2026-07-27 (13개월, 9,408시간)</td>
+      </tr>
+      <tr>
+          <td>지점</td>
+          <td>서울 (북위 37.57도, 동경 126.97도)</td>
+      </tr>
+      <tr>
+          <td>요소</td>
+          <td>기온, 상대습도, 이슬점 온도 (1시간 간격)</td>
+      </tr>
+      <tr>
+          <td>주 자료</td>
+          <td>Open-Meteo Historical Weather API (ECMWF ERA5 재분석)</td>
+      </tr>
+      <tr>
+          <td>검증 자료</td>
+          <td>김포공항(RKSS) METAR 실측 9,936건, 기상청 서울 지점 관측값</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="왜-재분석-자료를-썼는가">왜 재분석 자료를 썼는가<a href="#왜-재분석-자료를-썼는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>기상청 날씨누리와 기상자료개방포털은 서울 지점(108)의 <strong>당월</strong> 일별 기온·강수량은 웹에서 바로 조회되지만, 과거 월의 <strong>시간별 상대습도</strong> 는 공개 조회 화면에서 받아올 수 없습니다. 그래서 시간 단위 분석에는 ECMWF의 ERA5 재분석 자료를 쓰고, 두 가지로 교차 검증했습니다.</p>
+<p><strong>검증 1 — 기상청 서울 지점 관측값</strong></p>
+<p>기상청 서울 지점의 2026년 7월 1~27일 일평균기온은 <strong>26.7℃</strong>, 누적 강수량 <strong>385.8mm</strong>, 강수일수 <strong>19일</strong> 이었습니다. 같은 기간 ERA5 일평균기온은 25.9℃로 관측값보다 <strong>0.7℃ 낮았습니다.</strong> 도심 열섬 효과가 격자 자료에 완전히 반영되지 않기 때문입니다.</p>
+<p><strong>검증 2 — 김포공항 실측 METAR (13개월 전 구간)</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>월</th>
+          <th>ERA5 상대습도</th>
+          <th>김포 실측</th>
+          <th>ERA5 이슬점</th>
+          <th>김포 실측</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2025-07</td>
+          <td>73.8%</td>
+          <td>85.4%</td>
+          <td>21.9℃</td>
+          <td>24.6℃</td>
+      </tr>
+      <tr>
+          <td>2025-10</td>
+          <td>79.5%</td>
+          <td>84.4%</td>
+          <td>11.7℃</td>
+          <td>13.2℃</td>
+      </tr>
+      <tr>
+          <td>2026-01</td>
+          <td>54.1%</td>
+          <td>59.3%</td>
+          <td>-13.8℃</td>
+          <td>-11.8℃</td>
+      </tr>
+      <tr>
+          <td>2026-07</td>
+          <td>83.8%</td>
+          <td>91.4%</td>
+          <td>22.7℃</td>
+          <td>24.7℃</td>
+      </tr>
+      <tr>
+          <td><strong>13개월 평균</strong></td>
+          <td><strong>69.3%</strong></td>
+          <td><strong>75.6%</strong></td>
+          <td><strong>7.8℃</strong></td>
+          <td><strong>9.8℃</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>13개월 내내 <strong>ERA5가 실측보다 일관되게 건조하게</strong> 나옵니다(상대습도 평균 6.3%p, 이슬점 2.0℃ 낮음). 한강변 공항이라는 입지 차이도 있지만, 방향이 일정하다는 것이 중요합니다. 아래 분석은 보수적인 ERA5 값을 씁니다. 즉 <strong>이 글의 습도 수치는 과장이 아니라, 실제보다 낮게 잡혀 있을 가능성이 큽니다.</strong></p>
+<hr>
+<h2 id="2-서울의-13개월-습도-지도">2. 서울의 13개월 습도 지도<a href="#2-서울의-13개월-습도-지도" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="월별-요약">월별 요약<a href="#월별-요약" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>월</th>
+          <th>평균기온(℃)</th>
+          <th>평균 상대습도(%)</th>
+          <th>평균 이슬점(℃)</th>
+          <th>절대습도(g/kg)</th>
+          <th>RH 70% 이상 시간</th>
+          <th>일평균 RH 80% 이상인 날</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2025-07</td>
+          <td>27.9</td>
+          <td>73.8</td>
+          <td>21.9</td>
+          <td>16.6</td>
+          <td>63.6%</td>
+          <td>17/31</td>
+      </tr>
+      <tr>
+          <td>2025-08</td>
+          <td>27.1</td>
+          <td>80.1</td>
+          <td>23.0</td>
+          <td>17.7</td>
+          <td>73.9%</td>
+          <td>17/31</td>
+      </tr>
+      <tr>
+          <td>2025-09</td>
+          <td>22.3</td>
+          <td>81.3</td>
+          <td>18.6</td>
+          <td>13.4</td>
+          <td>78.8%</td>
+          <td>16/30</td>
+      </tr>
+      <tr>
+          <td>2025-10</td>
+          <td>15.5</td>
+          <td>79.5</td>
+          <td>11.7</td>
+          <td>8.6</td>
+          <td>76.9%</td>
+          <td>16/31</td>
+      </tr>
+      <tr>
+          <td>2025-11</td>
+          <td>7.3</td>
+          <td>67.9</td>
+          <td>1.2</td>
+          <td>4.1</td>
+          <td>50.7%</td>
+          <td>4/30</td>
+      </tr>
+      <tr>
+          <td>2025-12</td>
+          <td>-0.7</td>
+          <td>69.3</td>
+          <td>-6.2</td>
+          <td>2.4</td>
+          <td>51.9%</td>
+          <td>9/31</td>
+      </tr>
+      <tr>
+          <td>2026-01</td>
+          <td>-5.2</td>
+          <td>54.1</td>
+          <td>-13.8</td>
+          <td>1.3</td>
+          <td>21.8%</td>
+          <td>1/31</td>
+      </tr>
+      <tr>
+          <td>2026-02</td>
+          <td>0.6</td>
+          <td>63.3</td>
+          <td>-6.4</td>
+          <td>2.3</td>
+          <td>41.7%</td>
+          <td>5/28</td>
+      </tr>
+      <tr>
+          <td>2026-03</td>
+          <td>6.0</td>
+          <td>67.2</td>
+          <td>-0.3</td>
+          <td>3.7</td>
+          <td>50.8%</td>
+          <td>2/31</td>
+      </tr>
+      <tr>
+          <td>2026-04</td>
+          <td>13.5</td>
+          <td>57.6</td>
+          <td>3.9</td>
+          <td>5.0</td>
+          <td>35.0%</td>
+          <td>2/30</td>
+      </tr>
+      <tr>
+          <td>2026-05</td>
+          <td>18.9</td>
+          <td>63.3</td>
+          <td>10.6</td>
+          <td>7.9</td>
+          <td>43.7%</td>
+          <td>4/31</td>
+      </tr>
+      <tr>
+          <td>2026-06</td>
+          <td>23.8</td>
+          <td>61.1</td>
+          <td>15.0</td>
+          <td>10.6</td>
+          <td>38.2%</td>
+          <td>1/30</td>
+      </tr>
+      <tr>
+          <td>2026-07 (1~27일)</td>
+          <td>25.9</td>
+          <td><strong>83.8</strong></td>
+          <td><strong>22.7</strong></td>
+          <td><strong>17.4</strong></td>
+          <td><strong>83.2%</strong></td>
+          <td><strong>18/27</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>이 표만 보면 <strong>10월(79.5%)이 6월(61.1%)보다 습하고, 12월(69.3%)이 5월(63.3%)보다 습합니다.</strong> 상식과 정반대입니다. 여기가 이 글의 첫 번째 갈림길입니다.</p>
+<h3 id="첫-번째-함정-상대습도만-보면-정반대의-결론이-나옵니다">첫 번째 함정: 상대습도만 보면 정반대의 결론이 나옵니다<a href="#첫-번째-함정-상대습도만-보면-정반대의-결론이-나옵니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>상대습도는 &ldquo;그 온도에서 담을 수 있는 최대 수증기량 대비 현재 수증기량&quot;입니다. 기온이 낮으면 담을 수 있는 총량 자체가 작아지므로, <strong>수증기가 거의 없어도 상대습도는 높게 나옵니다.</strong></p>
+<p>실제 공기 중 수증기량(절대습도)으로 보면 이렇습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">xychart-beta
+    title &#34;서울 월별 평균 절대습도 (단위 g/kg)&#34;
+    x-axis [&#34;25.7&#34;, &#34;25.8&#34;, &#34;25.9&#34;, &#34;25.10&#34;, &#34;25.11&#34;, &#34;25.12&#34;, &#34;26.1&#34;, &#34;26.2&#34;, &#34;26.3&#34;, &#34;26.4&#34;, &#34;26.5&#34;, &#34;26.6&#34;, &#34;26.7&#34;]
+    y-axis &#34;절대습도 (g/kg)&#34; 0 --&gt; 20
+    bar [16.6, 17.7, 13.4, 8.6, 4.1, 2.4, 1.3, 2.3, 3.7, 5.0, 7.9, 10.6, 17.4]
+</code></pre><p>8월 공기에는 1월 공기보다 <strong>수증기가 13.6배</strong> 들어 있습니다. 상대습도로 보면 80.1%와 54.1%로 1.5배 차이지만, 제습기가 실제로 뽑아내야 하는 물의 양은 열 배 이상 차이가 납니다. <strong>12월의 상대습도 69.3%는 제습기를 켤 이유가 되지 못합니다.</strong></p>
+<h3 id="두-번째-관점-실내-온도로-환산하면-계절이-드러납니다">두 번째 관점: 실내 온도로 환산하면 계절이 드러납니다<a href="#두-번째-관점-실내-온도로-환산하면-계절이-드러납니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>더 직관적인 방법이 있습니다. 바깥 공기를 들여와 실내 온도로 맞췄을 때의 상대습도를 계산하는 것입니다. 수증기량은 그대로 두고 온도만 바꾸면 됩니다. 겨울 난방 실내온도 22℃와 여름 냉방 실내온도 26℃ 두 기준으로 계산했습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>월</th>
+          <th>실외 상대습도</th>
+          <th>실내 22℃ 환산</th>
+          <th>실내 26℃ 환산</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2025-07</td>
+          <td>73.8%</td>
+          <td>99.6%</td>
+          <td>78.3%</td>
+      </tr>
+      <tr>
+          <td>2025-08</td>
+          <td>80.1%</td>
+          <td>(100% 초과)</td>
+          <td>83.6%</td>
+      </tr>
+      <tr>
+          <td>2025-09</td>
+          <td>81.3%</td>
+          <td>81.3%</td>
+          <td><strong>63.9%</strong></td>
+      </tr>
+      <tr>
+          <td>2025-10</td>
+          <td>79.5%</td>
+          <td>52.2%</td>
+          <td>41.0%</td>
+      </tr>
+      <tr>
+          <td>2025-11</td>
+          <td>67.9%</td>
+          <td>25.3%</td>
+          <td>19.9%</td>
+      </tr>
+      <tr>
+          <td>2025-12</td>
+          <td>69.3%</td>
+          <td><strong>14.7%</strong></td>
+          <td>11.5%</td>
+      </tr>
+      <tr>
+          <td>2026-01</td>
+          <td>54.1%</td>
+          <td><strong>8.0%</strong></td>
+          <td>6.3%</td>
+      </tr>
+      <tr>
+          <td>2026-02</td>
+          <td>63.3%</td>
+          <td>14.4%</td>
+          <td>11.3%</td>
+      </tr>
+      <tr>
+          <td>2026-03</td>
+          <td>67.2%</td>
+          <td>22.7%</td>
+          <td>17.8%</td>
+      </tr>
+      <tr>
+          <td>2026-04</td>
+          <td>57.6%</td>
+          <td>30.6%</td>
+          <td>24.1%</td>
+      </tr>
+      <tr>
+          <td>2026-05</td>
+          <td>63.3%</td>
+          <td>48.4%</td>
+          <td>38.0%</td>
+      </tr>
+      <tr>
+          <td>2026-06</td>
+          <td>61.1%</td>
+          <td>64.3%</td>
+          <td>50.6%</td>
+      </tr>
+      <tr>
+          <td>2026-07</td>
+          <td>83.8%</td>
+          <td>(100% 초과)</td>
+          <td>82.1%</td>
+      </tr>
+  </tbody>
+</table>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">xychart-beta
+    title &#34;실외 상대습도 vs 실내 26도 환산 상대습도 (서울)&#34;
+    x-axis [&#34;25.7&#34;, &#34;25.8&#34;, &#34;25.9&#34;, &#34;25.10&#34;, &#34;25.11&#34;, &#34;25.12&#34;, &#34;26.1&#34;, &#34;26.2&#34;, &#34;26.3&#34;, &#34;26.4&#34;, &#34;26.5&#34;, &#34;26.6&#34;, &#34;26.7&#34;]
+    y-axis &#34;상대습도 (%)&#34; 0 --&gt; 100
+    line [73.8, 80.1, 81.3, 79.5, 67.9, 69.3, 54.1, 63.3, 67.2, 57.6, 63.3, 61.1, 83.8]
+    line [78.3, 83.6, 63.9, 41.0, 19.9, 11.5, 6.3, 11.3, 17.8, 24.1, 38.0, 50.6, 82.1]
+</code></pre><p><strong>실외 상대습도(위쪽 선)는 1년 내내 54~84% 사이에서 완만하게 움직이는데, 실내 환산값(아래쪽 선)은 6%에서 84%까지 요동칩니다.</strong> 이 두 선의 차이가 &ldquo;체감 습도&quot;와 &ldquo;실제 제습 수요&quot;의 간극입니다.</p>
+<p>해석은 이렇습니다.</p>
+<ul>
+<li><strong>7~8월</strong>: 22℃로 냉방하면 환산값이 100%를 넘습니다. 물리적으로 불가능한 값이라는 건, <strong>그 온도로 냉방하면 반드시 응결이 일어난다</strong> 는 뜻입니다. 에어컨 배수 호스에서 물이 콸콸 나오는 이유가 이것입니다.</li>
+<li><strong>9월</strong>: 26℃ 환산 63.9%. 미국 EPA 권고 상한(60%)을 넘습니다. <strong>그런데 평균기온이 22.3℃라 에어컨을 켤 이유가 없습니다.</strong></li>
+<li><strong>10월</strong>: 실외 상대습도는 79.5%로 여전히 높지만 실내 환산은 41~52%. 문제없는 구간입니다.</li>
+<li><strong>11월~4월</strong>: 실내 환산 8~31%. 제습기가 아니라 <strong>가습기가 필요한 계절</strong> 입니다.</li>
+<li><strong>5~6월</strong>: 38~64%. 대체로 무난합니다.</li>
+</ul>
+<hr>
+<h2 id="3-에어컨이-있으니-제습기는-필요-없다에-대한-반박">3. &ldquo;에어컨이 있으니 제습기는 필요 없다&quot;에 대한 반박<a href="#3-에어컨이-있으니-제습기는-필요-없다에-대한-반박" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="3-1-에어컨의-제습은-냉방의-부산물입니다">3-1. 에어컨의 제습은 냉방의 &lsquo;부산물&rsquo;입니다<a href="#3-1-에어컨의-제습은-냉방의-부산물입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에어컨은 습도 센서를 보고 물을 뽑아내는 기계가 아닙니다. 차가운 증발기 코일에 공기가 닿아 이슬점 이하로 냉각되면서 수증기가 응결되는, <strong>냉방의 물리적 부산물</strong> 로 제습이 일어납니다.</p>
+<p>이 비율을 나타내는 지표가 <strong>현열비(SHR, Sensible Heat Ratio)</strong> 입니다. HVAC 업계에서는 일반적인 주거용 에어컨의 현열비를 대략 <strong>0.72</strong> 로 봅니다. 냉방 능력의 72%는 온도를 낮추는 데(현열), 28%만 수분 제거에(잠열) 쓰인다는 뜻입니다.</p>
+<p>여기서 결정적인 귀결이 나옵니다. <strong>온도를 낮출 필요가 없으면 에어컨은 제습도 하지 않습니다.</strong> 설정 온도에 도달해 압축기가 멈추는 순간, 제습도 함께 멈춥니다.</p>
+<h3 id="3-2-사각지대는-여름이-아니라-가을에-있습니다">3-2. 사각지대는 여름이 아니라 &lsquo;가을&rsquo;에 있습니다<a href="#3-2-사각지대는-여름이-아니라-가을에-있습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>그래서 &ldquo;기온은 26℃ 이하라 냉방을 켤 이유가 없는데, 이슬점은 20℃ 이상이라 매우 습한&rdquo; 시간을 전 구간에서 세어봤습니다. 이슬점 20℃는 실내 26℃ 기준 상대습도 약 69%에 해당합니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">xychart-beta
+    title &#34;월별 에어컨 사각지대 시간(막대) vs 에어컨 담당 시간(선)&#34;
+    x-axis [&#34;25.7&#34;, &#34;25.8&#34;, &#34;25.9&#34;, &#34;25.10&#34;, &#34;25.11&#34;, &#34;25.12&#34;, &#34;26.1&#34;, &#34;26.2&#34;, &#34;26.3&#34;, &#34;26.4&#34;, &#34;26.5&#34;, &#34;26.6&#34;, &#34;26.7&#34;]
+    y-axis &#34;시간&#34; 0 --&gt; 450
+    bar [263, 311, 181, 9, 0, 0, 0, 0, 0, 0, 10, 11, 357]
+    line [345, 400, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 223]
+</code></pre><p>계절별로 묶으면 그림이 선명해집니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>계절</th>
+          <th>평균 이슬점</th>
+          <th>사각지대(덥지 않은데 습함)</th>
+          <th>에어컨 담당(덥고 습함)</th>
+          <th>비율</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>여름 (2025.7~8)</td>
+          <td>22.5℃</td>
+          <td>574시간 (38.6%)</td>
+          <td>745시간 (50.1%)</td>
+          <td>에어컨 우세</td>
+      </tr>
+      <tr>
+          <td><strong>가을 (2025.9~11)</strong></td>
+          <td>10.5℃</td>
+          <td><strong>190시간 (8.7%)</strong></td>
+          <td><strong>52시간 (2.4%)</strong></td>
+          <td><strong>제습기 3.7배 우세</strong></td>
+      </tr>
+      <tr>
+          <td>겨울 (2025.12~2026.2)</td>
+          <td>-8.9℃</td>
+          <td><strong>0시간</strong></td>
+          <td>0시간</td>
+          <td>해당 없음</td>
+      </tr>
+      <tr>
+          <td>봄 (2026.3~5)</td>
+          <td>4.7℃</td>
+          <td>10시간 (0.5%)</td>
+          <td>0시간</td>
+          <td>거의 없음</td>
+      </tr>
+      <tr>
+          <td>초여름~한여름 (2026.6~7)</td>
+          <td>18.6℃</td>
+          <td>368시간 (26.9%)</td>
+          <td>223시간 (16.3%)</td>
+          <td>제습기 1.7배 우세</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 표가 이번 분석에서 가장 의외의 결과입니다. <strong>한여름(7~8월)에는 오히려 에어컨이 담당하는 시간이 더 많습니다.</strong> 덥고 습하니 어차피 에어컨을 켜고, 켜는 동안 제습은 자동으로 됩니다.</p>
+<p>문제는 <strong>9월</strong> 입니다. 사각지대 181시간 대비 에어컨 담당 52시간으로, 비율이 3.5배 뒤집힙니다. 평균기온 22.3℃에 평균 상대습도 81.3%, 일평균 상대습도가 80%를 넘은 날이 30일 중 16일. <strong>에어컨을 켜기엔 시원하고, 창문을 열기엔 눅눅한</strong> 전형적인 가을장마 구간입니다. 여기서 곰팡이가 핍니다.</p>
+<p>2026년 7월의 시간대별 값을 보면 사각지대의 정체가 더 분명해집니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>시각</th>
+          <th>평균기온</th>
+          <th>평균 상대습도</th>
+          <th>평균 이슬점</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>03시</td>
+          <td>24.1℃</td>
+          <td>93.1%</td>
+          <td>22.9℃</td>
+      </tr>
+      <tr>
+          <td>06시</td>
+          <td>23.8℃</td>
+          <td>94.0%</td>
+          <td>22.7℃</td>
+      </tr>
+      <tr>
+          <td>09시</td>
+          <td>25.5℃</td>
+          <td>85.3%</td>
+          <td>22.8℃</td>
+      </tr>
+      <tr>
+          <td>15시</td>
+          <td>28.5℃</td>
+          <td>70.4%</td>
+          <td>22.2℃</td>
+      </tr>
+      <tr>
+          <td>21시</td>
+          <td>25.6℃</td>
+          <td>88.1%</td>
+          <td>23.4℃</td>
+      </tr>
+  </tbody>
+</table>
+<p>한낮에는 기온이 올라 상대습도가 70%대로 떨어지고 에어컨도 열심히 돕니다. 문제는 비 오는 새벽과 아침입니다. <strong>기온 24℃에 상대습도 93%.</strong> 춥지는 않지만 눅눅하고, 에어컨을 26℃로 맞춰두면 압축기가 거의 돌지 않아 제습도 되지 않습니다.</p>
+<p>참고로 일평균 상대습도 80% 이상이 끊기지 않고 이어진 최장 구간은 <strong>2026년 7월 15일부터 27일까지 13일</strong> 이었습니다. 미국 EPA는 젖은 자재를 <strong>24~48시간 안에</strong> 말리지 못하면 곰팡이가 자란다고 명시합니다.</p>
+<h3 id="3-3-짧은-운전은-제습을-거의-못-합니다">3-3. 짧은 운전은 제습을 거의 못 합니다<a href="#3-3-짧은-운전은-제습을-거의-못-합니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기에 세 가지 물리적 문제가 겹칩니다.</p>
+<p><strong>첫째, 코일이 젖기까지 시간이 걸립니다.</strong> 압축기가 켜진 직후에는 코일이 충분히 차갑지 않아 냉방(현열)만 일어나고 응결은 거의 없습니다. 짧게 켜졌다 꺼지기를 반복하는 운전에서는 제습 효율이 크게 떨어집니다.</p>
+<p><strong>둘째, 재증발(re-evaporation)이 일어납니다.</strong> 압축기가 멈춘 뒤에도 실내기 팬이 계속 돌면, 코일에 맺힌 물방울이 다시 증발해 실내로 돌아갑니다. 방금 뽑아낸 수분의 일부를 되돌려주는 셈입니다.</p>
+<p><strong>셋째, 에어컨이 크면 오히려 더 나쁩니다.</strong> 공간 대비 용량이 과한 에어컨은 설정 온도에 금방 도달해 짧게 돌다 꺼지기를 반복합니다. 시원하기는 한데 눅눅한, 이른바 &ldquo;차가운데 꿉꿉한&rdquo; 상태가 만들어집니다.</p>
+<h3 id="3-4-에어컨-바람이-닿지-않는-공간이-있습니다">3-4. 에어컨 바람이 닿지 않는 공간이 있습니다<a href="#3-4-에어컨-바람이-닿지-않는-공간이-있습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이건 성능이 아니라 배치의 문제입니다. 곰팡이가 실제로 피는 곳은 거실 한가운데가 아니라 대부분 다음과 같은 곳입니다.</p>
+<ul>
+<li>붙박이장·옷방·드레스룸 내부</li>
+<li>신발장, 다용도실, 세탁실</li>
+<li>북향 방, 베란다 확장 구간, 가구 뒤 벽면</li>
+<li>화장실과 그 인접 벽</li>
+</ul>
+<p>이런 공간은 <strong>실내 다른 곳보다 온도가 낮다</strong> 는 점이 더 문제입니다. 같은 수증기량이라도 온도가 낮으면 상대습도가 올라가기 때문에, 거실이 55%일 때 북향 붙박이장 안쪽은 70%를 넘길 수 있습니다. 앞의 환산표에서 22℃와 26℃ 값이 크게 차이 나는 것과 같은 원리입니다.</p>
+<p>미국 ENERGY STAR도 중앙식 냉방이 있는 집에서 습한 공간이 남아 있으면 <strong>해당 공간에 별도 급기구를 내거나, 그래도 습도가 55%를 넘으면 전용 제습기를 쓰라고</strong> 안내합니다.</p>
+<h3 id="3-5-실내-빨래-건조는-에어컨이-감당하기-어렵습니다">3-5. 실내 빨래 건조는 에어컨이 감당하기 어렵습니다<a href="#3-5-실내-빨래-건조는-에어컨이-감당하기-어렵습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>장마철과 가을장마 기간에는 빨래를 실내에서 말릴 수밖에 없습니다. 3kg 세탁물을 탈수한 뒤 남는 수분은 대략 1.5L이고, 이게 전부 실내 공기로 증발합니다. 열량으로는 약 <strong>1kWh 의 잠열</strong> 입니다.</p>
+<p>에어컨으로 처리하려면 그만큼 냉방을 돌려 방을 계속 차갑게 만들어야 합니다. 9월처럼 기온 22℃인 날에 그러기는 어렵습니다. 반면 제습기는 빨래 옆에 놓고 좁은 공간만 집중 공략하면 되고, 나오는 바람이 따뜻해 건조에 오히려 유리합니다. <strong>이건 제습기가 에어컨보다 명확히 우월한 용도입니다.</strong></p>
+<h3 id="3-6-습도-기준은-생각보다-낮습니다">3-6. 습도 기준은 생각보다 낮습니다<a href="#3-6-습도-기준은-생각보다-낮습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>기관·연구</th>
+          <th>권고 실내 상대습도</th>
+          <th>근거</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>미국 EPA</td>
+          <td>60% 미만, 이상적으로 30~50%</td>
+          <td>곰팡이 발생 억제</td>
+      </tr>
+      <tr>
+          <td>ASHRAE</td>
+          <td>65% 이하</td>
+          <td>곰팡이 억제 및 쾌적성</td>
+      </tr>
+      <tr>
+          <td>ENERGY STAR</td>
+          <td>30~50%</td>
+          <td>건물·거주자 기준 최적 구간</td>
+      </tr>
+      <tr>
+          <td>Arlian et al. (JACI, 1999)</td>
+          <td>50% 미만</td>
+          <td>집먼지진드기 개체수 억제</td>
+      </tr>
+  </tbody>
+</table>
+<p>9월의 26℃ 환산 상대습도 63.9%는 EPA 기준을 넘고 ASHRAE 기준에 근접합니다. 에어컨을 켤 계절이 아닌데도 그렇습니다.</p>
+<hr>
+<h2 id="4-제습기는-무조건-필요하다에-대한-반박">4. &ldquo;제습기는 무조건 필요하다&quot;에 대한 반박<a href="#4-제습기는-무조건-필요하다에-대한-반박" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기까지만 읽으면 제습기를 사야 할 것 같지만, 반대편 주장도 데이터로 뜯어봐야 공평합니다.</p>
+<h3 id="4-1-제습기는-사실상-히터입니다">4-1. 제습기는 사실상 히터입니다<a href="#4-1-제습기는-사실상-히터입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이건 취향이 아니라 열역학입니다. 제습기는 에어컨과 동일한 냉동 사이클로 작동하지만, <strong>실외기가 없어 버릴 열을 전부 그 방에 도로 뿜습니다.</strong> 방에 추가되는 열은 두 가지입니다.</p>
+<ol>
+<li><strong>소비한 전력 전량</strong>: 300W 제습기라면 300W가 그대로 열이 됩니다.</li>
+<li><strong>응결 잠열</strong>: 수증기가 물로 바뀔 때 나오는 열입니다. 물 1L당 약 <strong>0.68kWh</strong> 입니다.</li>
+</ol>
+<p>한국소비자원 시험 상위권 제품 기준으로 하루 16L를 제거하고 제습효율이 2.6 L/kWh라면 계산은 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>소비 전력량</td>
+          <td>16 ÷ 2.6 = <strong>6.2 kWh/일</strong></td>
+      </tr>
+      <tr>
+          <td>응결 잠열</td>
+          <td>16 × 0.68 = <strong>10.9 kWh/일</strong></td>
+      </tr>
+      <tr>
+          <td>실내로 방출되는 총 열량</td>
+          <td><strong>17.0 kWh/일</strong></td>
+      </tr>
+      <tr>
+          <td>평균 발열량</td>
+          <td><strong>약 709 W</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>하루 종일 제습기를 돌리는 것은 그 방에 700W짜리 전기히터를 계속 켜 두는 것과 같은 양의 열을 넣는 일입니다.</strong> 에어컨은 정확히 같은 열을 실외기로 버리지만, 제습기는 버릴 곳이 없습니다.</p>
+<p>그래서 <strong>한여름 폭염에 제습기를 단독으로 돌리는 것은 대체로 나쁜 선택</strong> 입니다. 습도는 내려가지만 온도가 올라 체감이 나빠집니다. 반대로 기온 22℃인 9월에는 이 발열이 별로 문제되지 않습니다. <strong>제습기의 최적 계절이 한여름이 아니라 가을인 이유가 여기에도 있습니다.</strong></p>
+<h3 id="4-2-1년-중-285일은-켤-일이-없습니다">4-2. 1년 중 285일은 켤 일이 없습니다<a href="#4-2-1년-중-285일은-켤-일이-없습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>앞의 환산표를 다시 보면, <strong>11월부터 4월까지 6개월간 사각지대 시간은 정확히 0시간</strong> 입니다. 실내 22℃ 환산 상대습도가 8~31%인 계절에 제습기를 켜는 것은 전기를 태워 목을 마르게 하는 일입니다.</p>
+<p>&ldquo;사각지대가 하루 6시간 이상인 날&quot;을 제습기 실사용 후보일로 잡고 세어보면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>월</th>
+          <th>후보일</th>
+          <th>월</th>
+          <th>후보일</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2025-07</td>
+          <td>19일</td>
+          <td>2026-01</td>
+          <td>0일</td>
+      </tr>
+      <tr>
+          <td>2025-08</td>
+          <td>23일</td>
+          <td>2026-02</td>
+          <td>0일</td>
+      </tr>
+      <tr>
+          <td>2025-09</td>
+          <td><strong>12일</strong></td>
+          <td>2026-03</td>
+          <td>0일</td>
+      </tr>
+      <tr>
+          <td>2025-10</td>
+          <td>1일</td>
+          <td>2026-04</td>
+          <td>0일</td>
+      </tr>
+      <tr>
+          <td>2025-11</td>
+          <td>0일</td>
+          <td>2026-05</td>
+          <td>1일</td>
+      </tr>
+      <tr>
+          <td>2025-12</td>
+          <td>0일</td>
+          <td>2026-06</td>
+          <td>1일</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td>2026-07 (27일까지)</td>
+          <td>23일</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>13개월(393일) 중 80일.</strong> 연 환산하면 약 74일입니다. 그중 65일이 7~8월에 몰려 있는데, 이 시기는 에어컨도 함께 돌아가는 기간입니다. <strong>오직 제습기만이 답인 날은 9월의 12일 남짓</strong> 이라고 보는 편이 정확합니다.</p>
+<p>부피 큰 가전을 1년에 두 달 남짓 쓰고 열 달을 보관해야 한다는 뜻이기도 합니다.</p>
+<h3 id="4-3-에어컨과-동시에-돌리면-손해입니다">4-3. 에어컨과 동시에 돌리면 손해입니다<a href="#4-3-에어컨과-동시에-돌리면-손해입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>같은 이유로 에어컨과 제습기를 함께 켜면, 제습기가 만든 열을 에어컨이 다시 밖으로 퍼내야 합니다. 제습기 전기요금과 에어컨 추가 부하가 이중으로 붙습니다.</p>
+<p>에어컨이 이미 잘 돌고 있는 상황(기온 28℃ 이상)에서 제습기를 추가로 켜는 것은 대부분 낭비입니다. 제습기의 자리는 <strong>에어컨이 돌 이유가 없는 시간대</strong> 입니다.</p>
+<h3 id="4-4-순수-제습-효율만-보면-제습기가-낫지만-조건이-붙습니다">4-4. 순수 제습 효율만 보면 제습기가 낫지만, 조건이 붙습니다<a href="#4-4-순수-제습-효율만-보면-제습기가-낫지만-조건이-붙습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>에어컨은 현열비 0.72, COP 3.5로 가정한 비교입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>방식</th>
+          <th>제습효율</th>
+          <th>실내 발열</th>
+          <th>동반 효과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>제습기 (소비자원 &lsquo;우수&rsquo; 등급)</td>
+          <td><strong>2.6 L/kWh 이상</strong></td>
+          <td>전량 실내 방출</td>
+          <td>실내 온도 상승</td>
+      </tr>
+      <tr>
+          <td>에어컨 냉방</td>
+          <td><strong>약 1.4 L/kWh</strong></td>
+          <td>전량 실외 방출</td>
+          <td>현열 냉방 27.9 kWh 동반</td>
+      </tr>
+  </tbody>
+</table>
+<p>전기 1kWh당 뽑는 물의 양만 보면 제습기가 약 1.9배 효율적입니다. 하지만 에어컨은 같은 전기로 물 16L를 뽑는 동안 <strong>27.9 kWh 분량의 냉방</strong> 을 덤으로 제공합니다. 더운 날에는 그 냉방이 어차피 필요하므로 &ldquo;제습 비용&quot;을 따로 계산하는 것 자체가 무의미해집니다.</p>
+<p>6평형 벽걸이 에어컨(냉방능력 2.2kW, 현열비 0.72)은 <strong>시간당 약 0.9L</strong>, 하루 8시간이면 7L가 넘는 물을 뽑아냅니다. <strong>에어컨이 제습을 못 하는 게 아니라, 켜져 있을 때만 잘 하는 것입니다.</strong></p>
+<h3 id="4-5-과건조도-문제가-됩니다">4-5. 과건조도 문제가 됩니다<a href="#4-5-과건조도-문제가-됩니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>제습기를 습관적으로 40% 설정으로 돌리는 분들이 있는데, 상대습도가 30% 아래로 내려가면 호흡기 점막 건조, 피부 트러블, 정전기, 목재 가구 갈라짐이 생깁니다. EPA와 ENERGY STAR 모두 하한선을 <strong>30%</strong> 로 제시합니다. 습도는 낮을수록 좋은 값이 아닙니다.</p>
+<h3 id="4-6-소음과-관리-부담은-무시하기-어렵습니다">4-6. 소음과 관리 부담은 무시하기 어렵습니다<a href="#4-6-소음과-관리-부담은-무시하기-어렵습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한국소비자원 시험 결과입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>측정값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>소음 (최대 풍량)</td>
+          <td>49~57 dB</td>
+      </tr>
+      <tr>
+          <td>소음 (최소 풍량)</td>
+          <td>43~54 dB</td>
+      </tr>
+      <tr>
+          <td>소비전력</td>
+          <td>262~363 W</td>
+      </tr>
+      <tr>
+          <td>1일 제습량</td>
+          <td>12.2~21.1 L (제품 간 최대 1.7배 차이)</td>
+      </tr>
+  </tbody>
+</table>
+<p>50dB는 일상 대화 수준입니다. 침실에서 밤새 켜두기엔 부담스러운 제품이 많습니다. 물통 비우기, 필터·물통 위생 관리도 계속 따라옵니다.</p>
+<p>또 하나 짚어둘 점은 <strong>표시 제습량이 27℃ / 상대습도 60% 라는 표준 조건(KS C 9317)에서 측정한 값</strong> 이라는 것입니다. 기온이 낮은 9~10월에는 실제 제습량이 표시값보다 눈에 띄게 적습니다. 정작 제습기가 가장 필요한 계절에 성능이 떨어지는 셈입니다.</p>
+<hr>
+<h2 id="5-비용-대비-효율">5. 비용 대비 효율<a href="#5-비용-대비-효율" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="실사용-기준으로-다시-계산">실사용 기준으로 다시 계산<a href="#실사용-기준으로-다시-계산" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>앞에서 구한 <strong>연 74~80일</strong> 을 그대로 넣어 계산했습니다. 하루 6시간, 소비전력 300W 기준입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>구매 비용</td>
+          <td>20~40만원 (16L급)</td>
+      </tr>
+      <tr>
+          <td>연간 사용 전력량</td>
+          <td>80일 × 6시간 × 0.3kW = <strong>144 kWh</strong></td>
+      </tr>
+      <tr>
+          <td>연간 전기요금 (누진 2단계 214.6원/kWh)</td>
+          <td>약 30,900원</td>
+      </tr>
+      <tr>
+          <td>연간 전기요금 (누진 3단계 307.3원/kWh)</td>
+          <td>약 44,300원</td>
+      </tr>
+  </tbody>
+</table>
+<p>전기요금은 누진 구간에 따라 크게 갈립니다. 주택용 저압 기준으로 여름철(7~8월)에는 300kWh·450kWh 기준 3단계 누진이 적용되는데, <strong>에어컨을 이미 쓰고 있다면 제습기 사용량은 전부 가장 비싼 한계 구간에 얹힙니다.</strong> 한국소비자원이 제시한 월 7,000~10,000원은 1단계 부근의 낙관적인 값이므로, 여름철 실제 부담은 그 1.5~2배로 보는 것이 안전합니다.</p>
+<h3 id="4년-총소유비용">4년 총소유비용<a href="#4년-총소유비용" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>30만원짜리를 4년 쓰고 매년 80일 사용한다고 가정하겠습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>4년 합계</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>기기 값</td>
+          <td>300,000원</td>
+      </tr>
+      <tr>
+          <td>전기요금 (연 37,000원 × 4년)</td>
+          <td>148,000원</td>
+      </tr>
+      <tr>
+          <td><strong>총합</strong></td>
+          <td><strong>약 448,000원</strong></td>
+      </tr>
+      <tr>
+          <td>연평균</td>
+          <td>약 112,000원</td>
+      </tr>
+      <tr>
+          <td><strong>실사용 1일당</strong></td>
+          <td><strong>약 1,400원</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>곰팡이 제거·도배 재시공 비용이나 옷·가죽 제품 손상을 생각하면 하루 1,400원은 비싼 값이 아닙니다. 다만 <strong>곰팡이 문제가 실제로 없는 집이라면 그냥 순수한 지출</strong> 입니다. 이 판단은 데이터가 아니라 각자의 집 상태가 결정합니다.</p>
+<hr>
+<h2 id="6-그래서-어떻게-판단하면-되는가">6. 그래서 어떻게 판단하면 되는가<a href="#6-그래서-어떻게-판단하면-되는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>한쪽으로 결론을 내리는 대신 판단 기준을 정리하겠습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[집에 곰팡이/결로 흔적이 있는가?] --&gt;|있다| B[제습기 구매 검토]
+    A --&gt;|없다| C[언제 눅눅함을 느끼는가?]
+    C --&gt;|한여름 더울 때만| D[에어컨으로 충분]
+    C --&gt;|비 오는 새벽/아침| B
+    C --&gt;|9월 가을장마| B
+    E[실내 빨래 건조를 자주 하는가?] --&gt;|자주| B
+    E --&gt;|건조기 사용/베란다 건조| D
+    F[에어컨 바람이 안 닿는 방/붙박이장이 있는가?] --&gt;|있다| B
+    F --&gt;|없다| D
+
+    style A fill:#FFD700,color:#000000
+    style B fill:#90EE90,color:#000000
+    style C fill:#FFD700,color:#000000
+    style D fill:#87CEEB,color:#000000
+    style E fill:#FFD700,color:#000000
+    style F fill:#FFD700,color:#000000
+</code></pre><h3 id="제습기가-값을-하는-경우">제습기가 값을 하는 경우<a href="#제습기가-값을-하는-경우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>벽지·창틀·붙박이장에 <strong>곰팡이나 결로 흔적이 이미 있는</strong> 집</li>
+<li>반지하, 1층, 북향 방, 필로티 위층 등 구조적으로 습한 집</li>
+<li><strong>9~10월 가을장마에 눅눅함을 크게 느끼는</strong> 경우 (에어컨으로는 해결이 안 되는 구간입니다)</li>
+<li>에어컨이 없는 방(작은방, 드레스룸, 다용도실)의 습기가 신경 쓰이는 경우</li>
+<li><strong>실내 빨래 건조</strong> 가 잦은 집 (건조기가 없는 경우)</li>
+<li>천식·비염 등 집먼지진드기 알레르기가 있는 가족이 있는 경우 (상대습도 50% 미만 유지가 목표)</li>
+<li>악기, 카메라, 가죽 제품, 서적 등 습기에 취약한 물건이 많은 경우</li>
+</ul>
+<h3 id="굳이-없어도-되는-경우">굳이 없어도 되는 경우<a href="#굳이-없어도-되는-경우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li>여름 내내 에어컨을 <strong>꾸준히 켜 두는</strong> 생활 패턴 (켜져 있는 동안 시간당 1L 가까이 제습합니다)</li>
+<li>곰팡이·결로 이력이 전혀 없는 고층 남향 아파트</li>
+<li>건조기가 있어 실내 빨래 건조를 하지 않는 집</li>
+<li>원룸 등 좁은 공간 (제습기 발열이 온도 상승으로 바로 체감됩니다)</li>
+<li>이미 전기요금 누진 3단계에 진입해 있는 집</li>
+</ul>
+<h3 id="사기-전에-먼저-해볼-것">사기 전에 먼저 해볼 것<a href="#사기-전에-먼저-해볼-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>제습기를 사기 전에 <strong>온습도계부터 사는 것</strong> 을 권합니다. 1만원 내외면 살 수 있고, 다음을 확인할 수 있습니다.</p>
+<ol>
+<li>문제가 되는 공간의 실내 상대습도가 <strong>실제로 60%를 넘는가</strong></li>
+<li>넘는다면 <strong>어느 시간대, 어느 계절에</strong> 넘는가 (한낮 한여름이면 에어컨 운용을 바꾸면 되고, 새벽이나 9월이면 제습기 영역입니다)</li>
+<li>거실과 <strong>북향 방·붙박이장 안쪽</strong> 의 습도 차이가 얼마나 나는가</li>
+</ol>
+<p>특히 <strong>9~10월에 2~3주만 기록해 보시기 바랍니다.</strong> 여름에 측정하면 에어컨 때문에 판단이 흐려지지만, 가을에는 에어컨 영향 없이 집 자체의 습도 특성이 드러납니다. 이 글의 통계보다 자기 집에 대해 훨씬 정확한 답을 얻을 수 있습니다.</p>
+<h3 id="사기로-했다면">사기로 했다면<a href="#사기로-했다면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><strong>제습량보다 제습효율(L/kWh)</strong> 을 먼저 보시기 바랍니다. 소비자원 기준 2.6 L/kWh 이상이 &lsquo;우수&rsquo;입니다.</li>
+<li>설정 습도는 <strong>50~55%</strong> 로 잡습니다. 40% 이하는 과건조이고 전기만 더 씁니다.</li>
+<li><strong>연속 배수 호스</strong> 연결이 가능한 모델을 고르면 물통 비우는 부담이 사라집니다.</li>
+<li>서큘레이터를 함께 쓰면 공기 순환이 좋아져 제습 속도가 올라갑니다.</li>
+<li><strong>에어컨과 동시에 켜지 마시기 바랍니다.</strong> 역할을 계절과 시간대로 나누는 것이 맞습니다.</li>
+</ul>
+<hr>
+<h2 id="정리">정리<a href="#정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>질문</th>
+          <th>13개월 데이터가 말하는 답</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>에어컨이 제습을 하는가?</td>
+          <td>합니다. 6평형 기준 시간당 약 0.9L</td>
+      </tr>
+      <tr>
+          <td>그럼 제습기는 필요 없는가?</td>
+          <td>에어컨이 <strong>켜져 있을 때만</strong> 제습합니다. 13개월 중 1,142시간(12.1%)이 &ldquo;덥지 않은데 습한&rdquo; 구간이었습니다</td>
+      </tr>
+      <tr>
+          <td>언제가 가장 문제인가?</td>
+          <td><strong>7~8월이 아니라 9월</strong> 입니다. 9~11월은 사각지대 190시간 대 에어컨 담당 52시간으로 3.7배 뒤집힙니다</td>
+      </tr>
+      <tr>
+          <td>제습기는 무조건 필요한가?</td>
+          <td>11~4월 6개월간 사각지대는 <strong>0시간</strong> 입니다. 실사용 후보일은 연 74~80일 수준입니다</td>
+      </tr>
+      <tr>
+          <td>제습기의 가장 큰 단점은?</td>
+          <td>실내 발열입니다. 16L 제습 시 하루 17kWh, 평균 709W의 열이 그 방에 남습니다</td>
+      </tr>
+      <tr>
+          <td>둘 다 있으면 어떻게 쓰나?</td>
+          <td>한여름 낮에는 에어컨, 비 오는 새벽과 가을장마·밀폐 공간에는 제습기. <strong>동시 가동은 낭비입니다</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>1년 중 7개월치 데이터만 봤을 때는 &ldquo;제습기는 장마철 장비&quot;라는 결론이 나왔을 것입니다. 하지만 <strong>가을을 포함해서 보면 이야기가 달라집니다.</strong> 한여름에는 에어컨이 담당 시간을 더 많이 가져가고, 정작 에어컨이 손을 놓는 구간은 9월이었습니다.</p>
+<p>에어컨과 제습기는 경쟁 관계가 아니라 <strong>담당 계절이 다른 장비</strong> 입니다. 여름의 눅눅함만 떠올리며 제습기를 고민하고 계셨다면, 판단 기준을 9월로 옮겨 보시기 바랍니다. 그 계절에 집이 어떤 상태인지가 실제 답에 훨씬 가깝습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="데이터">데이터<a href="#데이터" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://open-meteo.com/en/docs/historical-weather-api">Open-Meteo Historical Weather API (ECMWF ERA5)</a></li>
+<li><a href="https://mesonet.agron.iastate.edu/request/download.phtml">Iowa Environmental Mesonet — ASOS/AWOS Network Data (RKSS)</a></li>
+<li><a href="https://www.weather.go.kr/w/obs-climate/land/past-obs/obs-by-day.do">기상청 날씨누리 — 과거 관측 일별자료 (서울)</a></li>
+<li><a href="https://www.weather.go.kr/w/climate/statistics/region.do">기상청 — 한국 지역별 기후특성 (기후평년값 1991~2020)</a></li>
+</ul>
+<h3 id="습도-기준건강">습도 기준·건강<a href="#습도-기준건강" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://www.epa.gov/mold/mold-course-chapter-2">US EPA — Mold Course Chapter 2: Why and Where Mold Grows</a></li>
+<li><a href="https://www.who.int/publications/i/item/9789289041683">WHO — Guidelines for Indoor Air Quality: Dampness and Mould (2009)</a></li>
+<li><a href="https://www.energystar.gov/products/dehumidifiers">ENERGY STAR — Dehumidifiers</a></li>
+<li><a href="https://www.jacionline.org/article/S0091-6749%2899%2970298-8/fulltext">Arlian LG et al., &ldquo;Reducing relative humidity to control the house dust mite Dermatophagoides farinae&rdquo;, Journal of Allergy and Clinical Immunology, 1999</a></li>
+</ul>
+<h3 id="기기-성능냉동-사이클">기기 성능·냉동 사이클<a href="#기기-성능냉동-사이클" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://www.consumer.go.kr/user/ftc/consumer/cnsmrBBS/79/selectInfoRptDetail.do?infoId=A1080439&amp;cntntsId=00000566">한국소비자원 — 비교공감 제2024-12호 「제습기」 품질비교시험 결과</a></li>
+<li><a href="https://www.hvacrschool.com/sensible-heat-ratio-shr/">HVAC School — Sensible Heat Ratio (SHR)</a></li>
+<li><a href="https://www.contractingbusiness.com/archive/article/20865761/sensible-heat-ratios-what-happened">Contracting Business — Sensible Heat Ratios: What Happened?</a></li>
+<li><a href="https://www.greenbuildingadvisor.com/article/faq-air-conditioning-and-high-humidity">GreenBuildingAdvisor — FAQ: Air Conditioning and High Humidity</a></li>
+<li><a href="https://www.greenbuildingadvisor.com/question/are-dehumidifiers-really-heaters-in-disguises">GreenBuildingAdvisor — Are dehumidifiers really heaters in disguise?</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/" class="button inline next">
+         [<span class="button__text">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
