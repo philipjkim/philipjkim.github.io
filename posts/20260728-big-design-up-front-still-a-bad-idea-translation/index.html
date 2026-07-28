@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>번역글: Big Design Up Front — 여전히 나쁜 생각입니다 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pragmatic Programmers 뉴스레터 &#34;Big Design Up Front: Still a Bad Idea&#34;의 한국어 번역. 1990년대 소프트웨어 위기를 불러왔던 BDUF의 전제가 바이브 코딩과 에이전틱 루프에서 그대로 반복되고 있다는 이야기입니다." />
+<meta name="keywords" content="programming, AI, essay, translation, agentic-coding, software-design" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260728-big-design-up-front-still-a-bad-idea-translation/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="번역글: Big Design Up Front — 여전히 나쁜 생각입니다">
+<meta property="og:description" content="Pragmatic Programmers 뉴스레터 &#34;Big Design Up Front: Still a Bad Idea&#34;의 한국어 번역. 1990년대 소프트웨어 위기를 불러왔던 BDUF의 전제가 바이브 코딩과 에이전틱 루프에서 그대로 반복되고 있다는 이야기입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260728-big-design-up-front-still-a-bad-idea-translation/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-28 14:23:37 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260728-big-design-up-front-still-a-bad-idea-translation/">번역글: Big Design Up Front — 여전히 나쁜 생각입니다</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-28</time><span class="post-author">Pragmatic Programmers</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/essay/">essay</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/translation/">translation</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/agentic-coding/">agentic-coding</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/software-design/">software-design</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 번역되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<p><em>원문: Pragmatic Programmers Newsletter — &ldquo;Big Design Up Front: Still a Bad Idea&rdquo;</em></p>
+<hr>
+<blockquote>
+<p>우리는 1990년대의 소프트웨어 위기를 불러왔던 그 관행을 그대로 되풀이할 위험에 처해 있습니다.</p>
+</blockquote>
+<p>40년 전, 도구와 하드웨어가 발전하면서 우리는 점점 더 큰 시스템을 만들 수 있게 됐습니다. 더 야심 차고, 범위도 넓고, UI도 화려한 시스템들이었습니다. 짜릿한 시절이었습니다.</p>
+<p>하지만 문제가 있었습니다. 시스템이 복잡해질수록 프로젝트는 점점 더 실패했습니다. 일정 추정은 웃음이 나올 만큼 빗나갔고, 기능은 잘려나갔고, 버그는 넘쳐났습니다. 프로젝트는 납품되는 만큼이나 자주 취소됐습니다. 2000년 무렵에는 여섯 개 중 하나 정도만 일정과 예산에 근접하게 마무리됐습니다.</p>
+<p>사람들은 일찌감치 문제를 알아채고 해결하려 애썼습니다. 중론은 소프트웨어에 더 많은 규율이 필요하다는 것, 즉 좀 더 &ldquo;엔지니어링&quot;다워져야 한다는 것이었습니다. (따옴표를 친 이유는, 그렇게 말하던 사람들 대부분이 정작 &ldquo;엔지니어링&quot;이 무엇인지 몰랐기 때문입니다.)</p>
+<p>그 결과 &ldquo;이 방법론이 우리를 구원하리라&quot;는 발표가 끊임없이 쏟아졌습니다. 새로운 다이어그램 기법, 새로운 프로젝트 단계, 새로운 측정 방법이 줄줄이 등장했습니다.</p>
+<p>그리고 대체로 전부 실패했습니다.</p>
+<p>실패한 이유도 대체로 같았습니다. 하나같이, 요구사항과 아키텍처와 설계를 100% 정확하게 담아내기만 하면 코드를 만드는 일은 기계적이고 예측 가능한 작업이 되리라고 전제했습니다. 앞단에 충분히 투자하면 불확실성이 사라진다고 본 것입니다. 이 접근을 <em>Big Design Up Front</em>, 줄여서 BDUF라고 부릅니다.</p>
+<h3 id="코딩하기-전에-생각하는-게-뭐가-문제입니까">코딩하기 전에 생각하는 게 뭐가 문제입니까?<a href="#코딩하기-전에-생각하는-게-뭐가-문제입니까" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>문제없습니다. 오히려 사람들은 충분히 생각하지 않습니다.</p>
+<p>문제는 코드에 대한 고민에도 한계가 있어서, 어느 지점을 넘어가면 역효과가 난다는 것입니다. 이유는 두 가지라고 봅니다.</p>
+<p>첫째, BDUF는 고객이 자기가 원하는 것을 정확히 안다고 전제합니다. 대개는 모릅니다. 고객은 그저 문제가 있다고 느낄 뿐입니다. 우리는 요구사항을 뽑아내려고 어떤 식으로 해결하고 싶은지 집요하게 캐묻지만, 정작 고객에게는 정확히 답할 만한 맥락이 없습니다. 뭐라도 말하라고 압박하니 최선을 다해 답할 뿐, 사실은 추측입니다.</p>
+<p>둘째, 소프트웨어를 만드는 일이 기계적인 공정이라고 전제합니다. 아닙니다. 우리 업계는 코드 쓰는 법을 안다고 말할 만큼 성숙하지 않았습니다. 프로젝트는 저마다 다르고, 각각 새로운 해법을 발명해야 하는 고유한 문제를 안고 있습니다. 그리고 그것은 멋진 일입니다. 개발자가 비즈니스에 가져다주는 진짜 가치 중 하나는, 코드를 써 내려가면서 그 코드의 말을 들을 수 있다는 점입니다. 코드가 저항할 때는 대개 다른 어딘가가 잘못됐다는 신호입니다. 비즈니스 프로세스 자체가 앞뒤가 안 맞을 수도 있고, 해법의 구조가 애초에 성립하지 않는 것일 수도 있습니다. 원인이 무엇이든, 좋은 개발자는 이 반발력을 신호 삼아 하던 일을 조정할 줄 압니다.</p>
+<h2 id="우리는-또-같은-길을-가고-있습니다">우리는 또 같은 길을 가고 있습니다<a href="#우리는-또-같은-길을-가고-있습니다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>1년 전에는 &ldquo;바이브 코딩&quot;이었습니다. AI에게 원하는 것을 말하고, 나온 코드를 그대로 받아 쓰는 방식입니다.</p>
+<p>올해의 화두는 &ldquo;에이전틱 루프&quot;입니다. 피드백을 도입해 바이브 코딩을 보완합니다. AI가 자율적으로 코딩하되, 자기가 하는 일을 계속 관찰하고 비평합니다.</p>
+<p>하지만 두 접근 모두 근본적으로 같은 결함을 안고 있습니다. AI에게 무엇을 시켜야 하는지 우리가 이미 안다고 가정한다는 점입니다. 둘 다 Big Design Up Front의 함정에 빠져 있습니다. 그리고 결국 1990년대에 봤던 것과 같은 문제로 이어질 것입니다. 다만 그 시간 단위가 몇 달에서 며칠로 줄어들 뿐입니다.</p>
+<h2 id="인간은-루프-안에-있습니다-그-자체입니다">인간은 루프 <del>안에 있습니다</del> 그 자체입니다<a href="#인간은-루프-안에-있습니다-그-자체입니다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>25년 전에 얻은 교훈은 여전히 유효합니다. 프로젝트에서 배우는 것의 상당 부분은 코딩 단계에서 일어납니다. 요구사항이 의심받고, 설계가 다듬어지고, 접근 방식이 도전받습니다. 이런 일에는 경험과 직관, 그리고 확신이 필요합니다. 그리고 현재로서는 사람이 가장 잘하는 일입니다. 에이전틱 코딩은 시킨 일을 해내려고 열심히 애씁니다. 반면 좋은 프로그래머는 이렇게 말합니다. &ldquo;그거, 진짜로 원하시는 게 아닌 것 같은데요.&rdquo;</p>
+<p>요즘 제 코딩의 대부분은 AI와 함께 합니다. 하지만 제가 아끼는 프로젝트라면 절대로 AI 혼자 돌아가게 두지 않습니다. 항상 옆에 앉아 무엇을 하고 있는지 지켜봅니다. 아마 1~2분에 한 번꼴로 ^C를 누를 것입니다. 보통은 방향을 살짝 틀어주기 위해서입니다. 가끔은 Claude가 삼천포로 빠지기 때문입니다. 하지만 어떤 때는, 돌아가는 것을 보다가 우리가 애초에 잘못된 문제를 풀고 있다는 것을 깨닫기 때문입니다. 코드가 맞춰지고 구조가 드러나는 것을 지켜보다 보면, 내가 원하는 것을 명세할 때 실수했다는 사실이 분명해집니다.</p>
+<p>언젠가 이 조언은 고리타분한 이야기가 될 것입니다. AI가 개발자의 감에 필적할 만한 맥락과 훈련을 모두 갖추는 시점이 올 테니까요.</p>
+<p>하지만 그때까지, 당신의 일은, 아니 당신의 가치는 루프 <del>안에 있는 것</del> 그 자체가 되는 것입니다. 더 이상 노를 젓지는 않더라도, 키를 잡는 사람은 여전히 당신입니다.</p>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260728-do-you-need-a-dehumidifier-with-air-conditioner/" class="button inline next">
+         [<span class="button__text">에어컨이 있는 집에 제습기가 꼭 필요할까: 서울 13개월 온습도 데이터로 따져보기</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
