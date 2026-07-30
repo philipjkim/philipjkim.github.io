@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="달무티(The Great Dalmuti)를 디지털 게임으로 만들 때 CPU 플레이어를 어떻게 설계할지 다룹니다. Part 1 에서는 공정성 경계와 정책 인터페이스를 잡고, 결정적 규칙만으로 동작하는 easy 난이도 봇의 제출·패스·혁명·세금 정책을 Go 코드로 구현합니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇">
+<meta property="og:description" content="달무티(The Great Dalmuti)를 디지털 게임으로 만들 때 CPU 플레이어를 어떻게 설계할지 다룹니다. Part 1 에서는 공정성 경계와 정책 인터페이스를 잡고, 결정적 규칙만으로 동작하는 easy 난이도 봇의 제출·패스·혁명·세금 정책을 Go 코드로 구현합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-30 14:09:37 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-30</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="왜-봇부터-만드는가">왜 봇부터 만드는가<a href="#왜-봇부터-만드는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">지난 글</a>에서 대부호·달무티·렉시오를 묶어 클라이밍 게임의 전략을 정리했습니다. 이번에는 그중 <strong>달무티(The Great Dalmuti)</strong> 를 디지털 게임으로 구현한다고 가정하고, <strong>CPU 플레이어를 어떤 전략으로 움직일 것인가</strong> 를 파고들겠습니다.</p>
+<p>공식 룰북은 달무티를 5~8명에서 권장합니다(4명이나 9명 이상도 가능합니다). 그런데 온라인 게임에서 매번 예닐곱 명을 모으는 것은 현실적이지 않습니다. 봇은 단순한 편의 기능이 아니라 <strong>게임이 성립하기 위한 전제 조건</strong> 에 가깝습니다. 게다가 봇이 있어야 룰 엔진을 자동화 테스트로 수천 판 돌려볼 수 있습니다.</p>
+<p>이 글은 세 편으로 나누어 씁니다.</p>
+<ul>
+<li><strong>Part 1 (이 글):</strong> 공정성 경계와 정책 인터페이스를 설계하고, 결정적 규칙만으로 동작하는 <strong>easy 난이도 봇</strong> 을 구현합니다.</li>
+<li><strong>Part 2:</strong> hard 봇이 <strong>무엇을 아는가</strong> 를 다룹니다. 카드 카운팅, 패스의 확률적 해석, 확실승수 판정, 패 분해 플랜입니다.</li>
+<li><strong>Part 3:</strong> hard 봇이 <strong>무엇을 결정하는가</strong> 를 다룹니다. 수 평가 함수, 전략적 패스, 세금과 혁명의 기대값, 그리고 검증 방법입니다.</li>
+</ul>
+<h3 id="이-글의-전제">이 글의 전제<a href="#이-글의-전제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>세 편 모두 특정 제품을 설명하는 글이 아니라, <strong>달무티를 디지털 게임으로 만든다면 봇을 어떻게 설계할 것인가에 대한 설계안</strong> 입니다. 코드는 Go 로 쓰되 논지를 보이기 위한 <strong>발췌</strong> 이며, 그대로 컴파일되는 완성 패키지가 아닙니다.</p>
+<p>달무티는 변형 룰이 많은 게임이라, 봇 이야기를 시작하기 전에 어떤 룰셋을 전제하는지부터 못 박아 두겠습니다. 아래 표의 선택이 달라지면 뒤에 나올 알고리즘의 상당 부분이 바뀝니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>이 글의 전제</th>
+          <th>근거</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>인원</td>
+          <td>5~8명 (4명도 가능)</td>
+          <td>공식 룰북 기본 규칙</td>
+      </tr>
+      <tr>
+          <td>덱</td>
+          <td>80장 풀덱 (stripped deck 미사용)</td>
+          <td>공식 룰북 기본 규칙</td>
+      </tr>
+      <tr>
+          <td>패스 후 재참여</td>
+          <td><strong>허용.</strong> 패스해도 자기 차례가 다시 오면 낼 수 있음</td>
+          <td>공식 룰북 <em>The Play</em></td>
+      </tr>
+      <tr>
+          <td>트릭 종료</td>
+          <td>전원이 <strong>연속으로</strong> 패스하면 종료. 마지막에 낸 사람이 다음 리드</td>
+          <td>공식 룰북 <em>The Play</em></td>
+      </tr>
+      <tr>
+          <td>첫 판 세금</td>
+          <td><strong>없음.</strong> 첫 판은 자동 혁명으로 처리</td>
+          <td>공식 선택 규칙 <em>First Deal Revolution</em></td>
+      </tr>
+      <tr>
+          <td>첫 판 대혁명</td>
+          <td>대농노가 광대 2장이면 <strong>선언 가능</strong></td>
+          <td>같은 선택 규칙</td>
+      </tr>
+      <tr>
+          <td>광대만으로 묶음</td>
+          <td><strong>불가.</strong> 최소 1장의 자연 카드가 필요</td>
+          <td>룰북 미명시. 이 글에서 확정</td>
+      </tr>
+      <tr>
+          <td>점수</td>
+          <td>나갈 때마다 아직 남아 있는 인원수만큼 획득, 20판</td>
+          <td>공식 선택 규칙 <em>Scoring</em></td>
+      </tr>
+  </tbody>
+</table>
+<p>특히 <strong>패스 후 재참여</strong> 항목을 눈여겨봐 주시기 바랍니다. 이 계열 게임을 오래 해 온 사람도 자주 틀리는 부분입니다.</p>
+<blockquote>
+<p>&ldquo;A player who chooses to pass may still play later in the hand, when it&rsquo;s his or her turn again. Play continues clockwise until everyone passes in a row.&rdquo;
+— 공식 룰북 <em>The Play</em> 절</p>
+</blockquote>
+<p>&ldquo;한 번 패스하면 그 트릭에서는 끝&quot;이라고 알고 계신 분이 많은데, <strong>달무티 공식 룰은 그렇지 않습니다.</strong> 그리고 이건 달무티만의 특이 사항도 아닙니다. 이 글에서 확인한 대표 규칙 자료들은 모두 재참여를 허용합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>게임</th>
+          <th>대표 규칙 자료의 패스 처리</th>
+          <th>자료</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>달무티</td>
+          <td>재참여 허용</td>
+          <td>Wizards of the Coast 공식 룰북 <em>The Play</em></td>
+      </tr>
+      <tr>
+          <td>렉시오</td>
+          <td>재참여 허용 — <em>&ldquo;Passing is not permanent in the hand.&rdquo;</em></td>
+          <td>marquand.net 룰 정리</td>
+      </tr>
+      <tr>
+          <td>빅투</td>
+          <td>재참여 허용 — <em>&ldquo;Passing does not prevent you from playing when your turn comes round again.&rdquo;</em></td>
+          <td>Pagat</td>
+      </tr>
+      <tr>
+          <td>대부호</td>
+          <td>재참여 허용. &ldquo;패스하면 못 낸다&quot;는 <strong>드물게 쓰이는 변형 룰</strong> 로 별도 분류</td>
+          <td>Pagat</td>
+      </tr>
+  </tbody>
+</table>
+<p>자료의 성격은 구분해 둘 필요가 있습니다. <strong>달무티만 발행사(Wizards of the Coast)가 낸 진짜 공식 룰북</strong> 이 있습니다. 빅투와 대부호는 발행사가 따로 없는 전통 게임이라 Pagat 의 정리가 사실상의 표준 참조일 뿐 &ldquo;공식&quot;은 아니고, 렉시오의 marquand.net 페이지도 발행사 문서가 아닙니다. 그래서 위 표는 &ldquo;공식 룰&quot;이 아니라 <strong>&ldquo;대표 규칙 자료가 어떻게 적고 있는가&rdquo;</strong> 로 읽어 주시기 바랍니다.</p>
+<p>즉 <strong>&ldquo;패스 = 트릭 탈락&quot;이 오히려 소수 변형 룰</strong> 입니다. 그런데 온라인 구현체와 모임 룰에서는 이 변형이 워낙 흔해서, 그쪽 감각을 그대로 들고 오기 쉽습니다. 봇 설계자에게는 이게 치명적입니다. 리드권을 언제 가져오는지가 통째로 달라지기 때문입니다.</p>
+<p>공식 룰에서 리드권은 &ldquo;내 뒤 순번을 다 넘기면&rdquo; 돌아오는 것이 아니라 <strong>&ldquo;살아 있는 전원이 연속으로 패스해야&rdquo;</strong> 돌아옵니다. Part 3 의 리드권 계산은 전부 이 조건 위에 세워집니다. 반대로 여러분의 프로젝트가 &ldquo;패스=탈락&rdquo; 변형을 채택한다면, Part 3 의 리드권 계산은 그대로 쓸 수 없습니다.</p>
+<p>용어도 하나 정리하겠습니다. 공식 룰북은 한 번의 리드가 시작되어 전원 연속 패스로 끝날 때까지를 hand 라고 부르는데, 이 글에서는 혼동을 피해 그것을 <strong>&ldquo;트릭&rdquo;</strong>, 카드를 새로 딜해서 계급이 갱신될 때까지를 <strong>&ldquo;판&rdquo;</strong> 이라고 부르겠습니다.</p>
+<hr>
+<h2 id="봇-설계에-필요한-만큼의-달무티-규칙">봇 설계에 필요한 만큼의 달무티 규칙<a href="#봇-설계에-필요한-만큼의-달무티-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>봇 로직에 직접 영향을 주는 규칙만 추려 두겠습니다.</p>
+<ul>
+<li><strong>덱:</strong> 숫자 1~12 카드가 있고, <strong>숫자가 곧 장수</strong> 입니다. 1은 1장, 12는 12장으로 총 78장. 여기에 <strong>광대(Jester) 2장</strong> 을 더해 80장입니다.</li>
+<li><strong>강약:</strong> <strong>숫자가 작을수록 강합니다.</strong> 1이 최강, 12가 최약입니다.</li>
+<li><strong>광대:</strong> 단독으로 낼 때는 서열 13, 즉 <strong>가장 약한 카드</strong> 입니다. 다른 숫자와 함께 낼 때는 그 숫자의 <strong>와일드카드</strong> 가 됩니다.</li>
+<li><strong>제출:</strong> 선공은 <strong>같은 숫자를 원하는 장수만큼</strong> 냅니다. 후공은 <strong>정확히 같은 장수</strong> 를, <strong>더 낮은 숫자</strong> 로 받아야 합니다. 못 내거나 안 내면 패스입니다.</li>
+<li><strong>패스와 트릭 종료:</strong> 패스해도 <strong>자기 차례가 다시 오면 낼 수 있습니다.</strong> 살아 있는 전원이 <strong>연속으로</strong> 패스해야 트릭이 끝나고, 마지막에 낸 사람이 다음 트릭을 리드합니다.</li>
+<li><strong>계급:</strong> 등수에 따라 <strong>대달무티 → 소달무티 → 상인 → 소농노 → 대농노</strong> 순으로 앉습니다.</li>
+<li><strong>세금(taxation):</strong> 판 시작 전, 대농노는 가장 강한 카드 2장을 대달무티에게 바치고 대달무티는 아무 카드 2장을 내려줍니다. 소농노와 소달무티는 1장씩 주고받습니다. (앞의 전제표대로 <strong>첫 판에는 세금이 없습니다.</strong>)</li>
+<li><strong>혁명(Revolution):</strong> 세금 징수 <strong>직전</strong>, 광대 2장을 모두 쥔 플레이어는 세금 징수를 <strong>취소</strong> 시킬 수 있습니다. 그 광대 2장을 <strong>대농노</strong> 가 쥐었다면 <strong>대혁명(Greater Revolution)</strong> 이 되어 좌석 순서가 통째로 뒤집힙니다. 판정이 세금보다 앞에 온다는 순서가 뒤에서 중요해집니다.</li>
+</ul>
+<p>여기서 봇 설계에 가장 큰 영향을 주는 것은 <strong>&ldquo;숫자가 곧 장수&rdquo;</strong> 라는 덱 구조입니다. 이 한 줄이 뒤에 나올 모든 판단의 뿌리가 됩니다.</p>
+<hr>
+<h2 id="설계의-뼈대">설계의 뼈대<a href="#설계의-뼈대" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-공정성-경계를-타입으로-못-박는다">1. 공정성 경계를 타입으로 못 박는다<a href="#1-공정성-경계를-타입으로-못-박는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>봇 AI 를 만들 때 가장 먼저 정해야 할 것은 알고리즘이 아니라 <strong>&ldquo;봇이 무엇을 볼 수 있는가&rdquo;</strong> 입니다. 서버 게임 상태 객체를 그대로 봇 함수에 넘기면, 나중에 누군가가 무심코 <code>state.Players[i].Hand</code> 를 읽는 순간 봇은 남의 손패를 보는 치터가 됩니다. 그리고 이런 유출은 테스트로 잡히지 않습니다. 봇이 훨씬 잘 두게 될 뿐이니까요.</p>
+<p>그래서 봇에게 허용된 정보만 담은 별도의 뷰 타입을 만들고, 봇 정책은 <strong>오직 그 타입만</strong> 인자로 받게 합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// GameView 는 봇에게 노출되는 정보의 전부다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 다른 좌석의 손패는 이 구조체 어디에도 들어 있지 않다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">GameView</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Me</span><span class="w">    </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Hand</span><span class="w">  </span><span class="p">[]</span><span class="nx">Card</span><span class="w">     </span><span class="c1">// 내 손패</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Table</span><span class="w"> </span><span class="o">*</span><span class="nx">Play</span><span class="w">      </span><span class="c1">// 현재 받아야 할 수. nil 이면 내가 선공이다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seats</span><span class="w"> </span><span class="p">[]</span><span class="nx">SeatInfo</span><span class="w"> </span><span class="c1">// 좌석별 계급과 남은 장수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Log</span><span class="w">   </span><span class="p">[]</span><span class="nx">Action</span><span class="w">   </span><span class="c1">// 이번 판의 공개 행동 로그. 제출과 패스를 모두 담는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Round</span><span class="w"> </span><span class="kt">int</span><span class="w">        </span><span class="c1">// 몇 번째 판인가 (1부터)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ConsecutivePasses</span><span class="w"> </span><span class="kt">int</span><span class="w">         </span><span class="c1">// 지금까지 연속으로 몇 명이 패스했는가</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Score</span><span class="w">             </span><span class="kd">map</span><span class="p">[</span><span class="nx">SeatID</span><span class="p">]</span><span class="kt">int</span><span class="w"> </span><span class="c1">// 누적 점수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">HandsLeft</span><span class="w">         </span><span class="kt">int</span><span class="w">         </span><span class="c1">// 남은 판 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rules</span><span class="w">             </span><span class="nx">Ruleset</span><span class="w">     </span><span class="c1">// 앞의 전제표에 해당하는 설정</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Action 은 공개된 행동 하나다. 패스도 반드시 로그에 남는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Action</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seat</span><span class="w">    </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">TrickID</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Pass</span><span class="w">    </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Play</span><span class="w">    </span><span class="o">*</span><span class="nx">Play</span><span class="w"> </span><span class="c1">// Pass 가 false 일 때만 유효하다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Table</span><span class="w">   </span><span class="o">*</span><span class="nx">Play</span><span class="w"> </span><span class="c1">// 그 행동을 할 때 받아야 했던 수. nil 이면 리드였다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">SeatInfo</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seat</span><span class="w">      </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Title</span><span class="w">     </span><span class="nx">Title</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">HandCount</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 남은 손패의 &#34;장수&#34; 만 안다. 내용은 모른다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Finished</span><span class="w">  </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>Log</code> 를 <code>[]Play</code> 가 아니라 <code>[]Action</code> 으로 둔 것이 나중에 결정적입니다. 제출만 기록하면 카드 카운팅은 되지만 <strong>&ldquo;누가 어떤 트릭에서 참았는가&rdquo;</strong> 를 복원할 수 없습니다. Part 2 의 hard 봇은 이 패스 기록을 상대 손패 추정의 재료로 쓰므로, 로그 스키마 단계에서부터 패스를 일급 이벤트로 남겨야 합니다. easy 봇은 이 필드를 전혀 쓰지 않지만, 나중에 스키마를 바꾸는 것보다 처음부터 넣어 두는 편이 쌉니다.</p>
+<p><code>Score</code> 와 <code>HandsLeft</code> 도 같은 이유로 미리 넣습니다. 공식 점수 규칙(나갈 때마다 남은 인원수만큼 획득, 20판)을 쓰면 <strong>&ldquo;이번 판 1등&quot;과 &ldquo;20판 누적 우승&quot;은 서로 다른 전략</strong> 을 만듭니다. 마지막 판에 점수 선두를 막아야 하는 상황과 첫 판의 상황이 같을 수 없습니다.</p>
+<p><code>SeatInfo.HandCount</code> 가 이 설계의 핵심입니다. 남은 장수는 테이블 위에서 눈으로 셀 수 있는 정보이므로 봇에게 줘도 공정합니다. 반면 그 장수가 어떤 카드인지는 알 수 없습니다. Part 2 의 hard 봇도 이 경계 안에서만 놉니다. 봇이 강해지는 이유는 <strong>더 많이 보기 때문이 아니라, 같은 것을 보고 더 잘 세기 때문</strong> 이어야 합니다.</p>
+<h3 id="2-도메인-타입">2. 도메인 타입<a href="#2-도메인-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Rank</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">RankHighest</span><span class="w"> </span><span class="nx">Rank</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1">// 대달무티 카드. 세상에 1장뿐이다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">RankLowest</span><span class="w">  </span><span class="nx">Rank</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="c1">// 농노 카드. 12장이나 있다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">RankJester</span><span class="w">  </span><span class="nx">Rank</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="c1">// 광대. 단독으로는 최약, 섞어 내면 와일드카드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Card</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ID</span><span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 덱 생성 시 부여하는 고유 번호. 동률 후보의 tie-break 에 쓴다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rank</span><span class="w"> </span><span class="nx">Rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Play 는 테이블에 놓인 한 수다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Rank 는 조커를 제외한 실제 rank 이며, 조커만 냈다면 RankJester 다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Play</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seat</span><span class="w">  </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rank</span><span class="w">  </span><span class="nx">Rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Count</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Cards</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">Play</span><span class="p">)</span><span class="w"> </span><span class="nf">Beats</span><span class="p">(</span><span class="nx">prev</span><span class="w"> </span><span class="nx">Play</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">prev</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">prev</span><span class="p">.</span><span class="nx">Rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>Card.ID</code> 를 굳이 두는 이유가 있습니다. 12를 5장 낼 때 손에 있는 12 일곱 장 중 <strong>어느 다섯 장</strong> 을 내는지는 게임 규칙상 아무 차이가 없습니다. 하지만 구현에서는 차이가 생깁니다. 선택이 map 순회 순서 같은 것에 의존하면 같은 입력에서 다른 출력이 나오고, 그 순간 봇 로직은 <strong>테스트할 수 없는 코드</strong> 가 됩니다. 그래서 모든 동률 상황의 최종 tie-break 를 card ID 오름차순으로 고정합니다.</p>
+<h3 id="3-정책-인터페이스">3. 정책 인터페이스<a href="#3-정책-인터페이스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>봇의 난이도를 나중에 여러 단계로 늘릴 것이므로, 의사결정 지점을 인터페이스로 뽑아 둡니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">BotPolicy</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// SelectPlay 는 자기 차례에 낼 카드를 고르거나 패스한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">SelectPlay</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="nx">Decision</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// DeclareRevolution 은 세금 징수 직전, 혁명 선언 여부를 결정한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">DeclareRevolution</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// SelectTaxCards 는 세금 의무에 따라 넘길 카드를 고른다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">SelectTaxCards</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">duty</span><span class="w"> </span><span class="nx">TaxDuty</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Decision</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Pass</span><span class="w">  </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Cards</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>의사결정 지점이 정확히 세 곳이라는 점을 눈여겨볼 만합니다. 달무티에서 플레이어가 선택하는 순간은 <strong>① 자기 턴에 무엇을 낼 것인가, ② 혁명을 선언할 것인가, ③ 세금으로 어떤 카드를 넘길 것인가</strong> 뿐입니다. 난이도 차이는 전부 이 세 함수 안에서 만들어집니다.</p>
+<hr>
+<h2 id="easy-봇-결정적-규칙만으로-만드는-기준선">easy 봇: 결정적 규칙만으로 만드는 기준선<a href="#easy-봇-결정적-규칙만으로-만드는-기준선" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>easy 봇의 설계 목표는 &ldquo;약한 봇&quot;이 아니라 <strong>&ldquo;완전히 예측 가능하고 항상 합법적인 봇&rdquo;</strong> 입니다. 확률도, 난수도, 탐색도 없습니다. 같은 상황에서는 언제나 같은 수를 둡니다. 이 봇은 세 가지 역할을 합니다.</p>
+<ul>
+<li>룰 엔진의 합법성 검사를 수천 판 자동으로 두들기는 <strong>테스트 하네스</strong></li>
+<li>사람이 자리를 비웠을 때의 <strong>자동 플레이(autoplay) 대체 로직</strong></li>
+<li>hard 봇의 강함을 측정할 <strong>기준선(baseline)</strong></li>
+</ul>
+<p>세 번째가 특히 중요합니다. 기준선이 없으면 hard 봇이 정말 나아졌는지 말할 수 없습니다.</p>
+<h3 id="일반-제출과-패스">일반 제출과 패스<a href="#일반-제출과-패스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>정책은 다음과 같습니다.</p>
+<ul>
+<li>선공이면 <strong>광대를 제외한 가장 약한 rank 묶음 전체</strong> 를 제출합니다.</li>
+<li>손에 광대만 남았으면 광대 한 장을 제출합니다.</li>
+<li>후공이면 현재 묶음을 이길 수 있는 후보 중 <strong>가장 약한 합법 수</strong> 를 선택합니다.</li>
+<li>광대 없는 후보를 우선하고, 반드시 필요할 때만 <strong>최소 수량</strong> 의 광대를 씁니다.</li>
+<li><strong>합법 수가 있으면 전략적으로 패스하지 않고 항상 제출합니다.</strong></li>
+<li>합법 수가 없을 때만 패스합니다.</li>
+<li>동률 후보는 card ID 로 결정합니다.</li>
+</ul>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    S[&#34;내 차례 시작&#34;] --&gt; T{&#34;테이블이 비어 있는가?&#34;}
+    T -- &#34;예 (선공)&#34; --&gt; L1{&#34;광대 말고 카드가 있는가?&#34;}
+    L1 -- 예 --&gt; L2[&#34;가장 약한 rank 묶음&lt;br/&gt;전체 제출&#34;]
+    L1 -- 아니오 --&gt; L3[&#34;광대 1장 제출&#34;]
+    T -- &#34;아니오 (후공)&#34; --&gt; F1[&#34;같은 장수 + 더 강한 rank&lt;br/&gt;합법 후보 전부 생성&#34;]
+    F1 --&gt; F2{&#34;합법 수가 있는가?&#34;}
+    F2 -- 아니오 --&gt; P[&#34;패스&#34;]
+    F2 -- 예 --&gt; F3[&#34;정렬: 광대 적게 →&lt;br/&gt;약한 rank → 작은 card ID&#34;]
+    F3 --&gt; F4[&#34;첫 번째 후보 제출&#34;]
+    style S fill:#FFD700,color:#000000
+    style L2 fill:#90EE90,color:#000000
+    style L3 fill:#90EE90,color:#000000
+    style F4 fill:#90EE90,color:#000000
+    style P fill:#FFB6C1,color:#000000
+</code></pre><p>후보 생성부터 보겠습니다. 달무티의 합법 수는 <code>(rank, 광대 사용량)</code> 이라는 두 축으로 완전히 결정되므로, 후보 집합은 아주 작습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Candidate</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rank</span><span class="w">    </span><span class="nx">Rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Jesters</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Cards</span><span class="w">   </span><span class="p">[]</span><span class="nx">Card</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// LegalFollows 는 table 을 이길 수 있는 모든 (rank, 광대 사용량) 조합을 만든다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 같은 rank 안에서 어떤 카드를 고를지는 card ID 오름차순으로 고정한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">LegalFollows</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="p">,</span><span class="w"> </span><span class="nx">table</span><span class="w"> </span><span class="nx">Play</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">Candidate</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">groups</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">groupByRank</span><span class="p">(</span><span class="nx">hand</span><span class="p">)</span><span class="w"> </span><span class="c1">// map[Rank][]Card, 각 슬라이스는 ID 오름차순</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">jesters</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">groups</span><span class="p">[</span><span class="nx">RankJester</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="p">[]</span><span class="nx">Candidate</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="nx">cards</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">groups</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">RankJester</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">table</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w"> </span><span class="c1">// 광대 단독은 최약이고, 같거나 약한 rank 로는 못 받는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">jesters</span><span class="p">);</span><span class="w"> </span><span class="nx">j</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">natural</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">table</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">j</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">natural</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">natural</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">cards</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="k">continue</span><span class="w"> </span><span class="c1">// 광대만으로 묶음을 만들 수는 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">picked</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nb">append</span><span class="p">([]</span><span class="nx">Card</span><span class="p">{},</span><span class="w"> </span><span class="nx">cards</span><span class="p">[:</span><span class="nx">natural</span><span class="p">]</span><span class="o">...</span><span class="p">),</span><span class="w"> </span><span class="nx">jesters</span><span class="p">[:</span><span class="nx">j</span><span class="p">]</span><span class="o">...</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">out</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span><span class="w"> </span><span class="nx">Candidate</span><span class="p">{</span><span class="nx">Rank</span><span class="p">:</span><span class="w"> </span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="nx">Jesters</span><span class="p">:</span><span class="w"> </span><span class="nx">j</span><span class="p">,</span><span class="w"> </span><span class="nx">Cards</span><span class="p">:</span><span class="w"> </span><span class="nx">picked</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>여기서 <code>natural &lt; 1</code> 검사는 <strong>광대만으로는 묶음을 만들 수 없다</strong> 는 해석을 코드로 굳힌 것입니다. 광대는 어디까지나 다른 숫자에 붙는 와일드카드이므로, 최소 한 장의 진짜 카드가 있어야 그 숫자의 묶음이 됩니다. 이 부분은 모임마다 해석이 갈리는 지점이니, 룰 엔진에서 명시적으로 결정하고 문서화해 두는 편이 좋습니다.</p>
+<p>이제 선택 로직입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">EasyPolicy</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">EasyPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">SelectPlay</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="nx">Decision</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nf">easyLead</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">cands</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">LegalFollows</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">cands</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Pass</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span><span class="w"> </span><span class="c1">// 합법 수가 없을 때만 패스한다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">cands</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nf">easyLess</span><span class="p">(</span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span><span class="w"> </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Cards</span><span class="p">:</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">Cards</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// easyLess 는 세 단계로 후보를 줄세운다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  1. 광대를 덜 쓰는 후보</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  2. 더 약한(숫자가 큰) rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  3. 가장 작은 card ID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">easyLess</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">Candidate</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Jesters</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Jesters</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Jesters</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Jesters</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Cards</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">ID</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Cards</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">ID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// easyLead 는 광대를 뺀 가장 약한 rank 묶음을 통째로 낸다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">easyLead</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="p">)</span><span class="w"> </span><span class="nx">Decision</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">groups</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">groupByRank</span><span class="p">(</span><span class="nx">hand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">weakest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">Rank</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">groups</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">RankJester</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">weakest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">weakest</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="c1">// 숫자가 클수록 약하다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">weakest</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 손에 광대만 남았다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Cards</span><span class="p">:</span><span class="w"> </span><span class="nx">groups</span><span class="p">[</span><span class="nx">RankJester</span><span class="p">][:</span><span class="mi">1</span><span class="p">]}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Cards</span><span class="p">:</span><span class="w"> </span><span class="nx">groups</span><span class="p">[</span><span class="nx">weakest</span><span class="p">]}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>정렬 기준의 순서에 의미가 있습니다. <strong>광대 사용량을 rank 보다 먼저 보는 것</strong> 이 핵심입니다. 예를 들어 3장 판에서 내 손에 9가 3장, 11이 2장 + 광대 1장이 있다고 해봅시다. &ldquo;가장 약한 수&quot;만 따지면 11이 더 약하니 <code>11 + 11 + 광대</code> 를 내야 합니다. 하지만 그러면 와일드카드 한 장이 3장짜리 트릭 하나에 소모됩니다. 광대 우선 규칙이 있으면 <code>9 + 9 + 9</code> 를 내고 광대를 지킵니다. easy 봇이 가진 몇 안 되는 &ldquo;쓸 만한 감각&quot;입니다.</p>
+<h3 id="혁명">혁명<a href="#혁명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>혁명 정책은 계급 룩업 테이블 하나로 끝납니다.</p>
+<ul>
+<li><strong>대혁명 후보(대농노가 광대 2장 보유)</strong> 는 항상 선언합니다.</li>
+<li><strong>첫 판</strong> 의 일반 혁명은 선언하지 않습니다.</li>
+<li>이후 일반 혁명 후보가 <strong>소농노</strong> 이면 선언합니다.</li>
+<li><strong>대달무티·소달무티·상인</strong> 이면 선언하지 않습니다.</li>
+</ul>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;세금 징수 직전&#34;] --&gt; B{&#34;광대 2장을&lt;br/&gt;모두 쥐었는가?&#34;}
+    B -- 아니오 --&gt; N[&#34;선언하지 않음&#34;]
+    B -- 예 --&gt; C{&#34;내 계급이&lt;br/&gt;대농노인가?&#34;}
+    C -- 예 --&gt; G[&#34;대혁명 선언&lt;br/&gt;(무조건)&#34;]
+    C -- 아니오 --&gt; D{&#34;첫 판인가?&#34;}
+    D -- 예 --&gt; N
+    D -- 아니오 --&gt; E{&#34;내 계급이&lt;br/&gt;소농노인가?&#34;}
+    E -- 예 --&gt; R[&#34;혁명 선언&#34;]
+    E -- 아니오 --&gt; N
+    style A fill:#FFD700,color:#000000
+    style G fill:#FF7F50,color:#000000
+    style R fill:#90EE90,color:#000000
+    style N fill:#D3D3D3,color:#000000
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">EasyPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">DeclareRevolution</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nf">countJesters</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">me</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nf">SeatOf</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Me</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">me</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">GreaterPeon</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// 대혁명. 좌석이 통째로 뒤집히므로 조건 없이 선언한다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// 첫 판은 세금 자체가 없어 취소할 것이 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">me</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">LesserPeon</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>단순해 보이지만 이 표에는 나름의 근거가 있습니다. 달무티의 일반 혁명이 하는 일은 <strong>세금 징수 취소</strong> 하나뿐입니다. 그러므로 &ldquo;세금으로 손해를 보는 쪽&quot;만 선언할 이유가 있습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>계급</th>
+          <th>세금으로 인한 손익</th>
+          <th>혁명 선언</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>대달무티</td>
+          <td>최강 카드 2장을 받는다 (큰 이득)</td>
+          <td>안 함</td>
+      </tr>
+      <tr>
+          <td>소달무티</td>
+          <td>최강 카드 1장을 받는다 (이득)</td>
+          <td>안 함</td>
+      </tr>
+      <tr>
+          <td>상인</td>
+          <td>자기가 주고받는 것은 없다</td>
+          <td>안 함 (단순화)</td>
+      </tr>
+      <tr>
+          <td>소농노</td>
+          <td>최강 카드 1장을 뺏긴다 (손해)</td>
+          <td>함</td>
+      </tr>
+      <tr>
+          <td>대농노</td>
+          <td>최강 카드 2장을 뺏긴다 (큰 손해)</td>
+          <td>대혁명으로 함</td>
+      </tr>
+  </tbody>
+</table>
+<p>첫 판 예외도 같은 논리입니다. 우리는 전제표대로 공식 선택 규칙 <em>First Deal Revolution</em> 을 채택했으므로 <strong>첫 판에는 애초에 세금이 없습니다.</strong> 그러니 일반 혁명을 선언해봐야 취소할 세금이 없고, 얻는 것 없이 &ldquo;나에게 광대 2장이 있다&quot;는 사실만 전원에게 공개하는 순손실 행동이 됩니다. easy 봇조차 이 정보 노출 비용은 피하게 해 두는 것이 좋습니다.</p>
+<p>반면 <strong>대혁명 분기는 첫 판에도 살아 있어야 합니다.</strong> 같은 선택 규칙이 <em>&ldquo;If the Greater Peon is dealt both Jesters, he or she may still call a greater revolution as usual&rdquo;</em> 이라고 명시하기 때문입니다. 대혁명이 취소하는 것은 세금이 아니라 <strong>좌석 그 자체</strong> 이므로, 세금이 없는 판에서도 선언할 값어치가 온전히 남습니다. 위 코드에서 <code>GreaterPeon</code> 검사가 <code>Round == 1</code> 검사보다 <strong>먼저</strong> 오는 것은 그래서입니다. 순서를 바꾸면 첫 판 대혁명이 조용히 사라집니다.</p>
+<p>상인 행은 사정이 조금 다릅니다. 상인은 자기가 주고받는 카드가 없으니 <strong>손패 관점의 직접 이득이 0</strong> 이고, 정보 노출 비용만 남는 것처럼 보입니다. 하지만 혁명이 취소하는 것은 내 세금만이 아니라 <strong>판 전체의 세금</strong> 입니다. 상인이 혁명을 선언하면 두 달무티가 최강 카드를 받는 것도 함께 막힙니다. 이 &ldquo;상대 강화 방지&rdquo; 가치는 상인에게도 분명히 있고, 사실은 농노들에게도 세금 취소 이득과 별개로 존재합니다.</p>
+<p>즉 위 표의 상인 행은 <strong>easy 봇을 위한 의도적 단순화</strong> 입니다. easy 봇은 자기 손패 손익만 보고 상대 손패 변화를 계산하지 않습니다. Part 3 의 hard 봇에서 이 항을 제대로 분리해 다루겠습니다.</p>
+<h3 id="세금징수">세금징수<a href="#세금징수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>세금 정책은 두 가지 의무로 나뉩니다.</p>
+<ul>
+<li>낮은 계급 봇의 <code>GiveBest</code> 의무는 <strong>룰이 강제하는 가장 강한 카드</strong> 를 제출합니다.</li>
+<li>높은 계급 봇의 <code>ReturnAny</code> 의무는 <strong>가장 약한 카드부터</strong> 제출합니다.</li>
+<li>같은 강도의 카드는 card ID 를 tie-breaker 로 씁니다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">TaxKind</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">GiveBest</span><span class="w">  </span><span class="nx">TaxKind</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span><span class="w"> </span><span class="c1">// 농노 → 달무티. 가장 강한 카드를 바쳐야 한다 (룰 강제)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ReturnAny</span><span class="w">                </span><span class="c1">// 달무티 → 농노. 아무 카드나 내려줘도 된다 (선택권 있음)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">TaxDuty</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Kind</span><span class="w">  </span><span class="nx">TaxKind</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Count</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">To</span><span class="w">    </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">EasyPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">SelectTaxCards</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">duty</span><span class="w"> </span><span class="nx">TaxDuty</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">h</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">append</span><span class="p">([]</span><span class="nf">Card</span><span class="p">(</span><span class="kc">nil</span><span class="p">),</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="o">...</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">switch</span><span class="w"> </span><span class="nx">duty</span><span class="p">.</span><span class="nx">Kind</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="nx">GiveBest</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Rank</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Rank</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="k">return</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Rank</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Rank</span><span class="w"> </span><span class="c1">// 숫자가 작을수록 강하다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">ID</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">ID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="nx">ReturnAny</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Rank</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Rank</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="k">return</span><span class="w"> </span><span class="nf">weakerFirst</span><span class="p">(</span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Rank</span><span class="p">,</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Rank</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">ID</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">h</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">ID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">h</span><span class="p">[:</span><span class="nx">duty</span><span class="p">.</span><span class="nx">Count</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// weakerFirst 는 &#34;약한 카드 먼저&#34; 순서를 정한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 광대는 서열상 최약이지만 와일드카드라 실질 가치가 높으므로 맨 뒤로 뺀다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">weakerFirst</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">Rank</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">RankJester</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">RankJester</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">RankJester</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">b</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>weakerFirst</code> 의 광대 예외를 빼먹으면 조용한 버그가 생깁니다. 광대는 <strong>단독 서열로는 13, 즉 최약</strong> 이므로, 순수 서열 순으로 정렬하면 대달무티 봇이 세금 반환 카드로 <strong>광대를 내려주게</strong> 됩니다. 룰 위반은 아니지만 게임적으로는 최악의 수입니다.</p>
+<p>광대를 지켜야 하는 이유는 순수한 <strong>플레이 가치</strong> 에 있습니다. 혁명과는 무관합니다. 앞의 규칙 요약에서 봤듯 혁명 판정은 딜 직후 세금 징수보다 먼저 끝나고 카드는 매 판 다시 딜되므로, 세금으로 넘긴 광대가 그 판의 혁명 재료가 되는 일은 없습니다. 광대는 어떤 묶음에든 붙어 장수를 늘려 주는 유일한 카드이고, Part 2 에서 보겠지만 달무티에서 묶음 한 장 차이는 &ldquo;그 수를 받을 수 있는 사람이 존재할 확률 19%&ldquo;와 &ldquo;2%&ldquo;를 가릅니다. 최강 카드 2장을 뺏어 오면서 그 대신 상대 묶음을 부풀릴 열쇠를 건네는 셈입니다. 서열과 실질 가치가 어긋나는 유일한 카드이므로 명시적으로 예외 처리해야 합니다.</p>
+<p><code>GiveBest</code> 쪽은 반대로 아무 예외가 필요 없습니다. 규칙이 &ldquo;가장 강한 카드&quot;를 강제하므로 봇에게 선택의 여지 자체가 없고, 광대는 최약이라 애초에 후보에 오르지 않습니다. <strong>세금은 주는 쪽이 아니라 받는 쪽에서만 의사결정이 일어난다</strong> 는 점을 코드가 그대로 보여줍니다.</p>
+<h3 id="세금-단계의-실행-순서">세금 단계의 실행 순서<a href="#세금-단계의-실행-순서" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>세금 단계는 여러 좌석의 의무가 동시에 걸리기 때문에, 정책 자체보다 <strong>처리 순서</strong> 가 더 까다롭습니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;판 시작 · 세금 단계 진입&#34;] --&gt; B[&#34;교환 전 손패 스냅샷 기준으로&lt;br/&gt;모든 봇의 의무 선택을 먼저 계산&#34;]
+    B --&gt; C[&#34;2.5초 대기&lt;br/&gt;(사람이 따라올 수 있는 속도로)&#34;]
+    C --&gt; D[&#34;pending 상태인 봇 의무를&lt;br/&gt;한 transaction 으로 일괄 제출&#34;]
+    D --&gt; E{&#34;사람이 수행할 의무가&lt;br/&gt;남아 있는가?&#34;}
+    E -- 예 --&gt; F[&#34;해당 입력 대기&#34;]
+    E -- 아니오 --&gt; G[&#34;카드 교환 확정 → 첫 턴 시작&#34;]
+    F --&gt; G
+    style A fill:#FFD700,color:#000000
+    style B fill:#87CEEB,color:#000000
+    style G fill:#90EE90,color:#000000
+</code></pre><p>두 가지 규칙이 중요합니다.</p>
+<p><strong>모든 봇 선택은 교환 전 손패를 기준으로 먼저 계산합니다.</strong> 봇 A 가 카드를 넘긴 결과가 봇 B 의 손패에 반영된 뒤 봇 B 가 선택하게 되면, 처리 순서에 따라 결과가 달라져 재현이 불가능해집니다. 스냅샷을 떠서 전부 계산한 뒤 한꺼번에 적용하면 순서 의존성이 사라집니다.</p>
+<p><strong>pending 인 봇 의무는 한 transaction 에서 일괄 제출합니다.</strong> 세금 교환은 여러 좌석의 손패를 동시에 바꾸는 연산이라, 중간에 실패하면 카드가 증발하거나 복제됩니다. 원자적으로 처리해야 합니다.</p>
+<p><strong>2.5초 지연</strong> 은 알고리즘이 아니라 UX 결정입니다. 봇의 판단에는 사람의 반응 시간만큼이 필요하지 않으므로, 지연이 없으면 사람 눈에는 &ldquo;화면이 한 번 깜빡였더니 이미 다 끝나 있는&rdquo; 상태가 됩니다. 무슨 일이 일어났는지 읽을 시간을 주기 위해 인위적으로 넣는 대기입니다. 이 지연은 봇의 턴 제출에도 똑같이 적용하고, 클라이언트 애니메이션과 어긋나지 않도록 <code>bot_action</code> 같은 단일 유형으로 분류해 한 곳에서 관리하는 편이 좋습니다.</p>
+<hr>
+<h2 id="easy-봇은-왜-지는가">easy 봇은 왜 지는가<a href="#easy-봇은-왜-지는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>easy 봇은 기준선으로서 훌륭하지만, 사람과 몇 판만 붙어 보면 금방 약점이 드러납니다. 그 약점들이 정확히 Part 2 와 Part 3 의 설계 항목이 됩니다.</p>
+<p><strong>1. 이미 나온 카드를 보지 않습니다.</strong> <code>GameView.Log</code> 를 아예 읽지 않습니다. 달무티는 rank 별 장수가 고정된 덱이라 카드 카운팅의 정확도가 대단히 높은 게임인데, easy 봇은 그 정보를 통째로 버립니다.</p>
+<p><strong>2. 낼 수 있으면 무조건 냅니다.</strong> 이것이 가장 큰 손실입니다. 재미있게도 공식 룰북이 직접 이 점을 지적합니다.</p>
+<blockquote>
+<p>&ldquo;Most of the time you should play your worst cards when you can, but <strong>don&rsquo;t be afraid to pass sometimes even when you can play.</strong> A savvy player in a lower position often won&rsquo;t play a good set until several people are out, saving it until he or she can use it to try to take the lead.&rdquo;
+— 공식 룰북 <em>The Strategy of Saving Cards</em> 절</p>
+</blockquote>
+<p>easy 봇에는 이 판단이 아예 없습니다. 게다가 달무티는 <strong>패스한 뒤에도 다시 낼 수 있는</strong> 룰이라 패스의 비용이 원래 낮습니다. &ldquo;패스=탈락&rdquo; 변형에서는 참는 것이 &ldquo;이번 트릭 포기&quot;라는 확정 손실이지만, 공식 룰에서는 그냥 &ldquo;이번 차례만 거른다&quot;에 불과합니다. 참는 것이 이렇게 싼 게임에서 한 번도 참지 않는 것은 그만큼 큰 손실입니다.</p>
+<p><strong>3. 묶음을 지키지 않습니다.</strong> 누군가 <code>12 x 3</code> 으로 연 트릭에서 내 손에 11이 일곱 장 있으면, easy 봇은 성실하게 <code>11 x 3</code> 을 냅니다. 그 순간 <strong>사실상 아무도 못 받는 7장짜리 리드 재료</strong> 가 쪼개져 반쪽이 됩니다. 후보를 &ldquo;가장 약한 수&rdquo; 기준으로만 고르기 때문에 벌어지는 일입니다.</p>
+<p><strong>4. 광대를 흘립니다.</strong> 선공 로직이 광대를 묶음에 붙이지 않으므로, <code>12 x 4 + 광대 2장</code> 을 쥐고도 4장 리드를 냅니다. 광대를 붙여 6장으로 만들면 사실상 무적인데 말입니다. 게다가 손에 광대만 남으면 한 장씩 흘려 두 턴을 씁니다.</p>
+<p><strong>5. 혁명 판단이 손패와 무관합니다.</strong> 계급만 보고 결정하므로, 세금을 취소하는 것이 실제로 이득인지 손해인지 계산하지 않습니다.</p>
+<p><strong>6. 완전히 예측 가능합니다.</strong> 결정적이라는 것은 테스트에는 축복이지만 상대에게는 정보입니다. 사람은 몇 판 만에 &ldquo;이 봇은 늘 가장 약한 수로 받는다&quot;는 패턴을 읽고, 그 위에서 자기 손패를 짭니다.</p>
+<p>여섯 가지를 한 문장으로 줄이면 이렇습니다.</p>
+<blockquote>
+<p>easy 봇은 <strong>한 턴 안에서 합법적인 최소 손실</strong> 을 계산할 뿐, <strong>판 전체에서 자기 손패를 몇 번 제출해 털지</strong> 는 계산하지 않습니다.</p>
+</blockquote>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1 에서는 봇 설계의 뼈대를 잡았습니다. 정리하면 세 가지입니다.</p>
+<ul>
+<li><strong>공정성을 타입으로 못 박습니다.</strong> 봇은 <code>GameView</code> 만 봅니다. 상대 손패는 구조체에 존재하지 않고, 남은 장수만 압니다.</li>
+<li><strong>결정성을 확보합니다.</strong> 모든 동률은 card ID 로 끊고, 세금 선택은 교환 전 스냅샷 기준으로 일괄 계산합니다. 그래야 봇 로직이 테스트 가능한 코드가 됩니다.</li>
+<li><strong>의사결정 지점은 세 곳뿐입니다.</strong> 제출·혁명·세금. 난이도는 전부 이 세 함수 안에서 만들어집니다.</li>
+</ul>
+<p>Part 2 와 Part 3 에서는 이 세 함수를 다시 씁니다. 위에 적은 여섯 가지 약점을 하나씩 되짚으면서, <strong>나온 카드를 세고, 자기 손패를 몇 번에 털지 계산하고, 낼 수 있어도 패스할 줄 아는</strong> hard 봇을 설계하겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://boardgamegeek.com/boardgame/121/great-dalmuti">The Great Dalmuti (BoardGameGeek)</a></li>
+<li><a href="https://media.wizards.com/2015/downloads/ah/great_dalmuti_rules.pdf">The Great Dalmuti Rulebook (Wizards of the Coast, PDF)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/The_Great_Dalmuti">The Great Dalmuti (Wikipedia)</a></li>
+<li><a href="https://www.pagat.com/climbing/">Climbing Games Index (Pagat)</a></li>
+<li><a href="https://www.pagat.com/climbing/bigtwo.html">Big Two (Pagat)</a> — 패스 후 재참여가 기본 규칙임을 명시</li>
+<li><a href="https://www.pagat.com/climbing/daifugo.html">Dai Fugō / Dai Hin Min (Pagat)</a> — &ldquo;패스하면 못 낸다&quot;를 변형 룰로 분류</li>
+<li><a href="https://www.marquand.net/lexio/rules.html">Lexio Rules (marquand.net)</a> — &ldquo;Passing is not permanent in the hand&rdquo;. 발행사 문서가 아닌 정리 자료</li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-02/">달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-02/" class="button inline prev">
+        &lt; [<span class="button__text">달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260729-ai-honeymoon-over-tech-workforce-split/" class="button inline next">
+         [<span class="button__text">AI 허니문이 끝난 자리: 테크 인력 6,000명을 반으로 가른 것과, 개인이 바꿀 수 있는 것</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

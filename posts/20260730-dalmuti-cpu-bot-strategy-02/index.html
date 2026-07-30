@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="달무티 hard 봇이 상대 손패를 훔쳐보지 않고 무엇을 알아낼 수 있는지 다룹니다. 오차 0의 카드 카운팅, 패스를 확정 정보가 아닌 확률적 증거로 다루는 법, 광대 2장이 만드는 구조적 확실승수 판정, 그리고 손패의 최소 제출 횟수 플랜을 재현 가능한 몬테카를로 수치와 함께 정리합니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy, simulation" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-02/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정">
+<meta property="og:description" content="달무티 hard 봇이 상대 손패를 훔쳐보지 않고 무엇을 알아낼 수 있는지 다룹니다. 오차 0의 카드 카운팅, 패스를 확정 정보가 아닌 확률적 증거로 다루는 법, 광대 2장이 만드는 구조적 확실승수 판정, 그리고 손패의 최소 제출 횟수 플랜을 재현 가능한 몬테카를로 수치와 함께 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-02/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-30 14:18:37 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-02/">달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-30</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/simulation/">simulation</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="hard-봇이-지켜야-할-세-가지">hard 봇이 지켜야 할 세 가지<a href="#hard-봇이-지켜야-할-세-가지" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">Part 1</a>에서는 달무티 CPU 플레이어의 뼈대를 잡고, 결정적 규칙만으로 움직이는 easy 봇을 만들었습니다. easy 봇은 합법적이고 예측 가능하지만, &ldquo;낼 수 있으면 무조건 낸다&quot;는 정책 때문에 사람에게 쉽게 집니다.</p>
+<p>이번 편부터 hard 봇을 설계합니다. 설계 제약은 세 가지입니다.</p>
+<p><strong>1. 상대의 손패는 절대 볼 수 없습니다.</strong> 봇은 Part 1 에서 정의한 <code>GameView</code> 만 받습니다. 난이도를 올리기 위해 정보를 더 주는 것은 설계가 아니라 반칙입니다. 사람이 &ldquo;저 봇 손패 보는 거 아니야?&ldquo;라고 의심하는 순간 게임의 신뢰가 무너집니다.</p>
+<p><strong>2. 이미 제출된 카드를 셉니다.</strong> easy 봇이 통째로 버리던 공개 행동 로그를 전부 활용합니다. 이것이 두 난이도를 가르는 가장 큰 차이입니다.</p>
+<p><strong>3. 여러 합법 수 중에서 전략적으로 고르고, 낼 수 있어도 패스할 줄 압니다.</strong> 공식 룰북조차 <em>The Strategy of Saving Cards</em> 절에서 <em>&ldquo;don&rsquo;t be afraid to pass sometimes even when you can play&rdquo;</em> 라고 조언하는 판단을, 명시적인 기대값 계산으로 옮깁니다.</p>
+<p>분량이 있어 hard 봇을 두 편으로 나눕니다. <strong>Part 2(이 글)는 봇이 무엇을 아는가</strong>, 즉 판단의 재료를 만듭니다. <strong>Part 3 은 그 재료로 무엇을 결정하는가</strong>, 즉 수 평가 함수와 전략적 패스, 세금과 혁명 판단, 그리고 검증 방법을 다룹니다.</p>
+<h3 id="이-글도-설계안입니다">이 글도 설계안입니다<a href="#이-글도-설계안입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Part 1 과 마찬가지로 이 글은 특정 제품의 구현 보고서가 아니라 설계안이고, 코드는 논지를 보이기 위한 발췌입니다. 룰셋 전제는 <a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">Part 1 의 전제표</a>를 그대로 따릅니다. 그중 hard 봇 설계에 결정적인 두 가지만 다시 적어 두겠습니다.</p>
+<ul>
+<li><strong>패스해도 자기 차례가 다시 오면 낼 수 있습니다.</strong> 달무티의 패스는 트릭 포기가 아니라 &ldquo;이번 차례만 거른다&quot;입니다. (Part 1 에서 확인했듯 렉시오·빅투·대부호의 대표 규칙 자료도 마찬가지이고, &ldquo;패스=탈락&quot;이 오히려 소수 변형 룰입니다.)</li>
+<li><strong>살아 있는 전원이 연속으로 패스해야</strong> 트릭이 끝나고, 마지막에 낸 사람이 다음 트릭을 리드합니다.</li>
+</ul>
+<p>이 두 줄이 Part 3 의 리드권 계산과 패스 판단을 전부 규정합니다.</p>
+<hr>
+<h2 id="1-공개-정보-모델-달무티는-카운팅이-쉬운-게임이다">1. 공개 정보 모델: 달무티는 카운팅이 쉬운 게임이다<a href="#1-공개-정보-모델-달무티는-카운팅이-쉬운-게임이다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="오차가-0인-카운팅">오차가 0인 카운팅<a href="#오차가-0인-카운팅" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>달무티는 카드 카운팅 관점에서 <strong>비정상적으로 유리한 게임</strong> 입니다. 이유가 세 가지 있습니다.</p>
+<ul>
+<li><strong>덱 구성이 완전히 알려져 있습니다.</strong> rank r 은 정확히 r 장, 광대는 2장. 트럼프처럼 무늬를 따질 필요도 없습니다.</li>
+<li><strong>80장을 전부 나눠줍니다.</strong> 뒷면으로 남는 더미가 없습니다. 그래서 &ldquo;내가 못 본 카드&quot;는 곧 <strong>&ldquo;상대 손패에 있는 카드&rdquo;</strong> 와 정확히 일치합니다. 추정이 아니라 확정입니다.</li>
+<li><strong>rank 별 장수가 비대칭입니다.</strong> rank 3은 세상에 3장뿐이라, 3장이 다 나온 순간 &ldquo;이제 3으로는 아무도 받을 수 없다&quot;가 확정됩니다. 낮은 rank 일수록 빨리 소진되고, 소진되는 즉시 강력한 확정 정보가 됩니다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Ledger 는 공개 정보만으로 만들어지는 카운팅 장부다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Ledger</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">unseen</span><span class="w"> </span><span class="p">[</span><span class="nx">RankJester</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="kt">int</span><span class="w"> </span><span class="c1">// unseen[r] = 내가 못 본 rank r 카드 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">seats</span><span class="w">  </span><span class="p">[]</span><span class="nx">SeatModel</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">me</span><span class="w">     </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewLedger</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">l</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">Ledger</span><span class="p">{</span><span class="nx">me</span><span class="p">:</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Me</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">RankHighest</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">RankLowest</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="c1">// rank r 은 r 장</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">RankJester</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 내 손패는 이미 본 것이다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">Rank</span><span class="p">]</span><span class="o">--</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Log</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 이번 판에 테이블에 나온 모든 카드</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Pass</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Play</span><span class="p">.</span><span class="nx">Cards</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">Rank</span><span class="p">]</span><span class="o">--</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">l</span><span class="p">.</span><span class="nx">seats</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">buildSeatModels</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">l</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="p">)</span><span class="w"> </span><span class="nf">TotalUnseen</span><span class="p">()</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">sum</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">sum</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>포커의 아웃츠 계산과 비슷해 보이지만 성격이 다릅니다. 포커는 &ldquo;덱에 남은 카드&quot;를 세는 것이라 그 카드가 누구 손에 있는지 알 수 없지만, 달무티는 <strong>남은 카드가 전부 누군가의 손에 있음이 보장</strong> 됩니다. 그래서 카운팅 결과는 곧바로 <strong>&ldquo;이 수를 받을 조합이 원리적으로 존재할 수 있는가&rdquo;</strong> 라는 질문의 답이 됩니다.</p>
+<p>다만 여기서 한 걸음 더 나가면 안 됩니다. 장부가 알려주는 것은 rank 별 <strong>총량</strong> 이지 <strong>분포</strong> 가 아닙니다. rank 9 가 다섯 장 남아 있다는 사실은 알아도, 그 다섯 장이 한 사람 손에 몰려 있는지 다섯 명에게 한 장씩 흩어져 있는지는 알 수 없습니다. 정확히 말하면 이렇습니다.</p>
+<blockquote>
+<p>카운팅만으로 확정할 수 있는 것은 <strong>&ldquo;아무도 받을 수 없다&quot;는 부정 판정뿐</strong> 입니다. &ldquo;받을 사람이 실제로 존재한다&quot;는 긍정 판정에는 <strong>좌석별 분포 모델이 따로 필요합니다.</strong></p>
+</blockquote>
+<p>다음 절에서 판정을 구조적 판정과 확률적 판정으로 나누는 것이 바로 이 때문입니다. 앞쪽은 카운팅만으로 끝나고, 뒤쪽은 확률이 필요합니다.</p>
+<h3 id="패스는-정보이되-확정-정보가-아니다">패스는 정보이되, 확정 정보가 아니다<a href="#패스는-정보이되-확정-정보가-아니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 한 걸음 더 나갈 수 있습니다. 손패를 훔쳐보지 않고도 상대 손패를 추정할 단서가 있습니다. 바로 <strong>패스</strong> 입니다.</p>
+<p>어떤 좌석이 <code>(rank R, n장)</code> 트릭에서 패스했다면, 그 좌석에 대해 무언가를 알게 된 것은 분명합니다. 문제는 <strong>무엇을 알게 되었는가</strong> 입니다. 관찰된 패스는 두 경우를 구분하지 못합니다.</p>
+<ul>
+<li>낼 카드가 없었다.</li>
+<li>낼 수 있지만 아꼈다.</li>
+</ul>
+<p>그리고 두 번째가 바로 이 글이 hard 봇의 핵심 능력으로 권장하는 행동입니다. 패스를 &ldquo;R 보다 강한 rank 로 n장을 못 만든다&quot;는 <strong>확정 배제(hard exclusion)</strong> 로 쓰면, 상대가 강할수록 장부가 더 심하게 오염됩니다. 자기가 하는 짓을 상대는 안 한다고 가정하는 셈이니까요.</p>
+<p>게다가 달무티는 <strong>패스한 뒤에도 다시 낼 수 있는</strong> 룰이라, 패스의 정보량이 구조적으로 낮습니다. 한 번 패스하면 그 트릭에서 빠지는 변형 룰에서는 패스가 되돌릴 수 없는 선언이라 그나마 무겁지만, 공식 룰의 패스는 &ldquo;지금은 안 낸다&quot;에 불과합니다. <strong>되돌릴 수 있는 선택일수록 신호로서의 값어치가 떨어집니다.</strong></p>
+<p>그래서 패스는 <strong>확정 배제가 아니라 확률적 증거(soft evidence)</strong> 로 다룹니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">SeatModel</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seat</span><span class="w">      </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">HandCount</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Finished</span><span class="w">  </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// PassEvidence 는 이 좌석이 패스한 트릭들의 기록이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 확정 배제가 아니라 우도(likelihood) 계산의 재료로만 쓴다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">PassEvidence</span><span class="w"> </span><span class="p">[]</span><span class="nx">PassObservation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">PassObservation</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rank</span><span class="w">  </span><span class="nx">Rank</span><span class="w"> </span><span class="c1">// 그때 받아야 했던 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Count</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// adjustByPasses 는 &#34;좌석 s 가 (rank, n) 을 받을 수 있다&#34; 는 base 값을</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 관측된 패스들에 비추어 낮춘 위험 점수다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 베이즈 갱신의 형태를 빌린다. 우도는 다음과 같다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	P(패스 | 받을 수 없음) = 1     ... 패스 말고 선택지가 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	P(패스 | 받을 수 있음) = hold  ... &#34;낼 수 있는데도 참을 확률&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 그러므로 관측 하나마다 승산(odds)에 hold 를 곱한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// hold 가 0 이면 확정 배제와 같아지고, 1 이면 패스에서 아무 정보도 얻지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="o">*</span><span class="nx">SeatModel</span><span class="p">)</span><span class="w"> </span><span class="nf">adjustByPasses</span><span class="p">(</span><span class="nx">base</span><span class="w"> </span><span class="kt">float64</span><span class="p">,</span><span class="w"> </span><span class="nx">rank</span><span class="w"> </span><span class="nx">Rank</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">hold</span><span class="w"> </span><span class="kt">float64</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">base</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// base 가 정확히 1 이면 승산이 무한대가 되어 갱신이 죽는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// base 는 Boole 상한이라 1 로 포화되기 쉬우므로 반드시 1 미만으로 눌러 둔다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">base</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">math</span><span class="p">.</span><span class="nf">Min</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">-</span><span class="mf">1e-6</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">odds</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">base</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">base</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ev</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">PassEvidence</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">ev</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ev</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">rank</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w"> </span><span class="c1">// 이번 판단과 무관한 관측이다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">odds</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="nx">hold</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">odds</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">odds</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>정규화가 반드시 필요합니다.</strong> 입력값에 <code>hold</code> 를 그냥 곱하면 베이즈 정리의 분자만 계산한 값이 됩니다. 올바른 형태는 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">P(받을 수 있음 | 패스) = hold·p / (hold·p + 1·(1-p))
+</span></span></code></pre></div><p><code>p = 0.5</code>, <code>hold = 0.3</code> 이면 정규화한 값은 <code>0.15 / (0.15 + 0.5) = 0.231</code> 인데, 분자만 쓰면 <code>0.15</code> 가 나옵니다. 방향은 같지만 <strong>과하게 깎여서</strong> 봇이 상대의 응수 능력을 실제보다 낮게 보고 무리한 리드를 던지게 됩니다. 위 코드처럼 승산으로 계산하면 관측이 여러 개여도 곱셈 한 번씩으로 누적되므로 정규화를 빠뜨릴 일도 없습니다.</p>
+<h3 id="이-값을-확률이라-부르지는-않겠습니다">이 값을 &ldquo;확률&quot;이라 부르지는 않겠습니다<a href="#이-값을-확률이라-부르지는-않겠습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>식은 베이즈 갱신의 형태를 갖췄지만, <strong>여기에 들어가는 입력이 진짜 사전확률이 아닙니다.</strong> 두 가지 이유가 있습니다.</p>
+<p><strong>첫째, 입력이 Boole 상한입니다.</strong> 다음 절에서 볼 <code>SeatBeatRisk</code> 는 rank 별 확률을 그냥 더한 값이라 실제 확률보다 큽니다. 심하면 1로 포화됩니다. 그리고 값이 정확히 1이면 승산이 무한대가 되어 <strong>패스 증거가 아무리 쌓여도 갱신이 죽습니다.</strong> 위 코드에서 <code>1 - 1e-6</code> 으로 눌러 두는 것은 이 함정을 막기 위해서입니다. 상한을 확률처럼 쓰기로 한 이상, 이런 경계 처리는 선택이 아니라 필수입니다.</p>
+<p><strong>둘째, 관측들이 조건부 독립이 아닙니다.</strong> 관측 하나마다 <code>hold</code> 를 반복해서 곱하는 것은 &ldquo;패스들이 서로 독립적인 증거&quot;라는 가정 위에 서 있습니다. 그런데 같은 손패를 쥔 같은 상대가 <strong>결정적 정책</strong> 으로 낸 패스들은 강하게 상관되어 있습니다. 세 번 패스했다고 해서 증거가 세 배로 쌓이지는 않습니다.</p>
+<p>그래서 이 값은 사후확률이 아니라 <strong>&ldquo;패스 증거로 조정한 보수적 위험 점수&rdquo;</strong> 로 부르는 편이 정직합니다. 후보 간 순서를 매기는 데는 충분하지만, 확률로 표시하거나 다른 확률과 곱해 해석할 값은 아닙니다. 진짜 확률이 필요하다면 광대와 rank 의 결합 분포까지 반영해 좌석별 확률을 먼저 제대로 구한 다음 갱신해야 하는데, 그건 이 글의 범위를 넘습니다.</p>
+<p><code>hold</code> 값을 어떻게 잡느냐가 그대로 봇의 성격이 됩니다. easy 봇들만 있는 방이라면 <code>hold</code> 를 0에 가깝게 두는 것이 정확합니다. easy 봇은 낼 수 있으면 반드시 내니까요. 사람이나 hard 봇이 섞인 방에서는 0.3~0.5 정도가 안전합니다. <strong>상대 모델링을 상수 하나로 노출해 두면, 나중에 &ldquo;상대 성향을 관측해서 이 값을 갱신&quot;하는 확장이 자연스럽게 붙습니다.</strong></p>
+<p>한 가지 더. <code>PassEvidence</code> 는 <strong>판이 바뀌면 반드시 초기화</strong> 해야 합니다. 세금 교환으로 손패가 바뀌고 다음 판에는 카드가 다시 딜되므로, 이전 판의 관측은 전부 무효입니다.</p>
+<hr>
+<h2 id="2-확실승수-판정-이-수는-아무도-못-받는다">2. 확실승수 판정: &ldquo;이 수는 아무도 못 받는다&rdquo;<a href="#2-확실승수-판정-이-수는-아무도-못-받는다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="구조적-판정--확률이-필요-없는-영역">구조적 판정 — 확률이 필요 없는 영역<a href="#구조적-판정--확률이-필요-없는-영역" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>달무티에는 다른 클라이밍 게임에 없는 강력한 구조적 성질이 있습니다.</p>
+<blockquote>
+<p>rank <code>r'</code> 로 <code>n</code> 장짜리 묶음을 만들려면, rank <code>r'</code> 카드 <code>x</code> 장(최소 1장)과 광대 <code>j</code> 장이 필요하고 <code>x + j = n</code> 입니다. 광대는 세상에 2장뿐이므로 <strong><code>r' ≥ n - 2</code></strong> 여야 합니다.</p>
+</blockquote>
+<p>즉 <strong>큰 묶음일수록 응수할 수 있는 rank 자체가 사라집니다.</strong> 강약이 아니라 장수 때문에 그렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>리드 장수</th>
+          <th>응수 가능한 rank (상대가 광대 2장 보유 시)</th>
+          <th>응수 가능한 rank (내가 광대 2장 보유 시)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3장</td>
+          <td>1 이상</td>
+          <td>3 이상</td>
+      </tr>
+      <tr>
+          <td>4장</td>
+          <td>2 이상</td>
+          <td>4 이상</td>
+      </tr>
+      <tr>
+          <td>5장</td>
+          <td>3 이상</td>
+          <td>5 이상</td>
+      </tr>
+      <tr>
+          <td>6장</td>
+          <td>4 이상</td>
+          <td>6 이상</td>
+      </tr>
+      <tr>
+          <td>8장</td>
+          <td>6 이상</td>
+          <td>8 이상</td>
+      </tr>
+      <tr>
+          <td>10장</td>
+          <td>8 이상</td>
+          <td>10 이상</td>
+      </tr>
+      <tr>
+          <td>12장</td>
+          <td>10 이상</td>
+          <td>12 이상</td>
+      </tr>
+  </tbody>
+</table>
+<p>여기에 &ldquo;리드한 rank 보다 강해야 한다&quot;는 조건이 겹칩니다. 예를 들어 <code>12 x 8</code> 을 리드하면, 응수 가능한 rank 는 6~11 뿐이고 그 여섯 개 rank 중 하나에서 <strong>8장을 한 손에 몰아 쥔 사람</strong> 이 있어야 합니다. rank 6은 세상에 6장뿐이라 광대 2장을 다 합쳐야 겨우 8장입니다.</p>
+<p>이 판정은 확률이 아니라 참/거짓입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// StructurallySafe 는 미공개 카드 전부를 한 명이 가졌다고 가정해도</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// (rank, n) 을 이길 수 없으면 true 를 리턴한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="p">)</span><span class="w"> </span><span class="nf">StructurallySafe</span><span class="p">(</span><span class="nx">rank</span><span class="w"> </span><span class="nx">Rank</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">jokers</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">RankJester</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">RankHighest</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">rank</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w"> </span><span class="c1">// 자연 카드가 최소 1장은 있어야 그 rank 의 묶음이 된다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">+</span><span class="nb">min</span><span class="p">(</span><span class="nx">jokers</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// 이길 수 있는 조합이 원리적으로 존재한다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>min(jokers, n-1)</code> 이 미묘한 부분입니다. 광대가 2장 남아 있어도 자연 카드 1장은 반드시 필요하므로, 광대는 최대 <code>n-1</code> 장까지만 쓸 수 있습니다.</p>
+<p>이 함수가 <code>true</code> 를 리턴하면 봇은 <strong>리드권 회수가 보장된 경로</strong> 를 얻습니다. 아무도 받을 수 없으니 전원이 연속으로 패스할 수밖에 없고, 트릭은 반드시 나에게 돌아옵니다. 뒤에서 보겠지만 달무티에서 리드권 회수는 대단히 어려운 일이라, 이 보장의 값어치가 다른 클라이밍 게임보다 훨씬 큽니다.</p>
+<h3 id="확률적-판정--실전에서-필요한-회색지대">확률적 판정 — 실전에서 필요한 회색지대<a href="#확률적-판정--실전에서-필요한-회색지대" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>구조적으로 안전한 수는 판 후반에나 나옵니다. 판 초반에는 확률로 판단해야 합니다. 문제는 이렇습니다. &ldquo;이길 수 있는 카드가 남아 있다&quot;와 &ldquo;그 카드가 <strong>한 사람의 손에</strong> 몰려 있다&quot;는 전혀 다른 얘기입니다.</p>
+<p>이 차이가 얼마나 큰지 보기 위해, 판 시작 시점(아무 정보도 없는 최악의 조건)에서 rank 12 를 n 장 리드했을 때 <strong>그 수를 받을 수 있는 사람이 존재할 확률</strong> 을 몬테카를로로 뽑아 봤습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>리드 장수</th>
+          <th>4명 (20장씩)</th>
+          <th>6명 (13~14장씩)</th>
+          <th>8명 (10장씩)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3장</td>
+          <td>100.0%</td>
+          <td>100.0%</td>
+          <td>100.0%</td>
+      </tr>
+      <tr>
+          <td>4장</td>
+          <td>100.0%</td>
+          <td>96.6%</td>
+          <td>78.8%</td>
+      </tr>
+      <tr>
+          <td>5장</td>
+          <td>93.6%</td>
+          <td>48.2%</td>
+          <td>18.8%</td>
+      </tr>
+      <tr>
+          <td>6장</td>
+          <td>51.7%</td>
+          <td>9.9%</td>
+          <td>1.9%</td>
+      </tr>
+      <tr>
+          <td>7장</td>
+          <td>14.7%</td>
+          <td>1.1%</td>
+          <td>0.1%</td>
+      </tr>
+      <tr>
+          <td>8장</td>
+          <td>2.7%</td>
+          <td>0.1%</td>
+          <td>0.0%</td>
+      </tr>
+  </tbody>
+</table>
+<p>전제와 오차를 명시해 두겠습니다. 재현 스크립트는 글 끝의 부록에 있습니다.</p>
+<ul>
+<li><strong>셀당 6만 회 시행.</strong> 이항 표준오차는 최대 약 0.2%p 이므로, 표의 소수 첫째 자리까지는 신뢰할 만합니다.</li>
+<li><strong>80장 풀덱 가정</strong> 입니다. 공식 룰북은 4~5명에서 stripped deck(5명이면 12를 빼고 68장, 4명이면 12와 11을 빼고 57장)을 선택 규칙으로 제시하는데, 그 경우 표의 4명 열은 성립하지 않습니다. rank 12 자체가 덱에 없기 때문입니다.</li>
+<li><strong>&ldquo;받을 수 있는 사람이 존재할 확률&rdquo;</strong> 이지 &ldquo;실제로 받히는 확률&quot;이 아닙니다. 전략적 패스를 하는 상대가 섞이면 실제 값은 이보다 낮습니다. 봇 입장에서는 보수적인 상한이라 오히려 안전합니다.</li>
+</ul>
+<p>읽어낼 것이 많은 표입니다.</p>
+<ul>
+<li><strong>5장과 6장 사이에 절벽이 있습니다.</strong> 8명 기준으로 5장 리드는 19%가 받히지만 6장 리드는 2%입니다. 한 장 차이로 위험이 열 배 줄어듭니다.</li>
+<li><strong>인원이 많을수록 큰 묶음이 강해집니다.</strong> 같은 6장 리드가 4명 게임에서는 52% 받히고, 8명 게임에서는 2% 받힙니다. 손패가 얇게 쪼개지면 아무도 큰 묶음을 못 만들기 때문입니다. <strong>인원수는 봇 가중치의 입력 변수여야 합니다.</strong></li>
+<li><strong>초반의 작은 묶음 리드는 리드권 유지 수단이 아닙니다.</strong> 8명 게임의 4장 리드도 79%가 받힐 수 있습니다. 확정은 아니지만 기대하기 어려운 확률이므로, 4장 이하 리드는 &ldquo;리드권을 지킨다&quot;가 아니라 <strong>&ldquo;짐을 흘려보낸다&rdquo;</strong> 로 계산하는 편이 맞습니다.</li>
+</ul>
+<p>봇에서는 이 값을 좌석별 초기하 분포로 근사합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// SeatBeatRisk 는 좌석 s 가 (rank, n) 을 받을 수 있을 확률의 근사다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="p">)</span><span class="w"> </span><span class="nf">SeatBeatRisk</span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="nx">SeatModel</span><span class="p">,</span><span class="w"> </span><span class="nx">rank</span><span class="w"> </span><span class="nx">Rank</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Finished</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">HandCount</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c1">// 장수가 모자라면 애초에 못 받는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">total</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nf">TotalUnseen</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">jokers</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">RankJester</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">need</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="nx">jokers</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">// 필요한 자연 카드 최소 장수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">p</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mf">0.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">RankHighest</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">rank</span><span class="p">;</span><span class="w"> </span><span class="nx">r</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">p</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nf">hyperAtLeast</span><span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">unseen</span><span class="p">[</span><span class="nx">r</span><span class="p">],</span><span class="w"> </span><span class="nx">total</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">HandCount</span><span class="p">,</span><span class="w"> </span><span class="nx">need</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">p</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">math</span><span class="p">.</span><span class="nf">Min</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">// Boole 상한이라 1 을 넘을 수 있다. 갱신 전에 자른다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 관측된 패스를 우도로 반영해 위험 점수를 낮춘다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nf">adjustByPasses</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="nx">rank</span><span class="p">,</span><span class="w"> </span><span class="nx">n</span><span class="p">,</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nf">holdPropensity</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// hyperAtLeast 는 크기 total 의 모집단에 k 개의 성공 원소가 있을 때</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// draws 장을 뽑아 성공 원소가 want 개 이상 나올 확률이다 (초기하 분포).</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">hyperAtLeast</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">total</span><span class="p">,</span><span class="w"> </span><span class="nx">draws</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>두 판정을 하나로 묶으면 이런 흐름이 됩니다. 값싼 확정 판정을 먼저 시도하고, 거기서 갈리지 않을 때만 확률 계산으로 내려갑니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;묶음 (rank r, n장) 을 평가&#34;] --&gt; B{&#34;n - 2 이상이면서&lt;br/&gt;r 보다 강한 rank 가&lt;br/&gt;남아 있는가?&#34;}
+    B -- 아니오 --&gt; S[&#34;구조적 확실승수&lt;br/&gt;리드권 회수 보장&#34;]
+    B -- 예 --&gt; C[&#34;남은 rank 별로&lt;br/&gt;필요 자연 카드 수 계산&#34;]
+    C --&gt; D[&#34;좌석별 초기하 확률&lt;br/&gt;(손패 장수 · 미공개 총수)&#34;]
+    D --&gt; E[&#34;rank 별 확률을 Boole 상한으로&lt;br/&gt;합산 후 1 로 절단&#34;]
+    E --&gt; F[&#34;패스 관측을 우도로 반영&lt;br/&gt;승산에 hold 를 곱해 위험 점수 하향&#34;]
+    F --&gt; G{&#34;위험이 임계값&lt;br/&gt;미만인가?&#34;}
+    G -- 예 --&gt; H[&#34;사실상 안전&lt;br/&gt;리드 후보로 우대&#34;]
+    G -- 아니오 --&gt; I[&#34;받힐 각오&lt;br/&gt;리드권 있을 때 흘려보낼 후보&#34;]
+    style A fill:#FFD700,color:#000000
+    style S fill:#90EE90,color:#000000
+    style H fill:#87CEEB,color:#000000
+    style I fill:#FFB6C1,color:#000000
+</code></pre><p>왼쪽 가지가 짧다는 점이 중요합니다. 구조적 판정은 rank 를 한 바퀴 도는 것으로 끝나고 확률 계산이 아예 필요 없습니다. 판이 진행되어 낮은 rank 가 소진될수록 이 가지로 빠지는 경우가 늘어나므로, <strong>후반으로 갈수록 봇의 판단이 더 싸지고 더 정확해집니다.</strong></p>
+<p>정확도를 더 올리려면 rank 들 사이의 배타성(같은 카드가 두 rank 에 동시에 속할 수 없음)과 좌석들 사이의 배타성을 반영한 다변량 초기하가 필요합니다. 여기서는 rank 별 확률을 단순 합산하는 상한(Boole 부등식)을 씁니다. <strong>어차피 봇에게 필요한 것은 정확한 확률이 아니라 후보들 사이의 순서</strong> 이기 때문입니다. 다만 이 값을 &ldquo;확률&quot;이라 부르며 1을 넘길 수 있는 값과 곱셈하는 순간 계산이 망가지므로, 반드시 <code>math.Min(p, 1)</code> 으로 잘라야 합니다.</p>
+<hr>
+<h2 id="3-패-분해-플랜-내-손패는-몇-번-내야-비는가">3. 패 분해 플랜: 내 손패는 몇 번 내야 비는가<a href="#3-패-분해-플랜-내-손패는-몇-번-내야-비는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="최소-제출-횟수의-하한">최소 제출 횟수의 하한<a href="#최소-제출-횟수의-하한" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지난 글에서 정리한 &ldquo;고수는 카드의 세기가 아니라 턴의 흐름을 본다&quot;는 원칙을 달무티에 대입하면 아주 깔끔한 형태가 나옵니다. 달무티는 묶음이 <strong>같은 rank</strong> 로만 만들어지므로, 손패를 나누는 방법에 자유도가 거의 없습니다.</p>
+<blockquote>
+<p>손패를 다 털기 위한 <strong>최소 제출 횟수의 하한 = 서로 다른 자연 rank 의 개수</strong> 입니다. 광대는 어느 묶음에든 흡수되므로 이 수를 늘리지 않습니다.</p>
+</blockquote>
+<p>표현을 조심해야 합니다. 이것은 <strong>&ldquo;몇 번 성공적으로 카드를 내야 하는가&quot;의 하한</strong> 이지, 실제 턴 수가 아닙니다. 실제로는 패스한 차례도 턴이고, 묶음을 쪼개면 제출 횟수가 늘고, 광대만 남은 손패는 광대를 단독으로 흘려야 하므로 예외입니다. 그래도 이 하한이 손패 평가의 좋은 기준인 이유는, <strong>줄일 수는 없고 늘어나기만 하는 값</strong> 이기 때문입니다.</p>
+<p>무작위 손패를 30만 번 돌려 서로 다른 자연 rank 수를 세어 보면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>인원</th>
+          <th>손패 장수</th>
+          <th>평균 서로 다른 자연 rank 수</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>4명</td>
+          <td>20장</td>
+          <td>9.20</td>
+      </tr>
+      <tr>
+          <td>6명</td>
+          <td>13장</td>
+          <td>7.61</td>
+      </tr>
+      <tr>
+          <td>8명</td>
+          <td>10장</td>
+          <td>6.57</td>
+      </tr>
+  </tbody>
+</table>
+<p>8명 게임에서 평균적인 손패는 <strong>최소 일곱 번은 성공적으로 카드를 내야</strong> 비워집니다. 좋은 손패란 rank 가 뭉쳐 있어 이 숫자가 4~5 로 떨어지는 손패이고, 나쁜 손패는 rank 별로 한두 장씩 흩어져 이 숫자가 8을 넘는 손패입니다.</p>
+<p>이 값만으로 등수를 예측할 수는 없다는 점은 분명히 해 두겠습니다. 제출 기회는 내가 리드할 때만 오는 것이 아니라 남이 연 트릭에 얹을 때도 오기 때문입니다. 흩어진 손패라도 남들이 계속 1~2장짜리 트릭을 열어 주면 잘 빠집니다. 이 값은 <strong>손패의 난이도 지표</strong> 이지 승패 예측치가 아닙니다.</p>
+<p>봇의 손패 평가는 여기서 출발합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Group</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rank</span><span class="w">    </span><span class="nx">Rank</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Natural</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Jesters</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">g</span><span class="w"> </span><span class="nx">Group</span><span class="p">)</span><span class="w"> </span><span class="nf">Count</span><span class="p">()</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Natural</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Jesters</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Plan</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Groups</span><span class="w">   </span><span class="p">[]</span><span class="nx">Group</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">MinPlays</span><span class="w"> </span><span class="kt">int</span><span class="w">     </span><span class="c1">// == len(Groups). 최소 제출 횟수의 하한</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">SafeLead</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 안전하게 리드할 수 있는 기대 묶음 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Orphans</span><span class="w">  </span><span class="kt">int</span><span class="w">     </span><span class="c1">// 약한 rank 의 1장짜리 묶음 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="광대를-어디에-붙일-것인가">광대를 어디에 붙일 것인가<a href="#광대를-어디에-붙일-것인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>광대는 제출 횟수를 줄이지는 않지만 <strong>묶음의 안전도를 바꿉니다.</strong> 앞의 표에서 봤듯 5장과 6장 사이에는 절벽이 있으므로, 광대 두 장으로 4장 묶음을 6장으로 만들면 그 묶음은 사실상 무적이 됩니다.</p>
+<p>배치 경우의 수는 아주 작습니다. 서로 다른 rank 가 최대 12개이고 광대는 2장이므로, 가능한 배치는 100가지 미만입니다. 완전탐색으로 충분합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// BestPlan 은 광대 배치를 완전탐색해 기대 안전 리드 수가 가장 큰 플랜을 고른다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">BestPlan</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="p">[]</span><span class="nx">Card</span><span class="p">,</span><span class="w"> </span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="p">)</span><span class="w"> </span><span class="nx">Plan</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">base</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">groupsWithoutJesters</span><span class="p">(</span><span class="nx">hand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">jokers</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">countJesters</span><span class="p">(</span><span class="nx">hand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">best</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Plan</span><span class="p">{</span><span class="nx">SafeLead</span><span class="p">:</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">assign</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nf">jesterAssignments</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">base</span><span class="p">),</span><span class="w"> </span><span class="nx">jokers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">p</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Plan</span><span class="p">{</span><span class="nx">Groups</span><span class="p">:</span><span class="w"> </span><span class="nf">applyJesters</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span><span class="w"> </span><span class="nx">assign</span><span class="p">)}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">p</span><span class="p">.</span><span class="nx">MinPlays</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">Groups</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">g</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Groups</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">p</span><span class="p">.</span><span class="nx">SafeLead</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nf">BeatRisk</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">Rank</span><span class="p">,</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nf">Count</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nf">Count</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Rank</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nf">Rank</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">p</span><span class="p">.</span><span class="nx">Orphans</span><span class="o">++</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">SafeLead</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">best</span><span class="p">.</span><span class="nx">SafeLead</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">best</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">p</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">best</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>여기서 짚어 둘 설계 원칙이 하나 있습니다. <strong>플랜은 약속이 아니라 평가 도구입니다.</strong> 봇은 매 턴 플랜을 처음부터 다시 계산합니다(재계획). 세 트릭 전에 &ldquo;광대는 11 묶음에 붙인다&quot;고 정했더라도, 그 사이 11이 여러 장 소진되었다면 계산 결과가 바뀌어야 합니다. 플랜을 상태로 저장해 두고 따라가면 봇이 낡은 정보로 두게 됩니다.</p>
+<h3 id="고아-카드">고아 카드<a href="#고아-카드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>Orphans</code> 는 <strong>약한 rank 의 1장짜리 묶음</strong> 입니다. 예를 들어 11이 딱 한 장 있는 경우입니다. 이 카드는 세 가지 이유로 짐입니다.</p>
+<ul>
+<li>리드로 내면 거의 확실히 받힙니다. 1장짜리 트릭은 rank 1~10 어느 것으로도 받을 수 있습니다.</li>
+<li>후공으로 쓰려면 1장짜리 트릭이 열려야 하는데, 그때 11보다 약한 rank 는 12뿐입니다.</li>
+<li>광대를 붙여봐야 2장 묶음이 되어 여전히 약합니다.</li>
+</ul>
+<p>반대로 <strong>강한 rank 의 1장짜리 묶음은 자산입니다.</strong> rank 1 한 장은 세상에 하나뿐이라 1장짜리 트릭에서 영구히 무적입니다. 같은 &ldquo;싱글 카드&quot;라도 rank 에 따라 가치의 부호가 정반대입니다. easy 봇의 <code>weakerFirst</code> 같은 단순 서열 정렬로는 이 구분이 불가능하고, 여기서 두 난이도의 손패 관리 실력이 갈립니다.</p>
+<hr>
+<h2 id="부록-확률표-재현-스크립트">부록: 확률표 재현 스크립트<a href="#부록-확률표-재현-스크립트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>본문의 두 표를 만든 스크립트입니다. 표준 라이브러리만 씁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">make_deck</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">d</span> <span class="o">+=</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span>   <span class="c1"># rank r 은 r 장</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">d</span> <span class="o">+</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>  <span class="c1"># 광대 2장</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">can_beat</span><span class="p">(</span><span class="n">hand</span><span class="p">,</span> <span class="n">lead_rank</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;hand 가 (lead_rank, n장) 을 받을 수 있는가.&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">j</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">rp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">lead_rank</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">c</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">c</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">lead_risk</span><span class="p">(</span><span class="n">nplayers</span><span class="p">,</span> <span class="n">n_lead</span><span class="p">,</span> <span class="n">lead_rank</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">60000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">20260730</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">base</span> <span class="o">=</span> <span class="n">make_deck</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 80장을 전부 딜한다. 앞쪽 몇 명이 1장 더 받는다.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">total</span> <span class="o">//</span> <span class="n">nplayers</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">total</span> <span class="o">%</span> <span class="n">nplayers</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nplayers</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">hit</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">d</span> <span class="o">=</span> <span class="n">base</span><span class="p">[:]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_lead</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">d</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">lead_rank</span><span class="p">)</span>      <span class="c1"># 내가 쥔 리드 묶음</span>
+</span></span><span class="line"><span class="cl">        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rest</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">n_lead</span><span class="p">:]</span>  <span class="c1"># 내 나머지 카드를 뺀 상대 몫</span>
+</span></span><span class="line"><span class="cl">        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nplayers</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">h</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">rest</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span> <span class="o">+</span> <span class="n">sizes</span><span class="p">[</span><span class="n">k</span><span class="p">]])</span>
+</span></span><span class="line"><span class="cl">            <span class="n">idx</span> <span class="o">+=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">can_beat</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">lead_rank</span><span class="p">,</span> <span class="n">n_lead</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">hit</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">hit</span> <span class="o">/</span> <span class="n">trials</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">distinct_natural_ranks</span><span class="p">(</span><span class="n">hand_size</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">300000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">20260730</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">d</span> <span class="o">=</span> <span class="n">make_deck</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tot</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tot</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">({</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[:</span><span class="n">hand_size</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">13</span><span class="p">})</span>  <span class="c1"># 광대는 제외</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">tot</span> <span class="o">/</span> <span class="n">trials</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">independence_gap</span><span class="p">(</span><span class="n">nplayers</span><span class="p">,</span> <span class="n">n_lead</span><span class="p">,</span> <span class="n">lead_rank</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">80000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">20260730</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Part 3 의 &#39;실제 vs 좌석별 독립 곱셈&#39; 비교표를 만든다.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">    같은 시행에서 (a) 아무도 못 받는 비율과 (b) 좌석별 marginal 을 함께 모은다.
+</span></span></span><span class="line"><span class="cl"><span class="s2">    (b) 들을 곱한 값이 좌석 간 독립을 가정했을 때의 리드권 확보 확률이다.
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">base</span> <span class="o">=</span> <span class="n">make_deck</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">total</span> <span class="o">//</span> <span class="n">nplayers</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">total</span> <span class="o">%</span> <span class="n">nplayers</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nplayers</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">none_beat</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">marginal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">nplayers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># 좌석별로 &#34;받을 수 있었던&#34; 횟수</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trials</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">d</span> <span class="o">=</span> <span class="n">base</span><span class="p">[:]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_lead</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">d</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">lead_rank</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rest</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">n_lead</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">idx</span><span class="p">,</span> <span class="n">any_beat</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nplayers</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">h</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">rest</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span> <span class="o">+</span> <span class="n">sizes</span><span class="p">[</span><span class="n">k</span><span class="p">]])</span>
+</span></span><span class="line"><span class="cl">            <span class="n">idx</span> <span class="o">+=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">can_beat</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">lead_rank</span><span class="p">,</span> <span class="n">n_lead</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">marginal</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">                <span class="n">any_beat</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="ow">not</span> <span class="n">any_beat</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">none_beat</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="n">actual</span> <span class="o">=</span> <span class="n">none_beat</span> <span class="o">/</span> <span class="n">trials</span>
+</span></span><span class="line"><span class="cl">    <span class="n">independent</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">marginal</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">independent</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">m</span> <span class="o">/</span> <span class="n">trials</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">actual</span><span class="p">,</span> <span class="n">independent</span>
+</span></span></code></pre></div><p><code>lead_risk(8, 6)</code> 은 8명 게임에서 <code>12 x 6</code> 리드가 받힐 수 있는 확률을, <code>distinct_natural_ranks(10)</code> 은 10장 손패의 평균 자연 rank 수를 돌려줍니다. 시드를 고정했으므로 같은 값이 재현됩니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 2 에서는 hard 봇이 <strong>무엇을 아는가</strong> 를 다뤘습니다. 정리하면 세 가지입니다.</p>
+<ul>
+<li><strong>카운팅은 오차가 0입니다.</strong> 달무티는 덱 구성이 완전히 알려져 있고 80장을 전부 나눠주므로, &ldquo;내가 못 본 카드&quot;가 곧 &ldquo;상대 손패에 있는 카드&quot;입니다. 추정이 아니라 확정입니다.</li>
+<li><strong>패스는 정보이되 확정 정보가 아닙니다.</strong> 전략적 패스를 권장하는 봇이 상대의 패스를 확정 배제로 쓰면 자기모순이고, 상대가 강할수록 장부가 더 심하게 오염됩니다. 확률적 증거로 다루고, &ldquo;낼 수 있는데도 참을 확률&quot;을 파라미터로 노출해야 합니다.</li>
+<li><strong>묶음의 장수가 강약보다 중요합니다.</strong> 광대가 2장뿐이라는 사실 하나에서 <code>r' ≥ n - 2</code> 라는 구조적 상한이 나오고, 8명 게임에서 5장 리드와 6장 리드 사이에는 응수 가능한 사람이 존재할 확률 19%와 2%의 절벽이 있습니다.</li>
+</ul>
+<p>여기까지는 전부 <strong>판단의 재료</strong> 입니다. Part 3 에서는 이 재료로 실제 결정을 내립니다. 후보를 점수로 환산하는 평가 함수를 만들고, 낼 수 있어도 참는 전략적 패스를 구현하고, 세금과 혁명을 기대값으로 판단한 뒤, 만든 봇이 정말 세졌는지 재는 방법까지 다루겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://media.wizards.com/2015/downloads/ah/great_dalmuti_rules.pdf">The Great Dalmuti Rulebook (Wizards of the Coast, PDF)</a></li>
+<li><a href="https://boardgamegeek.com/boardgame/121/great-dalmuti">The Great Dalmuti (BoardGameGeek)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hypergeometric_distribution">Hypergeometric distribution (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Boole%27s_inequality">Boole&rsquo;s inequality (Wikipedia)</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-03/" class="button inline prev">
+        &lt; [<span class="button__text">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-01/" class="button inline next">
+         [<span class="button__text">달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
