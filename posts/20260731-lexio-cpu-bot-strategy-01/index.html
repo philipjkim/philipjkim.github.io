@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="렉시오(Lexio)를 디지털 게임으로 만들 때 CPU 플레이어를 어떻게 설계할지 다룹니다. Part 1 에서는 타일 60장을 정수 하나로 압축하는 표현을 잡고, 공식 룰의 비교 규칙을 정수 키 하나로 환원한 뒤, 결정적 규칙만으로 동작하는 easy 봇을 Go 코드로 구현합니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로">
+<meta property="og:description" content="렉시오(Lexio)를 디지털 게임으로 만들 때 CPU 플레이어를 어떻게 설계할지 다룹니다. Part 1 에서는 타일 60장을 정수 하나로 압축하는 표현을 잡고, 공식 룰의 비교 규칙을 정수 키 하나로 환원한 뒤, 결정적 규칙만으로 동작하는 easy 봇을 Go 코드로 구현합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-31 09:22:31 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-01/">렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-31</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="사촌-게임-전혀-다른-봇">사촌 게임, 전혀 다른 봇<a href="#사촌-게임-전혀-다른-봇" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">어제 글</a>에서 달무티(The Great Dalmuti)의 CPU 플레이어를 세 편에 걸쳐 설계했습니다. 이번에는 같은 클라이밍 계열의 국산 타일 게임 <strong>렉시오(Lexio)</strong> 로 넘어갑니다.</p>
+<p>두 게임은 <a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">클라이밍 게임을 정리한 글</a>에서 봤듯 사촌 사이입니다. 더 센 조합으로 받아 올라가고, 손패를 먼저 비우는 쪽이 이깁니다. 그런데 봇을 짜 보면 <strong>알고리즘이 거의 겹치지 않습니다.</strong> 달무티 봇 코드를 렉시오로 옮기려 하면 재사용할 수 있는 것은 &ldquo;공정성 경계를 타입으로 못 박는다&rdquo; 같은 뼈대뿐이고, 판단 로직은 전부 새로 써야 합니다.</p>
+<p>이유는 세 가지입니다.</p>
+<ul>
+<li><strong>달무티는 조합 공간이 손바닥만 합니다.</strong> 낼 수 있는 수가 <code>(숫자, 광대 사용량)</code> 두 축으로 완전히 결정됩니다. 렉시오는 5장짜리 포커 족보가 들어와 조합 공간이 통째로 커집니다.</li>
+<li><strong>달무티는 카드가 서로 구별되지 않습니다.</strong> 12가 일곱 장 있으면 어느 것을 내든 같습니다. 렉시오는 문양 때문에 <strong>60장 전부가 유일</strong> 하고, 그 유일성이 전순서를 만듭니다.</li>
+<li><strong>달무티의 목표는 등수입니다.</strong> 렉시오의 목표는 등수가 아니라 <strong>정산 금액</strong> 입니다. 이 차이가 봇의 목적 함수를 통째로 바꿉니다.</li>
+</ul>
+<p>이 글은 네 편으로 나누어 씁니다.</p>
+<ul>
+<li><strong>Part 1 (이 글):</strong> 60장을 정수 하나로 압축하는 표현을 잡고, 공식 룰의 비교 규칙을 정수 키 하나로 환원한 뒤, 결정적 규칙만으로 동작하는 <strong>easy 봇</strong> 을 만듭니다.</li>
+<li><strong>Part 2:</strong> hard 봇이 <strong>무엇을 아는가</strong>. 60비트 카운팅, 확실승수 판정, 패스 로그의 정보량입니다.</li>
+<li><strong>Part 3:</strong> hard 봇이 <strong>자기 손패를 어떻게 보는가</strong>. 비트마스크 DP 로 최소 제출 횟수를 구합니다.</li>
+<li><strong>Part 4:</strong> hard 봇이 <strong>무엇을 결정하는가</strong>. 수 평가 함수, 전략적 패스, 정산 기대값, 그리고 검증입니다.</li>
+</ul>
+<h3 id="이-글의-전제">이 글의 전제<a href="#이-글의-전제" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>네 편 모두 특정 제품을 설명하는 글이 아니라, <strong>렉시오를 디지털 게임으로 만든다면 봇을 어떻게 설계할 것인가에 대한 설계안</strong> 입니다. 코드는 Go 로 쓰되 논지를 보이기 위한 <strong>발췌</strong> 이며, 그대로 컴파일되는 완성 패키지가 아닙니다.</p>
+<p>규칙은 <strong>발행사 디다노니아의 공식 게임방법 문서</strong> 를 따릅니다. 봇 로직에 영향을 주는 항목을 먼저 못 박아 두겠습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>이 글의 전제</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>인원</td>
+          <td><strong>5인</strong></td>
+      </tr>
+      <tr>
+          <td>타일</td>
+          <td>숫자 1~15 × 문양 4종 = 60장, 인당 <strong>12장</strong></td>
+      </tr>
+      <tr>
+          <td>숫자 서열</td>
+          <td>3 &lt; 4 &lt; … &lt; 15 &lt; 1 &lt; <strong>2</strong></td>
+      </tr>
+      <tr>
+          <td>문양 서열</td>
+          <td>구름 &lt; 별 &lt; 달 &lt; 해</td>
+      </tr>
+      <tr>
+          <td>조합</td>
+          <td>1·2·3·5장. <strong>4장은 낼 수 없음</strong></td>
+      </tr>
+      <tr>
+          <td>메이드 서열</td>
+          <td>스트레이트 &lt; 플러시 &lt; 풀하우스 &lt; 포카드+1 &lt; 스트레이트 플러시</td>
+      </tr>
+      <tr>
+          <td>스트레이트 범위</td>
+          <td>연속 5개. <strong>1은 15 다음으로 쓸 수 있으나 2는 이어지지 않음</strong></td>
+      </tr>
+      <tr>
+          <td>패스 후 재참여</td>
+          <td>허용. 패스해도 자기 차례가 다시 오면 낼 수 있음</td>
+      </tr>
+      <tr>
+          <td>트릭 종료</td>
+          <td>나머지 전원이 패스하면 종료. 마지막에 낸 사람이 다음 리드</td>
+      </tr>
+      <tr>
+          <td>첫 리드</td>
+          <td><strong>구름 3</strong> 보유자. 구름 3 을 첫 수에 낼 의무는 없음</td>
+      </tr>
+      <tr>
+          <td>정산</td>
+          <td>모든 쌍에 대해 <strong>유효 장수</strong> 차이를 주고받음</td>
+      </tr>
+      <tr>
+          <td>유효 장수</td>
+          <td><code>실제 장수 × 2^(손에 남은 2의 개수)</code></td>
+      </tr>
+      <tr>
+          <td>라운드 수</td>
+          <td><strong>5라운드</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>용어도 하나 정리하겠습니다. 한 번의 리드가 시작되어 나머지 전원이 패스할 때까지를 <strong>&ldquo;트릭&rdquo;</strong>, 타일을 새로 나눠서 정산할 때까지를 <strong>&ldquo;라운드&rdquo;</strong> 라고 부르겠습니다.</p>
+<hr>
+<h2 id="봇-설계에-필요한-만큼의-렉시오-규칙">봇 설계에 필요한 만큼의 렉시오 규칙<a href="#봇-설계에-필요한-만큼의-렉시오-규칙" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>봇 로직에 직접 영향을 주는 규칙만 추려 두겠습니다. 특히 <strong>비교 규칙</strong> 을 정확히 옮기는 것이 이 글의 절반입니다.</p>
+<ul>
+<li><strong>타일:</strong> 숫자 1~15가 구름·별·달·해 네 문양으로 각각 존재해 60장입니다. 5인 게임에서 전부 사용하고 인당 12장을 받습니다.</li>
+<li><strong>조합:</strong> 1장·2장(페어)·3장(트리플)·5장(메이드)만 낼 수 있습니다. <strong>4장짜리는 존재하지 않습니다.</strong> 같은 숫자 4개를 모았더라도 아무 타일 1개를 얹어 5장으로 만들어야 냅니다.</li>
+<li><strong>제출:</strong> 후공은 <strong>정확히 같은 장수</strong> 로, <strong>더 강한 조합</strong> 을 내야 합니다. 못 내거나 안 내면 패스입니다.</li>
+<li><strong>패스와 트릭 종료:</strong> 패스해도 자기 차례가 다시 오면 낼 수 있습니다. 나머지 전원이 패스하면 트릭이 끝나고, 마지막에 낸 사람이 다음 트릭을 리드합니다.</li>
+<li><strong>정산:</strong> 누군가 타일을 다 털면 라운드가 <strong>즉시</strong> 끝나고, 모든 플레이어 쌍이 유효 장수 차이만큼 주고받습니다.</li>
+</ul>
+<p>조합별 비교 규칙은 표로 정리하는 편이 낫습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>조합</th>
+          <th>무엇으로 비교하는가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>싱글</td>
+          <td>숫자 → 같으면 문양</td>
+      </tr>
+      <tr>
+          <td>페어</td>
+          <td>숫자 → 같으면 <strong>더 높은 문양을 포함한 쪽</strong></td>
+      </tr>
+      <tr>
+          <td>트리플</td>
+          <td>숫자</td>
+      </tr>
+      <tr>
+          <td>스트레이트</td>
+          <td><strong>숫자 구성</strong> → 같으면 가장 높은 수의 문양</td>
+      </tr>
+      <tr>
+          <td>플러시</td>
+          <td>가장 높은 숫자 → 같으면 <strong>그다음 높은 숫자</strong> → 다섯 개가 모두 같으면 문양</td>
+      </tr>
+      <tr>
+          <td>풀하우스</td>
+          <td><strong>트리플 부분의 숫자만.</strong> 페어 부분은 보지 않는다</td>
+      </tr>
+      <tr>
+          <td>포카드+1</td>
+          <td><strong>포카드 부분의 숫자만.</strong> 얹은 1장은 보지 않는다</td>
+      </tr>
+      <tr>
+          <td>스트레이트 플러시</td>
+          <td>숫자 구성 → 같으면 문양</td>
+      </tr>
+  </tbody>
+</table>
+<p>여기서 봇 설계에 가장 큰 영향을 주는 두 줄은 <strong>플러시와 스트레이트</strong> 입니다. 이 둘은 최고 타일 한 장으로 판정이 끝나지 않고 <strong>여러 숫자를 순서대로</strong> 비교합니다. 구현에서 가장 자주 틀리는 지점이기도 합니다.</p>
+<hr>
+<h2 id="설계의-뼈대">설계의 뼈대<a href="#설계의-뼈대" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1-타일-하나를-정수-하나로">1. 타일 하나를 정수 하나로<a href="#1-타일-하나를-정수-하나로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>렉시오 구현에서 가장 먼저 정할 것은 타일의 표현입니다. 여기서 좋은 선택을 하면 뒤에 나올 모든 코드가 짧아지고, 나쁜 선택을 하면 서열 비교 함수가 코드베이스 전체에 흩어집니다.</p>
+<p>핵심 관찰은 이것입니다. <strong>렉시오의 숫자 서열은 회전된 순서일 뿐이고, 문양 서열은 그 아래 붙는 2비트입니다.</strong> 그러니 둘을 하나의 정수로 합칠 수 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Tile 은 0..59 의 정수다. 값이 곧 게임의 서열이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// t1 &lt; t2 라는 비교가 그대로 &#34;t1 이 t2 보다 약하다&#34; 를 뜻한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Tile</span><span class="w"> </span><span class="kt">uint8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Rank</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="c1">// 1..15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Suit</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="c1">// 0=구름, 1=별, 2=달, 3=해</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// rankOrder 는 게임의 숫자 서열을 0..14 로 정규화한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 3 이 가장 약해 0, 15 가 12, 1 이 13, 2 가 가장 강해 14 다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">rankOrder</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="nx">Rank</span><span class="p">)</span><span class="w"> </span><span class="kt">uint8</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nb">uint8</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">uint8</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">NewTile</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="nx">Rank</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="nx">Suit</span><span class="p">)</span><span class="w"> </span><span class="nx">Tile</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nf">Tile</span><span class="p">(</span><span class="nf">rankOrder</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">uint8</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">Tile</span><span class="p">)</span><span class="w"> </span><span class="nf">Suit</span><span class="p">()</span><span class="w"> </span><span class="nx">Suit</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nf">Suit</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">Tile</span><span class="p">)</span><span class="w"> </span><span class="nf">Order</span><span class="p">()</span><span class="w"> </span><span class="kt">uint8</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">uint8</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// 정규화된 숫자 서열</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">Tile</span><span class="p">)</span><span class="w"> </span><span class="nf">Rank</span><span class="p">()</span><span class="w"> </span><span class="nx">Rank</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ro</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nf">Order</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">ro</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nf">Rank</span><span class="p">(</span><span class="nx">ro</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nf">Rank</span><span class="p">(</span><span class="nx">ro</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이 표현이 주는 것이 셋입니다.</p>
+<p><strong>첫째, 서열 비교가 <code>&lt;</code> 하나로 끝납니다.</strong> 숫자를 회전시키고 문양을 tie-break 하는 로직이 <code>rankOrder</code> 안에 한 번만 존재합니다. 달무티 봇에서는 동률 후보를 끊기 위해 <code>Card.ID</code> 라는 별도 필드를 두어야 했는데, 렉시오는 <strong>타일 자체가 ID 이자 서열</strong> 이라 그 장치가 필요 없습니다.</p>
+<p><strong>둘째, 그대로 비트마스크 인덱스가 됩니다.</strong> 0~59 이므로 <code>uint64</code> 하나에 60장 전체가 들어갑니다. 손패도, 이미 나온 타일도, 미공개 타일도 전부 같은 타입입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Set 은 타일 집합이다. 손패든, 나온 타일이든, 미공개 타일이든 같은 타입을 쓴다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="kt">uint64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="nx">AllTiles</span><span class="w"> </span><span class="nx">Set</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">60</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">// 60장 전체. 상위 4비트는 절대 켜지 않는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nf">Has</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">Tile</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="o">&amp;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">t</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nf">Add</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">Tile</span><span class="p">)</span><span class="w"> </span><span class="nx">Set</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">t</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nf">Sub</span><span class="p">(</span><span class="nx">o</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nx">Set</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">&amp;^</span><span class="w"> </span><span class="nx">o</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nf">Len</span><span class="p">()</span><span class="w"> </span><span class="kt">int</span><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">bits</span><span class="p">.</span><span class="nf">OnesCount64</span><span class="p">(</span><span class="nb">uint64</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Highest 는 집합에서 가장 강한 타일을 준다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 빈 집합에서는 의미 있는 답이 없으므로 ok 로 구분한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nf">Highest</span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="nx">Tile</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nf">Tile</span><span class="p">(</span><span class="mi">63</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">bits</span><span class="p">.</span><span class="nf">LeadingZeros64</span><span class="p">(</span><span class="nb">uint64</span><span class="p">(</span><span class="nx">s</span><span class="p">))),</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>AllTiles</code> 를 상수로 두는 이유가 있습니다. 미공개 타일을 구할 때 <code>^(hand | played)</code> 라고 쓰면 <code>uint64</code> 의 <strong>60~63번 비트까지 켜져</strong> 존재하지 않는 타일 네 장이 생깁니다. 반드시 <code>AllTiles &amp;^ (hand | played)</code> 로 마스킹해야 합니다. <code>Len()</code> 이 4씩 부풀어도 게임은 굴러가므로 눈에 잘 띄지 않는 종류의 버그입니다.</p>
+<p><code>Highest</code> 가 <code>(Tile, bool)</code> 을 돌려주는 것도 같은 성격입니다. 빈 집합에 <code>LeadingZeros64</code> 를 먹이면 64가 나와 <code>Tile(-1)</code>, 즉 255가 됩니다. 이런 값은 비교에서 조용히 최강 타일처럼 행동합니다.</p>
+<p><strong>셋째, 규칙이 표현과 맞아떨어집니다.</strong> 첫 리드를 잡는 <strong>구름 3</strong> 은 <code>rankOrder(3)*4 + 0 = 0</code>, 즉 <strong>타일 ID 0</strong> 입니다. 가장 강한 <strong>해 2</strong> 는 <code>14*4 + 3 = 59</code> 입니다.</p>
+<h3 id="2-조합-하나를-정수-하나로">2. 조합 하나를 정수 하나로<a href="#2-조합-하나를-정수-하나로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이제 조합입니다. 앞의 비교 규칙 표를 다시 보면, 서로 다른 여덟 가지 규칙처럼 보이지만 실은 <strong>하나의 규칙</strong> 입니다.</p>
+<blockquote>
+<p>조합의 세기는 <strong>① 카테고리</strong>, <strong>② 서열에 기여하는 숫자들을 강한 것부터 늘어놓은 목록</strong>, <strong>③ 마지막 tie-break 문양</strong> 으로 결정됩니다.</p>
+</blockquote>
+<p>이 셋을 순서대로 이어 붙이면 정수 하나가 됩니다. 숫자 서열은 0~14 이므로 4비트, 최대 다섯 개면 20비트, 문양 2비트, 카테고리 3비트. 전부 합쳐 <strong>25비트</strong> 라 <code>uint32</code> 한 칸에 들어갑니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Category</span><span class="w"> </span><span class="kt">uint8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">CatStraight</span><span class="w">      </span><span class="nx">Category</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span><span class="w"> </span><span class="c1">// 스트레이트</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">CatFlush</span><span class="w">                         </span><span class="c1">// 플러시</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">CatFullHouse</span><span class="w">                     </span><span class="c1">// 풀하우스</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">CatFourPlusOne</span><span class="w">                   </span><span class="c1">// 포카드 + 1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">CatStraightFlush</span><span class="w">                 </span><span class="c1">// 스트레이트 플러시</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Key 는 조합의 세기를 정수 하나로 환원한다. 크면 강하다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	비트 24..22  카테고리 (5장 조합에서만 의미가 있다)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	비트 21..2   서열에 기여하는 숫자들을 강한 것부터 늘어놓은 니블 벡터</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	비트  1..0   마지막 tie-break 문양</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Key</span><span class="w"> </span><span class="kt">uint32</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// makeKey 는 orders 를 내림차순으로 정렬해 왼쪽 정렬한 뒤 조립한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 왼쪽 정렬이 중요하다. 그래야 &#34;앞자리부터 차례로 비교&#34; 가 정수 비교와 같아진다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">makeKey</span><span class="p">(</span><span class="nx">cat</span><span class="w"> </span><span class="nx">Category</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="w"> </span><span class="p">[]</span><span class="kt">uint8</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="nx">Suit</span><span class="p">)</span><span class="w"> </span><span class="nx">Key</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">orders</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">orders</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">orders</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="w"> </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">vec</span><span class="w"> </span><span class="kt">uint32</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">o</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">orders</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">vec</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">vec</span><span class="o">&lt;&lt;</span><span class="mi">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nb">uint32</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">vec</span><span class="w"> </span><span class="o">&lt;&lt;=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">orders</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nf">Key</span><span class="p">(</span><span class="nb">uint32</span><span class="p">(</span><span class="nx">cat</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">22</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nx">vec</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nb">uint32</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>카테고리별로 <code>orders</code> 와 <code>suit</code> 에 무엇을 넣을지가 곧 규칙 표의 코드화입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>조합</th>
+          <th><code>orders</code></th>
+          <th><code>suit</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>싱글</td>
+          <td>그 타일의 숫자</td>
+          <td>그 타일의 문양</td>
+      </tr>
+      <tr>
+          <td>페어·트리플</td>
+          <td>그 숫자 하나</td>
+          <td>구성 타일 중 최고 문양</td>
+      </tr>
+      <tr>
+          <td>스트레이트</td>
+          <td><strong>다섯 장의 숫자 전부</strong></td>
+          <td>가장 강한 타일의 문양</td>
+      </tr>
+      <tr>
+          <td>플러시</td>
+          <td><strong>다섯 장의 숫자 전부</strong></td>
+          <td>그 플러시의 문양</td>
+      </tr>
+      <tr>
+          <td>풀하우스</td>
+          <td>트리플 부분의 숫자 하나</td>
+          <td>(동률 불가)</td>
+      </tr>
+      <tr>
+          <td>포카드+1</td>
+          <td>포카드 부분의 숫자 하나</td>
+          <td>(동률 불가)</td>
+      </tr>
+      <tr>
+          <td>스트레이트 플러시</td>
+          <td>다섯 장의 숫자 전부</td>
+          <td>그 플러시의 문양</td>
+      </tr>
+  </tbody>
+</table>
+<p>그러면 조합끼리의 비교는 이렇게 끝납니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Meld</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Tiles</span><span class="w"> </span><span class="p">[]</span><span class="nx">Tile</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Count</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 1, 2, 3, 5 중 하나</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Key</span><span class="w">   </span><span class="nx">Key</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Cat 은 Key 의 상위 비트를 그대로 읽는다. 별도 필드를 두지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="nf">Cat</span><span class="p">()</span><span class="w"> </span><span class="nx">Category</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nf">Category</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">22</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="nf">Beats</span><span class="p">(</span><span class="nx">prev</span><span class="w"> </span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">prev</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">prev</span><span class="p">.</span><span class="nx">Key</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>풀하우스와 포카드+1 의 <code>orders</code> 가 한 칸뿐인 것이 규칙을 그대로 옮긴 결과입니다. 페어 부분과 얹은 1장은 비트 벡터에 아예 들어가지 않으므로, <strong>코드가 &ldquo;그 타일들은 서열에 영향이 없다&quot;는 규칙을 구조적으로 보장</strong> 합니다. 조건문으로 무시하는 것보다 훨씬 안전합니다.</p>
+<h3 id="3-스트레이트-순위는-규칙에서-유도된다">3. 스트레이트 순위는 규칙에서 유도된다<a href="#3-스트레이트-순위는-규칙에서-유도된다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>공식 문서는 스트레이트 순위의 상위 세 자리를 명시합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>순위</th>
+          <th>구성</th>
+          <th>근거</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1위</td>
+          <td><code>1, 2, 3, 4, 5</code></td>
+          <td>가장 높은 <code>2</code> 가 있고, 두 번째로 높은 것이 <code>1</code></td>
+      </tr>
+      <tr>
+          <td>2위</td>
+          <td><code>2, 3, 4, 5, 6</code></td>
+          <td>가장 높은 <code>2</code> 가 있으나, 두 번째로 높은 것이 <code>6</code></td>
+      </tr>
+      <tr>
+          <td>3위</td>
+          <td><code>12, 13, 14, 15, 1</code></td>
+          <td>두 번째로 높은 <code>1</code> 이 최종 숫자로 들어감</td>
+      </tr>
+  </tbody>
+</table>
+<p>여기서 놓치기 쉬운 것이 있습니다. <strong>1위와 2위는 둘 다 <code>2</code> 를 포함합니다.</strong> 최고 숫자가 같으므로 순위는 <strong>두 번째 숫자</strong> 에서 갈립니다. 스트레이트를 &ldquo;가장 높은 타일 한 장&quot;으로 비교하도록 구현하면 이 둘을 구별하지 못합니다.</p>
+<p>앞 절의 <code>Key</code> 는 이 순위를 따로 표로 넣지 않아도 재현합니다. 숫자 벡터를 강한 것부터 늘어놓고 정수로 비교하면, 그것이 곧 &ldquo;가장 높은 수부터 차례로 비교&quot;이기 때문입니다. 유효한 스트레이트 12종을 <code>Key</code> 로 정렬하면 이렇게 나옵니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl"> 1위  1-2-3-4-5        7위  8-9-10-11-12
+</span></span><span class="line"><span class="cl"> 2위  2-3-4-5-6        8위  7-8-9-10-11
+</span></span><span class="line"><span class="cl"> 3위  12-13-14-15-1    9위  6-7-8-9-10
+</span></span><span class="line"><span class="cl"> 4위  11-12-13-14-15  10위  5-6-7-8-9
+</span></span><span class="line"><span class="cl"> 5위  10-11-12-13-14  11위  4-5-6-7-8
+</span></span><span class="line"><span class="cl"> 6위  9-10-11-12-13   12위  3-4-5-6-7
+</span></span></code></pre></div><p>상위 세 자리가 공식 문서와 일치합니다. 구현이 규칙을 제대로 옮겼는지 확인하는 좋은 테스트가 됩니다.</p>
+<p>유효한 스트레이트가 12종뿐이라는 점도 짚어 둘 만합니다. <code>1</code> 은 <code>15</code> 다음으로 쓸 수 있지만 <code>2</code> 는 이어지지 않으므로, <code>13-14-15-1-2</code> 같은 구성은 존재하지 않습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// straightRanks 는 유효한 스트레이트 12종의 숫자 구성이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 1 은 최저(1-2-3-4-5)와 최고(12-13-14-15-1) 양쪽으로 쓰이지만,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 2 는 15 뒤에 이어지지 못한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">straightRanks</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">12</span><span class="p">][</span><span class="mi">5</span><span class="p">]</span><span class="nx">Rank</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">{</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">{</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>한 가지 더. <code>2</code> 는 서열상 최강이므로, <code>2</code> 가 든 스트레이트는 <strong>스트레이트끼리의 싸움에서는</strong> 대단히 강합니다. 실제로 <code>구름 2-3-4-5-6</code> 은 <code>해 12-13-14-15-1</code> 을 이깁니다. 숫자만 보면 12부터 시작하는 쪽이 커 보이지만, 가장 높은 수가 <code>2</code> 대 <code>1</code> 이라 앞쪽이 이깁니다.</p>
+<p>다만 이것은 어디까지나 같은 카테고리 안에서의 이야기입니다. 스트레이트는 5장 메이드 중 <strong>가장 낮은 카테고리</strong> 이므로, <code>2</code> 가 들어 있어도 어떤 플러시에게든 집니다. Part 2 에서 이 비대칭을 수치로 보겠습니다.</p>
+<h3 id="4-왜-동률-처리-규칙이-없는가">4. 왜 동률 처리 규칙이 없는가<a href="#4-왜-동률-처리-규칙이-없는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>Key</code> 가 정수 하나라는 것은 좋은데, 두 조합의 <code>Key</code> 가 같으면 어떻게 될까요? 규칙서는 그 경우를 다루지 않습니다. 다룰 필요가 없기 때문입니다.</p>
+<p><code>Key</code> 의 마지막 결정 요소는 언제나 <strong>실제 타일의 문양</strong> 입니다. 두 조합의 <code>Key</code> 가 같다는 것은 서열을 정하는 그 타일이 물리적으로 같은 타일이라는 뜻인데, 한 트릭 안에서 이미 나간 타일은 다시 나올 수 없습니다. 풀하우스도 마찬가지입니다. 누군가 <code>7,7,7 + x,x</code> 를 냈다면 같은 <code>Key</code> 의 풀하우스는 7 트리플을 또 만들어야 하는데, 한 숫자에 4장뿐이라 남은 7 은 한 장입니다.</p>
+<p>즉 <strong><code>Key</code> 는 한 트릭 안에서 전순서(total order)</strong> 이고, 동률 처리 규칙이 존재하지 않아도 게임이 성립합니다.</p>
+<p>다만 <strong>내 후보 집합 안에서는</strong> 같은 <code>Key</code> 가 나옵니다. 예를 들어 <code>12-13-14-15-1</code> 스트레이트에서 <code>1</code> 을 고정하고 나머지 네 자리의 문양을 바꾸면, 전부 다른 조합이지만 <code>Key</code> 는 같습니다. 어느 것을 낼지는 규칙 문제가 아니라 <strong>어떤 타일을 소모할 것인가</strong> 하는 전략 문제이고, Part 3 의 분해 플랜이 답할 질문입니다.</p>
+<h3 id="5-공정성-경계와-정책-인터페이스">5. 공정성 경계와 정책 인터페이스<a href="#5-공정성-경계와-정책-인터페이스" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>봇이 볼 수 있는 정보를 타입으로 못 박는 이야기는 <a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 Part 1</a> 에서 자세히 다뤘으므로 반복하지 않겠습니다. 원칙만 옮기면, 서버 상태 객체를 봇에게 그대로 넘기지 않고 <strong>봇에게 허용된 정보만 담은 뷰 타입</strong> 을 따로 만듭니다. 남의 손패는 그 구조체 어디에도 존재하지 않고, <strong>남은 장수만</strong> 들어 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// GameView 는 봇에게 노출되는 정보의 전부다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">GameView</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Me</span><span class="w">    </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Hand</span><span class="w">  </span><span class="nx">Set</span><span class="w">        </span><span class="c1">// 내 손패</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Table</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="w">      </span><span class="c1">// 현재 받아야 할 수. nil 이면 내가 리드다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seats</span><span class="w"> </span><span class="p">[]</span><span class="nx">SeatInfo</span><span class="w"> </span><span class="c1">// 좌석별 남은 장수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Log</span><span class="w">   </span><span class="p">[]</span><span class="nx">Action</span><span class="w">   </span><span class="c1">// 이번 라운드의 공개 행동. 제출과 패스를 모두 담는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Round</span><span class="w"> </span><span class="kt">int</span><span class="w">        </span><span class="c1">// 1..5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Played</span><span class="w"> </span><span class="nx">Set</span><span class="w">            </span><span class="c1">// 이번 라운드에 지금까지 나온 모든 타일</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Money</span><span class="w">  </span><span class="kd">map</span><span class="p">[</span><span class="nx">SeatID</span><span class="p">]</span><span class="kt">int</span><span class="w"> </span><span class="c1">// 누적 정산</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rules</span><span class="w">  </span><span class="nx">Ruleset</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">SeatInfo</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seat</span><span class="w">      </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">TileCount</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 남은 &#34;장수&#34; 만 안다. 무엇인지는 모른다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Finished</span><span class="w">  </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Action 은 공개된 행동 하나다. 패스도 반드시 로그에 남는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Action</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Seat</span><span class="w">    </span><span class="nx">SeatID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">TrickID</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Pass</span><span class="w">    </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Meld</span><span class="w">    </span><span class="o">*</span><span class="nx">Meld</span><span class="w"> </span><span class="c1">// Pass 가 false 일 때만 유효하다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Table</span><span class="w">   </span><span class="o">*</span><span class="nx">Meld</span><span class="w"> </span><span class="c1">// 그 행동을 할 때 받아야 했던 수. nil 이면 리드였다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>달무티판과 달라진 곳이 <code>Played Set</code> 하나입니다. 달무티에서는 로그를 훑어 숫자별 잔량을 세야 했지만, 렉시오는 나온 타일 전부가 <code>uint64</code> 한 칸에 들어가므로 아예 필드로 들고 다니는 편이 낫습니다. Part 2 는 이 필드에서 출발합니다.</p>
+<p>의사결정 지점은 달무티보다 단출합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">BotPolicy</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// SelectPlay 는 자기 차례에 낼 조합을 고르거나 패스한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nf">SelectPlay</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="nx">Decision</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Decision</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Pass</span><span class="w"> </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Meld</span><span class="w"> </span><span class="nx">Meld</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>함수가 하나뿐입니다.</strong> 렉시오에는 신분도, 세금도, 혁명도 없어서 달무티에 있던 <code>DeclareRevolution</code> 과 <code>SelectTaxCards</code> 가 통째로 사라집니다. 대신 남은 하나가 훨씬 깊어집니다.</p>
+<hr>
+<h2 id="합법수-생성">합법수 생성<a href="#합법수-생성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="손패-하나가-만들-수-있는-조합은-몇-개인가">손패 하나가 만들 수 있는 조합은 몇 개인가<a href="#손패-하나가-만들-수-있는-조합은-몇-개인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>먼저 규모를 재 보겠습니다. 아래 통계는 모두 <strong>시드 20260731, 무작위 딜 20,000회</strong> 로 얻은 값이며, 괄호는 95% Wilson 신뢰구간입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>조합</th>
+          <th style="text-align: right">평균 조합 수</th>
+          <th style="text-align: right">하나 이상 보유할 확률</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>싱글</td>
+          <td style="text-align: right">12.00</td>
+          <td style="text-align: right">100.0%</td>
+      </tr>
+      <tr>
+          <td>페어</td>
+          <td style="text-align: right">3.36</td>
+          <td style="text-align: right">99.5% [99.4, 99.6]</td>
+      </tr>
+      <tr>
+          <td>트리플</td>
+          <td style="text-align: right">0.38</td>
+          <td style="text-align: right">31.2% [30.5, 31.8]</td>
+      </tr>
+      <tr>
+          <td>스트레이트</td>
+          <td style="text-align: right">1.78</td>
+          <td style="text-align: right">35.3% [34.6, 35.9]</td>
+      </tr>
+      <tr>
+          <td>플러시</td>
+          <td style="text-align: right">1.76</td>
+          <td style="text-align: right">51.3% [50.6, 52.0]</td>
+      </tr>
+      <tr>
+          <td>풀하우스</td>
+          <td style="text-align: right">0.72</td>
+          <td style="text-align: right">28.9% [28.3, 29.5]</td>
+      </tr>
+      <tr>
+          <td>포카드+1</td>
+          <td style="text-align: right">0.12</td>
+          <td style="text-align: right">1.5% [1.4, 1.7]</td>
+      </tr>
+      <tr>
+          <td>스트레이트 플러시</td>
+          <td style="text-align: right">0.01</td>
+          <td style="text-align: right">0.5% [0.4, 0.6]</td>
+      </tr>
+      <tr>
+          <td><strong>5장 메이드 (종류 무관)</strong></td>
+          <td style="text-align: right">4.39</td>
+          <td style="text-align: right"><strong>80.2% [79.7, 80.8]</strong></td>
+      </tr>
+      <tr>
+          <td><strong>전체</strong></td>
+          <td style="text-align: right"><strong>20.13</strong></td>
+          <td style="text-align: right">—</td>
+      </tr>
+  </tbody>
+</table>
+<p>읽히는 것이 몇 가지 있습니다.</p>
+<p><strong>초기 손패의 80% 가 5장 메이드를 하나 이상 갖고 있습니다.</strong> 5장 판이 열리기만 하면 대부분의 플레이어가 참여할 수 있다는 뜻입니다. &ldquo;메이드를 쥐고 있는데 5장 판이 안 열려서 못 냈다&quot;는 흔한 패배 시나리오가 왜 그렇게 자주 나오는지 짐작할 수 있습니다. 희소한 것은 메이드 자체가 아니라 <strong>메이드를 낼 기회</strong> 입니다.</p>
+<p><strong>포카드+1 은 1.5%, 스트레이트 플러시는 0.5%로 사실상 안 나옵니다.</strong> 상위 두 족보는 &ldquo;만들면 좋은 것&quot;이 아니라 &ldquo;가끔 굴러 들어오는 것&quot;에 가깝습니다. 봇 설계에서 이 둘을 목표로 삼는 로직은 넣을 가치가 없습니다.</p>
+<h3 id="압축되는-카테고리와-안-되는-카테고리">압축되는 카테고리와 안 되는 카테고리<a href="#압축되는-카테고리와-안-되는-카테고리" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>조합의 세기는 <code>Key</code> 로 환원되고, <strong><code>Key</code> 가 같은 조합들은 규칙상 완전히 동등합니다.</strong> 그러면 후보를 <code>Key</code> 별로 하나씩만 만들어 줄일 수 있을까요. 카테고리마다 사정이 다릅니다. 같은 표본에서 서로 다른 <code>Key</code> 의 개수를 세면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>조합</th>
+          <th style="text-align: right">평균 조합 수</th>
+          <th style="text-align: right">평균 서로 다른 <code>Key</code> 수</th>
+          <th style="text-align: right">압축비</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>싱글</td>
+          <td style="text-align: right">12.00</td>
+          <td style="text-align: right">12.00</td>
+          <td style="text-align: right">1.00</td>
+      </tr>
+      <tr>
+          <td>페어</td>
+          <td style="text-align: right">3.36</td>
+          <td style="text-align: right">2.99</td>
+          <td style="text-align: right">1.12</td>
+      </tr>
+      <tr>
+          <td>트리플</td>
+          <td style="text-align: right">0.38</td>
+          <td style="text-align: right">0.35</td>
+          <td style="text-align: right">1.09</td>
+      </tr>
+      <tr>
+          <td><strong>스트레이트</strong></td>
+          <td style="text-align: right">1.78</td>
+          <td style="text-align: right">0.79</td>
+          <td style="text-align: right"><strong>2.25</strong></td>
+      </tr>
+      <tr>
+          <td><strong>플러시</strong></td>
+          <td style="text-align: right">1.76</td>
+          <td style="text-align: right">1.76</td>
+          <td style="text-align: right"><strong>1.00</strong></td>
+      </tr>
+      <tr>
+          <td>풀하우스</td>
+          <td style="text-align: right">0.72</td>
+          <td style="text-align: right">0.33</td>
+          <td style="text-align: right">2.18</td>
+      </tr>
+      <tr>
+          <td>포카드+1</td>
+          <td style="text-align: right">0.12</td>
+          <td style="text-align: right">0.02</td>
+          <td style="text-align: right">6.00</td>
+      </tr>
+      <tr>
+          <td>스트레이트 플러시</td>
+          <td style="text-align: right">0.01</td>
+          <td style="text-align: right">0.01</td>
+          <td style="text-align: right">1.00</td>
+      </tr>
+      <tr>
+          <td><strong>전체</strong></td>
+          <td style="text-align: right"><strong>20.13</strong></td>
+          <td style="text-align: right"><strong>18.24</strong></td>
+          <td style="text-align: right">1.10</td>
+      </tr>
+  </tbody>
+</table>
+<p>굵게 표시한 두 줄이 대조적입니다.</p>
+<ul>
+<li><strong>스트레이트는 2.25배로 압축됩니다.</strong> 숫자 구성이 12종 시퀀스 중 하나로 고정되므로, 같은 시퀀스를 만드는 문양 조합이 여럿이어도 <code>Key</code> 는 최고 수의 문양으로만 갈립니다.</li>
+<li><strong>플러시는 전혀 압축되지 않습니다.</strong> 다섯 장의 숫자가 <strong>전부</strong> 서열에 기여하므로, 타일이 하나만 달라도 다른 <code>Key</code> 입니다.</li>
+</ul>
+<p>포카드+1 의 6배는 얹는 1장이 서열에 안 들어가기 때문이고, 풀하우스의 2.18배는 페어 부분이 안 들어가기 때문입니다. 즉 <strong>압축비는 &ldquo;그 카테고리에서 서열에 기여하지 않는 타일이 몇 장인가&quot;를 그대로 반영합니다.</strong></p>
+<p>그래서 후보 생성은 두 단계로 나눕니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[&#34;내 차례&#34;] --&gt; B[&#34;1단계: 어떤 Key 로 받을 것인가&lt;br/&gt;(규칙 문제)&#34;]
+    B --&gt; C[&#34;2단계: 그 Key 를 만드는 데&lt;br/&gt;어떤 타일을 쓸 것인가&lt;br/&gt;(전략 문제 · Part 3)&#34;]
+    C --&gt; D[&#34;제출&#34;]
+    style A fill:#FFD700,color:#000000
+    style B fill:#87CEEB,color:#000000
+    style C fill:#DDA0DD,color:#000000
+    style D fill:#90EE90,color:#000000
+</code></pre><p>여기서 중요한 원칙이 하나 있습니다. <strong>1단계에서 <code>Key</code> 를 줄이더라도, 2단계가 쓸 정보까지 버리면 안 됩니다.</strong> 같은 <code>Key</code> 를 만드는 타일 구성이 여럿이면 그 목록을 유지해야 Part 3 의 DP 가 &ldquo;어느 구성이 남은 손패에 덜 해로운가&quot;를 고를 수 있습니다. 후보를 <code>(Key, 가능한 타일 구성들)</code> 로 들고 다니는 편이 안전합니다.</p>
+<h3 id="후보를-하나도-잃지-않는-생성기">후보를 하나도 잃지 않는 생성기<a href="#후보를-하나도-잃지-않는-생성기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>1~3장짜리부터 보겠습니다. 여기서 자연스럽지만 틀린 최적화가 하나 있습니다. &ldquo;어차피 강한 후보가 이기니 각 숫자마다 가장 센 조합 하나만 만들면 된다&quot;는 생각입니다.</p>
+<p><strong>반대입니다.</strong> 클라이밍 게임에서 필요한 것은 <strong>테이블을 이기는 가장 싼 수</strong> 입니다. 같은 숫자의 페어라도 <code>구름+별</code>, <code>구름+달</code>, <code>구름+해</code> 는 서로 다른 <code>Key</code> 이고, 테이블이 <code>별 5</code> 페어라면 <code>구름+달</code> 로 충분한데 <code>구름+해</code> 를 내면 해를 낭비합니다.</p>
+<p>그래서 각 숫자에 대해 <strong>가능한 <code>Key</code> 를 전부</strong> 만들어야 합니다. 다행히 수가 적습니다. 어떤 숫자의 타일을 <code>k</code> 장 갖고 있으면 <code>count</code> 장짜리 조합의 <code>Key</code> 는 최대 <code>k - count + 1</code> 가지뿐입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// followsSmall 은 1/2/3 장짜리 후보를 Key 별로 하나씩 만든다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 각 Key 에 대해 &#34;가장 약한 나머지 + 그 Key 를 만드는 최고 타일&#34; 을 고른다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">followsSmall</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="nx">Set</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">minKey</span><span class="w"> </span><span class="nx">Key</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">ro</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">uint8</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="nx">ro</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">15</span><span class="p">;</span><span class="w"> </span><span class="nx">ro</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">tiles</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">rankMaskByOrder</span><span class="p">(</span><span class="nx">ro</span><span class="p">)).</span><span class="nf">Tiles</span><span class="p">()</span><span class="w"> </span><span class="c1">// 약한 것부터</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">tiles</span><span class="p">)</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// top 이 될 수 있는 것은 인덱스 count-1 이상의 타일뿐이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">tiles</span><span class="p">);</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">picked</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nb">append</span><span class="p">([]</span><span class="nx">Tile</span><span class="p">{},</span><span class="w"> </span><span class="nx">tiles</span><span class="p">[:</span><span class="nx">count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">...</span><span class="p">),</span><span class="w"> </span><span class="nx">tiles</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">m</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Meld</span><span class="p">{</span><span class="nx">Tiles</span><span class="p">:</span><span class="w"> </span><span class="nx">picked</span><span class="p">,</span><span class="w"> </span><span class="nx">Count</span><span class="p">:</span><span class="w"> </span><span class="nx">count</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">Key</span><span class="p">:</span><span class="w"> </span><span class="nf">makeKey</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="kt">uint8</span><span class="p">{</span><span class="nx">ro</span><span class="p">},</span><span class="w"> </span><span class="nx">tiles</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nf">Suit</span><span class="p">())}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">minKey</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">out</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>나머지 <code>count-1</code> 장을 <strong>가장 약한 것부터</strong> 채우는 것은 이 단계에서 안전한 선택입니다. 같은 <code>Key</code> 안에서는 어느 타일을 쓰든 규칙상 동등하고, 같은 숫자의 타일끼리는 다른 조합에 쓰일 여지도 없기 때문입니다. 5장 메이드에서는 사정이 달라지는데, 그 이야기는 Part 3 에서 하겠습니다.</p>
+<p>5장 메이드는 카테고리별로 만듭니다. 스트레이트가 가장 까다롭습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// straightMelds 는 스트레이트와 스트레이트 플러시 후보를 만든다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">straightMelds</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">seq</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">straightRanks</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="kd">var</span><span class="w"> </span><span class="nx">pools</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="nx">Set</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">seq</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">pools</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">hand</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">rankMask</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">pools</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">ok</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="k">break</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 다섯 자리의 문양 선택을 전부 훑는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// pools 각각이 최대 4장이므로 최악이 4^5 = 1024 가지이고,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 실제로는 손패가 12장뿐이라 훨씬 작다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nf">forEachCombination</span><span class="p">(</span><span class="nx">pools</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">tiles</span><span class="w"> </span><span class="p">[]</span><span class="nx">Tile</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">out</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span><span class="w"> </span><span class="nf">classify</span><span class="p">(</span><span class="nx">tiles</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nf">dedupeKeepAllTilings</span><span class="p">(</span><span class="nx">out</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>여기서 문양 선택을 전부 훑는 이유가 있습니다. 만약 &ldquo;최고 수만 고정하고 나머지는 가장 약한 타일로&rdquo; 채우면, <strong>다섯 장이 우연히 같은 문양이 되어 스트레이트 플러시로 승격되는 경우</strong> 에 같은 숫자 구성의 일반 스트레이트 후보가 사라집니다. 승격이 늘 이득인 것도 아닙니다. 테이블이 스트레이트일 때는 일반 스트레이트로 받는 편이 싸고, 스트레이트 플러시는 아껴 두는 편이 낫습니다. 두 후보가 모두 필요합니다.</p>
+<p>나머지 카테고리는 단순합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>카테고리</th>
+          <th>생성 방법</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>플러시</td>
+          <td>문양별로 5장 이상이면 <code>C(n,5)</code> 를 전부 만든다. 압축이 안 되므로 줄일 수 없다</td>
+      </tr>
+      <tr>
+          <td>풀하우스</td>
+          <td>3장 이상인 숫자 × 2장 이상인 다른 숫자. 페어 부분은 <code>Key</code> 에 영향이 없으므로 <strong>가장 약한 페어</strong> 를 붙인다</td>
+      </tr>
+      <tr>
+          <td>포카드+1</td>
+          <td>4장인 숫자 × 나머지 아무 1장. 얹는 1장은 <code>Key</code> 에 영향이 없으므로 <strong>가장 쓸모없는 타일</strong> 을 붙인다</td>
+      </tr>
+      <tr>
+          <td>스트레이트 플러시</td>
+          <td>위 스트레이트 생성 결과에서 분류된 것</td>
+      </tr>
+  </tbody>
+</table>
+<p>포카드+1 의 마지막 칸이 요긴합니다. 얹는 1장은 서열에 전혀 기여하지 않으므로, <strong>손패에서 가장 쓸모없는 타일을 여기에 버릴 수 있습니다.</strong> 포카드+1 은 강한 족보이면서 동시에 <strong>쓰레기 처리기</strong> 입니다. 풀하우스의 페어 부분도 같은 성격입니다.</p>
+<hr>
+<h2 id="easy-봇-결정적-규칙만으로-만드는-기준선">easy 봇: 결정적 규칙만으로 만드는 기준선<a href="#easy-봇-결정적-규칙만으로-만드는-기준선" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>easy 봇의 설계 목표는 &ldquo;약한 봇&quot;이 아니라 <strong>&ldquo;완전히 예측 가능하고 항상 합법적인 봇&rdquo;</strong> 입니다. 확률도, 난수도, 탐색도 없습니다. 같은 상황에서는 언제나 같은 수를 둡니다. 이 봇은 세 가지 역할을 합니다.</p>
+<ul>
+<li>룰 엔진의 합법성 검사를 수천 라운드 자동으로 두들기는 <strong>테스트 하네스</strong></li>
+<li>사람이 자리를 비웠을 때의 <strong>자동 플레이 대체 로직</strong></li>
+<li>hard 봇의 강함을 측정할 <strong>기준선</strong></li>
+</ul>
+<p>세 번째가 특히 중요합니다. 기준선이 없으면 hard 봇이 정말 나아졌는지 말할 수 없습니다.</p>
+<h3 id="리드와-팔로우">리드와 팔로우<a href="#리드와-팔로우" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>정책은 다음과 같습니다.</p>
+<ul>
+<li><strong>리드일 때:</strong> 손패에서 <strong>가장 약한 타일</strong> 을 찾고, 그 타일을 포함하는 조합 중 <strong>장수가 가장 많은 것</strong> 을 냅니다. 장수가 같으면 <code>Key</code> 가 작은 것, 그래도 같으면 타일 ID 사전순으로 끊습니다.</li>
+<li><strong>팔로우일 때:</strong> 테이블을 이기는 후보 중 <strong><code>Key</code> 가 가장 작은 것</strong> 을 냅니다. <code>Key</code> 가 같으면 쓰는 타일의 ID 합이 작은 것을 고릅니다.</li>
+<li><strong>합법 수가 있으면 전략적으로 패스하지 않고 항상 제출합니다.</strong></li>
+<li>합법 수가 없을 때만 패스합니다.</li>
+</ul>
+<p>리드 규칙을 &ldquo;가장 약한 조합&quot;이 아니라 &ldquo;가장 약한 타일을 포함하는 가장 큰 조합&quot;으로 잡은 데 이유가 있습니다. 전자로 하면 봇은 매번 가장 약한 싱글을 한 장씩 흘려 열두 턴을 씁니다. 후자로 하면 약한 타일을 처분하면서도 장수를 최대한 뽑아냅니다. easy 봇이 가진 몇 안 되는 &ldquo;쓸 만한 감각&quot;입니다.</p>
+<p>덤으로 첫 리드 규칙과도 자연스럽게 맞습니다. 첫 트릭의 리드권은 <strong>구름 3</strong> 보유자에게 가는데, 구름 3 은 타일 ID 0 이라 언제나 그 사람의 &ldquo;가장 약한 타일&quot;입니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    S[&#34;내 차례 시작&#34;] --&gt; T{&#34;테이블이 비어 있는가?&#34;}
+    T -- &#34;예 (리드)&#34; --&gt; L1[&#34;가장 약한 타일 t 를 찾는다&#34;]
+    L1 --&gt; L2[&#34;t 를 포함하는 조합을 전부 만든다&#34;]
+    L2 --&gt; L3[&#34;정렬: 장수 많은 순 →&lt;br/&gt;Key 작은 순 → 타일 ID 사전순&#34;]
+    L3 --&gt; L4[&#34;첫 번째 후보 제출&#34;]
+    T -- &#34;아니오 (팔로우)&#34; --&gt; F1[&#34;같은 장수 + 더 큰 Key&lt;br/&gt;후보를 빠짐없이 생성&#34;]
+    F1 --&gt; F2{&#34;합법 수가 있는가?&#34;}
+    F2 -- 아니오 --&gt; P[&#34;패스&#34;]
+    F2 -- 예 --&gt; F3[&#34;정렬: Key 작은 순 →&lt;br/&gt;타일 ID 합 작은 순&#34;]
+    F3 --&gt; F4[&#34;첫 번째 후보 제출&#34;]
+    style S fill:#FFD700,color:#000000
+    style L4 fill:#90EE90,color:#000000
+    style F4 fill:#90EE90,color:#000000
+    style P fill:#FFB6C1,color:#000000
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">EasyPolicy</span><span class="w"> </span><span class="kd">struct</span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">EasyPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">SelectPlay</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="nx">Decision</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Meld</span><span class="p">:</span><span class="w"> </span><span class="nf">easyLead</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">cands</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">LegalFollows</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">cands</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Pass</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span><span class="w"> </span><span class="c1">// 합법 수가 없을 때만 패스한다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">cands</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nf">easyFollowLess</span><span class="p">(</span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span><span class="w"> </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Meld</span><span class="p">:</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// easyFollowLess 는 &#34;가장 싸게 받는&#34; 후보를 앞에 세운다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  1. Key 가 작은 것 (가장 약한 수로 받는다)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  2. 쓰는 타일의 ID 합이 작은 것 (약한 타일부터 소모한다)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">easyFollowLess</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">Key</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nf">tileSum</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">Tiles</span><span class="p">)</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nf">tileSum</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">Tiles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// easyLead 는 가장 약한 타일을 포함하는 가장 큰 조합을 낸다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">easyLead</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nx">Meld</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">weakest</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">hand</span><span class="p">.</span><span class="nf">Lowest</span><span class="p">()</span><span class="w"> </span><span class="c1">// 리드 시점에 손패는 반드시 비어 있지 않다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">cands</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">MeldsContaining</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span><span class="w"> </span><span class="nx">weakest</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">sort</span><span class="p">.</span><span class="nf">Slice</span><span class="p">(</span><span class="nx">cands</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">j</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Count</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Count</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Count</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Count</span><span class="w"> </span><span class="c1">// 장수가 많을수록 좋다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Key</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Key</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Key</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Key</span><span class="w"> </span><span class="c1">// 같은 장수면 약하게 연다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nf">tileSum</span><span class="p">(</span><span class="nx">cands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Tiles</span><span class="p">)</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nf">tileSum</span><span class="p">(</span><span class="nx">cands</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">Tiles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">cands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="c1">// 싱글은 언제나 후보에 있으므로 빈 슬라이스가 될 수 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>마지막 줄의 주석이 작지만 중요합니다. <code>MeldsContaining</code> 은 최소한 &ldquo;그 타일 한 장짜리 싱글&quot;을 항상 포함하므로, 후보가 비어 정렬 결과를 인덱싱하다 패닉이 날 일이 없습니다.</p>
+<h3 id="결정성은-어디서-오는가">결정성은 어디서 오는가<a href="#결정성은-어디서-오는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>달무티 봇에서는 &ldquo;12를 일곱 장 중 어느 다섯 장을 낼 것인가&quot;가 규칙상 무의미해서, 결정성을 위해 card ID 오름차순이라는 인위적 tie-break 를 도입해야 했습니다. 렉시오는 사정이 다릅니다.</p>
+<ul>
+<li><strong><code>Key</code> 단계의 동률은 존재하지 않습니다.</strong> 앞에서 봤듯 <code>Key</code> 는 한 트릭 안에서 전순서입니다.</li>
+<li><strong>타일 선택 단계의 동률은 존재합니다.</strong> 같은 <code>Key</code> 를 만드는 구성이 여럿일 수 있습니다.</li>
+</ul>
+<p>easy 봇은 두 번째를 <code>tileSum</code> 이라는 결정적 함수로 끊습니다. 이 선택은 &ldquo;약한 타일부터 쓴다&quot;는 전략적 의미도 함께 갖습니다. 다만 이것이 늘 옳지는 않습니다. 그 약한 타일이 다른 조합의 부품일 수 있기 때문입니다. Part 3 의 분해 플랜이 이 자리를 대체합니다.</p>
+<hr>
+<h2 id="easy-봇은-왜-지는가">easy 봇은 왜 지는가<a href="#easy-봇은-왜-지는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>easy 봇은 기준선으로서 훌륭하지만, 사람과 몇 판만 붙어 보면 금방 약점이 드러납니다. 그 약점들이 정확히 Part 2~4 의 설계 항목이 됩니다.</p>
+<p><strong>1. 나온 타일을 세지 않습니다.</strong> <code>GameView.Played</code> 를 아예 읽지 않습니다. 렉시오는 60장이 전부 유일하고 4장씩 고르게 분포하므로 <strong>카운팅 오차가 0인 게임</strong> 입니다. 이 정보를 통째로 버리는 것은 달무티에서보다 더 큰 손실입니다. → Part 2</p>
+<p><strong>2. 낼 수 있으면 무조건 냅니다.</strong> 렉시오는 패스해도 자기 차례가 다시 오면 낼 수 있으므로, 참는 비용이 원래 낮습니다. 참는 것이 싼 게임에서 한 번도 참지 않는 것은 그만큼 큰 손실입니다. → Part 4</p>
+<p><strong>3. 조합을 파괴합니다.</strong> 이것이 렉시오 특유의 가장 아픈 약점입니다. 누군가 페어를 냈을 때 easy 봇의 손에 <code>해 4, 해 7, 해 9, 해 11, 해 14</code> 라는 플러시 재료가 있고 그중 <code>해 7</code> 이 페어의 한 짝이라면, easy 봇은 성실하게 그 페어를 내고 <strong>플러시를 부숴 버립니다.</strong> 후보를 <code>Key</code> 기준으로만 고르기 때문에, 그 타일이 다른 조합의 부품이라는 사실을 보지 않습니다. 달무티에서는 같은 숫자끼리만 뭉쳤기 때문에 이런 교차 파괴가 드물었지만, 렉시오는 <strong>한 타일이 페어·스트레이트·플러시에 동시에 속하는 것이 기본</strong> 입니다. → Part 3</p>
+<p><strong>4. 몇 번에 털지 계산하지 않습니다.</strong> easy 봇은 이번 턴만 봅니다. &ldquo;내 손패는 최소 몇 번 제출하면 비는가&quot;라는 질문을 하지 않으므로, 장수는 줄었는데 남은 타일이 전부 고아가 되는 손패로 걸어 들어갑니다. → Part 3</p>
+<p><strong>5. 정산 구조를 모릅니다.</strong> 이것이 렉시오에서 가장 비쌉니다. easy 봇은 2 타일을 그저 &ldquo;강한 타일&quot;로만 취급해 끝까지 아낍니다. 그런데 렉시오의 정산은 <code>실제 장수 × 2^(2의 개수)</code> 이므로, 2를 두 장 쥔 채 6장이 남으면 <strong>24장을 남긴 것으로 계산됩니다.</strong> 강한 타일을 아낀 대가가 정확히 정산표에 찍힙니다. → Part 4</p>
+<p><strong>6. 완전히 예측 가능합니다.</strong> 결정적이라는 것은 테스트에는 축복이지만 상대에게는 정보입니다. 사람은 몇 판 만에 &ldquo;이 봇은 늘 가장 약한 수로 받는다&quot;는 패턴을 읽습니다.</p>
+<p>여섯 가지를 한 문장으로 줄이면 이렇습니다.</p>
+<blockquote>
+<p>easy 봇은 <strong>이번 턴에 합법적인 가장 싼 수</strong> 를 계산할 뿐, <strong>내 60장짜리 세계에서 지금 무엇이 남아 있는지도, 내 손패가 몇 번에 비는지도, 라운드가 끝났을 때 얼마를 물어내는지도</strong> 계산하지 않습니다.</p>
+</blockquote>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1 에서는 렉시오 봇의 표현 계층을 잡았습니다. 정리하면 세 가지입니다.</p>
+<ul>
+<li><strong>타일 하나를 정수 하나로 압축합니다.</strong> <code>rankOrder(r)*4 + suit</code> 로 만든 0~59 값이 곧 서열이자 비트마스크 인덱스입니다. 서열 비교가 <code>&lt;</code> 하나로 끝나고, 60장 전체가 <code>uint64</code> 한 칸에 들어갑니다.</li>
+<li><strong>조합 하나도 정수 하나로 압축합니다.</strong> <code>(카테고리, 서열에 기여하는 숫자 벡터, 문양)</code> 을 25비트에 담으면, 공식 룰의 여덟 가지 비교 규칙이 정수 비교 하나로 통합됩니다. 스트레이트 순위표도 이 인코딩에서 그대로 재현됩니다.</li>
+<li><strong>후보는 <code>Key</code> 별로 줄이되, 타일 구성 정보는 버리지 않습니다.</strong> 압축이 되는 카테고리와 안 되는 카테고리가 갈리고, 특히 플러시는 다섯 장이 모두 서열에 기여해 전혀 압축되지 않습니다.</li>
+</ul>
+<p>Part 2 에서는 <code>Played</code> 필드를 처음으로 읽습니다. 미공개 타일 집합을 정확히 복원하고, &ldquo;이 수는 아무도 못 받는다&quot;를 <strong>확률 없이 판정할 수 있는 영역</strong> 과 <strong>확률이 필요한 영역</strong> 으로 나누겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://lexio.co.kr/bbs/board.php?bo_table=0102">렉시오 공식 게임방법 (디다노니아)</a> — 이 시리즈가 전제하는 규칙의 근거</li>
+<li><a href="https://boardgamegeek.com/boardgame/19184/lexio">LEXIO (BoardGameGeek)</a></li>
+<li><a href="https://namu.wiki/w/%EB%A0%89%EC%8B%9C%EC%98%A4">렉시오 (나무위키)</a></li>
+<li><a href="https://www.pagat.com/climbing/">Climbing Games Index (Pagat)</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-04/">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-02/" class="button inline prev">
+        &lt; [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260730-dalmuti-cpu-bot-strategy-03/" class="button inline next">
+         [<span class="button__text">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

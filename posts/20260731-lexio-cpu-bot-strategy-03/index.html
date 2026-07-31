@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="렉시오 hard 봇이 자기 손패를 몇 번에 털 수 있는지 정확히 계산합니다. 유효 조합으로의 최소 분할을 비트마스크 DP 로 풀고, 탐욕법이 왜 다섯 번에 한 번꼴로 최적을 놓치는지, 그리고 DP 한 번이 왜 모든 후보의 평가까지 공짜로 끝내 주는지 다룹니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-03/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜">
+<meta property="og:description" content="렉시오 hard 봇이 자기 손패를 몇 번에 털 수 있는지 정확히 계산합니다. 유효 조합으로의 최소 분할을 비트마스크 DP 로 풀고, 탐욕법이 왜 다섯 번에 한 번꼴로 최적을 놓치는지, 그리고 DP 한 번이 왜 모든 후보의 평가까지 공짜로 끝내 주는지 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-03/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-31 09:37:44 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-03/">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-31</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="좋은-손패는-센-손패가-아니다">좋은 손패는 센 손패가 아니다<a href="#좋은-손패는-센-손패가-아니다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">Part 2</a> 에서는 봇이 상대에 대해 무엇을 알 수 있는지 정리했습니다. 이번 편은 시선을 안으로 돌립니다. <strong>내 손패는 몇 번 제출하면 비는가.</strong></p>
+<p>이 질문이 왜 중요한지는 <a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">클라이밍 게임 전략 글</a>에서 이미 짚었습니다. 강한 타일이 많은 손패와 조합이 잘 짜인 손패 중 이기는 쪽은 후자입니다. 강한 타일은 한 번에 한 장씩 나가지만, 잘 짜인 손패는 다섯 장씩 나갑니다.</p>
+<p>달무티 봇에서도 같은 계산을 했지만 그때는 쉬웠습니다. 달무티는 <strong>같은 숫자끼리만 뭉치므로</strong> 손패를 숫자별로 묶는 것이 곧 최적 분할이었고, 유일한 고민은 광대 두 장을 어디에 붙이느냐뿐이었습니다.</p>
+<p>렉시오는 사정이 완전히 다릅니다. <strong>한 타일이 여러 조합에 동시에 속합니다.</strong> <code>해 12</code> 한 장은 12 페어의 짝일 수도, 해 플러시의 부품일 수도, <code>9-10-11-12-13</code> 스트레이트의 한 칸일 수도 있습니다. 어디에 쓸지 정하는 순간 나머지 두 가능성은 사라집니다. 이건 단순한 그룹핑이 아니라 <strong>집합 분할 최적화</strong> 입니다.</p>
+<hr>
+<h2 id="1-문제-정의">1. 문제 정의<a href="#1-문제-정의" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="최소-분할">최소 분할<a href="#최소-분할" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>손패 <code>H</code> 를 유효 조합들의 집합으로 나눈다고 할 때, 조각의 개수를 최소화하는 분할을 찾는 문제입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">입력: 손패 H (12장)
+</span></span><span class="line"><span class="cl">출력: H 를 서로 겹치지 않는 유효 조합들로 완전히 덮는 분할 중, 조각 수가 최소인 것
+</span></span><span class="line"><span class="cl">제약: 유효 조합은 1장·2장(페어)·3장(트리플)·5장(메이드) 뿐이다
+</span></span></code></pre></div><p>싱글은 언제나 유효 조합이므로 <strong>분할은 반드시 존재합니다.</strong> 최악의 경우가 12조각(전부 싱글)일 뿐입니다. 즉 이 문제는 &ldquo;가능한가&quot;가 아니라 &ldquo;얼마나 줄일 수 있는가&quot;입니다.</p>
+<h3 id="탐욕법이-실패하는-실제-사례">탐욕법이 실패하는 실제 사례<a href="#탐욕법이-실패하는-실제-사례" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>&ldquo;큰 조합부터 떼어내면 되는 것 아닌가&rdquo; 싶지만, 그렇지 않습니다. 아래는 무작위로 딜한 손패에서 실제로 나온 사례입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">손패: 구름5  달5  구름9  해9  해10  별11  구름12  달12  해12  해13  구름15  구름1
+</span></span></code></pre></div><p>탐욕법은 &ldquo;가장 큰 조합부터&quot;라는 규칙에 따라 먼저 5장짜리를 찾습니다. 그리고 이런 풀하우스를 발견합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[탐욕법] 7조각
+</span></span><span class="line"><span class="cl">  풀하우스   구름12  달12  해12  +  구름5  달5
+</span></span><span class="line"><span class="cl">  페어       구름9  해9
+</span></span><span class="line"><span class="cl">  싱글       해10 / 별11 / 해13 / 구름15 / 구름1
+</span></span></code></pre></div><p>그럴듯해 보입니다. 5장을 한 번에 털었고, 페어도 하나 만들었습니다. 그런데 최적 분할은 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[최적] 4조각
+</span></span><span class="line"><span class="cl">  플러시     구름5  구름9  구름12  구름15  구름1
+</span></span><span class="line"><span class="cl">  스트레이트  해9  해10  별11  해12  해13
+</span></span><span class="line"><span class="cl">  싱글       달5
+</span></span><span class="line"><span class="cl">  싱글       달12
+</span></span></code></pre></div><p><strong>7조각과 4조각.</strong> 세 턴 차이입니다. 무슨 일이 벌어졌는지는 명확합니다. 탐욕법이 집어 든 풀하우스에는 <code>구름12</code> 와 <code>해12</code> 가 들어 있는데, <strong>구름12는 구름 플러시의 부품이고 해12는 해 스트레이트의 한 칸</strong> 이었습니다. 12 트리플을 만드는 순간 두 개의 5장 메이드가 동시에 무너지고, 그 잔해가 싱글 다섯 장으로 흩어집니다.</p>
+<p>이것이 렉시오 손패의 본질입니다. <strong>12라는 숫자는 세 곳에서 동시에 필요하고, 어디에 쓸지는 나머지 열한 장을 다 보고 나서야 정할 수 있습니다.</strong></p>
+<h3 id="얼마나-자주-실패하는가">얼마나 자주 실패하는가<a href="#얼마나-자주-실패하는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>무작위 손패 2만 개에 대해 최적 분할과 탐욕법을 비교해 봤습니다. 탐욕법은 &ldquo;5장 → 3장 → 2장 → 1장 순으로 찾는 대로 떼어낸다&quot;는 단순 규칙입니다. 아래 수치는 <strong>시드 20260731, 표본 20,000</strong> 이며 괄호는 95% Wilson 신뢰구간입니다.</p>
+<ul>
+<li>평균 조각 수: <strong>최적 6.95, 탐욕법 7.23</strong></li>
+<li>탐욕법이 최적보다 나쁜 손패의 비율: <strong>19.2% [18.7, 19.8]</strong></li>
+</ul>
+<p>다섯 번에 한 번꼴로 집니다. 평균 차이는 0.3턴으로 작아 보이지만, 이 차이는 무작위로 흩어지지 않고 <strong>조합이 풍부한 손패에 집중</strong> 되는 경향이 있습니다. 위 예시처럼 메이드를 두 개 만들 수 있는 손패에서 크게 손해를 보고, 조합이 거의 없는 손패에서는 둘이 똑같아집니다. 뒤의 분포표에서 9조각 이상 구간의 두 열이 완전히 같은 값인 것이 그 근거입니다.</p>
+<hr>
+<h2 id="2-비트마스크-dp">2. 비트마스크 DP<a href="#2-비트마스크-dp" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="상태와-전이">상태와 전이<a href="#상태와-전이" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>손패가 12장이므로 부분집합은 <code>2^12 = 4096</code> 개뿐입니다. 전수 DP 가 그냥 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">dp[S] = 부분집합 S 를 유효 조합으로 나누는 최소 조각 수
+</span></span><span class="line"><span class="cl">dp[∅] = 0
+</span></span><span class="line"><span class="cl">dp[S] = min over (S 의 부분집합 중 유효 조합인 M) { dp[S \ M] + 1 }
+</span></span></code></pre></div><p>여기에 표준적인 최적화를 하나 넣습니다. <code>S</code> 의 <strong>최하위 비트</strong> 는 어떤 조각엔가 반드시 들어가므로, <strong>최하위 비트를 포함하는 조각만</strong> 후보로 삼으면 됩니다. 같은 분할을 조각 순서만 바꿔 여러 번 시도하는 낭비가 사라집니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[&#34;S = {0,1,2,...}&#34;] --&gt; B[&#34;최하위 비트 low 고정&#34;]
+    B --&gt; C[&#34;S \\ low 의 부분집합 T 를 순회&#34;]
+    C --&gt; D[&#34;M = T ∪ low&#34;]
+    D --&gt; E{&#34;M 이 유효 조합인가?&#34;}
+    E -- 예 --&gt; F[&#34;dp[S] = min(dp[S], dp[S \\ M] + 1)&#34;]
+    E -- 아니오 --&gt; C
+    style A fill:#FFD700,color:#000000
+    style F fill:#90EE90,color:#000000
+</code></pre><h3 id="코드">코드<a href="#코드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Plan 은 손패 하나에 대한 분해 결과다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Plan</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">dp</span><span class="w">     </span><span class="p">[]</span><span class="kt">int</span><span class="w">  </span><span class="c1">// dp[S] = 부분집합 S 의 최소 조각 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">from</span><span class="w">   </span><span class="p">[]</span><span class="kt">int</span><span class="w">  </span><span class="c1">// 역추적용. from[S] = S 에서 마지막으로 떼어낸 조각</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">tiles</span><span class="w">  </span><span class="p">[]</span><span class="nx">Tile</span><span class="w"> </span><span class="c1">// 인덱스 → 타일</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Turns</span><span class="w">  </span><span class="kt">int</span><span class="w">    </span><span class="c1">// 손패 전체의 최소 제출 횟수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">Decompose</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="nx">Plan</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">tiles</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">hand</span><span class="p">.</span><span class="nf">Tiles</span><span class="p">()</span><span class="w"> </span><span class="c1">// 약한 것부터 정렬되어 나온다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">n</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">tiles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">full</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 1) 유효 조합인 부분집합만 미리 추린다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">//    크기가 1, 2, 3, 5 인 것만 후보다. 12장이면 1090개뿐이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">valid</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">bool</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nf">forEachSubsetOfSize</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span><span class="w"> </span><span class="nx">size</span><span class="p">,</span><span class="w"> </span><span class="kd">func</span><span class="p">(</span><span class="nx">mask</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">Classify</span><span class="p">(</span><span class="nf">pick</span><span class="p">(</span><span class="nx">tiles</span><span class="p">,</span><span class="w"> </span><span class="nx">mask</span><span class="p">));</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">valid</span><span class="p">[</span><span class="nx">mask</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 2) 부분집합 DP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">const</span><span class="w"> </span><span class="nx">inf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">30</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">dp</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">full</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">from</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">full</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">full</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">dp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">inf</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">mask</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">mask</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">full</span><span class="p">;</span><span class="w"> </span><span class="nx">mask</span><span class="o">++</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">low</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">mask</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">-</span><span class="nx">mask</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">rest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">mask</span><span class="w"> </span><span class="p">^</span><span class="w"> </span><span class="nx">low</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// rest 의 모든 부분집합을 돌면서 low 를 얹는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="nx">sub</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rest</span><span class="p">;</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="nx">sub</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">sub</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nx">rest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">m</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">sub</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nx">low</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">valid</span><span class="p">[</span><span class="nx">m</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">dp</span><span class="p">[</span><span class="nx">mask</span><span class="p">^</span><span class="nx">m</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">dp</span><span class="p">[</span><span class="nx">mask</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">dp</span><span class="p">[</span><span class="nx">mask</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dp</span><span class="p">[</span><span class="nx">mask</span><span class="p">^</span><span class="nx">m</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="nx">from</span><span class="p">[</span><span class="nx">mask</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="nx">sub</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="k">break</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">Plan</span><span class="p">{</span><span class="nx">dp</span><span class="p">:</span><span class="w"> </span><span class="nx">dp</span><span class="p">,</span><span class="w"> </span><span class="nx">from</span><span class="p">:</span><span class="w"> </span><span class="nx">from</span><span class="p">,</span><span class="w"> </span><span class="nx">tiles</span><span class="p">:</span><span class="w"> </span><span class="nx">tiles</span><span class="p">,</span><span class="w"> </span><span class="nx">Turns</span><span class="p">:</span><span class="w"> </span><span class="nx">dp</span><span class="p">[</span><span class="nx">full</span><span class="p">]}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Pieces 는 최적 분할을 실제 조합 목록으로 복원한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">Plan</span><span class="p">)</span><span class="w"> </span><span class="nf">Pieces</span><span class="p">()</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="kd">var</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">mask</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">dp</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">mask</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">piece</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">from</span><span class="p">[</span><span class="nx">mask</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">Classify</span><span class="p">(</span><span class="nf">pick</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">tiles</span><span class="p">,</span><span class="w"> </span><span class="nx">piece</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">out</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">mask</span><span class="w"> </span><span class="p">^=</span><span class="w"> </span><span class="nx">piece</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="계산량">계산량<a href="#계산량" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>두 단계 모두 작습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>단계</th>
+          <th>연산 수 (12장 기준)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>유효 조합 판정</td>
+          <td><code>C(12,1)+C(12,2)+C(12,3)+C(12,5) = 1,090</code> 회</td>
+      </tr>
+      <tr>
+          <td>DP 전이</td>
+          <td><code>3^12 / 2 ≈ 265,720</code> 회</td>
+      </tr>
+  </tbody>
+</table>
+<p><code>3^n</code> 은 &ldquo;모든 부분집합의 모든 부분집합&quot;을 세는 표준적인 값이고, 최하위 비트를 고정한 덕에 절반이 됩니다. 참고로 위 알고리즘을 그대로 옮긴 <strong>Python 구현이 손패 하나당 평균 17.3ms</strong> 였습니다(표본 200회). 최적화되지 않은 인터프리터 언어로도 이 정도이므로, 컴파일 언어에서 실시간 턴 예산이 문제가 될 계산은 아닐 것으로 보입니다.</p>
+<p>다만 실제 구현의 실행 시간을 여기서 숫자로 단정하지는 않겠습니다. 이 글의 Go 코드는 발췌이고 벤치마크를 돌린 적이 없습니다. <code>valid</code> 를 <code>map</code> 이 아니라 비트셋 배열로 두는 것만으로도 크게 달라질 자리이니, 구현 후 실측하시기 바랍니다.</p>
+<h3 id="인원이-달라지면">인원이 달라지면<a href="#인원이-달라지면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 글은 5인 게임을 전제하므로 손패가 12장이지만, 렉시오는 인원에 따라 손패 크기가 바뀝니다. 3인은 1~9 만 써서 12장, 4인은 1~13 을 써서 <strong>13장</strong> 입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>인원</th>
+          <th style="text-align: right">손패</th>
+          <th style="text-align: right">상태 수 <code>2^n</code></th>
+          <th style="text-align: right">전이 수 <code>3^n / 2</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3인</td>
+          <td style="text-align: right">12장</td>
+          <td style="text-align: right">4,096</td>
+          <td style="text-align: right">265,720</td>
+      </tr>
+      <tr>
+          <td>4인</td>
+          <td style="text-align: right">13장</td>
+          <td style="text-align: right">8,192</td>
+          <td style="text-align: right">797,161</td>
+      </tr>
+      <tr>
+          <td>5인</td>
+          <td style="text-align: right">12장</td>
+          <td style="text-align: right">4,096</td>
+          <td style="text-align: right">265,720</td>
+      </tr>
+  </tbody>
+</table>
+<p>13장이 되어도 80만 회로 세 배 늘어날 뿐입니다. 지수가 밑이 3인 지수라 손패가 한 장 늘 때마다 정확히 3배씩 증가하는데, 렉시오의 손패는 최대 13장으로 고정이므로 이 알고리즘은 <strong>게임이 커질 걱정이 없는 자리</strong> 에 있습니다. 손패가 20장쯤 되는 게임이었다면 <code>3^20 / 2 ≈ 17억</code> 이 되어 다른 접근이 필요했을 것입니다.</p>
+<h3 id="동률은-어떻게-끊는가">동률은 어떻게 끊는가<a href="#동률은-어떻게-끊는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>DP 에서 같은 최소 비용을 주는 분할이 여럿 나오는 것은 흔한 일입니다. 예를 들어 <code>해 7</code> 이 <code>7</code> 페어의 짝도 되고 해 플러시의 부품도 되는데 어느 쪽으로 써도 조각 수가 같다면, DP 는 두 분할 중 하나를 골라야 합니다.</p>
+<p>이때 무엇을 고르느냐에 따라 봇의 출력이 달라지므로, <strong>비교는 반드시 완전히 결정적이어야 합니다.</strong> 위 코드의 <code>dp[mask^m]+1 &lt; dp[mask]</code> 에서 등호를 넣지 않은 것이 그 장치입니다. 부등호가 엄격하므로 <strong>먼저 발견된 분할이 이깁니다.</strong> 그리고 <code>mask</code> 와 <code>sub</code> 순회 순서가 고정되어 있으므로 &ldquo;먼저 발견&quot;이 언제나 같은 것을 뜻합니다.</p>
+<p>가중 DP 로 넘어가면 여기에 함정이 하나 생깁니다. 비용을 <code>float64</code> 로 두면 <strong>논리적으로 같아야 할 두 분할의 값이 반올림 때문에 미세하게 달라집니다.</strong> 같은 바이너리에 같은 입력을 주면 결과 자체는 재현되지만, 문제는 다른 데 있습니다.</p>
+<ul>
+<li>동률이어야 할 후보가 동률로 판정되지 않아, 의도한 tie-break 규칙이 아니라 <strong>부동소수점 오차가 선택을 결정</strong> 하게 됩니다.</li>
+<li>컴파일러 최적화나 CPU 아키텍처가 달라지면 연산 순서가 바뀌어 <strong>다른 기기에서 다른 답</strong> 이 나올 수 있습니다. 리플레이가 어긋나는 원인이 됩니다.</li>
+</ul>
+<p>비용을 정수 고정소수점(예: 1000분의 1 단위 <code>int32</code>)으로 두면 두 문제가 통째로 사라집니다. 카드게임 봇에서 <code>float64</code> 를 쓸 이유는 거의 없습니다.</p>
+<h3 id="dp-한-번이-모든-후보의-평가를-끝낸다">DP 한 번이 모든 후보의 평가를 끝낸다<a href="#dp-한-번이-모든-후보의-평가를-끝낸다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 이 설계의 가장 좋은 성질이 나옵니다. DP 는 <code>dp[S]</code> 를 <strong>손패의 모든 부분집합에 대해</strong> 계산합니다. 그런데 봇이 후보 <code>m</code> 을 평가할 때 알고 싶은 것은 &ldquo;이 조합을 내고 나면 남은 손패가 몇 조각인가&rdquo;, 즉 <code>dp[full ^ maskOf(m)]</code> 입니다.</p>
+<p><strong>이미 계산되어 있습니다.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Remaining 은 조합 m 을 냈을 때 남는 손패의 최소 조각 수를 돌려준다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// DP 를 다시 돌 필요 없이 배열 조회 한 번이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">Plan</span><span class="p">)</span><span class="w"> </span><span class="nf">Remaining</span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">dp</span><span class="p">[</span><span class="nx">p</span><span class="p">.</span><span class="nf">full</span><span class="p">()^</span><span class="nx">p</span><span class="p">.</span><span class="nf">maskOf</span><span class="p">(</span><span class="nx">m</span><span class="p">)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>즉 <strong>한 턴에 DP 를 한 번만 돌리면, 그 턴의 모든 후보에 대한 플랜 평가가 배열 조회로 끝납니다.</strong> Part 1 에서 봤듯 손패 하나가 만드는 서로 다른 <code>Key</code> 는 평균 18개인데, 그 18개를 위해 DP 를 18번 돌 필요가 없습니다. 부분집합 DP 를 선택한 진짜 이유가 이것입니다.</p>
+<p>그리고 이 한 줄이 Part 1 에서 지적한 easy 봇의 세 번째 약점을 그대로 해결합니다. easy 봇은 페어를 받으려고 플러시의 부품을 뽑아 쓰는 실수를 했는데, <code>Remaining</code> 을 보면 그 후보만 값이 크게 튀므로 자동으로 걸러집니다. <strong>&ldquo;조합을 파괴하지 마라&quot;는 규칙을 따로 넣을 필요가 없습니다.</strong> 플랜 비용이 알아서 말해 줍니다.</p>
+<hr>
+<h2 id="3-결과-12장은-몇-번에-비는가">3. 결과: 12장은 몇 번에 비는가<a href="#3-결과-12장은-몇-번에-비는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>무작위 손패 2만 개의 최소 제출 횟수 분포입니다. (시드 20260731)</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: right">최소 제출 횟수</th>
+          <th style="text-align: right">최적(DP)</th>
+          <th style="text-align: right">탐욕법</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: right">3</td>
+          <td style="text-align: right">0.9%</td>
+          <td style="text-align: right">0.3%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">4</td>
+          <td style="text-align: right">8.7%</td>
+          <td style="text-align: right">6.0%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">5</td>
+          <td style="text-align: right">1.9%</td>
+          <td style="text-align: right">1.1%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">6</td>
+          <td style="text-align: right">24.6%</td>
+          <td style="text-align: right">16.8%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">7</td>
+          <td style="text-align: right"><strong>32.1%</strong></td>
+          <td style="text-align: right">36.1%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">8</td>
+          <td style="text-align: right">17.2%</td>
+          <td style="text-align: right">25.3%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">9</td>
+          <td style="text-align: right">8.6%</td>
+          <td style="text-align: right">8.6%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">10</td>
+          <td style="text-align: right">5.3%</td>
+          <td style="text-align: right">5.3%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">11</td>
+          <td style="text-align: right">0.6%</td>
+          <td style="text-align: right">0.6%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right"><strong>평균</strong></td>
+          <td style="text-align: right"><strong>6.95</strong></td>
+          <td style="text-align: right">7.23</td>
+      </tr>
+  </tbody>
+</table>
+<p>9조각 이상 구간에서 두 열이 완전히 같습니다. 조합이 거의 없는 손패에서는 탐욕법이 최적과 같은 답을 내기 때문입니다. 탐욕법의 손해는 조합이 얽혀 있는 손패에 몰려 있습니다.</p>
+<h3 id="5에-골짜기가-있다">5에 골짜기가 있다<a href="#5에-골짜기가-있다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>분포가 단조롭지 않습니다. 4가 8.7% 인데 5가 1.9% 로 푹 꺼졌다가 6에서 24.6% 로 올라옵니다. 이 골짜기는 표본 오차가 아니라 손패 구조에서 나옵니다.</p>
+<p>별도 실험(시드 20260732, 표본 4,000)에서 <strong>최적 분할이 5장 메이드를 몇 개 썼는지</strong> 를 함께 세면 정체가 드러납니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: right">최소 조각 수</th>
+          <th style="text-align: right">메이드 0개</th>
+          <th style="text-align: right">메이드 1개</th>
+          <th style="text-align: right">메이드 2개</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: right">3</td>
+          <td style="text-align: right">0.0%</td>
+          <td style="text-align: right">0.0%</td>
+          <td style="text-align: right">0.7%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">4</td>
+          <td style="text-align: right">0.0%</td>
+          <td style="text-align: right">0.0%</td>
+          <td style="text-align: right">8.1%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">5</td>
+          <td style="text-align: right">0.0%</td>
+          <td style="text-align: right">2.2%</td>
+          <td style="text-align: right">0.0%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">6</td>
+          <td style="text-align: right">0.1%</td>
+          <td style="text-align: right">24.8%</td>
+          <td style="text-align: right">0.0%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">7</td>
+          <td style="text-align: right">0.7%</td>
+          <td style="text-align: right">31.2%</td>
+          <td style="text-align: right">0.0%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">8</td>
+          <td style="text-align: right">4.6%</td>
+          <td style="text-align: right">12.5%</td>
+          <td style="text-align: right">0.0%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">9 이상</td>
+          <td style="text-align: right">15.2%</td>
+          <td style="text-align: right">0.0%</td>
+          <td style="text-align: right">0.0%</td>
+      </tr>
+  </tbody>
+</table>
+<p>대체로 세 덩어리로 갈립니다.</p>
+<ul>
+<li><strong>메이드 2개 → 3~4조각.</strong> 5+5=10장을 털고 남은 두 장이 페어면 3조각, 아니면 4조각입니다. 다른 값이 나올 수 없습니다.</li>
+<li><strong>메이드 1개 → 5~8조각.</strong></li>
+<li><strong>메이드 0개 → 대부분 7조각 이상.</strong> 다만 이건 관측된 경향이지 수학적 하한이 아닙니다. 실제로 6조각 칸에 0.1% 가 찍혀 있습니다. 예를 들어 <strong>연속되지 않는 여섯 숫자의 페어 여섯 쌍</strong> 을 문양까지 흩어 놓으면, 메이드가 하나도 없는데 6조각으로 털립니다. 드물 뿐 불가능하지 않습니다.</li>
+</ul>
+<p>반면 <strong>&ldquo;메이드 1개 + 4조각&quot;의 0.0% 는 표본 문제가 아니라 구조적으로 불가능합니다.</strong> 그러려면 메이드 하나를 떼고 남은 7장을 3조각으로 나눠야 하는데, 1~3장 조각으로 7을 3조각에 담는 방법은 <code>3+2+2</code> 와 <code>3+3+1</code> 뿐입니다. 둘 다 트리플과 페어를 동시에 포함하므로(<code>3+3+1</code> 은 다른 트리플에서 페어를 떼면 됩니다) <strong>거기서 풀하우스가 만들어집니다.</strong> 즉 그런 손패는 애초에 메이드를 두 개 쓸 수 있어 위 칸으로 올라갑니다.</p>
+<p>같은 이유로 5조각은 <code>메이드 1개 + 페어 3개 + 싱글 1개</code> 라는 <strong>한 가지 모양</strong> 뿐입니다. 트리플이 끼면 풀하우스가 생겨 4조각 이하로 내려가기 때문입니다. 가능한 모양이 하나뿐이니 확률이 낮고, 그래서 골짜기가 팹니다.</p>
+<p>이 관찰은 봇 설계에도 쓸모가 있습니다. <strong>트리플은 그 자체로 좋은 조각이라기보다, 페어와 만나 풀하우스가 될 때 값어치가 커집니다.</strong> 그러니 트리플을 트리플로 내려는 판단은 손패에 붙일 페어가 없을 때로 미루는 편이 낫습니다.</p>
+<h3 id="싱글로-흘려보내야-하는-타일은-몇-장인가">싱글로 흘려보내야 하는 타일은 몇 장인가<a href="#싱글로-흘려보내야-하는-타일은-몇-장인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>같은 표본에서 최적 분할에 <strong>싱글 조각이 몇 개 들어가는지</strong> 세면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>싱글 조각 수</th>
+          <th style="text-align: right">0</th>
+          <th style="text-align: right">1</th>
+          <th style="text-align: right">2</th>
+          <th style="text-align: right">3</th>
+          <th style="text-align: right">4</th>
+          <th style="text-align: right">5</th>
+          <th style="text-align: right">6</th>
+          <th style="text-align: right">7</th>
+          <th style="text-align: right">8+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>비율</td>
+          <td style="text-align: right">0.8%</td>
+          <td style="text-align: right">2.2%</td>
+          <td style="text-align: right">8.8%</td>
+          <td style="text-align: right">20.7%</td>
+          <td style="text-align: right">8.7%</td>
+          <td style="text-align: right"><strong>31.2%</strong></td>
+          <td style="text-align: right">9.3%</td>
+          <td style="text-align: right">12.5%</td>
+          <td style="text-align: right">5.8%</td>
+      </tr>
+  </tbody>
+</table>
+<p>최빈값이 5개입니다. 이 사실이 렉시오라는 게임의 리듬을 규정합니다. 싱글 판이 자주 돌아야 게임이 진행되고, 싱글 판에서 리드권을 못 잡으면 손패가 굳습니다.</p>
+<p>두 분포를 겹쳐 읽을 때는 조심해야 합니다. 조각 수의 최빈값이 7이고 싱글 수의 최빈값이 5라고 해서 &ldquo;전형적인 손패가 7조각이고 그중 5개가 싱글&quot;인 것은 아닙니다. 둘은 서로 다른 주변분포입니다. 다만 앞의 결합표에서 보듯 <strong>7조각 손패의 대부분이 메이드 1개를 쓰는 모양</strong> 이고, 그 경우 <code>메이드 1 + 페어 1 + 싱글 5</code> 가 되므로 두 최빈값이 같은 유형에서 나온 것은 맞습니다.</p>
+<hr>
+<h2 id="4-조각-수는-목적-함수가-아니다">4. 조각 수는 목적 함수가 아니다<a href="#4-조각-수는-목적-함수가-아니다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기까지가 정확한 계산입니다. 그런데 조각 수를 최소화하는 것이 정말 봇의 목표일까요. 아닙니다.</p>
+<p>조각 수는 <strong>&ldquo;내가 원하는 대로 다 낼 수 있다면&rdquo;</strong> 필요한 턴 수입니다. 실제로는 조각마다 <strong>테이블에 내려놓기까지의 난이도</strong> 가 다릅니다.</p>
+<p>여기서 두 가지를 분명히 구분해야 합니다. 섞기 쉬운 지점입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>질문</th>
+          <th>어디에 쓰이는가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>제출 가능성</strong></td>
+          <td>이 조각을 내려놓을 기회가 오는가</td>
+          <td><strong>플랜 비용</strong> (이 절)</td>
+      </tr>
+      <tr>
+          <td><strong>트릭 승리</strong></td>
+          <td>이 조각을 아무도 못 받는가</td>
+          <td>리드권 가치 (Part 4)</td>
+      </tr>
+  </tbody>
+</table>
+<p>두 번째가 플랜 비용에 들어가면 안 됩니다. <strong>상대가 내 조합을 받아쳐도 내가 낸 타일은 이미 손에서 빠졌기 때문입니다.</strong> 트릭은 내줬어도 플랜은 그만큼 진행됩니다. &ldquo;받힐 것 같으니 내지 않는다&quot;는 판단은 리드권을 계산할 때 할 일이지, 손패를 몇 번에 터느냐를 셀 때 할 일이 아닙니다.</p>
+<p>그럼 제출 가능성은 무엇으로 결정될까요. 렉시오에서 조각을 내려놓는 길은 둘뿐입니다.</p>
+<ul>
+<li><strong>내가 리드해서 그 형태의 판을 연다.</strong> 어떤 조각이든 낼 수 있지만 리드권 한 번을 씁니다.</li>
+<li><strong>남이 연 같은 장수의 판에서 받아친다.</strong> 이때는 내 조각의 <code>Key</code> 가 테이블보다 커야 합니다.</li>
+</ul>
+<p>그래서 조각의 비용은 <strong>&ldquo;남이 연 판에 얹을 수 있는 여지가 얼마나 넓은가&rdquo;</strong> 로 매깁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// pieceCost 는 조각 하나를 테이블에 내려놓기까지 드는 기대 턴 수다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   1            제출 그 자체</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   needsLead    리드로만 낼 수 있으면 리드권 한 번을 더 쓴다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   narrowness   남이 연 판에 얹을 수 있는 여지가 좁을수록 커진다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 이 값은 &#34;이 조각이 받히는가&#34; 와는 무관하다. 받혀도 타일은 이미 나간다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">pieceCost</span><span class="p">(</span><span class="nx">m</span><span class="w"> </span><span class="nx">Meld</span><span class="p">,</span><span class="w"> </span><span class="nx">unseen</span><span class="w"> </span><span class="nx">Set</span><span class="p">,</span><span class="w"> </span><span class="nx">w</span><span class="w"> </span><span class="nx">Weights</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">c</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Unit</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nf">followRoom</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">unseen</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">NeedsLead</span><span class="w"> </span><span class="c1">// 어떤 판에도 못 얹는다. 리드가 유일한 출구다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">c</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Narrow</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="nx">w</span><span class="p">.</span><span class="nx">RoomScale</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">followRoom</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span><span class="w"> </span><span class="nx">unseen</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">RoomScale</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">c</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>DP 는 그대로 두고 전이의 <code>+1</code> 만 <code>+pieceCost(...)</code> 로 바꾸면 됩니다. 상태 공간도, 계산량도 동일합니다.</p>
+<p>가중 DP 가 만드는 차이는 <strong>같은 조각 수 안에서의 선택</strong> 에서 드러납니다. 손패로 스트레이트와 플러시를 각각 만들 수 있는데 둘이 타일 한 장을 공유한다면, 조각 수만으로는 어느 쪽을 남길지 정할 수 없습니다. 제출 가능성으로 보면 답이 분명합니다.</p>
+<blockquote>
+<p>5장 메이드의 카테고리 서열은 <strong>스트레이트 &lt; 플러시</strong> 입니다. 그래서 <strong>플러시는 스트레이트로 열린 판에도, 더 약한 플러시로 열린 판에도 낼 수 있습니다.</strong> 반대로 스트레이트는 오직 더 약한 스트레이트로 열린 판에서만 낼 수 있습니다.</p>
+</blockquote>
+<p>즉 플러시는 얹을 자리가 넓고 스트레이트는 좁습니다. 가중 DP 는 이 차이만으로 <strong>&ldquo;플러시를 남기고 스트레이트를 깬다&rdquo;</strong> 는 결론에 도달합니다. 사람이 경험으로 익히는 격언이 비용 함수에서 유도되는 셈입니다. 규칙을 하드코딩하지 않고 이런 판단이 나오게 만드는 것이 좋은 평가 함수의 조건이라고 생각합니다.</p>
+<h3 id="2-타일은-조각별-비용이-아니다">2 타일은 조각별 비용이 아니다<a href="#2-타일은-조각별-비용이-아니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>렉시오의 정산은 <strong>유효 장수 = 실제 장수 × 2^(손에 남은 2의 개수)</strong> 입니다. 2 타일은 못 털었을 때의 벌금이 다른 타일보다 훨씬 큽니다. 그러니 이 항도 플랜에 들어가야 할 것 같습니다.</p>
+<p>그런데 <strong>이 벌점은 조각별로 나눌 수 없습니다.</strong> <code>2^m</code> 은 손패 전체에 한 번 적용되는 값이라, 조각 두 개에 2가 한 장씩 들어 있을 때 각 조각에 &ldquo;2배&quot;를 붙이면 합쳐서 4배가 되어 버립니다. 실제로는 두 장 다 남았을 때만 4배입니다. 즉 <strong>비가산적</strong> 입니다.</p>
+<p>DP 의 전이 비용은 조각마다 독립적으로 더해지는 값이어야 하므로, 2 벌점은 여기 들어갈 수 없습니다. 대신 이렇게 다룹니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// leftoverPenalty 는 플랜 전체에 한 번 매기는 항이다. 조각별로 쪼개지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// &#34;이 플랜대로 진행하다 R 번째 조각에서 멈춘다면 얼마를 무는가&#34; 를 잰다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">leftoverPenalty</span><span class="p">(</span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">,</span><span class="w"> </span><span class="nx">stopAfter</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">rest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nf">TilesAfter</span><span class="p">(</span><span class="nx">stopAfter</span><span class="p">)</span><span class="w"> </span><span class="c1">// 그 시점에 남아 있을 타일 집합</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">twos</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">(</span><span class="nx">rest</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">rankMask</span><span class="p">(</span><span class="mi">2</span><span class="p">)).</span><span class="nf">Len</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">rest</span><span class="p">.</span><span class="nf">Len</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="nx">twos</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>플랜을 만드는 것은 조각 수 최소화로 하되, <strong>완성된 플랜들 사이의 비교</strong> 에 이 항을 얹습니다. 조각 수가 같은 플랜이 여럿이면 &ldquo;2가 앞쪽 조각에 실려 있는&rdquo; 플랜을 고르는 식입니다. 이 항을 언제 얼마나 강하게 쓸지가 Part 4 의 주제입니다.</p>
+<hr>
+<h2 id="5-고아-타일">5. 고아 타일<a href="#5-고아-타일" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>최적 분할에서 <strong>싱글 조각으로 남았고 서열도 낮은 타일</strong> 을 고아 타일이라 부르겠습니다. <code>구름 4</code> 같은 것입니다. 어떤 조합에도 못 들어가고, 싱글 판에서도 이길 수 없습니다.</p>
+<p>고아 타일의 처리 방법은 세 가지뿐입니다.</p>
+<ol>
+<li><strong>내가 리드로 흘린다.</strong> 리드는 아무 조합이나 낼 수 있으므로 고아 싱글을 던질 수 있습니다. 다만 리드권 한 번을 소모합니다.</li>
+<li><strong>포카드+1 의 &lsquo;+1&rsquo; 로 얹는다.</strong> Part 1 에서 봤듯 포카드+1 의 다섯 번째 타일은 서열에 전혀 기여하지 않습니다. <strong>손패에서 가장 쓸모없는 타일을 여기에 버릴 수 있습니다.</strong> 다만 포카드를 가질 확률이 1.6% 라 기대할 수 있는 길은 아닙니다.</li>
+<li><strong>서열에 기여하지 않는 자리에 끼운다.</strong> 풀하우스의 페어 부분과 포카드+1 의 얹는 1장은 <code>Key</code> 에 전혀 들어가지 않습니다. 스트레이트의 낮은 자리도 최고 수보다 아래라면 순위를 거의 좌우하지 않습니다.</li>
+</ol>
+<p>세 번째를 쓸 때 조심할 점이 있습니다. <strong>&ldquo;언제나 가장 약한 재료를 쓴다&quot;는 규칙은 틀립니다.</strong> 그 약한 타일이 다른 페어·스트레이트·플러시의 핵심 부품일 수 있기 때문입니다. 앞에서 탐욕법이 실패한 이유가 정확히 그것이었습니다.</p>
+<p>정확한 기준은 이렇습니다.</p>
+<blockquote>
+<p><strong><code>Key</code> 가 같고 남은 손패의 분해 비용도 같다면</strong>, 약한 재료를 쓰는 편이 낫습니다. 둘 중 하나라도 달라지면 <code>Remaining</code> 을 비교해서 정해야 합니다.</p>
+</blockquote>
+<p>Part 1 의 후보 생성기에서 &ldquo;나머지는 가장 약한 것으로&rdquo; 채운 것은 1~3장 조합에 한한 이야기였습니다. 같은 숫자의 타일끼리는 다른 조합에 쓰일 여지가 없어서 안전했기 때문입니다. <strong>5장 메이드에서는 이 단순화를 그대로 쓰면 안 되고,</strong> 같은 <code>Key</code> 를 만드는 구성들을 모두 후보로 두고 <code>Remaining</code> 으로 골라야 합니다. Part 1 에서 &ldquo;<code>Key</code> 를 줄이더라도 타일 구성 정보는 버리지 말라&quot;고 한 이유가 여기 있습니다.</p>
+<p>봇은 플랜에서 고아 수를 세어 두고, 그 수가 많으면 &ldquo;리드권을 여러 번 잡아야 하는 손패&quot;로 인식해야 합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Orphans 는 최적 플랜에서 싱글로 남았고 사실상 못 이기는 타일의 수다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">Plan</span><span class="p">)</span><span class="w"> </span><span class="nf">Orphans</span><span class="p">(</span><span class="nx">unseen</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">n</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nf">Pieces</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">!</span><span class="nf">likelyWins</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">Top</span><span class="p">,</span><span class="w"> </span><span class="nx">unseen</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">n</span><span class="o">++</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<h2 id="6-예제-한-장-차이로-두-턴">6. 예제: 한 장 차이로 두 턴<a href="#6-예제-한-장-차이로-두-턴" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>앞에서 탐욕법 반례로 쓴 손패를 그대로 가져와, 실제 턴 하나를 봇의 눈으로 따라가 보겠습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">내 손패 (12장)
+</span></span><span class="line"><span class="cl">  구름5  달5  구름9  해9  해10  별11  구름12  달12  해12  해13  구름15  구름1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">최적 플랜 (4조각)
+</span></span><span class="line"><span class="cl">  ① 플러시     구름5  구름9  구름12  구름15  구름1
+</span></span><span class="line"><span class="cl">  ② 스트레이트  해9  해10  별11  해12  해13
+</span></span><span class="line"><span class="cl">  ③ 싱글       달5
+</span></span><span class="line"><span class="cl">  ④ 싱글       달12
+</span></span></code></pre></div><p>여기서 앞 사람이 <strong>싱글 <code>해 8</code></strong> 을 냈다고 합시다. 이 수를 받을 수 있는 후보는 손패에서 <code>해 8</code> 보다 강한 타일 열 장 전부입니다. 각 후보를 냈을 때 <strong>남은 손패의 최소 조각 수</strong> 를 보면 이렇습니다. <code>Decompose</code> 한 번으로 계산된 <code>dp</code> 배열을 열 번 조회한 결과입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>후보</th>
+          <th style="text-align: right">타일 ID</th>
+          <th style="text-align: right">낸 뒤 남은 최소 조각 수</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>구름 9</td>
+          <td style="text-align: right">24</td>
+          <td style="text-align: right">5</td>
+      </tr>
+      <tr>
+          <td>해 9</td>
+          <td style="text-align: right">27</td>
+          <td style="text-align: right">5</td>
+      </tr>
+      <tr>
+          <td>해 10</td>
+          <td style="text-align: right">31</td>
+          <td style="text-align: right">6</td>
+      </tr>
+      <tr>
+          <td>별 11</td>
+          <td style="text-align: right">33</td>
+          <td style="text-align: right">6</td>
+      </tr>
+      <tr>
+          <td>구름 12</td>
+          <td style="text-align: right">36</td>
+          <td style="text-align: right">6</td>
+      </tr>
+      <tr>
+          <td><strong>달 12</strong></td>
+          <td style="text-align: right">38</td>
+          <td style="text-align: right"><strong>3</strong></td>
+      </tr>
+      <tr>
+          <td><strong>해 12</strong></td>
+          <td style="text-align: right">39</td>
+          <td style="text-align: right"><strong>3</strong></td>
+      </tr>
+      <tr>
+          <td>해 13</td>
+          <td style="text-align: right">43</td>
+          <td style="text-align: right">6</td>
+      </tr>
+      <tr>
+          <td>구름 15</td>
+          <td style="text-align: right">48</td>
+          <td style="text-align: right">5</td>
+      </tr>
+      <tr>
+          <td>구름 1</td>
+          <td style="text-align: right">52</td>
+          <td style="text-align: right">5</td>
+      </tr>
+  </tbody>
+</table>
+<p>easy 봇은 &ldquo;가장 약한 합법 수&quot;를 고르므로 <strong>구름 9</strong> 를 냅니다. 가장 싸 보이는 선택입니다. 그런데 결과는 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[easy] 구름 9 를 내고 남은 11장 → 5조각
+</span></span><span class="line"><span class="cl">  구름5 / 달5              (페어)
+</span></span><span class="line"><span class="cl">  해9 / 해10 / 별11 / 해12 / 해13   (스트레이트)
+</span></span><span class="line"><span class="cl">  구름12 / 달12            (페어)
+</span></span><span class="line"><span class="cl">  구름15                   (싱글)
+</span></span><span class="line"><span class="cl">  구름1                    (싱글)
+</span></span></code></pre></div><p>구름 플러시가 무너졌습니다. <code>구름 9</code> 는 손패에서 가장 약한 축이지만 동시에 <strong>플러시의 부품</strong> 이었고, 그것을 뽑아내자 남은 구름 네 장이 페어 하나와 고아 싱글 두 장으로 흩어졌습니다.</p>
+<p>hard 봇은 <code>dp</code> 배열을 보고 <strong>달 12</strong> 를 냅니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[hard] 달 12 를 내고 남은 11장 → 3조각
+</span></span><span class="line"><span class="cl">  구름5 / 구름9 / 구름12 / 구름15 / 구름1   (플러시)
+</span></span><span class="line"><span class="cl">  달5                                    (싱글)
+</span></span><span class="line"><span class="cl">  해9 / 해10 / 별11 / 해12 / 해13           (스트레이트)
+</span></span></code></pre></div><p>플랜 ④ 에 있던 고아 싱글을 그대로 소비했고, 두 개의 메이드는 손도 대지 않았습니다. <strong>같은 트릭을 먹으면서 남은 턴 수가 5에서 3으로 줄었습니다.</strong></p>
+<p>두 가지를 덧붙여 두겠습니다.</p>
+<p><strong>동률이 났습니다.</strong> <code>달 12</code> 와 <code>해 12</code> 가 모두 3조각을 줍니다. <code>해 12</code> 를 내면 남은 <code>달 12</code> 가 스트레이트의 12 자리를 대신 채우기 때문입니다. 이럴 때는 Part 1 의 정렬 규칙대로 <strong>Key 가 작은 쪽</strong>, 즉 <code>달 12</code> 를 냅니다. 결과적으로 더 강한 <code>해 12</code> 가 손에 남으니 방향도 맞습니다.</p>
+<p><strong>&ldquo;가장 약한 수로 받는다&quot;는 격언이 여기서 뒤집혔습니다.</strong> hard 봇이 낸 <code>달 12</code> 는 후보 중 여섯 번째로 강한 타일입니다. 서열만 보면 낭비 같지만, 플랜에서 보면 어차피 싱글로 흘려보내야 했던 타일을 <strong>상대의 트릭을 먹으면서</strong> 처리한 것입니다. 조합 파괴를 피하는 것이 타일 한두 급을 아끼는 것보다 훨씬 큽니다.</p>
+<hr>
+<h2 id="7-봇에서-쓰는-법">7. 봇에서 쓰는 법<a href="#7-봇에서-쓰는-법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>정리하면 hard 봇의 매 턴은 이렇게 흘러갑니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;턴 시작&#34;] --&gt; B[&#34;Decompose(hand) 1회&lt;br/&gt;dp 배열 전체 확보&#34;]
+    B --&gt; C[&#34;합법 후보 생성&lt;br/&gt;(Part 1 의 Key 별 생성)&#34;]
+    C --&gt; D[&#34;후보별로 dp[full ^ mask] 조회&lt;br/&gt;배열 접근 1회&#34;]
+    D --&gt; E[&#34;플랜 개선도 = 현재 비용 - 남은 비용&#34;]
+    E --&gt; F[&#34;Part 4 의 나머지 항과 합산&#34;]
+    F --&gt; G[&#34;최댓값 선택 또는 패스&#34;]
+    style A fill:#FFD700,color:#000000
+    style B fill:#87CEEB,color:#000000
+    style D fill:#90EE90,color:#000000
+    style G fill:#FFD700,color:#000000
+</code></pre><p>계산 예산의 대부분이 <code>Decompose</code> 한 번에 몰려 있고, 후보 수가 늘어나도 비용이 거의 늘지 않는다는 점이 이 구조의 장점입니다.</p>
+<p>한 가지 주의할 점이 있습니다. 가중 비용은 <code>unseen</code> 에 의존하므로 <strong>트릭이 진행되면서 값이 달라집니다.</strong> 그러니 <code>Decompose</code> 결과를 라운드 단위로 캐시하면 안 되고, 턴마다 다시 계산해야 합니다. 반대로 <strong>조각 수만 쓰는 무가중 DP 는 손패가 바뀔 때만 다시 계산하면 됩니다.</strong> 두 값을 모두 쓰고 싶다면 무가중 DP 를 캐시하고 가중 DP 만 매 턴 돌리는 절충이 가능합니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3 에서는 봇이 자기 손패를 보는 방법을 만들었습니다. 정리하면 세 가지입니다.</p>
+<ul>
+<li><strong>손패 분해는 집합 분할 최적화이고, 탐욕법은 다섯 번에 한 번꼴로 최적을 놓칩니다.</strong> 한 타일이 페어·스트레이트·플러시에 동시에 속하는 것이 렉시오의 기본이라, 어디에 쓸지는 열두 장을 다 보고 나서야 정할 수 있습니다.</li>
+<li><strong>12장이면 <code>2^12</code> 부분집합 DP 가 그냥 됩니다.</strong> 전이는 26만 번뿐이고, 무엇보다 <strong>DP 한 번이 그 턴 모든 후보의 평가를 배열 조회로 끝내 줍니다.</strong></li>
+<li><strong>조각 수는 목적 함수가 아닙니다.</strong> 조각마다 얹을 자리의 넓이가 다르므로 비용을 가중하면, &ldquo;플러시를 남기고 스트레이트를 깬다&rdquo; 같은 경험칙이 규칙이 아니라 <strong>계산 결과</strong> 로 나옵니다. 이때 &ldquo;받힐 확률&quot;과 &ldquo;낼 기회&quot;를 섞지 않는 것이 중요합니다.</li>
+</ul>
+<p>수치 하나만 기억한다면 이것이 좋겠습니다. <strong>가장 흔한 손패는 최소 7조각으로 갈리고, 그 유형은 대개 <code>메이드 1개 + 페어 1개 + 싱글 5장</code> 입니다.</strong> 렉시오에서 싱글 판의 리드권이 왜 그렇게 값진지, 그리고 왜 강한 타일을 아끼기만 해서는 이길 수 없는지가 이 한 줄에 들어 있습니다.</p>
+<p>Part 4 에서는 지금까지 만든 재료를 전부 합쳐 결정을 내립니다. 목적 함수를 정산 구조에서 유도하고, 낼 수 있어도 참아야 하는 상황을 정리하고, 이길 수 없다고 판단했을 때 봇이 어떻게 태도를 바꿔야 하는지 다루겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://boardgamegeek.com/boardgame/19184/lexio">LEXIO (BoardGameGeek)</a></li>
+<li><a href="https://lexio.co.kr/bbs/board.php?bo_table=0102">렉시오 공식 게임방법 (디다노니아)</a></li>
+<li><a href="https://namu.wiki/w/%EB%A0%89%EC%8B%9C%EC%98%A4">렉시오 (나무위키)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Partition_of_a_set">Set partition problem (Wikipedia)</a></li>
+<li><a href="https://cp-algorithms.com/algebra/all-submasks.html">Subset sum / subset enumeration 기법 정리 (CP-Algorithms)</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-04/">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-02/">달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-04/" class="button inline prev">
+        &lt; [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-02/" class="button inline next">
+         [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="렉시오 hard 봇의 목적 함수를 정산 구조에서 직접 유도합니다. 수 평가 함수의 항을 분해하고, 낼 수 있어도 참아야 하는 여섯 가지 상황을 정리하며, 이길 수 없다고 판단했을 때 봇이 손실 최소화 모드로 전환하는 기준을 다룹니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값">
+<meta property="og:description" content="렉시오 hard 봇의 목적 함수를 정산 구조에서 직접 유도합니다. 수 평가 함수의 항을 분해하고, 낼 수 있어도 참아야 하는 여섯 가지 상황을 정리하며, 이길 수 없다고 판단했을 때 봇이 손실 최소화 모드로 전환하는 기준을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-07-31 09:44:26 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-04/">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-07-31</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="재료에서-결정으로">재료에서 결정으로<a href="#재료에서-결정으로" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">Part 2</a> 에서 봇이 무엇을 아는지, <a href="/posts/20260731-lexio-cpu-bot-strategy-03/">Part 3</a> 에서 자기 손패를 어떻게 보는지 만들었습니다. 아직 결정은 하나도 하지 않았습니다. 이번 편에서 전부 합칩니다.</p>
+<p>그런데 합치기 전에 답해야 할 질문이 하나 있습니다. <strong>무엇을 최대화할 것인가.</strong></p>
+<p>달무티에서는 이 질문이 쉬웠습니다. 등수가 곧 다음 판의 계급이고 점수도 등수에 비례하므로, &ldquo;평균 등수를 낮춘다&quot;가 그대로 목적 함수였습니다. 렉시오는 다릅니다. 렉시오에는 등수가 없습니다. <strong>금액만 있습니다.</strong></p>
+<hr>
+<h2 id="1-목적-함수를-정산에서-유도한다">1. 목적 함수를 정산에서 유도한다<a href="#1-목적-함수를-정산에서-유도한다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="렉시오의-정산식">렉시오의 정산식<a href="#렉시오의-정산식" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>라운드가 끝나면 모든 플레이어 쌍이 <strong>유효 장수 차이만큼</strong> 주고받습니다. Part 1 의 전제표대로, 유효 장수는 이렇게 정의됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">e_i = (i 의 실제 남은 장수) × 2^(i 가 손에 쥔 2 타일의 개수)
+</span></span></code></pre></div><p>그러면 플레이어 <code>i</code> 의 수지는 다른 모든 사람과의 차이를 합한 값입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">net_i = Σ (e_j - e_i)  =  ( Σ e_j ) - (n-1)·e_i
+</span></span><span class="line"><span class="cl">       j≠i                j≠i
+</span></span></code></pre></div><p>봇이 최대화해야 하는 것은 이 값의 기대치입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">maximize  E[ ( Σ e_j ) - (n-1)·e_i ]
+</span></span></code></pre></div><p><strong>두 항 모두 내 정책에 의존합니다.</strong> 뒤쪽은 명백합니다. 내가 얼마나 털었느냐입니다. 앞쪽도 마찬가지인데, 이유가 덜 명백합니다. <strong>라운드는 누군가 타일을 다 터는 순간 즉시 끝나기 때문입니다.</strong></p>
+<ul>
+<li>내가 먼저 나가면 그 시점에 라운드가 멈추고, 상대들의 <code>e_j</code> 는 <strong>높은 채로 동결</strong> 됩니다.</li>
+<li>내가 못 나가고 라운드가 길어지면 상대들도 계속 털어 <code>e_j</code> 가 내려갑니다.</li>
+<li>내가 누군가의 마지막 수를 막으면 라운드가 연장되어, 나뿐 아니라 <strong>모두가</strong> 더 털게 됩니다.</li>
+</ul>
+<p>즉 <code>Σ e_j</code> 는 &ldquo;남들이 얼마나 못 털었나&quot;가 아니라 <strong>&ldquo;내가 라운드를 얼마나 빨리 끝냈나&rdquo;</strong> 에 가깝습니다.</p>
+<h3 id="대리-목적-내-유효-장수">대리 목적: 내 유효 장수<a href="#대리-목적-내-유효-장수" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>문제는 봇이 <code>Σ e_j</code> 를 직접 계산할 수 없다는 점입니다. 상대 손패를 모르므로 그 값은 추정조차 거칠 수밖에 없습니다. 그래서 실전 봇은 계산 가능한 <strong>대리 목적(surrogate objective)</strong> 을 씁니다.</p>
+<blockquote>
+<p><strong>minimize <code>e_i</code> = (남은 장수) × 2^(남은 2의 개수)</strong></p>
+</blockquote>
+<p>이 대리 목적이 정당한 이유와, 놓치는 것을 정확히 적어 두겠습니다.</p>
+<ul>
+<li><code>e_i</code> 를 0 으로 만드는 것, 즉 <strong>먼저 나가는 것은 두 항을 동시에 최적화</strong> 합니다. <code>e_i = 0</code> 이면서 <code>Σ e_j</code> 도 최대가 되므로, 이 경우에 한해 대리 목적과 진짜 목적이 일치합니다.</li>
+<li>반면 <strong>속도는 대리 목적에 안 들어 있습니다.</strong> <code>e_i</code> 를 같은 값으로 만드는 경로가 여럿이면, 빨리 끝나는 경로가 <code>Σ e_j</code> 를 더 크게 만듭니다. 그런데 <code>e_i</code> 만 보는 봇은 둘을 구별하지 못합니다.</li>
+</ul>
+<p>그래서 봇은 <code>e_i</code> 최소화와 <strong><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">Part 3</a> 의 최소 제출 횟수 최소화를 함께</strong> 목적에 넣어야 합니다. 앞의 것이 &ldquo;얼마나 남기는가&rdquo;, 뒤의 것이 &ldquo;얼마나 빨리 끝내는가&quot;를 담당합니다. 이 글의 평가 함수에서 플랜 항과 정산 항이 나란히 등장하는 것은 그래서입니다.</p>
+<h3 id="2-한-장은-평범한-타일-몇-장어치인가">2 한 장은 평범한 타일 몇 장어치인가<a href="#2-한-장은-평범한-타일-몇-장어치인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>2^m</code> 이라는 지수 항이 붙어 있으니, 2 타일 한 장의 처분 가치를 정확히 계산할 수 있습니다. 지금 <code>k</code> 장이 남았고 그중 2가 <code>m</code> 장이라 하면 <code>e = k·2^m</code> 입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">평범한 타일 1장을 털면:  Δe = k·2^m - (k-1)·2^m       = 2^m
+</span></span><span class="line"><span class="cl">2 타일 1장을 털면:       Δe = k·2^m - (k-1)·2^(m-1)   = 2^(m-1)·(k+1)
+</span></span></code></pre></div><p>둘의 비를 구하면 <code>2^m</code> 이 깨끗하게 약분됩니다.</p>
+<blockquote>
+<p><strong>2 한 장을 터는 것은 평범한 타일 <code>(k+1)/2</code> 장을 터는 것과 같습니다.</strong></p>
+</blockquote>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: right">남은 장수 <code>k</code></th>
+          <th style="text-align: right">2 한 장의 환산 가치</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: right">12장</td>
+          <td style="text-align: right">6.5장어치</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">10장</td>
+          <td style="text-align: right">5.5장어치</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">8장</td>
+          <td style="text-align: right">4.5장어치</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">6장</td>
+          <td style="text-align: right">3.5장어치</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">4장</td>
+          <td style="text-align: right">2.5장어치</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">2장</td>
+          <td style="text-align: right">1.5장어치</td>
+      </tr>
+  </tbody>
+</table>
+<p>여기서 직관과 어긋나는 결론이 하나 나옵니다. <strong>2의 처분 가치는 손패가 많을 때 더 큽니다.</strong> &ldquo;강한 카드는 끝까지 아껴라&quot;는 이 계열의 오랜 격언인데, 렉시오의 정산 구조는 그 반대 방향으로 압력을 줍니다. 물론 이 계산은 &ldquo;지금 라운드가 끝난다면&quot;을 가정한 것이므로, 내가 확실히 나갈 수 있는 손패라면 <code>e_i = 0</code> 이라 아무 의미가 없습니다. 정확히 말하면 이렇습니다.</p>
+<blockquote>
+<p>2를 쥐고 있는 비용은 <strong>&ldquo;내가 못 나갈 확률&quot;에 비례</strong> 합니다. 나갈 자신이 있으면 아껴도 되고, 없으면 지금 당장 털어야 합니다.</p>
+</blockquote>
+<h3 id="무엇을-털지의-우선순위">무엇을 털지의 우선순위<a href="#무엇을-털지의-우선순위" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>같은 계산을 구체적인 상황에 넣어 보겠습니다. <strong>8장이 남았고 그중 2가 한 장</strong> 인 손패입니다. 현재 <code>e = 8 × 2 = 16</code> 입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>이번 턴에 내는 것</th>
+          <th style="text-align: right">남은 <code>e</code></th>
+          <th style="text-align: right">감소량</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>평범한 싱글 1장</td>
+          <td style="text-align: right">14</td>
+          <td style="text-align: right">2</td>
+      </tr>
+      <tr>
+          <td>평범한 페어</td>
+          <td style="text-align: right">12</td>
+          <td style="text-align: right">4</td>
+      </tr>
+      <tr>
+          <td><strong>2 싱글 1장</strong></td>
+          <td style="text-align: right">7</td>
+          <td style="text-align: right"><strong>9</strong></td>
+      </tr>
+      <tr>
+          <td>평범한 5장 메이드</td>
+          <td style="text-align: right">6</td>
+          <td style="text-align: right">10</td>
+      </tr>
+      <tr>
+          <td><strong>2를 포함한 5장 메이드</strong></td>
+          <td style="text-align: right">3</td>
+          <td style="text-align: right"><strong>13</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>싱글 한 장인 <code>2</code> 가 페어 두 장보다 두 배 이상 값어치가 있고, 5장짜리 메이드에 2를 태우면 평범한 메이드보다 30% 더 효율적입니다. Part 1 에서 봤듯 <strong><code>1-2-3-4-5</code> 와 <code>2-3-4-5-6</code> 은 2를 태울 수 있는 스트레이트</strong> 이고, 공식 룰상 이 둘은 스트레이트 중 1위와 2위입니다.</p>
+<p>다만 여기서 한 가지를 분리해서 봐야 합니다. <strong>정산 이득이 크다는 것과 트릭을 먹는다는 것은 별개입니다.</strong> 스트레이트는 5장 메이드 중 카테고리가 가장 낮아, 2가 들어 있어도 플러시·풀하우스·포카드+1·스트레이트 플러시 어느 것에나 집니다. <a href="/posts/20260731-lexio-cpu-bot-strategy-02/">Part 2</a> 의 확실승수 확률표가 그 사실을 수치로 보여 줍니다. 그러니 &ldquo;2를 태운 스트레이트&quot;는 <strong>타일 다섯 장을 한 번에 털면서 그중 2를 처분하는 수</strong> 로 평가해야지, 트릭을 확보하는 수로 계산하면 안 됩니다.</p>
+<p>2가 두 장인 상황은 더 극적입니다. <strong>6장이 남았고 2가 두 장</strong> 이면 <code>e = 6 × 4 = 24</code> 입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>이번 턴에 내는 것</th>
+          <th style="text-align: right">남은 <code>e</code></th>
+          <th style="text-align: right">감소량</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>평범한 싱글 1장</td>
+          <td style="text-align: right">20</td>
+          <td style="text-align: right">4</td>
+      </tr>
+      <tr>
+          <td>2 싱글 1장</td>
+          <td style="text-align: right">10</td>
+          <td style="text-align: right">14</td>
+      </tr>
+      <tr>
+          <td><strong>2 페어 (2를 두 장)</strong></td>
+          <td style="text-align: right">4</td>
+          <td style="text-align: right"><strong>20</strong></td>
+      </tr>
+      <tr>
+          <td>평범한 5장 메이드</td>
+          <td style="text-align: right">4</td>
+          <td style="text-align: right">20</td>
+      </tr>
+      <tr>
+          <td>2 하나를 포함한 5장 메이드</td>
+          <td style="text-align: right">2</td>
+          <td style="text-align: right">22</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>2를 두 장 묶어 페어로 던지는 것이 5장 메이드 하나와 같은 값어치</strong> 입니다. 타일 두 장으로 다섯 장짜리 일을 한 셈입니다. 렉시오에서 <code>2</code> 페어를 아끼다 남기는 것이 왜 그렇게 뼈아픈지가 이 한 줄에 있습니다.</p>
+<h3 id="등수가-아니라-금액이라는-것의-의미">등수가 아니라 금액이라는 것의 의미<a href="#등수가-아니라-금액이라는-것의-의미" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>정리하면 렉시오 봇은 달무티 봇과 목적 자체가 다릅니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>달무티</th>
+          <th>렉시오</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>목적 함수</td>
+          <td>평균 등수 최소화</td>
+          <td><strong>기대 정산 수지 최대화</strong></td>
+      </tr>
+      <tr>
+          <td>봇이 실제로 쓰는 값</td>
+          <td>등수 (직접 관측 가능)</td>
+          <td><strong>유효 장수 (대리 목적)</strong></td>
+      </tr>
+      <tr>
+          <td>2등과 5등의 차이</td>
+          <td>다음 판의 계급이 갈림</td>
+          <td>남은 장수만큼의 금액 차</td>
+      </tr>
+      <tr>
+          <td>못 이길 판에서</td>
+          <td>한 등수라도 올리기</td>
+          <td><strong>장수를 최대한 털기</strong></td>
+      </tr>
+      <tr>
+          <td>최강 카드 보유 비용</td>
+          <td>0</td>
+          <td><strong>전체 정산의 배수</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>마지막 두 줄이 이 시리즈 전체에서 가장 렉시오다운 부분입니다.</p>
+<hr>
+<h2 id="2-수-평가-함수">2. 수 평가 함수<a href="#2-수-평가-함수" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="항-분해">항 분해<a href="#항-분해" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이제 후보 하나에 점수를 매깁니다. Part 3 에서 <code>Decompose</code> 를 한 번 돌면 그 턴의 모든 후보에 대한 플랜 평가가 배열 조회로 끝난다는 것을 봤으므로, 남은 일은 나머지 항을 더하는 것입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Weights</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Plan</span><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 플랜이 얼마나 좋아지는가 (= 얼마나 빨리 끝내는가)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Lead</span><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 리드권을 잡을 값어치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Save</span><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 강한 타일을 아낄 값어치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Twos</span><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 2 처분 이득 (= 얼마나 덜 남기는가)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Tempo</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 상대에게 리드권을 넘길 위험</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// score 는 후보 하나의 점수를 매긴다. cand 가 nil 이면 패스다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nf">passScore</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// ① 플랜 개선도: 이 조각이 원래 플랜에 있던 것인가</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Plan</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="nx">plan</span><span class="p">.</span><span class="nx">Turns</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nf">Remaining</span><span class="p">(</span><span class="o">*</span><span class="nx">cand</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// ② 리드권: 이 수가 트릭을 먹을 확률 x 리드권의 가치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">//    winProb 은 &#34;아무도 이 수를 받지 못한다&#34; 는 추정 확률이며,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">//    조각을 낼 수 있는가와는 별개의 값이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Lead</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">winProb</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">cand</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">leadValue</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// ③ 강한 타일 소모: 지금 안 써도 되는 강한 타일을 쓰면 감점</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Save</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">overkill</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">cand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// ④ 2 처분: (k+1)/2 환산 가치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Twos</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">twoDumpValue</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">cand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// ⑤ 템포 위험: 이 수를 낸 뒤 임박한 상대에게 판이 넘어갈 위험</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Tempo</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">tempoRisk</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="nx">cand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>①과 ④가 §1 에서 유도한 두 항에 각각 대응합니다. ①은 <strong><code>Σ e_j</code> 쪽</strong>, 즉 라운드를 빨리 끝내는 값어치이고, ④는 <strong><code>e_i</code> 쪽</strong>, 즉 덜 남기는 값어치입니다. 나머지 셋은 그 둘을 실현하기 위한 보조 항입니다.</p>
+<p>②에 대해 하나 짚어 두겠습니다. <code>winProb</code> 은 &ldquo;이 수를 아무도 못 받는다&quot;는 확률이지 &ldquo;이 조각을 낼 수 있다&quot;는 확률이 아닙니다. 상대가 내 수를 받아도 <strong>내가 낸 타일은 이미 손에서 빠졌으므로</strong> 플랜은 그만큼 진행됩니다. 트릭 승리는 리드권 문제이고, 조각을 낼 기회가 오는가는 트릭의 장수·키 문제입니다. 두 가지를 한 항에 섞으면 봇이 &ldquo;받힐 것 같으니 내지 않는다&quot;는 잘못된 결론을 냅니다.</p>
+<p>항이 다섯 개뿐인 것은 의도한 것입니다. 항이 많아지면 가중치를 맞출 수 없고, 맞출 수 없는 가중치는 없는 것만 못합니다.</p>
+<h3 id="-리드권의-가치는-내-플랜에-달려-있다">② 리드권의 가치는 내 플랜에 달려 있다<a href="#-리드권의-가치는-내-플랜에-달려-있다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>리드권을 잡는 값어치는 상황 상수가 아니라 <strong>내 손패의 함수</strong> 입니다. Part 3 의 플랜이 그 답을 이미 갖고 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// leadValue 는 지금 리드권을 잡는 것이 내게 얼마나 값진지 잰다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">leadValue</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 리드로만 낼 수 있는 조각이 많을수록 리드권이 값지다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 고아 싱글과, 5장 판이 열려야만 나갈 수 있는 메이드가 여기 해당한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">needsLead</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nf">Orphans</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nf">Unseen</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nf">Pieces</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">needsLead</span><span class="o">++</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">needsLead</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>5장 메이드를 리드 필요 조각으로 세는 이유가 있습니다. Part 2 에서 계산했듯 <strong>초기 손패의 80.2% 가 5장 메이드를 갖고 있지만, 5장 판은 누군가 열어야만 생깁니다.</strong> 메이드를 두 개 쥔 손패는 5장 판이 두 번 열려야 하고, 그 두 번을 남이 열어 주기를 기다릴 수는 없습니다. 그래서 메이드가 많을수록 리드권의 가치가 올라갑니다.</p>
+<p>이 계산은 <a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">클라이밍 게임 전략 글</a>에서 &ldquo;메이드는 자산이 아니라 유동성&quot;이라고 쓴 감각을 그대로 수식화한 것입니다. 메이드의 가치는 족보의 세기가 아니라 <strong>낼 기회가 실제로 몇 번 오는가</strong> 에 달려 있고, 그 기회를 만드는 것이 리드권입니다.</p>
+<h3 id="-과잉-살상을-감점한다">③ 과잉 살상을 감점한다<a href="#-과잉-살상을-감점한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>overkill</code> 은 &ldquo;이 트릭을 먹는 데 필요한 것보다 얼마나 세게 냈는가&quot;입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// overkill 은 이 수가 필요 이상으로 강한 정도를 잰다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 같은 트릭을 먹을 수 있는 더 싼 후보가 있으면 그 차이만큼 감점한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">overkill</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">cheapest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">cheapestWinner</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w"> </span><span class="c1">// 확실승수 중 Key 가 가장 작은 것</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cheapest</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">m</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">cheapest</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">Key</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">cheapest</span><span class="p">.</span><span class="nx">Key</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>다만 이 항은 ④와 정면으로 충돌할 때가 있습니다. <code>2</code> 를 싱글로 던지는 것은 명백한 과잉 살상이지만 동시에 최고의 정산 이득입니다. 어느 쪽이 이기는지는 가중치가 정하고, 그 가중치는 <strong>손패 상황에 따라 달라져야 합니다.</strong> 뒤의 모드 전환 절에서 이 충돌을 정리하겠습니다.</p>
+<hr>
+<h2 id="3-전략적-패스-낼-수-있어도-참는다">3. 전략적 패스: 낼 수 있어도 참는다<a href="#3-전략적-패스-낼-수-있어도-참는다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1 에서 easy 봇의 두 번째 약점으로 꼽았던 부분입니다. 렉시오에서 패스는 특이한 위치에 있습니다.</p>
+<p><strong>패스가 싼 이유:</strong> 렉시오는 <strong>패스 후 재참여를 허용</strong> 합니다. 한 번 참았다고 그 트릭에서 탈락하는 것이 아니라, 자기 차례가 다시 오면 낼 수 있습니다. 즉 패스는 &ldquo;이번 트릭 포기&quot;가 아니라 &ldquo;이번 차례만 거름&quot;입니다.</p>
+<p><strong>패스가 비싼 이유:</strong> 나머지 전원이 패스하면 트릭이 끝나고 <strong>마지막에 낸 사람이 리드권을 가져갑니다.</strong> 내가 참는 동안 남들도 참으면, 내가 받을 수 있었던 트릭을 남에게 헌납하게 됩니다.</p>
+<p>이 둘의 저울질이 렉시오 패스 판단의 전부입니다.</p>
+<h3 id="패스가-이기는-여섯-가지-상황">패스가 이기는 여섯 가지 상황<a href="#패스가-이기는-여섯-가지-상황" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;합법 후보가 있다&#34;] --&gt; B{&#34;① 받으면 플랜이&lt;br/&gt;나빠지는가?&#34;}
+    B -- 예 --&gt; P[&#34;패스&#34;]
+    B -- 아니오 --&gt; C{&#34;② 리드권을 잡아도&lt;br/&gt;낼 조각이 없는가?&#34;}
+    C -- 예 --&gt; P
+    C -- 아니오 --&gt; D{&#34;③ 뒤 순번에 확실히&lt;br/&gt;더 센 좌석이 있는가?&#34;}
+    D -- 예 --&gt; P
+    D -- 아니오 --&gt; E{&#34;④ 한 바퀴 더 돌려&lt;br/&gt;소모시키는 편이 나은가?&#34;}
+    E -- 예 --&gt; P
+    E -- 아니오 --&gt; F{&#34;⑤ 확실승수를&lt;br/&gt;낭비하는 수인가?&#34;}
+    F -- 예 --&gt; P
+    F -- 아니오 --&gt; H{&#34;⑥ 참는 편이 상대 추정을&lt;br/&gt;흔드는 값어치가 큰가?&#34;}
+    H -- 예 --&gt; P
+    H -- 아니오 --&gt; G[&#34;제출&#34;]
+    style A fill:#FFD700,color:#000000
+    style P fill:#FFB6C1,color:#000000
+    style G fill:#90EE90,color:#000000
+</code></pre><p>아래 여섯 항목은 <strong>판정 순서가 아니라 독립적인 감점 사유</strong> 로 보는 편이 정확합니다. 실제 구현에서는 이 그림처럼 단계별로 끊지 않고, 각 항목을 패스 후보의 점수에 더해 제출 후보와 함께 비교합니다. 그림은 어떤 사유들이 있는지 한눈에 보기 위한 것입니다.</p>
+<p><strong>① 받으면 플랜이 나빠질 때.</strong> Part 3 의 <code>Remaining</code> 이 그대로 답합니다. <code>plan.Remaining(cand) &gt;= plan.Turns</code> 이면 이 수를 내고도 남은 턴 수가 줄지 않았다는 뜻입니다. 조합을 부수면서 트릭 하나를 산 셈이니, 대개 손해입니다.</p>
+<p><strong>② 리드권을 잡아도 쓸 데가 없을 때.</strong> 이 트릭을 먹으면 다음 트릭의 형태를 내가 정하는데, 정할 것이 없으면 값어치가 0 입니다. <code>leadValue</code> 가 0 에 가까우면 굳이 타일을 쓸 이유가 없습니다.</p>
+<p><strong>③ 뒤 순번에 확실히 더 센 좌석이 있을 때.</strong> Part 2 의 <code>Possible</code> 집합으로 판단합니다. 어차피 받힐 수라면 타일만 버리는 셈입니다. 다만 이 판단은 추정에 기반하므로 보수적으로 써야 합니다.</p>
+<p><strong>④ 한 바퀴 더 돌려 소모시키는 편이 나을 때.</strong> 이것이 재참여 규칙이 만드는 렉시오 특유의 수입니다. 지금 내 확실승수를 던지면 트릭이 바로 끝나지만, 한 바퀴 참으면 상대들이 서로 받아 올리며 타일을 소모합니다. 그런 다음 마지막에 내가 먹으면 <strong>같은 리드권을 더 싸게</strong> 사게 됩니다. &ldquo;패스=탈락&rdquo; 변형 룰에서는 존재할 수 없는 수이므로, 여러분의 프로젝트가 그 변형을 쓴다면 이 항은 통째로 빼야 합니다.</p>
+<p><strong>⑤ 확실승수를 낭비하는 수일 때.</strong> 싱글 판에서 <code>해 2</code> 를 던져야만 받을 수 있는 상황을 생각해 보십시오. 트릭은 확실히 먹지만 최강 타일 한 장으로 싱글 하나를 처리한 것입니다. 손패에 <code>1-2-3-4-5</code> 스트레이트가 있다면, 그 2 는 5장 판에서 다섯 장을 한 번에 터는 데 써야 합니다.</p>
+<p><strong>⑥ 상대의 추정 모델을 오염시킬 때.</strong> Part 2 에서 봤듯 봇은 패스를 관측해 좌석별 <code>Possible</code> 집합을 좁힙니다. 사람도 같은 일을 합니다. 그런데 낼 수 있는데도 참으면 그 추정이 <strong>틀리게</strong> 됩니다. 나중에 그 상한을 뚫는 수를 내면 상대의 모델은 무너지고, 그 순간 얻는 것이 있습니다. 다만 이 항은 값을 매기기 어렵고 과하게 쓰면 그냥 손해이므로, 가중치를 아주 작게 두거나 아예 빼는 편이 안전합니다.</p>
+<h3 id="차단은-강한-항이지-확정-오버라이드가-아니다">차단은 강한 항이지 확정 오버라이드가 아니다<a href="#차단은-강한-항이지-확정-오버라이드가-아니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>위 여섯 가지를 압도하는 상황이 하나 있습니다. 이번 트릭에서 누군가 나가려 하고, 내가 그것을 막을 수 있을 때입니다.</p>
+<p>조건을 정확히 쓰는 것이 중요합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// blockUrgency 는 &#34;이번 트릭에 나갈 좌석이 있는데 내가 막을 수 있다&#34; 는</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 위협의 크기를 0..100 으로 돌려준다. 참/거짓이 아니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">blockUrgency</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c1">// 리드 상황에서는 해당 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">worst</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Seats</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Seat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Me</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Finished</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 렉시오는 트릭 안에서 장수가 고정되므로, 남은 장수가 이번 트릭의</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 장수와 정확히 같은 좌석만 이 트릭에서 나갈 수 있다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">TileCount</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="p">.</span><span class="nx">Count</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 그 좌석이 테이블을 이길 재료를 가졌을 &#34;가능성&#34; 이다. 확정이 아니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">beatChance</span><span class="p">(</span><span class="nf">seatModel</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Seat</span><span class="p">),</span><span class="w"> </span><span class="o">*</span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="p">);</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">worst</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">worst</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">p</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">worst</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong><code>TileCount != v.Table.Count</code> 검사가 핵심입니다.</strong> 세 장 남은 사람은 페어 판에서 절대 나갈 수 없습니다. 이 조건을 빼고 &ldquo;남은 장수가 적으면 막는다&quot;로 대충 쓰면 봇이 막을 필요 없는 상황에서 강한 타일을 낭비합니다. 이 검사만큼은 공개 정보에서 나오는 <strong>확정 조건</strong> 입니다.</p>
+<p>반면 그다음 줄은 확정이 아닙니다. <code>beatChance</code> 는 <a href="/posts/20260731-lexio-cpu-bot-strategy-02/">Part 2</a> 의 <code>Possible</code> 집합에서 나오는 추정값이고, <code>Possible</code> 은 패스 관측에 기반한 가설이라 틀릴 수 있습니다. 그래서 차단을 <strong>점수 계산을 건너뛰는 무조건 오버라이드로 두면 안 됩니다.</strong> 추정이 어긋난 판마다 봇이 이유 없이 강한 타일을 던지게 됩니다.</p>
+<p>대신 이렇게 다룹니다.</p>
+<ul>
+<li><code>blockUrgency</code> 를 평가 함수에 <strong>큰 가중치를 가진 항</strong> 으로 넣습니다. 위협이 확실할수록 다른 항을 자연스럽게 압도합니다.</li>
+<li>다만 차단 후보 중에서는 <strong>가장 싼 수</strong> 를 고르도록, 이 항이 <code>overkill</code> 감점을 지우지 않게 둡니다.</li>
+<li>마지막 타일을 낸 즉시 라운드가 끝나므로 <strong>사후에 만회할 기회가 없습니다.</strong> 그래서 위협 추정이 애매할 때는 막는 쪽으로 기울이는 비대칭 가중이 타당합니다.</li>
+</ul>
+<p>정리하면 차단은 &ldquo;확정이라서 무조건&quot;이 아니라 <strong>&ldquo;틀렸을 때의 손실이 비대칭적으로 커서 강하게&rdquo;</strong> 다루는 항입니다.</p>
+<hr>
+<h2 id="4-엔드게임-이길-수-없다고-판단했을-때">4. 엔드게임: 이길 수 없다고 판단했을 때<a href="#4-엔드게임-이길-수-없다고-판단했을-때" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="모드-전환">모드 전환<a href="#모드-전환" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지금까지의 평가 함수는 전부 &ldquo;내가 먼저 털겠다&quot;를 전제합니다. 그런데 §1 에서 봤듯 먼저 터는 것이 불가능해지면 남는 것은 <strong><code>e_i</code> 를 줄이는 일</strong> 입니다. 이때 봇의 태도가 바뀌어야 합니다.</p>
+<p>전환 조건에서 먼저 정할 것은 <strong>상대가 몇 턴이면 끝나는가</strong> 입니다. 여기서 방향을 잘못 잡기 쉽습니다.</p>
+<blockquote>
+<p>남은 장수 <code>k</code> 인 좌석이 필요한 제출 횟수는 <strong><code>ceil(k/5)</code> 이상 <code>k</code> 이하</strong> 입니다. 5장 메이드만으로 털면 최소, 전부 싱글이면 최대입니다.</p>
+</blockquote>
+<p>남은 장수를 그대로 &ldquo;필요한 턴 수&quot;로 쓰면 <strong>상한을 쓰는 것</strong> 이고, 위협을 과소평가하게 됩니다. 여섯 장 남은 상대가 메이드 하나와 싱글 하나면 두 턴에 끝나는데 여섯 턴으로 세는 셈입니다. 위협 판단은 보수적이어야 하므로 <strong>하한</strong> 을 씁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// opponentMinTurns 는 그 좌석이 끝내는 데 필요한 제출 횟수의 하한이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 상대 손패를 모르므로 &#34;전부 5장 메이드&#34; 라는 최선의 경우를 가정한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">opponentMinTurns</span><span class="p">(</span><span class="nx">tileCount</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="nx">tileCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// endgameUrgency 는 승부를 접고 손실 최소화로 기울일 정도를 0..100 으로 준다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">endgameUrgency</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">best</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">99</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Seats</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Seat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Me</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Finished</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="k">continue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">t</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">opponentMinTurns</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">TileCount</span><span class="p">);</span><span class="w"> </span><span class="nx">t</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">best</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">best</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">t</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">gap</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nx">Turns</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">best</span><span class="w"> </span><span class="c1">// 내가 얼마나 뒤처져 있는가</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">switch</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="nx">gap</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="nx">gap</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">4</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">default</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">gap</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">25</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>참·거짓이 아니라 <strong>0에서 100 사이의 값</strong> 으로 두는 것이 중요합니다. 이유는 두 가지입니다.</p>
+<ul>
+<li><strong>하한은 낙관적으로 빠릅니다.</strong> 상대가 정말 <code>ceil(k/5)</code> 턴에 끝내려면 리드권까지 계속 잡아야 하므로, 실제로는 그보다 느립니다. 이진 판정으로 두면 아직 해볼 만한 판을 너무 일찍 포기합니다.</li>
+<li><strong>상황은 되돌아옵니다.</strong> 임박했던 상대가 5장 판에 걸려 못 나가는 일은 흔하고, 그 사이 내가 메이드 두 개를 털면 형세가 뒤집힙니다. 연속값이면 자연스럽게 되돌아옵니다.</li>
+</ul>
+<h3 id="손실-최소화-모드의-정책">손실 최소화 모드의 정책<a href="#손실-최소화-모드의-정책" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>긴급도가 올라가면 봇의 우선순위가 이렇게 이동합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>승부 모드</th>
+          <th>손실 최소화 모드</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>목표</td>
+          <td>라운드를 빨리 끝내기</td>
+          <td><strong>유효 장수 <code>e</code> 최소화</strong></td>
+      </tr>
+      <tr>
+          <td>조합 보존</td>
+          <td>플랜 파괴 회피</td>
+          <td><strong>여전히 중요</strong> (아래 설명)</td>
+      </tr>
+      <tr>
+          <td>2 타일</td>
+          <td>리드권 자원으로도 씀</td>
+          <td><strong>최우선 처분 대상</strong></td>
+      </tr>
+      <tr>
+          <td>전략적 패스</td>
+          <td>적극 활용</td>
+          <td>거의 하지 않음</td>
+      </tr>
+      <tr>
+          <td>리드 선택</td>
+          <td>내 플랜에 맞는 판을 연다</td>
+          <td><strong>유효 장수를 가장 많이 줄이는 조합</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>즉시 손익만 보는 가장 단순한 기준선은 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// endgameScoreGreedy 는 이번 수로 줄어드는 유효 장수만 본다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 근사 기준선이며, 아래에서 보듯 이것만으로는 부족하다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">endgameScoreGreedy</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">before</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">effectiveCount</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">after</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">effectiveCount</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">.</span><span class="nf">SubTiles</span><span class="p">(</span><span class="nx">cand</span><span class="p">.</span><span class="nx">Tiles</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">after</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// effectiveCount 는 정산에 쓰이는 유효 장수다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">effectiveCount</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="nx">Set</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">twos</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">rankMask</span><span class="p">(</span><span class="mi">2</span><span class="p">)).</span><span class="nf">Len</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">hand</span><span class="p">.</span><span class="nf">Len</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="nx">twos</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>&lt;&lt; twos</code> 한 줄이 §1 의 표를 그대로 재현합니다. 2를 포함한 수가 자동으로 높은 점수를 받고, 2 두 장을 묶은 페어가 5장 메이드와 맞먹는 점수를 받습니다. 규칙을 따로 넣지 않아도 정산식만 정확히 옮기면 됩니다.</p>
+<h3 id="조합-보존은-엔드게임에서-오히려-중요해진다">조합 보존은 엔드게임에서 오히려 중요해진다<a href="#조합-보존은-엔드게임에서-오히려-중요해진다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 빠지기 쉬운 함정이 하나 있습니다. &ldquo;어차피 다 못 내니 조합을 아낄 이유가 없다&quot;는 생각입니다. <strong>반대입니다.</strong></p>
+<p>손실 최소화 모드에서 진짜 문제는 이렇게 정의됩니다.</p>
+<blockquote>
+<p>앞으로 내게 남은 제출 기회가 대략 <code>R</code> 번이라면, <strong>그 <code>R</code> 번 안에 유효 장수를 최대로 줄이는</strong> 조각들을 골라야 한다.</p>
+</blockquote>
+<p><code>R</code> 이 작을수록 <strong>한 번에 많이 나가는 조각의 값어치가 커집니다.</strong> 기회가 두 번뿐인데 싱글만 두 장 던지면 두 장밖에 못 텁니다. 같은 두 번에 메이드와 페어를 내면 일곱 장입니다. 즉 조합을 부수는 비용은 엔드게임에서 <strong>더 비싸집니다.</strong></p>
+<p>그래서 정확한 엔드게임 평가는 즉시 손익이 아니라 <strong>Part 3 의 DP 를 목적만 바꿔 다시 푸는 것</strong> 입니다. 조각 수를 최소화하는 대신, <code>R</code> 번의 제출로 줄일 수 있는 유효 장수를 최대화하도록 두면 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// endgameScore 는 이번 수를 낸 뒤, 남은 R 번의 기회로</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 얼마나 더 줄일 수 있는지까지 포함해 평가한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">endgameScore</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">rest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">.</span><span class="nf">SubTiles</span><span class="p">(</span><span class="nx">cand</span><span class="p">.</span><span class="nx">Tiles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// bestShed 는 rest 의 분할 중, 상위 r 조각으로 줄일 수 있는</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">// 유효 장수의 최댓값이다. Part 3 의 dp 배열을 재사용한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="nf">effectiveCount</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">effectiveCount</span><span class="p">(</span><span class="nx">rest</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">bestShed</span><span class="p">(</span><span class="nx">rest</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>bestShed</code> 가 없으면 봇은 &ldquo;2를 던지고 나머지는 굳는&rdquo; 손패를 만듭니다. 즉시 <code>e</code> 는 크게 줄지만 그 뒤로 아무것도 못 냅니다. 앞의 단순 기준선은 <code>R</code> 이 충분히 클 때만 타당한 근사입니다.</p>
+<h3 id="두-점수를-섞는다">두 점수를 섞는다<a href="#두-점수를-섞는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>모드를 이진값으로 두지 않기로 했으므로, 두 점수를 긴급도 비율로 섞습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">u</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">endgameUrgency</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="p">)</span><span class="w"> </span><span class="c1">// 0..100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">100</span><span class="o">-</span><span class="nx">u</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nf">endgameScore</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="o">*</span><span class="nx">u</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">100</span><span class="w">
+</span></span></span></code></pre></div><p><code>endgameUrgency</code> 는 매 턴 다시 계산합니다. 한 번 올라갔다고 라운드 끝까지 유지하면, 형세가 뒤집혔는데도 봇이 계속 포기한 채로 둡니다.</p>
+<hr>
+<h2 id="5-전체-파이프라인">5. 전체 파이프라인<a href="#5-전체-파이프라인" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    subgraph K[&#34;① 지식 (Part 2)&#34;]
+        K1[&#34;Unseen = All &amp;^ (Hand | Played)&#34;]
+        K2[&#34;좌석별 Possible · 남은 장수&#34;]
+    end
+    subgraph P[&#34;② 플랜 (Part 3)&#34;]
+        P1[&#34;Decompose(hand) 1회&#34;]
+        P2[&#34;dp 배열 · 조각 · 고아 수&#34;]
+    end
+    subgraph C[&#34;③ 후보 (Part 1)&#34;]
+        C1[&#34;Key 별 합법 조합 생성&#34;]
+        C2[&#34;패스를 nil 후보로 추가&#34;]
+    end
+    subgraph E[&#34;④ 평가 (Part 4)&#34;]
+        E1[&#34;플랜 개선도 · 리드권 · 과잉살상&#34;]
+        E2[&#34;2 처분 이득 · 템포 위험&#34;]
+        E3[&#34;urgency 로 엔드게임 점수와 혼합&#34;]
+    end
+    K1 --&gt; P1
+    K1 --&gt; E1
+    K2 --&gt; E2
+    P1 --&gt; P2 --&gt; E1
+    C1 --&gt; B[&#34;blockUrgency 가산&lt;br/&gt;(큰 가중치 · 오버라이드 아님)&#34;]
+    B --&gt; E1
+    C2 --&gt; E1
+    E1 --&gt; D[&#34;점수 최댓값 선택&#34;]
+    E2 --&gt; D
+    E3 --&gt; D
+    D --&gt; R[&#34;제출 또는 패스&#34;]
+    style K fill:#87CEEB,color:#000000
+    style P fill:#90EE90,color:#000000
+    style C fill:#F5DEB3,color:#000000
+    style E fill:#DDA0DD,color:#000000
+    style B fill:#FF7F50,color:#000000
+    style R fill:#FFD700,color:#000000
+</code></pre><p>계산량을 짚어 두겠습니다. 한 턴에 <code>Decompose</code> 한 번(전이 26만 회), 후보 생성이 20개 미만, 후보별 평가는 <code>dp</code> 배열 조회와 상수 시간 연산입니다. 재귀도 탐색도 없습니다. 상태 공간이 이만큼 작으면 실시간 턴 예산 안에 충분히 들어올 것으로 예상합니다.</p>
+<p>다만 실행 시간을 여기서 숫자로 단정하지는 않겠습니다. 이 글의 코드는 발췌이고 벤치마크를 돌린 적이 없습니다. 특히 <code>plan.Pieces()</code> 를 항마다 다시 부르면 역추적이 반복되므로, 한 턴에 한 번만 계산해 캐시해야 할 자리입니다.</p>
+<p>봇의 응답 지연을 인위적으로 넣는 이야기는 <a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 Part 1</a> 에서 다뤘으므로 반복하지 않겠습니다. 요지는 계산이 빠른 것과 사람이 읽을 수 있는 것은 다른 문제라는 것입니다.</p>
+<hr>
+<h2 id="6-난이도-설계와-검증">6. 난이도 설계와 검증<a href="#6-난이도-설계와-검증" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="두-단계면-충분하다">두 단계면 충분하다<a href="#두-단계면-충분하다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 시리즈는 easy 와 hard 두 단계만 둡니다. 중간 난이도가 필요하다면 <strong>계산을 대충 하게 만들지 말고 정보를 줄이십시오.</strong> hard 봇의 계산을 흐리면 봇이 &ldquo;약한&rdquo; 게 아니라 &ldquo;이상한&rdquo; 수를 둡니다. 대신 이런 식이면 자연스러운 약함이 나옵니다.</p>
+<ul>
+<li><code>Played</code> 를 최근 몇 트릭만 반영하게 한다 (기억력 제한)</li>
+<li>좌석별 <code>Possible</code> 추정을 아예 끈다</li>
+<li><code>Decompose</code> 를 무가중 버전만 쓴다 (조각 수만 보고 위험은 안 본다)</li>
+<li>엔드게임 모드 전환 임계값을 늦춘다</li>
+</ul>
+<p>사람이 약한 이유도 계산을 못 해서가 아니라 다 기억하지 못해서입니다.</p>
+<h3 id="지표는-승률이-아니라-수지다">지표는 승률이 아니라 수지다<a href="#지표는-승률이-아니라-수지다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>봇이 세졌는지 재는 방법에서 렉시오는 달무티와 다릅니다. 달무티는 평균 등수를 썼지만, <strong>렉시오에는 등수가 없으므로 라운드당 평균 정산 수지</strong> 를 씁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">지표 = Σ (라운드별 net_i) / 라운드 수
+</span></span></code></pre></div><p>이 지표를 쓰는 이유는 <strong>§1 에서 정의한 진짜 목적 함수 그 자체</strong> 이기 때문입니다. 봇이 내부적으로 쓰는 것은 <code>e_i</code> 최소화라는 대리 목적이지만, 성능을 재는 자리에서는 대리 목적이 아니라 원래 목적을 재야 합니다. 대리 목적으로 측정하면 &ldquo;속도를 놓치는&rdquo; 약점이 지표에서도 그대로 가려집니다.</p>
+<p>승률(1등 비율)을 쓰지 않는 이유도 같습니다. 승률만 보면 &ldquo;간발의 차로 2등&quot;과 &ldquo;타일 열 장을 남긴 꼴찌&quot;가 똑같이 패배로 집계되는데, 렉시오에서 그 둘은 전혀 다른 결과입니다.</p>
+<h3 id="분산을-죽인다">분산을 죽인다<a href="#분산을-죽인다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>카드게임은 분산이 커서 100판을 돌려도 우연에 묻힙니다. 같은 시드로 딜한 손패를 <strong>좌석만 회전시켜</strong> 반복 실행하면 손패와 좌석에서 오는 분산이 크게 줄어듭니다. 5인 게임이면 같은 딜을 다섯 번 돌려 모든 봇이 모든 손패를 한 번씩 잡게 합니다. 브리지 대회의 듀플리케이트 방식과 같은 아이디어입니다.</p>
+<p>다만 &ldquo;순수한 정책 차이만 남는다&quot;고까지 말할 수는 없습니다. 봇들이 서로 반응하며 두는 게임이라 좌석을 돌려도 상호작용과 경로 의존성은 남습니다.</p>
+<p>그리고 <strong>결과를 보고할 때는 반드시 표본 수와 오차를 함께 적어야 합니다.</strong> &ldquo;라운드당 +2.1&rdquo; 같은 숫자는 그 자체로는 아무 의미가 없습니다. 몇 판을 돌렸는지, 표준오차가 얼마인지, 튜닝에 쓰지 않은 시드에서도 같은 값이 나오는지가 있어야 비로소 주장이 됩니다.</p>
+<h3 id="가중치-튜닝">가중치 튜닝<a href="#가중치-튜닝" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>Weights</code> 항이 다섯 개뿐이므로 좌표 하강으로 충분합니다. 한 번에 하나씩 격자 탐색하며 평균 수지가 좋아지는 방향으로 옮깁니다.</p>
+<p>항을 추가할 때마다 <strong>그 항이 후보에 따라 실제로 달라지는지</strong> 확인해야 합니다. 모든 후보에서 같은 값이 되는 항은 가중치를 아무리 돌려도 행동을 바꾸지 못합니다. 가중치를 0과 큰 값으로 놓고 봇의 선택이 달라지는지 보는 간단한 ablation 으로 잡을 수 있습니다.</p>
+<h3 id="더-나아가려면">더 나아가려면<a href="#더-나아가려면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기까지가 탐색 없는 순수 계산의 영역입니다. 더 강하게 만들고 싶다면 다음 단계는 <strong>PIMC(Perfect Information Monte Carlo)</strong>, 즉 미공개 타일을 여러 번 무작위로 배분해 완전정보 게임으로 만든 뒤 각각을 풀어 평균을 내는 방법입니다. 렉시오는 미공개 집합이 정확하므로 배분 샘플링의 품질이 좋고, Part 2 의 <code>Possible</code> 제약을 배분에 반영하면 더 좋아집니다.</p>
+<p>다만 순서는 지키는 편이 좋습니다. PIMC 는 위 계산을 다 짜고 나서도 부족할 때 꺼내는 것입니다. 그리고 PIMC 는 비결정적이므로, 도입한다면 난수 시드를 리플레이 로그에 반드시 남겨야 합니다. 그래야 &ldquo;이 봇 왜 이렇게 뒀지?&ldquo;를 나중에 재현할 수 있습니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>네 편을 관통하는 이야기를 한 줄로 줄이면 이렇습니다.</p>
+<blockquote>
+<p>달무티 봇은 <strong>등수</strong> 를 계산하고, 렉시오 봇은 <strong>얼마나 빨리 끝내고 얼마를 남기는지</strong> 를 계산합니다.</p>
+</blockquote>
+<p>같은 클라이밍 게임인데 봇의 뼈대가 이렇게 달라지는 이유는 결국 정산 구조 하나입니다. 렉시오는 등수 대신 금액으로 결과를 매기고, 라운드가 끝나는 순간 모두의 손패를 그대로 동결시키며, 강한 타일에 배수 벌금을 매깁니다. 그 셋이 목적 함수를 바꾸고, 목적 함수가 평가 함수를 바꾸고, 평가 함수가 엔드게임의 태도를 바꿉니다.</p>
+<p>정리하면 네 편에서 만든 것은 이렇습니다.</p>
+<ul>
+<li><strong>Part 1:</strong> 타일 하나를 정수 하나로 압축해 서열 비교를 <code>&lt;</code> 하나로 만들고, 조합을 <code>(카테고리, 숫자 벡터, 문양)</code> 이라는 정수 키 하나로 환원했습니다.</li>
+<li><strong>Part 2:</strong> 미공개 집합을 <code>uint64</code> 연산 한 번으로 정확히 복원하고, 확실승수 판정을 확률이 필요 없는 영역과 필요한 영역으로 갈랐습니다.</li>
+<li><strong>Part 3:</strong> 손패 분해를 부분집합 DP 로 풀고, DP 한 번이 그 턴 모든 후보의 평가를 끝내게 만들었습니다.</li>
+<li><strong>Part 4:</strong> 목적 함수를 정산식에서 세우고, 계산 가능한 대리 목적으로 옮기면서 무엇을 잃는지 밝힌 뒤, 전략적 패스와 엔드게임을 얹었습니다.</li>
+</ul>
+<p>그리고 이 모든 것이 <strong>상대 손패를 한 장도 보지 않고</strong> 만들어집니다. 봇이 강해지는 방향은 정보를 더 주는 쪽이 아니라, 모두에게 공개된 같은 정보를 더 성실하게 세는 쪽이어야 합니다. 그래야 사람이 졌을 때 &ldquo;속았다&quot;가 아니라 &ldquo;다음엔 나도 세어 봐야겠다&quot;고 생각하게 됩니다.</p>
+<p>마지막으로 두 가지를 덧붙이겠습니다.</p>
+<p>첫째, 이 시리즈의 모든 통계는 <strong>라운드 시작 시점의 무작위 딜</strong> 을 몬테카를로로 뽑은 집계입니다. 설계 감각을 잡기 위한 값이지 봇이 런타임에 참조할 추정기가 아닙니다. 실제 봇에는 Part 2 에서 정리한 대로 <strong>미공개 장수·좌석 장수·후보의 키 구간까지 색인에 넣은 별도의 표</strong> 가 필요합니다. 초기 딜 집계를 그대로 상수로 박으면 라운드 후반에 크게 어긋납니다.</p>
+<p>둘째, 룰셋이 하나만 달라져도 여기 나온 계산의 상당 부분이 무너집니다. 이 시리즈는 발행사 공식 룰을 전제했지만, 모임에 따라 <strong>패스하면 그 트릭에서 탈락</strong> 하는 변형을 쓰기도 합니다. 그 변형에서는 §3 의 전략적 패스 ④번이 존재할 수 없고 리드권 계산도 다시 써야 합니다. 봇을 만들기 전에 어떤 룰로 갈지부터 확정하고 문서로 못 박아 두시기 바랍니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://boardgamegeek.com/boardgame/19184/lexio">LEXIO (BoardGameGeek)</a></li>
+<li><a href="https://lexio.co.kr/bbs/board.php?bo_table=0102">렉시오 공식 게임방법 (디다노니아)</a></li>
+<li><a href="https://namu.wiki/w/%EB%A0%89%EC%8B%9C%EC%98%A4">렉시오 (나무위키)</a> — 이 시리즈가 채택한 유효 장수 규칙의 근거</li>
+<li><a href="https://www.didanonia.com/lexio">렉시오 공식 페이지 (디다노니아)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Duplicate_bridge">Duplicate bridge (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search">Monte Carlo tree search (Wikipedia)</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-03/" class="button inline next">
+         [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
