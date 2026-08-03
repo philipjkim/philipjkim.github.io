@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>달무티 CPU 플레이어 만들기 Part 4: 만들어 보니 hard 봇이 더 약했다 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Part 1부터 3까지의 설계안을 실제로 구현해 시뮬레이션으로 재봤더니, hard 봇이 easy 봇보다 평균 0.6601등 나빴습니다. 무엇을 어떻게 쟀는지, 세 개의 구조 결함이 무엇이었는지, 어떤 고급 기능이 살아남았는지, 그리고 정정 후의 정식 검증 수치를 정리합니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy, simulation, testing" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260803-dalmuti-cpu-bot-strategy-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="달무티 CPU 플레이어 만들기 Part 4: 만들어 보니 hard 봇이 더 약했다">
+<meta property="og:description" content="Part 1부터 3까지의 설계안을 실제로 구현해 시뮬레이션으로 재봤더니, hard 봇이 easy 봇보다 평균 0.6601등 나빴습니다. 무엇을 어떻게 쟀는지, 세 개의 구조 결함이 무엇이었는지, 어떤 고급 기능이 살아남았는지, 그리고 정정 후의 정식 검증 수치를 정리합니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260803-dalmuti-cpu-bot-strategy-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-03 17:57:55 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260803-dalmuti-cpu-bot-strategy-04/">달무티 CPU 플레이어 만들기 Part 4: 만들어 보니 hard 봇이 더 약했다</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-03</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/simulation/">simulation</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="설계안이-검증을-만나면">설계안이 검증을 만나면<a href="#설계안이-검증을-만나면" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">Part 1</a>에서 공정성 경계와 결정적 easy 봇을 만들었고, <a href="/posts/20260730-dalmuti-cpu-bot-strategy-02/">Part 2</a>에서 hard 봇의 정보 모델을 세웠고, <a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">Part 3</a>에서 수 평가 함수와 전략적 패스로 실제 결정을 내렸습니다. 세 편 모두 &ldquo;이 글은 설계안이고 코드는 논지를 보이기 위한 발췌&quot;라고 밝혀 두었습니다.</p>
+<p>그 설계안을 실제 게임에 구현하고, 시뮬레이터를 붙여 easy 봇과 같은 조건에서 붙여 봤습니다. 결과는 이랬습니다.</p>
+<blockquote>
+<p>최초 hard 봇은 easy 봇보다 <strong>평균 종료 순위가 0.6601등 나빴습니다.</strong></p>
+</blockquote>
+<p>이름만 hard 였던 셈입니다. Part 3 의 마지막 절에서 &ldquo;봇을 만드는 것보다 봇이 정말 세졌는지 재는 것이 더 어렵다&quot;고 썼는데, 정작 그 문장을 쓴 설계안 자체가 재보기 전까지는 반대 방향으로 가고 있었습니다.</p>
+<p>이 글은 그 회고입니다. 다룰 것은 넷입니다.</p>
+<ul>
+<li>무엇을 어떻게 쟀는가 (Part 3 §5 의 방법론이 실제로 어떤 장치가 되었는가)</li>
+<li>어떤 구조 결함이 hard 봇을 약하게 만들었는가 (셋)</li>
+<li>어떤 고급 기능이 실제로 살아남았는가</li>
+<li>정정 후의 정식 수치는 얼마인가</li>
+</ul>
+<p>지표부터 못 박아 두겠습니다. 이 글의 모든 숫자는 <strong><code>Hard 평균 종료 순위 - Easy 평균 종료 순위</code></strong> 입니다. 순위는 낮을수록 좋으므로, <strong>음수면 hard 가 더 좋다</strong> 는 뜻입니다.</p>
+<p>한 가지 미리 말해 둘 것이 있습니다. 이 글은 Part 1~3 을 통째로 폐기하지 않습니다. 공개 정보 모델, 확실승수 판정, 전략적 패스는 검증에서도 살아남았습니다. 무너진 것은 <strong>그 재료들을 최종 점수로 합치는 경계</strong> 였습니다.</p>
+<hr>
+<h2 id="1-먼저-재는-장치부터">1. 먼저, 재는 장치부터<a href="#1-먼저-재는-장치부터" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3 §5 는 &ldquo;미러 매치로 분산을 죽이고, 평균 등수를 지표로 쓰고, held-out 시드로 검증하고, 좌표 하강으로 가중치를 맞춘다&quot;는 원칙만 적어 두었습니다. 원칙은 그대로 유효했지만, 실제로 돌려 보니 원칙만으로는 부족했고 다음 장치들이 더 필요했습니다.</p>
+<p><strong>① 양방향 focal 구성.</strong> hard 1명 대 easy <code>N-1</code> 명만 재면, 측정하는 것이 &ldquo;hard 의 강함&quot;인지 &ldquo;easy 무리 사이에서 튀는 정책의 이점&quot;인지 구분되지 않습니다. 그래서 easy 1명 대 hard <code>N-1</code> 명도 함께 재고, 두 구성의 부호가 일관되는지 봅니다.</p>
+<p><strong>② 모든 최초 좌석 회전.</strong> 같은 딜을 좌석 수만큼 돌려 모든 정책이 모든 자리를 한 번씩 잡게 합니다. Part 3 에서 예고한 듀플리케이트 방식 그대로입니다.</p>
+<p><strong>③ label swap 부호 반전 테스트.</strong> 두 정책의 이름표만 맞바꿔 같은 실험을 돌렸을 때 delta 의 <strong>부호만 뒤집히는지</strong> 확인합니다. 뒤집히지 않으면 그것은 정책 차이가 아니라 하네스 버그입니다. 이 테스트 하나가 &ldquo;좌석 배정이 한쪽으로 쏠려 있었다&quot;류의 실수를 조용히 잡아 줍니다.</p>
+<p><strong>④ canonical JSON 결정성.</strong> 같은 입력을 직렬로 돌린 report 와 병렬 worker 로 돌린 report 가 byte-for-byte 같아야 합니다. worker 수와 출력 경로처럼 결과 의미와 무관한 필드는 canonical 표현에서 제외합니다. Part 1 부터 card ID tie-break 로 확보해 온 결정성이 여기서 값을 합니다. 결정성이 없으면 &ldquo;이 숫자가 재현되는가&quot;라는 질문 자체를 할 수 없습니다.</p>
+<p><strong>⑤ 18개 held-out cell.</strong> 4·5·6인 x 기본·고빈도 혁명 x 3·5·10판의 조합입니다. 특정 인원수나 특정 경기 길이에서만 좋아지는 정책을 걸러내기 위한 격자입니다.</p>
+<p><strong>⑥ seed-cluster 신뢰구간.</strong> 같은 seed 가 여러 cell 에 등장하므로, cell 별 관측을 그대로 독립 표본처럼 세면 신뢰구간이 실제보다 좁아집니다. 같은 seed 의 여러 cell 을 먼저 평균한 뒤 seed 단위로 구간을 계산합니다.</p>
+<p><strong>⑦ phase 별 ablation 과 decision divergence 로그.</strong> hard 의 일부 단계(리드·팔로우·세금·혁명)만 easy 로 갈아끼운 혼합 정책을 만들어 각각 재고, 같은 공개 상태에서 두 정책의 선택이 <strong>달랐던 순간만</strong> JSONL 로 남깁니다. 이 두 가지가 이번 진단의 핵심 도구였습니다.</p>
+<p>승격 기준은 이렇게 고정했습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>단계</th>
+          <th>통과 조건</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>tuning 후보 승격</td>
+          <td>seed 별 paired delta 의 95% 신뢰구간 <strong>상한이 0 미만</strong></td>
+      </tr>
+      <tr>
+          <td>held-out 전체 gate</td>
+          <td>95% 신뢰구간 상한이 0 미만</td>
+      </tr>
+      <tr>
+          <td>인원수·혁명 빈도·경기 길이별 gate</td>
+          <td>95% 신뢰구간 상한이 <code>+0.10</code> 순위 이하</td>
+      </tr>
+      <tr>
+          <td>18개 cell</td>
+          <td>각 점 추정치가 <code>+0.10</code> 순위 이하</td>
+      </tr>
+  </tbody>
+</table>
+<p>전체 gate 는 &ldquo;확실히 개선&quot;을, 나머지 gate 는 &ldquo;어느 조건에서도 크게 나빠지지 않음&quot;을 봅니다. 하나의 기준으로 둘 다 요구하면 통과할 수 있는 정책이 거의 없습니다.</p>
+<hr>
+<h2 id="2-원인-1--같은-이득을-두-번-칭찬했다">2. 원인 1 — 같은 이득을 두 번 칭찬했다<a href="#2-원인-1--같은-이득을-두-번-칭찬했다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3 의 수 평가 함수는 플랜 개선도를 이렇게 계산했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">planGain</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">before</span><span class="p">.</span><span class="nx">MinPlays</span><span class="o">-</span><span class="nx">after</span><span class="p">.</span><span class="nx">MinPlays</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="nx">after</span><span class="p">.</span><span class="nx">SafeLead</span><span class="o">-</span><span class="nx">before</span><span class="p">.</span><span class="nx">SafeLead</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nb">float64</span><span class="p">(</span><span class="nx">after</span><span class="p">.</span><span class="nx">Orphans</span><span class="o">-</span><span class="nx">before</span><span class="p">.</span><span class="nx">Orphans</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>여기에 결함이 있습니다. 손패에 <code>12 x 2</code> 와 <code>9 x 1</code> 이 있고 새 필드를 여는 상황을 보겠습니다.</p>
+<ul>
+<li><code>9 x 1</code> 을 내면 <strong>제출 횟수가 하나 줄고</strong>, 동시에 <strong>고아 카드가 하나 사라집니다.</strong></li>
+<li><code>12 x 2</code> 를 내면 제출 횟수가 하나 줄고, 고아 카드는 그대로입니다.</li>
+</ul>
+<p>이 상황에서 두 항은 <strong>같은 사건을 다른 이름으로 두 번 세고 있습니다.</strong> 고아 카드 하나를 없앤 것이 곧 제출 횟수를 하나 줄인 것이기 때문입니다. 그런데 점수식은 이를 서로 다른 이득처럼 더했고, 그 결과 카드를 한 장만 버리는 <code>9 x 1</code> 이 두 장을 버리는 <code>12 x 2</code> 보다 높은 점수를 받았습니다.</p>
+<p>창고에 불량 재고 두 상자를 한 번에 처분할 기회가 있는데, 재고 목록에서 한 줄이 깔끔하게 지워진다는 이유로 더 비싼 물건 하나만 버린 셈입니다.</p>
+<p>수정 방향은 <strong>적용 범위를 나누는 것</strong> 입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// planGain 은 후보 c 를 냈을 때의 플랜 개선도다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// lead 와 follow 에서 항의 구성이 다르다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">planGain</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="w"> </span><span class="o">*</span><span class="nx">Candidate</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">before</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">BestPlan</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">,</span><span class="w"> </span><span class="nx">l</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">after</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">BestPlan</span><span class="p">(</span><span class="nf">removeCards</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">,</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">Cards</span><span class="p">),</span><span class="w"> </span><span class="nx">l</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">gain</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">before</span><span class="p">.</span><span class="nx">MinPlays</span><span class="o">-</span><span class="nx">after</span><span class="p">.</span><span class="nx">MinPlays</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="nx">after</span><span class="p">.</span><span class="nx">SafeLead</span><span class="o">-</span><span class="nx">before</span><span class="p">.</span><span class="nx">SafeLead</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Table</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// follow 는 제출 장수가 테이블에 고정돼 있다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// 후보들 사이에 배출량 차이가 없으므로, 고아 제거 가치를 남겨 둬도</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="c1">// &#34;많이 버리는 수&#34; 를 밀어내지 못한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">gain</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">after</span><span class="p">.</span><span class="nx">Orphans</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">before</span><span class="p">.</span><span class="nx">Orphans</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">gain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>Orphans</code> 지표 자체가 틀린 것은 아닙니다. <a href="/posts/20260730-dalmuti-cpu-bot-strategy-02/">Part 2</a>에서 정의한 대로 손패 구조를 설명하는 데는 여전히 유용합니다. 문제는 그것을 <code>MinPlays</code> 와 <strong>나란히 놓고 독립적으로 보상</strong> 한 것이었습니다. 지표를 만드는 것과 그 지표를 목적 함수에 더하는 것은 다른 일입니다.</p>
+<hr>
+<h2 id="3-원인-2--리드를-점수식에-맡긴-것이-가장-큰-약점이었다">3. 원인 2 — 리드를 점수식에 맡긴 것이 가장 큰 약점이었다<a href="#3-원인-2--리드를-점수식에-맡긴-것이-가장-큰-약점이었다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>중복 보상을 제거한 뒤에도 hard 봇은 계속 이런 수를 뒀습니다.</p>
+<ul>
+<li>easy 봇: <code>12 x 4</code> 제출</li>
+<li>hard 봇: <code>3 x 1</code> 제출</li>
+</ul>
+<p><code>3</code> 은 강한 카드입니다. 한 장만 내면 받을 수 있는 사람이 거의 없으니 리드권을 지킬 확률은 높아집니다. Part 3 의 <code>controlProb x controlValue</code> 는 이 가능성을 크게 평가했습니다. 그러나 그 대가로 귀중한 강한 카드를 태우고 손패는 겨우 한 장 줄었습니다.</p>
+<p>이것이 몇 판의 특이 상황이 아니었다는 것을 decision divergence 로그가 보여 줬습니다. <strong>easy 와 hard 의 선택이 달랐던 44,090개의 순간 중 21,841개가 새 필드의 첫 제출이었고, 그중 13,283개가 &ldquo;easy 는 약한 다중 묶음을 내는데 hard 는 한 장만 내는&rdquo; 형태였습니다.</strong> 반복되는 정책 결함이었습니다.</p>
+<p>왜 리드에서 특히 이런 일이 벌어졌는지는 후보 공간의 모양으로 설명됩니다. 이것은 저의 해석이지만 관측된 패턴과 잘 맞습니다.</p>
+<ul>
+<li><strong>팔로우에서는 제출 장수가 테이블에 고정</strong> 돼 있습니다. 후보들은 전부 같은 장수를 버리므로, 점수식이 비교하는 것은 순수하게 &ldquo;어느 rank 를 태울 것인가&quot;입니다.</li>
+<li><strong>리드에서는 장수까지 내가 정합니다.</strong> 그런데 <code>controlProb</code> 는 장수가 적고 rank 가 강할수록 높아지므로, &ldquo;강한 카드 한 장&quot;이 거의 언제나 확률 최댓값을 차지합니다. 반대편에서 <code>planGain</code> 이 배출량을 대변해야 하는데, 한 항의 최댓값과 다른 항의 최댓값이 정면으로 충돌하는 자리에서 가중치 몇 개로 균형을 맞추는 것은 너무 섬세한 요구였습니다.</li>
+</ul>
+<p>그래서 결론을 바꿨습니다. Part 3 의 &ldquo;리드 선택도 같은 계산이다&rdquo; 절은 <strong>철회합니다.</strong> 리드는 공통 점수식이 아니라 배출 원칙이 정합니다.</p>
+<ol>
+<li>자연 카드가 있으면 <strong>가장 약한 rank 의 자연 카드 전체</strong> 를 제출합니다.</li>
+<li>자연 카드가 없고 광대만 남았을 때 광대 한 장을 냅니다.</li>
+<li>자연 rank 를 일부만 떼거나 광대를 붙인 리드는 기본 후보에서 <strong>제외</strong> 합니다.</li>
+<li>endgame 예외는 별도 실험으로 성능이 입증될 때만 추가합니다.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// selectLead 는 점수식이 아니라 배출 원칙으로 리드를 고른다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 이 함수는 Part 1 의 easyLead 와 동작이 같다. 의도된 결과다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">selectLead</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">l</span><span class="w"> </span><span class="o">*</span><span class="nx">Ledger</span><span class="p">)</span><span class="w"> </span><span class="nx">Decision</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">groups</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">groupByRank</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">weakest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">Rank</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">groups</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">RankJester</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">weakest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">weakest</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="c1">// 숫자가 클수록 약하다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">weakest</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 손에 광대만 남았다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Cards</span><span class="p">:</span><span class="w"> </span><span class="nx">groups</span><span class="p">[</span><span class="nx">RankJester</span><span class="p">][:</span><span class="mi">1</span><span class="p">]}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">Decision</span><span class="p">{</span><span class="nx">Cards</span><span class="p">:</span><span class="w"> </span><span class="nx">groups</span><span class="p">[</span><span class="nx">weakest</span><span class="p">]}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>hard 봇의 리드 정책이 easy 봇과 <strong>같은 코드로 수렴했다</strong> 는 점이 이 절의 요지입니다. Part 1 에서 &ldquo;easy 봇의 단순화&quot;라고 소개했던 규칙이, 실제로는 복잡한 평가식보다 강한 기준선이었고 지금은 hard 봇의 guardrail 로 채택돼 있습니다.</p>
+<p>Part 3 에서 만든 리드 후보별 점수는 지웠을까요? 아닙니다. <strong>진단 자료로는 남겨 뒀습니다.</strong> 어떤 리드가 왜 낮게 평가됐는지 로그로 볼 수 있는 것은 여전히 유용합니다. 다만 그 점수가 <strong>운영 선택을 지배하지 않을 뿐</strong> 입니다. 평가 도구와 결정 규칙을 분리한 셈입니다.</p>
+<hr>
+<h2 id="4-원인-3--세금-반환에서-약한-묶음을-지키려-했다">4. 원인 3 — 세금 반환에서 약한 묶음을 지키려 했다<a href="#4-원인-3--세금-반환에서-약한-묶음을-지키려-했다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3 §3 의 다음 두 문장은 실제 결과와 정면으로 충돌했습니다.</p>
+<blockquote>
+<p><code>rank 12 는 판 초반에 반환 카드로 나쁩니다.</code></p>
+</blockquote>
+<blockquote>
+<p><code>12를 다섯 장 쥐고 있다면 12는 소중한 묶음이지 버릴 카드가 아닙니다.</code></p>
+</blockquote>
+<p><code>12</code> 열 장과 <code>11</code> 한 장을 쥐고 한 장을 내려줘야 하는 상황을 보겠습니다. Part 3 의 <code>giveAwayCost</code> + <code>planDamage</code> 조합은 큰 <code>12</code> 묶음을 깨는 것을 손해로 계산했고, 그래서 더 좋은 <code>11</code> 을 내보내는 선택이 나올 수 있었습니다.</p>
+<p>이 판단이 놓친 것은 세금 반환의 기본 사실이었습니다.</p>
+<ul>
+<li>카드를 한 장 돌려주면 <strong>내 손패가 즉시 한 장 줄어듭니다.</strong></li>
+<li><code>12</code> 는 <code>11</code> 보다 약하고, 원래 먼저 없애고 싶은 카드입니다.</li>
+<li>지나치게 큰 약한 묶음은 <strong>한 장 줄어도 여전히 큰 묶음</strong> 입니다.</li>
+<li>광대를 넘기는 위험은 별도 규칙으로 막으면 됩니다.</li>
+</ul>
+<h3 id="그래도-11-을-버리는-쪽이-제출-횟수가-적지-않은가">&ldquo;그래도 <code>11</code> 을 버리는 쪽이 제출 횟수가 적지 않은가&rdquo;<a href="#그래도-11-을-버리는-쪽이-제출-횟수가-적지-않은가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 예시를 보면 자연스럽게 나오는 반문이 있습니다. 계산해 보면 이렇습니다.</p>
+<ul>
+<li><code>11</code> 을 반환 → <code>12 x 10</code> 만 남음 → <code>MinPlays</code> <strong>1</strong></li>
+<li><code>12</code> 를 반환 → <code>12 x 9</code>, <code>11 x 1</code> → <code>MinPlays</code> <strong>2</strong></li>
+</ul>
+<p>산술은 정확합니다. 그리고 이것이 정확히 Part 3 의 <code>planDamage</code> 가 하던 계산입니다. 그런데도 이 정책이 진 이유는 <strong><code>MinPlays</code> 가 세는 &ldquo;제출 횟수&quot;가 실제 비용이 아니기 때문</strong> 입니다. 세 가지로 나눠 보겠습니다.</p>
+<p><strong>① 안 받히는 수는 리드권을 소비하지 않고 돌려줍니다.</strong> <code>12 x 9</code> 를 리드로 내면 이걸 받으려면 11을 아홉 장 이상 모아야 하는데, 11은 세상에 열한 장뿐이라 사실상 불가능합니다. 전원이 패스하면 트릭이 끝나고 <strong>리드권은 마지막에 낸 사람, 즉 나에게 돌아옵니다.</strong> 곧바로 <code>11 x 1</code> 을 내고 나갑니다. 그 사이에 다른 누구도 카드를 한 장도 내지 못했으므로 <strong>종료 순위는 <code>12 x 10</code> 을 한 번에 낸 것과 같습니다.</strong> 트릭 번호만 하나 늘어날 뿐입니다.</p>
+<p>Part 3 §1 에서 &ldquo;리드권은 살아 있는 전원이 연속으로 패스해야 돌아온다&quot;고 강조해 놓고, 정작 세금 절의 평가식은 그 규칙을 쓰지 않았습니다. 달무티에서 희소한 자원은 <strong>제출 횟수가 아니라 리드권 획득 횟수</strong> 이고, 안 받히는 수는 리드권을 쓰지 않습니다. 그래서 <code>MinPlays</code> 2 의 실제 비용은 1턴이 아니라 <strong>0에 수렴합니다.</strong></p>
+<p><strong>② <code>12 x 10</code> 은 리드권을 벌 수단이 0인 손패입니다.</strong> 12는 자연 rank 중 최약이므로, 이 손패로는 <strong>어떤 트릭도 받을 수 없습니다.</strong> 받을 수 없으면 트릭을 이길 수 없고, 트릭을 이길 수 없으면 리드권을 가져올 방법이 없습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th><code>11</code> 반환 → <code>12 x 10</code></th>
+          <th><code>12</code> 반환 → <code>12 x 9</code>, <code>11 x 1</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>내가 선공</td>
+          <td>한 번에 나감</td>
+          <td><code>12 x 9</code> → 전원 패스 → 리드권 회수 → <code>11 x 1</code> → 나감 (<strong>순위 동일</strong>)</td>
+      </tr>
+      <tr>
+          <td>내가 선공이 아님</td>
+          <td><strong>한 장도 못 냅니다.</strong> 받을 수 있는 수가 존재하지 않아 리드권을 벌 수단이 없음</td>
+          <td>누군가 <code>12 x 1</code> 로 열면 <code>11 x 1</code> 로 받아 트릭을 가져오고, 리드권 회수 후 <code>12 x 9</code> 로 나감</td>
+      </tr>
+  </tbody>
+</table>
+<p><code>11 x 1</code> 은 이 손패의 <strong>유일한 재진입 티켓</strong> 입니다. Part 3 의 <code>continuationValue</code> 가 재려던 값이 바로 이것인데, 세금 절은 그 개념을 쓰지 않고 <code>planDamage</code> 만 보고 티켓을 내다 버렸습니다. (엄밀히는 예외가 하나 있습니다. 누군가 광대만 단독으로 리드하면 그 수는 rank 13 이므로 12로 받을 수 있습니다. 손에 광대만 남은 사람이 있어야 하는 희귀 상황이라 실전 기여는 없다고 봅니다.)</p>
+<p><strong>③ 달무티 덱에서 고아는 구조적으로 강한 카드입니다.</strong> 위 예시는 고아가 마침 <code>11</code> 이라 무해해 보이지만, rank r 은 정확히 r 장뿐이므로 강한 rank 일수록 손패에 한 장만 들어옵니다. 6인 게임(손패 13장) 기준으로 재보면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: right">rank</th>
+          <th style="text-align: right">보유 확률</th>
+          <th style="text-align: right">보유했을 때 딱 한 장(고아)일 확률</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: right">1</td>
+          <td style="text-align: right">16.2%</td>
+          <td style="text-align: right"><strong>100.0%</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: right">2</td>
+          <td style="text-align: right">30.0%</td>
+          <td style="text-align: right"><strong>91.8%</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: right">3</td>
+          <td style="text-align: right">41.7%</td>
+          <td style="text-align: right"><strong>83.9%</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: right">6</td>
+          <td style="text-align: right">66.8%</td>
+          <td style="text-align: right">62.6%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">9</td>
+          <td style="text-align: right">81.6%</td>
+          <td style="text-align: right">44.8%</td>
+      </tr>
+      <tr>
+          <td style="text-align: right">12</td>
+          <td style="text-align: right">90.0%</td>
+          <td style="text-align: right">30.8%</td>
+      </tr>
+  </tbody>
+</table>
+<p>손패에서 카드 한 장을 무작위로 집으면 rank 1~6 일 확률이 <strong>26.9%</strong> 인데, <strong>고아 카드</strong> 중에서 한 장을 집으면 그 확률이 <strong>49.1%</strong> 로 뜁니다. 즉 &ldquo;묶음을 보존하고 고아를 내보낸다&quot;는 규칙은 평균적으로 <strong>&ldquo;강한 카드를 농노에게 헌납하라&rdquo;</strong> 로 작동합니다.</p>
+<p>정직하게 덧붙이자면, 위 예시에서 내가 <strong>대달무티(첫 트릭 선공이 확정)</strong> 라면 <code>12 x 10</code> 을 지키는 쪽이 아주 미세하게 낫습니다. <code>12 x 10</code> 은 다 내는 순간 받히든 말든 이미 나간 것이지만, <code>12 x 9</code> 는 만에 하나 받히면 <code>11</code> 한 장이 남기 때문입니다. <strong>이 손패는 기각된 규칙이 방어 가능한 몇 안 되는 경우입니다.</strong> 규칙이 진 이유는 이 손패에서 져서가 아니라, 이 손패가 예외인데 규칙은 나머지 전부에도 똑같이 적용됐기 때문입니다.</p>
+<p>리드를 고친 뒤 세금을 고치기 전의 중간 진단에서, <strong>세금 정책만 easy 방식으로 갈아끼운 변형이 당시 hard 보다 평균 순위를 <code>0.1517</code> 개선</strong> 했습니다. 리드 다음으로 큰 결함이었습니다.</p>
+<p>현재 규칙은 셋뿐입니다.</p>
+<ul>
+<li>광대는 반환 후보에서 <strong>제외</strong> 합니다.</li>
+<li>일반 카드 중 <strong>가장 약한 rank 부터</strong> 반환합니다.</li>
+<li>같은 rank 는 card ID 로 끊어 재현성을 확보합니다.</li>
+</ul>
+<p>즉 Part 1 의 <code>weakerFirst</code> 규칙 그대로입니다. 여기서도 easy 규칙이 hard 의 guardrail 이 되었습니다.</p>
+<h3 id="기각된-고급-모델은-지우지-않았다">기각된 고급 모델은 지우지 않았다<a href="#기각된-고급-모델은-지우지-않았다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>giveAwayCost</code>, 조합 완전탐색, 옌센 부등식 논의는 삭제하지 않고 <strong>&ldquo;시도했지만 기각된 모델&rdquo;</strong> 로 남겨 뒀습니다. 그 논리 자체는 여전히 옳습니다. 가치 함수가 비선형이면 <code>f(E[K] + 1)</code> 과 <code>E[f(K+1)]</code> 은 실제로 다른 값이고, 2장을 내려주는 대달무티에게 조합 최소와 개별 최소가 다른 것도 맞습니다.</p>
+<p>기각된 이유는 논리가 틀려서가 아니라 <strong>단위가 맞지 않아서</strong> 였습니다. <code>giveAwayCost</code> 는 &ldquo;상대 묶음의 가치 증가&quot;를 재고, <code>planDamage</code> 는 &ldquo;내 플랜의 손상&quot;을 재는데, 이 둘을 같은 저울에 올릴 정규화가 없었습니다. 거기에 &ldquo;내 손패가 한 장 준다&quot;는 가장 확실한 이득은 아예 항으로 들어가 있지도 않았습니다. 세 값의 크기가 제각각인 상태에서 최소화를 돌리면, 가장 큰 값을 뱉는 항이 결정을 독점합니다.</p>
+<p>다시 도입하려면 조건은 이렇습니다.</p>
+<ul>
+<li>자기 손패 한 장 감소의 이득과 상대 강화 비용을 <strong>같은 단위로 정규화</strong> 한다.</li>
+<li>기존 규칙 대비 개선을 <strong>별도 held-out 으로 검증</strong> 한다.</li>
+</ul>
+<p>그 전까지는 흥미로운 연구 가설이지 운영 정책이 아닙니다.</p>
+<hr>
+<h2 id="5-목적-함수-정정--20판-누적-우승은-빠졌다">5. 목적 함수 정정 — 20판 누적 우승은 빠졌다<a href="#5-목적-함수-정정--20판-누적-우승은-빠졌다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3 §3 은 목적 함수 후보 세 개를 놓고 <strong>&ldquo;20판 누적 점수 우승&rdquo;</strong> 을 골랐습니다. 그리고 그 선택 위에 <code>GameView.Score</code>, <code>GameView.HandsLeft</code>, <code>Weights.Rivalry</code>, <code>leaderThreat</code> 를 얹었습니다.</p>
+<p>현재 구현은 두 번째, <strong>판 단위 평균 순위</strong> 를 목적 함수로 씁니다. 각 판에서 가능한 한 좋은 순위를 얻는 greedy 정책이고, 경기 전체의 점수 경쟁을 별도로 모델링하지 않습니다. 그래서 다음을 제거했습니다.</p>
+<ul>
+<li><code>Weights.Rivalry</code> 항</li>
+<li><code>leaderThreat</code> 분기와 <code>HandsLeft</code> 조건</li>
+<li>혁명 판단의 누적 점수 선두 고려</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Weights</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Plan</span><span class="w">           </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 손패 구조 개선도</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Control</span><span class="w">        </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 리드권 확보 가치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Tempo</span><span class="w">          </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 상대 진행 위험</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">InfoLeak</span><span class="w">       </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 혁명 선언의 정보 노출 비용</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Hold</span><span class="w">           </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 상대가 낼 수 있어도 참을 성향</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">BlockThreshold</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// 차단 의무 발동 임계값</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">*</span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">DeclareRevolution</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nf">countJesters</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">)</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">me</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nf">SeatOf</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Me</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">me</span><span class="p">.</span><span class="nx">Title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">GreaterPeon</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// 대혁명. 좌석 전복의 가치가 다른 모든 항을 압도한다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// 첫 판에는 세금이 없다. 취소할 것이 없다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">gain</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">taxLossIfNotCancelled</span><span class="p">(</span><span class="nx">me</span><span class="p">.</span><span class="nx">Title</span><span class="p">)</span><span class="w">             </span><span class="c1">// ① 내 손패의 세금 손익</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">gain</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Control</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nf">blockedTribute</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">me</span><span class="p">.</span><span class="nx">Title</span><span class="p">)</span><span class="w"> </span><span class="c1">// ② 상대 세금 차단</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">cost</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">InfoLeak</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">Seats</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">      </span><span class="c1">// ③ 정보 노출 비용</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">gain</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">cost</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Part 3 의 혁명 절에서 살아남은 것은 ①②③ 과 대혁명 우선 분기, 그리고 &ldquo;상대 손패 강화 방지는 상인 전용 항이 아니다&quot;라는 논지입니다. 사라진 것은 ④ 누적 점수 경쟁 효과뿐입니다. 누적 경기 메타전략은 <strong>향후 확장</strong> 으로 분리해 두었습니다.</p>
+<p>한 가지 더 정정할 것이 있습니다. Part 3 은 상인의 조건부 혁명 선언을 &ldquo;봇에게서 이런 수가 나오면 상대는 이 봇이 뭔가 생각하고 있다고 느낀다&quot;며 비중 있게 다뤘습니다. 실제 기여도는 그렇지 않았습니다. <strong>같은 중간 진단에서 혁명 정책만 easy 방식으로 갈아끼운 ablation 은 전체 <code>0.0022</code>, held-out <code>0.0000</code> 차이</strong> 였습니다. 혁명 판단은 이번 개선의 원인이 아니었습니다. 사람 눈에 영리해 보이는 수와 성적에 기여하는 수는 다릅니다.</p>
+<hr>
+<h2 id="6-살아남은-것들">6. 살아남은 것들<a href="#6-살아남은-것들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>무너진 것만 적으면 그림이 틀어집니다. 다음 요소는 검증에서 유지됐습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>유지된 요소</th>
+          <th>어디서 다뤘나</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>상대 손패를 넘기지 않는 <code>GameView</code> 공정성 경계</td>
+          <td>Part 1</td>
+      </tr>
+      <tr>
+          <td>패스를 일급 이벤트로 남기는 공개 행동 로그</td>
+          <td>Part 1</td>
+      </tr>
+      <tr>
+          <td>card ID 결정적 tie-break</td>
+          <td>Part 1</td>
+      </tr>
+      <tr>
+          <td>rank 별 미공개 카드 장부</td>
+          <td>Part 2</td>
+      </tr>
+      <tr>
+          <td>패스를 확정 배제가 아닌 soft evidence 로 취급</td>
+          <td>Part 2</td>
+      </tr>
+      <tr>
+          <td>구조적 확실승수 판정과 좌석별 위험도</td>
+          <td>Part 2</td>
+      </tr>
+      <tr>
+          <td>광대 배치를 매 턴 재계산하는 플랜</td>
+          <td>Part 2</td>
+      </tr>
+      <tr>
+          <td>팔로우 단계의 전략적 패스</td>
+          <td>Part 3</td>
+      </tr>
+      <tr>
+          <td>종료 임박 좌석에 대한 차단 의무</td>
+          <td>Part 3</td>
+      </tr>
+      <tr>
+          <td>세금 반환에서 광대 제외</td>
+          <td>Part 1</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 중 <strong>전략적 패스</strong> 는 따로 강조할 만합니다. hard 가 easy 보다 약했다는 결과만 보면 &ldquo;낼 수 있어도 참는 기능이 문제였나&rdquo; 싶지만, 측정 결과는 정반대였습니다. 리드와 세금 구조를 고친 뒤 <strong>합법 수가 있으면 무조건 내도록 제한한 <code>no-voluntary-pass</code> 변형은 기본 hard 보다 평균 순위가 <code>0.2013</code> 나빠졌습니다.</strong> 이 글에 나오는 어떤 개별 수정보다도 큰 폭입니다.</p>
+<p>즉 Part 3 §2 의 알고리즘은 그대로 유효합니다. 다만 다음 회고를 덧붙여야 합니다.</p>
+<blockquote>
+<p>전략적 패스는 hard 의 유효한 장점이었지만, <strong>이 기능 하나가 전체 성적을 보장하지는 않았습니다.</strong> 리드와 세금의 구조 결함이 그 이득보다 더 컸기 때문입니다. 고급 기능의 존재와 전체 정책의 강함은 별개이므로, phase 별 ablation 없이는 둘을 구분할 수 없습니다.</p>
+</blockquote>
+<hr>
+<h2 id="7-구조를-고친-다음에야-가중치">7. 구조를 고친 다음에야 가중치<a href="#7-구조를-고친-다음에야-가중치" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 3 §5 는 &ldquo;가중치는 좌표 하강으로 맞춥니다&quot;라고 썼습니다. 순서를 하나 추가해야 합니다. <strong>구조 결함을 남긴 채 가중치를 돌리면 특정 seed 에서 우연히 좋아진 값을 최적이라고 부르게 됩니다.</strong> 그래서 위의 세 결함을 모두 제거한 뒤에야 tuning 을 실행했습니다.</p>
+<p>조건은 6인 5판, easy 1개와 hard 후보 5개, <strong>64 seed</strong>, seed 별 6회 좌석 회전, 최대 3 sweep 입니다. 축 하나당 다섯 개 값을 격자로 봅니다.</p>
+<p>첫 sweep 의 <code>Control</code> 축 결과입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th><code>Control</code></th>
+          <th style="text-align: right">평균 순위 delta</th>
+          <th>95% 신뢰구간</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0.5</td>
+          <td style="text-align: right"><strong>-0.1563</strong></td>
+          <td><code>[-0.2903, -0.0222]</code></td>
+      </tr>
+      <tr>
+          <td>0.75</td>
+          <td style="text-align: right">-0.0906</td>
+          <td><code>[-0.2243, +0.0430]</code></td>
+      </tr>
+      <tr>
+          <td>1.0 (기준)</td>
+          <td style="text-align: right">0.0000</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>1.25</td>
+          <td style="text-align: right">+0.1089</td>
+          <td><code>[-0.0138, +0.2315]</code></td>
+      </tr>
+      <tr>
+          <td>1.5</td>
+          <td style="text-align: right">+0.0505</td>
+          <td><code>[-0.0857, +0.1867]</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><code>Control</code> 을 절반으로 낮춘 후보만 신뢰구간 상한이 0 미만이라 승격됐습니다. 이것이 이번 tuning 에서 움직인 <strong>유일한 축</strong> 입니다. <code>Plan</code>·<code>Tempo</code>·<code>InfoLeak</code>·<code>Hold</code>·<code>BlockThreshold</code> 는 어느 방향으로도 신뢰구간이 0을 가로질러 기본값에 머물렀고, 오히려 값을 <strong>올린</strong> 후보들이 유의하게 나빠졌습니다(<code>Hold</code> 를 0.35에서 0.45로 올리면 <code>+0.2219</code>, 신뢰구간 <code>[+0.0832, +0.3606]</code>).</p>
+<p>두 번째 sweep 에서 <code>Control</code> 을 0.25까지 더 낮춘 후보는 점 추정치가 <code>-0.1229</code> 로 더 좋아 보였지만 신뢰구간이 <code>[-0.2636, +0.0178]</code> 이라 상한이 0을 넘어 승격되지 않았습니다. 점 추정치만 보고 채택했다면 근거 없는 값을 운영에 올렸을 것입니다. 두 번째 sweep 에서 아무 축도 움직이지 않아 좌표 하강은 2 sweep 만에 수렴했습니다.</p>
+<p>최종 가중치입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항</th>
+          <th style="text-align: right">값</th>
+          <th>비고</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Plan</code></td>
+          <td style="text-align: right">1.0</td>
+          <td>기본값 유지</td>
+      </tr>
+      <tr>
+          <td><code>Control</code></td>
+          <td style="text-align: right"><strong>0.5</strong></td>
+          <td>1.0 에서 절반으로</td>
+      </tr>
+      <tr>
+          <td><code>Tempo</code></td>
+          <td style="text-align: right">1.0</td>
+          <td>기본값 유지</td>
+      </tr>
+      <tr>
+          <td><code>InfoLeak</code></td>
+          <td style="text-align: right">0.5</td>
+          <td>기본값 유지</td>
+      </tr>
+      <tr>
+          <td><code>Hold</code></td>
+          <td style="text-align: right">0.35</td>
+          <td>기본값 유지</td>
+      </tr>
+      <tr>
+          <td><code>BlockThreshold</code></td>
+          <td style="text-align: right">0.5</td>
+          <td>기본값 유지</td>
+      </tr>
+  </tbody>
+</table>
+<p><code>Control</code> 이 절반이 됐다는 것은 <strong>리드권이 쓸모없다는 뜻이 아닙니다.</strong> 손패를 줄인다는 기본 목적보다 당장의 주도권을 과하게 우선하지 않도록 영향력을 조정한 것입니다. 원인 2 에서 본 <code>3 x 1</code> 리드의 잔향이 팔로우 단계에도 남아 있었던 셈입니다.</p>
+<hr>
+<h2 id="8-정식-검증-결과">8. 정식 검증 결과<a href="#8-정식-검증-결과" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가중치를 확정한 뒤, tuning 에 쓰지 않은 seed 범위에서 <strong>cell 당 128 seed</strong> 로 held-out 을 돌렸습니다. 18개 cell x 128 seed = 2,304개 관측입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>구분</th>
+          <th style="text-align: right">Hard - Easy</th>
+          <th>95% 신뢰구간</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>전체</strong></td>
+          <td style="text-align: right"><strong>-0.0707</strong></td>
+          <td><code>[-0.0948, -0.0467]</code></td>
+      </tr>
+      <tr>
+          <td>4인</td>
+          <td style="text-align: right">-0.0985</td>
+          <td><code>[-0.1441, -0.0528]</code></td>
+      </tr>
+      <tr>
+          <td>5인</td>
+          <td style="text-align: right">-0.0433</td>
+          <td><code>[-0.0814, -0.0052]</code></td>
+      </tr>
+      <tr>
+          <td>6인</td>
+          <td style="text-align: right">-0.0705</td>
+          <td><code>[-0.1078, -0.0331]</code></td>
+      </tr>
+      <tr>
+          <td>기본 혁명 빈도</td>
+          <td style="text-align: right">-0.0684</td>
+          <td><code>[-0.0943, -0.0426]</code></td>
+      </tr>
+      <tr>
+          <td>고빈도 혁명</td>
+          <td style="text-align: right">-0.0730</td>
+          <td><code>[-0.0973, -0.0488]</code></td>
+      </tr>
+      <tr>
+          <td>3판</td>
+          <td style="text-align: right">-0.0619</td>
+          <td><code>[-0.0914, -0.0325]</code></td>
+      </tr>
+      <tr>
+          <td>5판</td>
+          <td style="text-align: right">-0.0874</td>
+          <td><code>[-0.1148, -0.0599]</code></td>
+      </tr>
+      <tr>
+          <td>10판</td>
+          <td style="text-align: right">-0.0629</td>
+          <td><code>[-0.0890, -0.0369]</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>18개 개별 cell 과 전체·marginal gate 모두 통과했습니다. 방향이 뒤집혔고, 어느 조건에서도 나빠지지 않았습니다.</p>
+<p>전체 흐름을 한 표로 정리하면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>단계</th>
+          <th style="text-align: right">Hard - Easy</th>
+          <th>표본</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>최초 소규모 held-out</td>
+          <td style="text-align: right"><code>+0.6601</code></td>
+          <td>tuning 4 seed / held-out cell 당 2 seed</td>
+      </tr>
+      <tr>
+          <td>구조 수정 후 같은 소규모 held-out</td>
+          <td style="text-align: right">약 <code>+0.0112</code></td>
+          <td>위와 동일</td>
+      </tr>
+      <tr>
+          <td>정식 held-out</td>
+          <td style="text-align: right"><code>-0.0707</code></td>
+          <td>tuning 64 seed / held-out cell 당 128 seed</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>표본 크기가 다르다는 점을 반드시 함께 읽어야 합니다.</strong> 최초 진단은 실행 경로와 소요 시간을 확인하기 위한 pilot 이었고, 그 결과는 운영 가중치의 근거로 쓰지 않았습니다. 따라서 <code>0.6601 - (-0.0707) = 0.7308</code> 을 엄밀한 동일 표본 효과 크기로 해석해서는 안 됩니다. 정확히 말할 수 있는 것은 둘입니다.</p>
+<ul>
+<li><strong>같은 소규모 조건</strong> 에서 기존 열세 <code>0.6601</code> 중 약 <code>0.6489</code> 가 구조 수정만으로 사라졌습니다.</li>
+<li><strong>정식 조건</strong> 에서 hard 는 easy 보다 평균 <code>0.0707</code> 등 앞섰고, 신뢰구간 상한이 0 미만입니다.</li>
+</ul>
+<p>그리고 솔직하게 덧붙이자면, <code>0.0707</code> 등은 <strong>작은 차이</strong> 입니다. 사람이 몇 판 붙어 보고 &ldquo;hard 가 확실히 세다&quot;고 느낄 만한 폭이 아닙니다. Part 3 이 그렸던 &ldquo;카운팅하고 참을 줄 아는 봇&quot;의 그림에 비하면 소박한 결과이고, 이것이 현재의 정직한 위치입니다.</p>
+<hr>
+<h2 id="9-part-3-정정-요약">9. Part 3 정정 요약<a href="#9-part-3-정정-요약" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>Part 3 의 주장</th>
+          <th>현재 결론</th>
+          <th>근거</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>리드도 후보별 공통 점수식으로 고른다</td>
+          <td><strong>철회.</strong> 가장 약한 자연 rank 묶음 전체를 내는 guardrail 이 우선</td>
+          <td>lead divergence 21,841건 중 13,283건이 &ldquo;다중 묶음 대 1장&rdquo;</td>
+      </tr>
+      <tr>
+          <td><code>planGain</code> 에서 <code>MinPlays</code> 와 <code>Orphans</code> 를 함께 보상한다</td>
+          <td><strong>범위 분리.</strong> 리드에서는 <code>Orphans</code> 항 제거, 팔로우에서만 유지</td>
+          <td><code>12 x 2</code> 대신 <code>9 x 1</code> 을 고르는 반례</td>
+      </tr>
+      <tr>
+          <td>rank 12 는 판 초반에 반환 카드로 나쁘다</td>
+          <td><strong>철회.</strong> 광대를 뺀 가장 약한 카드부터 반환</td>
+          <td>세금 ablation <code>0.1517</code> 개선</td>
+      </tr>
+      <tr>
+          <td><code>giveAwayCost</code> 조합 최소화로 반환 카드를 고른다</td>
+          <td><strong>기각.</strong> 단위 정규화와 별도 held-out 검증 후에나 재도입</td>
+          <td>위와 같음</td>
+      </tr>
+      <tr>
+          <td>목적 함수는 20판 누적 점수 우승</td>
+          <td><strong>변경.</strong> 판 단위 평균 순위</td>
+          <td>현재 구현의 정책 범위</td>
+      </tr>
+      <tr>
+          <td><code>Rivalry</code>·<code>leaderThreat</code>·<code>HandsLeft</code> 로 경쟁자를 견제한다</td>
+          <td><strong>제거.</strong> 향후 확장으로 분리</td>
+          <td>위와 같음</td>
+      </tr>
+      <tr>
+          <td>상인의 조건부 혁명 선언이 인상적인 차별점</td>
+          <td><strong>축소.</strong> 유지하되 성능 기여는 사실상 0</td>
+          <td>혁명 ablation 전체 <code>0.0022</code>, held-out <code>0.0000</code></td>
+      </tr>
+      <tr>
+          <td>전략적 패스가 hard 의 핵심</td>
+          <td><strong>유지.</strong> 실제로 가장 큰 단일 기여</td>
+          <td><code>no-voluntary-pass</code> 가 <code>0.2013</code> 나빠짐</td>
+      </tr>
+      <tr>
+          <td>검증은 미러 매치 + held-out + 좌표 하강</td>
+          <td><strong>유지·확장.</strong> 양방향 focal, label swap, 18 cell, seed-cluster CI 추가</td>
+          <td>—</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>네 가지를 배웠습니다.</p>
+<p><strong>복잡한 봇이 자동으로 강한 봇은 아닙니다.</strong> hard 봇은 easy 봇보다 더 많은 공개 정보를 쓰고 더 많은 후보를 계산했습니다. 그런데 평가 항이 겹치거나 부차적 목표를 과대평가하면, 계산량이 많을수록 <strong>잘못된 결정을 더 일관되게</strong> 내립니다. easy 봇의 실수는 산발적이지만 hard 봇의 실수는 체계적이었습니다. Part 2 의 마지막에 이 문장을 넣었어야 했습니다. 더 정확한 장부는 더 좋은 판단 재료일 뿐입니다.</p>
+<p><strong>기본 원칙은 고급 전략의 안전망이어야 합니다.</strong> 약한 카드를 여러 장 버리고 강한 카드와 광대를 아끼는 규칙은 단순하지만 강했습니다. 고급 전략은 이 원칙을 <strong>대체</strong> 하는 것이 아니라, 예외가 정말 이득임을 입증했을 때만 넘어설 수 있어야 합니다. 지금 hard 봇의 리드와 세금 반환이 easy 봇과 같은 코드인 것은 후퇴가 아니라 경계 설정입니다.</p>
+<p><strong>가중치보다 구조를 먼저 고쳐야 합니다.</strong> 중복 보상과 잘못된 후보 경계를 남긴 채 가중치만 돌리면, 특정 seed 에 맞춘 숫자가 나옵니다. 구조를 고친 뒤 돌린 좌표 하강에서는 여섯 축 중 다섯 개가 기본값에 머물렀습니다. 튜닝으로 벌 수 있는 폭은 원래 그리 크지 않았고, 성적을 되돌린 것은 가중치가 아니라 구조 수정이었습니다.</p>
+<p><strong>평가 하네스가 본체입니다.</strong> 이번 작업에서 실제로 가치를 만든 것은 새 알고리즘이 아니라 phase 별 ablation 과 decision divergence 로그였습니다. &ldquo;hard 가 약하다&quot;는 결과만으로는 아무것도 고칠 수 없고, &ldquo;새 필드 첫 제출에서 13,283번 한 장만 냈다&quot;는 관측이 있어야 고칠 수 있습니다. 봇을 만들기 전에 봇을 재는 장치부터 만드는 편이 결국 빠릅니다.</p>
+<p>Part 3 의 마지막 문단에서 &ldquo;봇이 강해지는 방향은 정보를 더 주는 쪽이 아니라, 같은 정보를 더 성실하게 세는 쪽이어야 한다&quot;고 썼습니다. 그 문장은 지금도 유효하다고 생각합니다. 다만 한 줄을 덧붙이겠습니다. <strong>성실하게 센 값을 어떻게 합칠지는 세는 것과 완전히 다른 문제이고, 그건 재봐야만 알 수 있습니다.</strong></p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://media.wizards.com/2015/downloads/ah/great_dalmuti_rules.pdf">The Great Dalmuti Rulebook (Wizards of the Coast, PDF)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coordinate_descent">Coordinate descent (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Confidence_interval">Confidence interval (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Overfitting">Overfitting (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Duplicate_bridge">Duplicate bridge (Wikipedia)</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-02/">달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정</a></li>
+<li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-05/" class="button inline next">
+         [<span class="button__text">8비트의 벽을 넘은 게임들 Part 5: 제약이 사라진 시대에 남은 것</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
