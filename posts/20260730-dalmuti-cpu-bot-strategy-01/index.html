@@ -199,6 +199,9 @@
 
   <div class="post-content"><div>
         <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<blockquote>
+<p><strong>후속 정정 안내 (2026-08-03):</strong> 이 시리즈의 설계안을 실제로 구현해 시뮬레이션으로 검증한 결과, 여기서 &ldquo;easy 봇의 단순화&quot;로 소개한 <strong>리드 정책과 세금 반환 규칙이 hard 봇의 복잡한 평가식보다 강했고</strong>, 지금은 hard 봇의 guardrail 로 채택돼 있습니다. 자세한 내용은 <a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4: 만들어 보니 hard 봇이 더 약했다</a>에 정리했습니다.</p>
+</blockquote>
 <hr>
 <h2 id="왜-봇부터-만드는가">왜 봇부터 만드는가<a href="#왜-봇부터-만드는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">지난 글</a>에서 대부호·달무티·렉시오를 묶어 클라이밍 게임의 전략을 정리했습니다. 이번에는 그중 <strong>달무티(The Great Dalmuti)</strong> 를 디지털 게임으로 구현한다고 가정하고, <strong>CPU 플레이어를 어떤 전략으로 움직일 것인가</strong> 를 파고들겠습니다.</p>
@@ -333,10 +336,8 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Log</span><span class="w">   </span><span class="p">[]</span><span class="nx">Action</span><span class="w">   </span><span class="c1">// 이번 판의 공개 행동 로그. 제출과 패스를 모두 담는다</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Round</span><span class="w"> </span><span class="kt">int</span><span class="w">        </span><span class="c1">// 몇 번째 판인가 (1부터)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ConsecutivePasses</span><span class="w"> </span><span class="kt">int</span><span class="w">         </span><span class="c1">// 지금까지 연속으로 몇 명이 패스했는가</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Score</span><span class="w">             </span><span class="kd">map</span><span class="p">[</span><span class="nx">SeatID</span><span class="p">]</span><span class="kt">int</span><span class="w"> </span><span class="c1">// 누적 점수</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">HandsLeft</span><span class="w">         </span><span class="kt">int</span><span class="w">         </span><span class="c1">// 남은 판 수</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rules</span><span class="w">             </span><span class="nx">Ruleset</span><span class="w">     </span><span class="c1">// 앞의 전제표에 해당하는 설정</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">ConsecutivePasses</span><span class="w"> </span><span class="kt">int</span><span class="w">     </span><span class="c1">// 지금까지 연속으로 몇 명이 패스했는가</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Rules</span><span class="w">             </span><span class="nx">Ruleset</span><span class="w"> </span><span class="c1">// 앞의 전제표에 해당하는 설정</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="c1">// Action 은 공개된 행동 하나다. 패스도 반드시 로그에 남는다.</span><span class="w">
@@ -355,7 +356,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Finished</span><span class="w">  </span><span class="kt">bool</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p><code>Log</code> 를 <code>[]Play</code> 가 아니라 <code>[]Action</code> 으로 둔 것이 나중에 결정적입니다. 제출만 기록하면 카드 카운팅은 되지만 <strong>&ldquo;누가 어떤 트릭에서 참았는가&rdquo;</strong> 를 복원할 수 없습니다. Part 2 의 hard 봇은 이 패스 기록을 상대 손패 추정의 재료로 쓰므로, 로그 스키마 단계에서부터 패스를 일급 이벤트로 남겨야 합니다. easy 봇은 이 필드를 전혀 쓰지 않지만, 나중에 스키마를 바꾸는 것보다 처음부터 넣어 두는 편이 쌉니다.</p>
-<p><code>Score</code> 와 <code>HandsLeft</code> 도 같은 이유로 미리 넣습니다. 공식 점수 규칙(나갈 때마다 남은 인원수만큼 획득, 20판)을 쓰면 <strong>&ldquo;이번 판 1등&quot;과 &ldquo;20판 누적 우승&quot;은 서로 다른 전략</strong> 을 만듭니다. 마지막 판에 점수 선두를 막아야 하는 상황과 첫 판의 상황이 같을 수 없습니다.</p>
+<p>누적 점수(<code>Score</code>)와 남은 판 수(<code>HandsLeft</code>)는 <strong>일부러 넣지 않았습니다.</strong> 공식 점수 규칙(나갈 때마다 남은 인원수만큼 획득)을 쓰면 &ldquo;이번 판 1등&quot;과 &ldquo;경기 전체 누적 우승&quot;은 서로 다른 전략을 만들고, 마지막 판에 점수 선두를 막아야 하는 상황과 첫 판의 상황이 같을 수 없습니다. 흥미로운 확장이지만, 이 시리즈의 봇이 최적화하는 목적 함수는 <strong>판 단위 평균 순위</strong> 하나입니다. 목적 함수를 늘리기 전에 판 하나를 잘 두는 것부터 확인하는 편이 낫고, 실제로 누적 점수 경쟁을 모델링했던 초기 설계는 검증에서 기여가 확인되지 않아 걷어냈습니다(<a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>). 누적 경기 메타전략은 향후 확장으로 남겨 둡니다.</p>
 <p><code>SeatInfo.HandCount</code> 가 이 설계의 핵심입니다. 남은 장수는 테이블 위에서 눈으로 셀 수 있는 정보이므로 봇에게 줘도 공정합니다. 반면 그 장수가 어떤 카드인지는 알 수 없습니다. Part 2 의 hard 봇도 이 경계 안에서만 놉니다. 봇이 강해지는 이유는 <strong>더 많이 보기 때문이 아니라, 같은 것을 보고 더 잘 세기 때문</strong> 이어야 합니다.</p>
 <h3 id="2-도메인-타입">2. 도메인 타입<a href="#2-도메인-타입" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Rank</span><span class="w"> </span><span class="kt">int</span><span class="w">
@@ -658,15 +659,16 @@
 <p><strong>pending 인 봇 의무는 한 transaction 에서 일괄 제출합니다.</strong> 세금 교환은 여러 좌석의 손패를 동시에 바꾸는 연산이라, 중간에 실패하면 카드가 증발하거나 복제됩니다. 원자적으로 처리해야 합니다.</p>
 <p><strong>2.5초 지연</strong> 은 알고리즘이 아니라 UX 결정입니다. 봇의 판단에는 사람의 반응 시간만큼이 필요하지 않으므로, 지연이 없으면 사람 눈에는 &ldquo;화면이 한 번 깜빡였더니 이미 다 끝나 있는&rdquo; 상태가 됩니다. 무슨 일이 일어났는지 읽을 시간을 주기 위해 인위적으로 넣는 대기입니다. 이 지연은 봇의 턴 제출에도 똑같이 적용하고, 클라이언트 애니메이션과 어긋나지 않도록 <code>bot_action</code> 같은 단일 유형으로 분류해 한 곳에서 관리하는 편이 좋습니다.</p>
 <hr>
-<h2 id="easy-봇은-왜-지는가">easy 봇은 왜 지는가<a href="#easy-봇은-왜-지는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
-<p>easy 봇은 기준선으로서 훌륭하지만, 사람과 몇 판만 붙어 보면 금방 약점이 드러납니다. 그 약점들이 정확히 Part 2 와 Part 3 의 설계 항목이 됩니다.</p>
+<h2 id="easy-봇의-한계와-뜻밖의-강점">easy 봇의 한계와 뜻밖의 강점<a href="#easy-봇의-한계와-뜻밖의-강점" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>easy 봇은 기준선으로서 훌륭하지만, 사람과 몇 판만 붙어 보면 한계가 드러납니다. 아래 여섯 가지는 hard 봇이 <strong>개선을 시도할 후보 항목</strong> 이지, 그 자체로 &ldquo;hard 가 easy 를 이기는 이유&quot;가 아닙니다. 실제로 이 항목들을 전부 구현한 최초의 hard 봇은 easy 봇보다 약했습니다. 어느 것이 실제 개선으로 이어졌는지는 <a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>에서 측정치와 함께 정리했습니다.</p>
 <p><strong>1. 이미 나온 카드를 보지 않습니다.</strong> <code>GameView.Log</code> 를 아예 읽지 않습니다. 달무티는 rank 별 장수가 고정된 덱이라 카드 카운팅의 정확도가 대단히 높은 게임인데, easy 봇은 그 정보를 통째로 버립니다.</p>
-<p><strong>2. 낼 수 있으면 무조건 냅니다.</strong> 이것이 가장 큰 손실입니다. 재미있게도 공식 룰북이 직접 이 점을 지적합니다.</p>
+<p><strong>2. 낼 수 있으면 무조건 냅니다.</strong> 재미있게도 공식 룰북이 직접 이 점을 지적합니다.</p>
 <blockquote>
 <p>&ldquo;Most of the time you should play your worst cards when you can, but <strong>don&rsquo;t be afraid to pass sometimes even when you can play.</strong> A savvy player in a lower position often won&rsquo;t play a good set until several people are out, saving it until he or she can use it to try to take the lead.&rdquo;
 — 공식 룰북 <em>The Strategy of Saving Cards</em> 절</p>
 </blockquote>
-<p>easy 봇에는 이 판단이 아예 없습니다. 게다가 달무티는 <strong>패스한 뒤에도 다시 낼 수 있는</strong> 룰이라 패스의 비용이 원래 낮습니다. &ldquo;패스=탈락&rdquo; 변형에서는 참는 것이 &ldquo;이번 트릭 포기&quot;라는 확정 손실이지만, 공식 룰에서는 그냥 &ldquo;이번 차례만 거른다&quot;에 불과합니다. 참는 것이 이렇게 싼 게임에서 한 번도 참지 않는 것은 그만큼 큰 손실입니다.</p>
+<p>easy 봇에는 이 판단이 아예 없습니다. 게다가 달무티는 <strong>패스한 뒤에도 다시 낼 수 있는</strong> 룰이라 패스의 비용이 원래 낮습니다. &ldquo;패스=탈락&rdquo; 변형에서는 참는 것이 &ldquo;이번 트릭 포기&quot;라는 확정 손실이지만, 공식 룰에서는 그냥 &ldquo;이번 차례만 거른다&quot;에 불과합니다. 참는 것이 이렇게 싼 게임에서 한 번도 참지 않는 것은 손실일 가능성이 큽니다.</p>
+<p>여섯 항목 중 <strong>이것 하나는 나중에 실측으로 확인됐습니다.</strong> 완성된 hard 봇에서 전략적 패스만 꺼서 &ldquo;합법 수가 있으면 무조건 낸다&quot;로 되돌리면 평균 순위가 <code>0.2013</code> 나빠집니다. 다만 그것과 &ldquo;전략적 패스를 넣으면 easy 를 이긴다&quot;는 별개였습니다. 최초 hard 봇은 이 기능을 갖고도 졌습니다.</p>
 <p><strong>3. 묶음을 지키지 않습니다.</strong> 누군가 <code>12 x 3</code> 으로 연 트릭에서 내 손에 11이 일곱 장 있으면, easy 봇은 성실하게 <code>11 x 3</code> 을 냅니다. 그 순간 <strong>사실상 아무도 못 받는 7장짜리 리드 재료</strong> 가 쪼개져 반쪽이 됩니다. 후보를 &ldquo;가장 약한 수&rdquo; 기준으로만 고르기 때문에 벌어지는 일입니다.</p>
 <p><strong>4. 광대를 흘립니다.</strong> 선공 로직이 광대를 묶음에 붙이지 않으므로, <code>12 x 4 + 광대 2장</code> 을 쥐고도 4장 리드를 냅니다. 광대를 붙여 6장으로 만들면 사실상 무적인데 말입니다. 게다가 손에 광대만 남으면 한 장씩 흘려 두 턴을 씁니다.</p>
 <p><strong>5. 혁명 판단이 손패와 무관합니다.</strong> 계급만 보고 결정하므로, 세금을 취소하는 것이 실제로 이득인지 손해인지 계산하지 않습니다.</p>
@@ -674,6 +676,16 @@
 <p>여섯 가지를 한 문장으로 줄이면 이렇습니다.</p>
 <blockquote>
 <p>easy 봇은 <strong>한 턴 안에서 합법적인 최소 손실</strong> 을 계산할 뿐, <strong>판 전체에서 자기 손패를 몇 번 제출해 털지</strong> 는 계산하지 않습니다.</p>
+</blockquote>
+<h3 id="뜻밖의-강점-두-규칙은-단순해서-이긴-것이-아니다">뜻밖의 강점: 두 규칙은 단순해서 이긴 것이 아니다<a href="#뜻밖의-강점-두-규칙은-단순해서-이긴-것이-아니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한계만 적으면 그림이 절반입니다. 위에서 &ldquo;결정적 규칙만으로 만든 기준선&quot;이라고 소개한 규칙 중 <strong>둘은 나중에 hard 봇이 되돌아와 그대로 채택했습니다.</strong></p>
+<ul>
+<li><strong><code>easyLead</code> 의 &ldquo;가장 약한 자연 rank 묶음 전체 제출&rdquo;.</strong> hard 봇은 새 필드의 첫 제출을 후보별 점수 경쟁으로 고르려 했지만, 그 정책이 최대 약세 원인이었습니다. 지금은 hard 봇도 같은 규칙으로 리드합니다. 위 4번에서 &ldquo;약점&quot;으로 적은 <strong>광대를 리드 묶음에 붙이지 않는 동작</strong> 도 함께 유지됐습니다.</li>
+<li><strong><code>SelectTaxCards(ReturnAny)</code> 의 &ldquo;광대를 뺀 가장 약한 카드부터 반환&rdquo;.</strong> hard 봇은 상대 묶음이 얼마나 강해지는지를 기대값으로 계산해 반환 카드를 골랐지만, 이 정책을 easy 방식으로 되돌리자 평균 순위가 <code>0.1517</code> 개선됐습니다.</li>
+</ul>
+<p>이 두 규칙이 강한 이유는 단순해서가 아니라 <strong>달무티의 기본 배출 원칙(약한 카드를 여러 장 버리고, 강한 카드와 광대를 아낀다)을 정확히 구현하고 있어서</strong> 입니다. 그래서 후속 교훈은 이렇게 정리됩니다.</p>
+<blockquote>
+<p>더 많은 정보를 더 정교하게 계산한다고 해서, 그 결과가 <strong>기본 배출 원칙을 이긴다는 보장은 없습니다.</strong> 고급 전략은 기본 원칙을 대체하는 것이 아니라, 예외가 정말 이득임을 입증했을 때만 넘어설 수 있어야 합니다.</p>
 </blockquote>
 <hr>
 <h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
@@ -683,7 +695,7 @@
 <li><strong>결정성을 확보합니다.</strong> 모든 동률은 card ID 로 끊고, 세금 선택은 교환 전 스냅샷 기준으로 일괄 계산합니다. 그래야 봇 로직이 테스트 가능한 코드가 됩니다.</li>
 <li><strong>의사결정 지점은 세 곳뿐입니다.</strong> 제출·혁명·세금. 난이도는 전부 이 세 함수 안에서 만들어집니다.</li>
 </ul>
-<p>Part 2 와 Part 3 에서는 이 세 함수를 다시 씁니다. 위에 적은 여섯 가지 약점을 하나씩 되짚으면서, <strong>나온 카드를 세고, 자기 손패를 몇 번에 털지 계산하고, 낼 수 있어도 패스할 줄 아는</strong> hard 봇을 설계하겠습니다.</p>
+<p>Part 2 와 Part 3 에서는 이 세 함수를 다시 씁니다. 위에 적은 여섯 가지 한계를 하나씩 되짚으면서, <strong>나온 카드를 세고, 자기 손패를 몇 번에 털지 계산하고, 낼 수 있어도 패스할 줄 아는</strong> hard 봇을 설계하겠습니다. 그리고 <a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>에서는 그 설계를 실제로 구현해 재본 결과와, 위 두 규칙이 왜 hard 봇의 guardrail 로 되돌아왔는지를 다룹니다.</p>
 <hr>
 <h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <ul>
@@ -696,6 +708,7 @@
 <li><a href="https://www.marquand.net/lexio/rules.html">Lexio Rules (marquand.net)</a> — &ldquo;Passing is not permanent in the hand&rdquo;. 발행사 문서가 아닌 정리 자료</li>
 <li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-02/">달무티 CPU 플레이어 만들기 Part 2: hard 봇의 정보 모델과 확실승수 판정</a></li>
 <li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</a></li>
+<li><a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">달무티 CPU 플레이어 만들기 Part 4: 만들어 보니 hard 봇이 더 약했다</a></li>
 <li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
 </ul>
 

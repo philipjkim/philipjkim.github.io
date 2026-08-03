@@ -210,7 +210,7 @@
 <p><strong>3. 여러 합법 수 중에서 전략적으로 고르고, 낼 수 있어도 패스할 줄 압니다.</strong> 공식 룰북조차 <em>The Strategy of Saving Cards</em> 절에서 <em>&ldquo;don&rsquo;t be afraid to pass sometimes even when you can play&rdquo;</em> 라고 조언하는 판단을, 명시적인 기대값 계산으로 옮깁니다.</p>
 <p>분량이 있어 hard 봇을 두 편으로 나눕니다. <strong>Part 2(이 글)는 봇이 무엇을 아는가</strong>, 즉 판단의 재료를 만듭니다. <strong>Part 3 은 그 재료로 무엇을 결정하는가</strong>, 즉 수 평가 함수와 전략적 패스, 세금과 혁명 판단, 그리고 검증 방법을 다룹니다.</p>
 <h3 id="이-글도-설계안입니다">이 글도 설계안입니다<a href="#이-글도-설계안입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
-<p>Part 1 과 마찬가지로 이 글은 특정 제품의 구현 보고서가 아니라 설계안이고, 코드는 논지를 보이기 위한 발췌입니다. 룰셋 전제는 <a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">Part 1 의 전제표</a>를 그대로 따릅니다. 그중 hard 봇 설계에 결정적인 두 가지만 다시 적어 두겠습니다.</p>
+<p>Part 1 과 마찬가지로 이 글은 특정 제품의 구현 보고서가 아니라 설계안이고, 코드는 논지를 보이기 위한 발췌입니다. 이 설계안을 실제로 구현해 검증한 결과는 <a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>에 있습니다. 여기서 만드는 <strong>정보 모델은 대부분 그대로 살아남았지만</strong>, 이 재료들을 Part 3 에서 하나의 점수로 합치는 방식에는 결함이 있었습니다. 특히 아래 <code>Orphans</code> 지표는 사용 범위를 좁혀야 했습니다. 룰셋 전제는 <a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">Part 1 의 전제표</a>를 그대로 따릅니다. 그중 hard 봇 설계에 결정적인 두 가지만 다시 적어 두겠습니다.</p>
 <ul>
 <li><strong>패스해도 자기 차례가 다시 오면 낼 수 있습니다.</strong> 달무티의 패스는 트릭 포기가 아니라 &ldquo;이번 차례만 거른다&quot;입니다. (Part 1 에서 확인했듯 렉시오·빅투·대부호의 대표 규칙 자료도 마찬가지이고, &ldquo;패스=탈락&quot;이 오히려 소수 변형 룰입니다.)</li>
 <li><strong>살아 있는 전원이 연속으로 패스해야</strong> 트릭이 끝나고, 마지막에 낸 사람이 다음 트릭을 리드합니다.</li>
@@ -581,6 +581,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">best</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>여기서 짚어 둘 설계 원칙이 하나 있습니다. <strong>플랜은 약속이 아니라 평가 도구입니다.</strong> 봇은 매 턴 플랜을 처음부터 다시 계산합니다(재계획). 세 트릭 전에 &ldquo;광대는 11 묶음에 붙인다&quot;고 정했더라도, 그 사이 11이 여러 장 소진되었다면 계산 결과가 바뀌어야 합니다. 플랜을 상태로 저장해 두고 따라가면 봇이 낡은 정보로 두게 됩니다.</p>
+<p>한 줄을 더 붙여야 합니다. <strong>평가 도구의 점수가 기본 배출 원칙을 자동으로 대체해서는 안 됩니다.</strong> 새 필드의 첫 제출은 &ldquo;가장 약한 자연 rank 묶음을 통째로 낸다&quot;는 guardrail 을 우선하고, 플랜 점수는 후공 후보 비교와 진단에 씁니다. 이 경계를 두지 않고 리드까지 점수식에 맡겼던 것이 최초 hard 봇의 최대 약세 원인이었습니다(<a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>).</p>
 <h3 id="고아-카드">고아 카드<a href="#고아-카드" class="hanchor" ariaLabel="Anchor">#</a> </h3>
 <p><code>Orphans</code> 는 <strong>약한 rank 의 1장짜리 묶음</strong> 입니다. 예를 들어 11이 딱 한 장 있는 경우입니다. 이 카드는 세 가지 이유로 짐입니다.</p>
 <ul>
@@ -588,7 +589,15 @@
 <li>후공으로 쓰려면 1장짜리 트릭이 열려야 하는데, 그때 11보다 약한 rank 는 12뿐입니다.</li>
 <li>광대를 붙여봐야 2장 묶음이 되어 여전히 약합니다.</li>
 </ul>
-<p>반대로 <strong>강한 rank 의 1장짜리 묶음은 자산입니다.</strong> rank 1 한 장은 세상에 하나뿐이라 1장짜리 트릭에서 영구히 무적입니다. 같은 &ldquo;싱글 카드&quot;라도 rank 에 따라 가치의 부호가 정반대입니다. easy 봇의 <code>weakerFirst</code> 같은 단순 서열 정렬로는 이 구분이 불가능하고, 여기서 두 난이도의 손패 관리 실력이 갈립니다.</p>
+<p>반대로 <strong>강한 rank 의 1장짜리 묶음은 자산입니다.</strong> rank 1 한 장은 세상에 하나뿐이라 1장짜리 트릭에서 영구히 무적입니다. 같은 &ldquo;싱글 카드&quot;라도 rank 에 따라 가치의 부호가 정반대입니다. easy 봇의 <code>weakerFirst</code> 같은 단순 서열 정렬로는 이 구분이 불가능합니다.</p>
+<h4 id="orphans-는-목적-함수가-아니라-설명-지표입니다"><code>Orphans</code> 는 목적 함수가 아니라 설명 지표입니다<a href="#orphans-는-목적-함수가-아니라-설명-지표입니다" class="hanchor" ariaLabel="Anchor">#</a> </h4>
+<p>지표를 정의하는 것과 그 지표를 최종 점수에 더하는 것은 다른 일입니다. <code>Orphans</code> 는 후자에서 사고를 냈으므로, 사용 범위를 처음부터 좁혀 두겠습니다.</p>
+<ul>
+<li><strong>독립적인 목적 함수로 쓰지 않습니다.</strong> 설명 지표이거나, 제한된 tie-break 입니다.</li>
+<li><strong>리드에서는 <code>MinPlays</code> 감소와 <code>Orphans</code> 감소를 동시에 보상하지 않습니다.</strong> 고아 카드를 하나 없애는 것이 곧 제출 횟수를 하나 줄이는 것이므로, 두 항을 더하면 <strong>같은 이득을 두 번 세게 됩니다.</strong> 그 결과 봇은 카드 두 장을 버리는 <code>12 x 2</code> 대신 한 장만 버리는 <code>9 x 1</code> 을 리드로 고릅니다.</li>
+<li><strong>후공에서는 제한적으로 인정합니다.</strong> 제출 장수가 테이블에 고정돼 있어 후보 사이에 배출량 차이가 없으므로, 약한 고아 카드를 털어 내는 추가 가치로 쓸 수 있습니다.</li>
+</ul>
+<p>이 구분은 사후에 붙인 것이 아니라 실제로 봇을 약하게 만들고 나서 얻은 것입니다. 자세한 반례와 수정 코드는 <a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>에 있습니다.</p>
 <hr>
 <h2 id="부록-확률표-재현-스크립트">부록: 확률표 재현 스크립트<a href="#부록-확률표-재현-스크립트" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <p>본문의 두 표를 만든 스크립트입니다. 표준 라이브러리만 씁니다.</p>
@@ -685,6 +694,11 @@
 <li><strong>묶음의 장수가 강약보다 중요합니다.</strong> 광대가 2장뿐이라는 사실 하나에서 <code>r' ≥ n - 2</code> 라는 구조적 상한이 나오고, 8명 게임에서 5장 리드와 6장 리드 사이에는 응수 가능한 사람이 존재할 확률 19%와 2%의 절벽이 있습니다.</li>
 </ul>
 <p>여기까지는 전부 <strong>판단의 재료</strong> 입니다. Part 3 에서는 이 재료로 실제 결정을 내립니다. 후보를 점수로 환산하는 평가 함수를 만들고, 낼 수 있어도 참는 전략적 패스를 구현하고, 세금과 혁명을 기대값으로 판단한 뒤, 만든 봇이 정말 세졌는지 재는 방법까지 다루겠습니다.</p>
+<p>마지막으로 한 가지를 경계로 남겨 두겠습니다. 이 글의 정보 모델은 실제 구현과 검증에서 거의 그대로 살아남았지만, 그 사실이 봇의 강함을 보장하지는 않았습니다.</p>
+<blockquote>
+<p><strong>더 정확한 장부는 더 좋은 판단 재료일 뿐입니다.</strong> 여러 지표를 최종 점수로 합치는 방식이 잘못되면, hard 봇은 잘못된 결정을 easy 봇보다 <strong>더 일관되게</strong> 내립니다. easy 봇의 실수는 산발적이지만 hard 봇의 실수는 체계적입니다.</p>
+</blockquote>
+<p>이 문장이 왜 필요했는지는 <a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">Part 4</a>에서 측정치와 함께 다룹니다.</p>
 <hr>
 <h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
 <ul>
@@ -694,6 +708,7 @@
 <li><a href="https://en.wikipedia.org/wiki/Boole%27s_inequality">Boole&rsquo;s inequality (Wikipedia)</a></li>
 <li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-01/">달무티 CPU 플레이어 만들기 Part 1: 규칙 기반 easy 봇</a></li>
 <li><a href="/posts/20260730-dalmuti-cpu-bot-strategy-03/">달무티 CPU 플레이어 만들기 Part 3: 수 평가와 전략적 패스</a></li>
+<li><a href="/posts/20260803-dalmuti-cpu-bot-strategy-04/">달무티 CPU 플레이어 만들기 Part 4: 만들어 보니 hard 봇이 더 약했다</a></li>
 <li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
 </ul>
 
