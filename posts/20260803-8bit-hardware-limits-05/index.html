@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>8비트의 벽을 넘은 게임들 Part 5: 제약이 사라진 시대에 남은 것 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="압축·생성·전복이라는 세 가지 돌파구가 40년 뒤에 어떻게 됐는지 정리합니다. 엘리트의 씨앗이 노 맨즈 스카이의 64비트로 이어진 계보, 제약이 사라지자 드러난 역설, 제약을 일부러 되살리는 데모신, 그리고 오늘의 개발에 그대로 쓸 수 있는 여섯 가지 원칙을 다룹니다." />
+<meta name="keywords" content="game, retro-gaming, programming, algorithm, optimization, procedural-generation, software-engineering" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-05/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="8비트의 벽을 넘은 게임들 Part 5: 제약이 사라진 시대에 남은 것">
+<meta property="og:description" content="압축·생성·전복이라는 세 가지 돌파구가 40년 뒤에 어떻게 됐는지 정리합니다. 엘리트의 씨앗이 노 맨즈 스카이의 64비트로 이어진 계보, 제약이 사라지자 드러난 역설, 제약을 일부러 되살리는 데모신, 그리고 오늘의 개발에 그대로 쓸 수 있는 여섯 가지 원칙을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-05/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-03 09:48:13 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-05/">8비트의 벽을 넘은 게임들 Part 5: 제약이 사라진 시대에 남은 것</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-03</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/retro-gaming/">retro-gaming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/optimization/">optimization</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/procedural-generation/">procedural-generation</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/software-engineering/">software-engineering</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="지금까지의-이야기">지금까지의 이야기<a href="#지금까지의-이야기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>네 편에 걸쳐 세 작품을 뜯었습니다. 정리하면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>슈퍼 마리오브라더스</th>
+          <th>엘리트</th>
+          <th>메탈기어</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>연도 / 기종</td>
+          <td>1985 / 패미콤</td>
+          <td>1984 / BBC Micro</td>
+          <td>1987 / MSX2</td>
+      </tr>
+      <tr>
+          <td>부족했던 자원</td>
+          <td>ROM 40KB</td>
+          <td>RAM 32KB</td>
+          <td>스프라이트, 가로 스크롤</td>
+      </tr>
+      <tr>
+          <td>전략</td>
+          <td><strong>압축</strong></td>
+          <td><strong>생성</strong></td>
+          <td><strong>전복</strong></td>
+      </tr>
+      <tr>
+          <td>핵심 기법</td>
+          <td>오브젝트 2바이트 인코딩</td>
+          <td>트리보나치 씨앗 트위스팅</td>
+          <td>요구사항 자체를 바꿈</td>
+      </tr>
+      <tr>
+          <td>세계 데이터</td>
+          <td>4,460 바이트</td>
+          <td><strong>6 바이트</strong></td>
+          <td>20,246 바이트</td>
+      </tr>
+      <tr>
+          <td>치른 대가</td>
+          <td>표현 가능한 오브젝트가 제한됨</td>
+          <td>세부를 손댈 수 없음</td>
+          <td>원래 만들려던 게임을 포기함</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 마지막 편에서는 이 세 가지가 40년 뒤에 어떻게 됐는지 봅니다.</p>
+<hr>
+<h2 id="1-먼저-이-글이-그-게임들보다-큽니다">1. 먼저, 이 글이 그 게임들보다 큽니다<a href="#1-먼저-이-글이-그-게임들보다-큽니다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>시작하기 전에 숫자를 하나 확인하고 가겠습니다. 이 시리즈의 각 편을 Hugo 로 빌드해서 나온 HTML 파일 크기를 그대로 재 봤습니다. 이 글을 쓰는 시점 기준입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>파일</th>
+          <th>크기</th>
+          <th>gzip 압축 후</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Part 1 HTML</td>
+          <td>54,283 바이트</td>
+          <td>15,792 바이트</td>
+      </tr>
+      <tr>
+          <td><strong>Part 2 HTML</strong></td>
+          <td><strong>93,819 바이트</strong></td>
+          <td>17,947 바이트</td>
+      </tr>
+      <tr>
+          <td>Part 3 HTML</td>
+          <td>74,536 바이트</td>
+          <td>15,693 바이트</td>
+      </tr>
+      <tr>
+          <td>Part 4 HTML</td>
+          <td>82,705 바이트</td>
+          <td>16,076 바이트</td>
+      </tr>
+  </tbody>
+</table>
+<p>그리고 비교 대상입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>크기</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>슈퍼 마리오브라더스 카트리지 전체</td>
+          <td><strong>40,960 바이트</strong></td>
+      </tr>
+      <tr>
+          <td>엘리트 게임 코드 전체</td>
+          <td><strong>21,952 바이트</strong></td>
+      </tr>
+      <tr>
+          <td>마리오의 게임 전체 레벨 데이터</td>
+          <td>4,460 바이트</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>슈퍼 마리오브라더스를 설명한 Part 2 의 HTML 한 장이, 슈퍼 마리오브라더스 카트리지 두 개보다 큽니다.</strong> 엘리트를 설명한 Part 3 은 엘리트 게임 코드의 세 배가 넘습니다. gzip 으로 눌러도 여전히 마리오의 레벨 데이터 전부보다 네 배 큽니다.</p>
+<p>이 글에는 이미지가 한 장도 없습니다. 텍스트뿐입니다.</p>
+<p>이게 지난 40년 동안 벌어진 일의 규모입니다.</p>
+<hr>
+<h2 id="2-살아남은-것-생성">2. 살아남은 것: 생성<a href="#2-살아남은-것-생성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>세 전략 중 가장 크게 자란 것은 <strong>생성</strong> 입니다.</p>
+<p>1984년 엘리트는 16비트 씨앗 세 개, 6바이트에서 항성계 2,048개를 만들었습니다. 2016년 노 맨즈 스카이는 <strong>64비트 씨앗 하나</strong> 에서 행성 1,800경 개를 만듭니다.</p>
+<p>2의 64제곱은 18,446,744,073,709,551,616 입니다. &ldquo;1,800경 개의 행성&rdquo; 이라는 홍보 문구는 마케팅 수사가 아니라 <strong>자료형의 크기</strong> 입니다. 엘리트에서 은하가 정확히 8개였던 이유가 바이트를 여덟 번 회전하면 제자리로 돌아오기 때문이었던 것과 같은 종류의 사실입니다.</p>
+<p>구조도 그대로입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>엘리트 (1984)</th>
+          <th>노 맨즈 스카이 (2016)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>씨앗</td>
+          <td>16비트 x 3 = 6바이트</td>
+          <td>64비트 x 1 = 8바이트</td>
+      </tr>
+      <tr>
+          <td>생성 대상</td>
+          <td>항성계 2,048개</td>
+          <td>행성 약 1,800경 개</td>
+      </tr>
+      <tr>
+          <td>저장 방식</td>
+          <td>저장하지 않음</td>
+          <td>서버에 거의 저장하지 않음</td>
+      </tr>
+      <tr>
+          <td>결정성</td>
+          <td>같은 씨앗 = 같은 결과</td>
+          <td>같은 좌표 = 같은 결과 (그래서 다른 플레이어와 같은 것을 봄)</td>
+      </tr>
+  </tbody>
+</table>
+<p>씨앗이 6바이트에서 8바이트로 늘어난 것 말고는 발상이 똑같습니다. <strong>저장 공간이 없으면 계산으로 바꾼다.</strong> 32KB 기계에서 태어난 발상이 수백 GB 를 쓸 수 있는 시대에도 그대로 쓰입니다.</p>
+<p>이유는 명확합니다. 노 맨즈 스카이는 저장 공간이 부족해서 절차적 생성을 쓴 게 아닙니다. <strong>1,800경 개를 사람이 손으로 만들 수 없기 때문에</strong> 씁니다. 부족한 자원이 메모리에서 사람의 시간으로 바뀌었을 뿐, 문제의 구조가 같습니다.</p>
+<p>그리고 치르는 대가도 같습니다. <a href="/posts/20260803-8bit-hardware-limits-03/">Part 3</a>에서 정리했듯, 생성된 세계는 디자이너가 손댈 수 없습니다. 엘리트에서 Lave 를 조금 더 부유하게 만들 수 없었던 것처럼, 절차적으로 만든 행성 하나만 특별하게 다듬을 수 없습니다. 노 맨즈 스카이 출시 당시 &ldquo;무한하지만 어디를 가도 비슷하다&rdquo; 는 비판이 나온 것은 우연이 아닙니다. <strong>1984년에 계산된 청구서가 2016년에 그대로 청구된 것</strong> 입니다.</p>
+<hr>
+<h2 id="3-살아남은-것-전복">3. 살아남은 것: 전복<a href="#3-살아남은-것-전복" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>두 번째로 살아남은 것은 <strong>전복</strong> 입니다. 그리고 이쪽은 살아남은 정도가 아니라 완전히 독립했습니다.</p>
+<p>메탈기어가 스텔스라는 형식을 만든 이유는 <a href="/posts/20260803-8bit-hardware-limits-04/">Part 4</a>에서 확인한 대로 순전히 하드웨어 때문이었습니다. 스캔라인당 캐릭터 넷, 가로 스크롤 불가. 그런데 그 제약에서 나온 규칙들은 제약이 사라진 뒤에도 남았습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>1987년 MSX2 의 문법</th>
+          <th>지금 스텔스 게임의 문법</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>방을 벗어나면 경보 해제</td>
+          <td>구역을 벗어나면 경계 단계 하락</td>
+      </tr>
+      <tr>
+          <td>폭이 고정된 직선 시야</td>
+          <td>시야 원뿔과 감지 게이지</td>
+      </tr>
+      <tr>
+          <td>가만히 있으면 안 보이는 골판지 상자</td>
+          <td>은신처, 엄폐물, 소음 관리</td>
+      </tr>
+      <tr>
+          <td>전투는 실패의 신호</td>
+          <td>위와 같음</td>
+      </tr>
+  </tbody>
+</table>
+<p>기술적 구현은 완전히 달라졌습니다. 직선 복도 판정이 레이캐스트와 시야 원뿔이 됐고, 방 번호 비교가 AI 감지 상태 머신이 됐습니다. <strong>그런데 규칙의 모양은 그대로입니다.</strong></p>
+<p>여기서 흥미로운 것은 인과의 방향입니다. 보통 우리는 &ldquo;좋은 게임 디자인이 있고, 기술이 그걸 구현한다&rdquo; 고 생각합니다. 메탈기어는 반대였습니다. <strong>기술이 못 하는 것에서 디자인이 나왔고, 그 디자인이 기술보다 오래 살았습니다.</strong></p>
+<p>이건 게임에만 있는 일이 아닙니다. 초기 웹의 stateless HTTP 는 서버 자원이 부족해서 선택된 제약이었지만, 그 제약이 낳은 무상태 설계는 지금 대규모 분산 시스템의 기본 원칙이 됐습니다. REST 도, 함수형 프로그래밍의 불변성도 비슷한 궤적을 그립니다. <strong>제약이 강제한 설계가 제약보다 오래 사는 일</strong> 은 소프트웨어에서 흔합니다.</p>
+<hr>
+<h2 id="4-자리를-옮긴-것-압축">4. 자리를 옮긴 것: 압축<a href="#4-자리를-옮긴-것-압축" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>세 전략 중 마리오의 <strong>압축</strong> 만은 게임 개발에서 거의 사라진 것처럼 보입니다. 레벨 데이터를 2바이트로 인코딩하는 회사는 이제 없습니다. 요즘 레벨 에디터가 뱉는 것은 JSON 이나 바이너리 씬 그래프이고, 크기는 아무도 신경 쓰지 않습니다.</p>
+<p>그런데 사라진 게 아니라 <strong>자리를 옮겼습니다.</strong></p>
+<ul>
+<li>웹 프론트엔드에서는 번들 크기 하나가 사용자 이탈률과 직결됩니다. 트리 쉐이킹과 코드 스플리팅은 마리오의 &ldquo;안 쓰는 것은 넣지 않는다&rdquo; 와 목적이 같습니다.</li>
+<li>모바일 앱은 스토어의 다운로드 크기 제한과 사용자의 데이터 요금을 신경 써야 합니다.</li>
+<li>임베디드와 IoT 는 여전히 KB 단위로 싸웁니다.</li>
+<li>데이터베이스 스키마 설계에서 &ldquo;이 값을 저장할 것인가 계산할 것인가&rdquo; 는 매일 하는 결정입니다.</li>
+</ul>
+<p>그리고 마리오가 준 교훈 중 가장 오래 가는 것은 기법이 아니라 <strong>순서</strong> 입니다.</p>
+<p><a href="/posts/20260803-8bit-hardware-limits-02/">Part 2</a>에서 확인했듯, 마리오의 레벨 데이터에는 압축 알고리즘이 하나도 쓰이지 않았습니다. 허프만도 LZ 도 RLE 도 없습니다. 표현을 바꿨을 뿐입니다. 그래서 <strong>압축 해제 비용이 0</strong> 이고, 파서가 곧 렌더러입니다.</p>
+<p>오늘날 JSON 을 gzip 으로 눌러 놓고 만족하는 경우가 많습니다. 그런데 진짜 이득은 보통 그 앞에 있습니다. 같은 키를 만 번 반복하는 구조 자체를 바꾸면, 압축 없이도 작아지고 파싱도 빨라집니다. 이게 실제로 얼마나 차이가 나는지는 7절에서 숫자로 재 보겠습니다.</p>
+<hr>
+<h2 id="5-제약을-일부러-되살리는-사람들">5. 제약을 일부러 되살리는 사람들<a href="#5-제약을-일부러-되살리는-사람들" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>압축이 정말로 살아 있는 곳이 하나 더 있습니다. <strong>데모신</strong> 입니다.</p>
+<p>데모신은 정해진 용량 안에서 실시간 그래픽과 음악을 만들어 겨루는 문화입니다. 4KB, 64KB 같은 부문이 있고, 여기서는 8비트 시절의 기법이 그대로, 그리고 훨씬 더 극단적으로 쓰입니다.</p>
+<p>대표작이 2004년의 <strong>.kkrieger</strong> 입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>제작</td>
+          <td>.theprodukkt (독일 데모그룹 Farbrausch 의 분파)</td>
+      </tr>
+      <tr>
+          <td>발표</td>
+          <td>2004년 Breakpoint 데모파티의 96KB 게임 부문, 1위</td>
+      </tr>
+      <tr>
+          <td>크기</td>
+          <td><strong>96KB 실행 파일</strong></td>
+      </tr>
+      <tr>
+          <td>내용</td>
+          <td>무기와 적이 여러 종류 있는 3D 1인칭 슈팅 게임</td>
+      </tr>
+      <tr>
+          <td>방법</td>
+          <td>텍스처, 모델, 음악을 <strong>저장하지 않고 전부 실행 시점에 생성</strong></td>
+      </tr>
+      <tr>
+          <td>실행 시 메모리</td>
+          <td>약 300MB 로 부풀어 오름</td>
+      </tr>
+  </tbody>
+</table>
+<p>마지막 두 줄이 핵심입니다. <strong>엘리트가 항성계에 한 일을 텍스처와 3D 모델에 한 것</strong> 입니다. 96KB 안에는 데이터가 아니라 데이터를 만드는 코드가 들어 있고, 실행하면 300MB 로 펼쳐집니다. 압축률로 치면 3,000배가 넘습니다.</p>
+<p>여기서 이 시리즈에서 봤던 숫자를 다시 꺼내 봅시다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>크기</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>.kkrieger (3D FPS 게임 전체)</td>
+          <td>98,304 바이트</td>
+      </tr>
+      <tr>
+          <td><strong>이 시리즈 Part 2 의 HTML 한 장</strong></td>
+          <td><strong>93,819 바이트</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>거의 같습니다.</strong> 텍스트만 있는 웹 페이지 한 장이 3D 슈팅 게임 하나와 맞먹습니다.</p>
+<p>데모신 사람들이 이걸 하는 이유는 필요해서가 아닙니다. 2004년에도 96KB 는 이미 아무 의미 없는 제약이었습니다. <strong>제약이 사라졌기 때문에 일부러 다시 씌운 것</strong> 입니다.</p>
+<p>그리고 그 결과로 나오는 것이 흥미롭습니다. 극한의 제약 아래에서는 절대 평범한 답이 나오지 않습니다. 텍스처를 저장할 수 없으니 텍스처를 만드는 함수를 설계해야 하고, 그러다 보면 텍스처가 무엇인지 다시 생각하게 됩니다. <strong>제약은 답을 좁히는 것이 아니라 질문을 바꿉니다.</strong></p>
+<hr>
+<h2 id="6-그때-치른-또-하나의-대가-읽을-수-없는-코드">6. 그때 치른 또 하나의 대가: 읽을 수 없는 코드<a href="#6-그때-치른-또-하나의-대가-읽을-수-없는-코드" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기까지 감탄만 늘어놓았으니 반대편도 정직하게 적어야겠습니다. 이 기법들에는 앞에서 정리한 대가 말고도 하나가 더 있습니다. <strong>코드가 읽히지 않습니다.</strong></p>
+<p>엘리트의 곱셈 루틴을 주석 처리한 Mark Moxon 본인의 평가입니다.</p>
+<blockquote>
+<p>결과물은 특수한 일을 하는, 대단히 매끄럽게 최적화된 곱셈 루틴이다. <strong>명료함을 대가로 치르고서.</strong> <code>FMLTU</code> 루틴을 이해하려면 먼저 <code>MULT1</code> 을 이해하려고 해 보고, 그다음 <code>MU11</code> 을 보라.</p>
+</blockquote>
+<p><a href="/posts/20260803-8bit-hardware-limits-03/">Part 3</a>에서 본 &ldquo;결과 비트를 피연산자의 빈 자리에 쌓아 변수 하나를 아끼는&rdquo; 기법이 그것입니다. 변수 하나를 아꼈고, 대신 읽는 사람이 세 개의 루틴을 순서대로 공부해야 합니다.</p>
+<p>메탈기어는 더합니다. <code>ACTOR</code> 구조체의 필드 하나에 달린 주석을 그대로 옮기면 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">DestinationX:</span>	    <span class="nf">BYTE</span>	<span class="c1">; In Jetpack = Ydec, spawnX dog2, Tank boss shell shot delay,
+</span></span></span><span class="line"><span class="cl">				<span class="c1">;   prisoner pointer to rescued array, Laser bean=bit0 vertical
+</span></span></span></code></pre></div><p><strong>바이트 하나가 액터 종류에 따라 다섯 가지 전혀 다른 의미를 가집니다.</strong> 제트팩이면 Y 좌표의 소수부, 개면 스폰 X 좌표, 탱크 보스면 포탄 발사 지연, 포로면 구출 배열 포인터, 레이저면 수직 여부 비트. 이 필드를 건드리는 코드를 고치려면 액터 종류를 전부 알고 있어야 합니다.</p>
+<p>마리오도 마찬가지입니다. <a href="/posts/20260803-8bit-hardware-limits-02/">Part 2</a>에서 본 레벨 오브젝트 인코딩에서, 세로 위치 4비트 중 12~15는 위치가 아니라 명령이었고, 파이프의 파라미터 4비트는 다시 &ldquo;입장 가능 여부 1비트 + 높이 3비트&rdquo; 로 쪼개졌습니다. 같은 비트가 문맥에 따라 다른 뜻이 됩니다.</p>
+<p><strong>이건 그 시절에는 올바른 판단이었습니다.</strong> ROM 이 32KB 이고 RAM 이 2KB 라면 바이트 하나가 기능 하나입니다. 읽기 어려운 코드와 완성되지 않는 게임 중에 고르라면 답은 정해져 있습니다.</p>
+<p>그리고 <strong>지금은 대부분의 경우 올바르지 않은 판단입니다.</strong> 오늘날 저 정도로 비트를 겹쳐 쓰는 코드를 짜면, 아낀 메모리보다 유지보수에 드는 사람의 시간이 훨씬 비쌉니다.</p>
+<p>그래서 다음 절의 원칙들을 읽을 때 하나만 기억하면 좋겠습니다. <strong>8비트 개발자들이 대단했던 것은 바이트를 아꼈기 때문이 아니라, 무엇이 진짜 부족한 자원인지 정확히 알고 거기에 맞춰 최적화했기 때문입니다.</strong> 지금 우리에게 가장 부족한 자원은 대체로 메모리가 아닙니다.</p>
+<hr>
+<h2 id="7-오늘의-개발에-그대로-쓸-수-있는-것">7. 오늘의 개발에 그대로 쓸 수 있는 것<a href="#7-오늘의-개발에-그대로-쓸-수-있는-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 시리즈에서 확인한 것들 중 하드웨어와 무관하게 남는 원칙을 정리하겠습니다.</p>
+<h3 id="1-압축보다-표현을-먼저-고친다">1) 압축보다 표현을 먼저 고친다<a href="#1-압축보다-표현을-먼저-고친다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>마리오는 압축 알고리즘 없이 레벨 하나를 101바이트에 넣었습니다. 표현을 바꿨기 때문이고, 그래서 해제 비용이 0입니다.</p>
+<p>이 원칙이 지금도 유효한지 실제로 재 봤습니다. 센서 측정치 1,000건을 두 가지로 표현했습니다. 하나는 흔히 보는 레코드 배열이고, 다른 하나는 마리오식으로 표현을 바꾼 것입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// (1) 평범한 레코드 배열 - 키가 1,000번 반복된다
+</span></span></span><span class="line"><span class="cl"><span class="p">[{</span><span class="nt">&#34;sensorId&#34;</span><span class="p">:</span><span class="mi">1000</span><span class="p">,</span><span class="nt">&#34;timestamp&#34;</span><span class="p">:</span><span class="mi">1754179200</span><span class="p">,</span><span class="nt">&#34;temperature&#34;</span><span class="p">:</span><span class="mf">22.31</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;humidity&#34;</span><span class="p">:</span><span class="mf">51.08</span><span class="p">,</span><span class="nt">&#34;status&#34;</span><span class="p">:</span><span class="s2">&#34;ok&#34;</span><span class="p">},</span> <span class="err">...</span> <span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// (2) 표현을 바꾼 것 - 키는 한 번, 값은 열 단위로,
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     timestamp 는 시작값과 간격으로, status 는 전부 같으므로 생략
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="nt">&#34;t0&#34;</span><span class="p">:</span><span class="mi">1754179200</span><span class="p">,</span><span class="nt">&#34;dt&#34;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span><span class="nt">&#34;n&#34;</span><span class="p">:</span><span class="mi">1000</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&#34;sensorId&#34;</span><span class="p">:[</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1001</span><span class="p">,</span><span class="err">...</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&#34;temperature&#34;</span><span class="p">:[</span><span class="mf">22.31</span><span class="p">,</span><span class="mf">24.87</span><span class="p">,</span><span class="err">...</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&#34;humidity&#34;</span><span class="p">:[</span><span class="mf">51.08</span><span class="p">,</span><span class="mf">43.22</span><span class="p">,</span><span class="err">...</span><span class="p">]}</span>
+</span></span></code></pre></div><p>결과입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>원본</th>
+          <th>gzip 압축 후</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>(1) 평범한 레코드 배열</td>
+          <td>91,801 바이트</td>
+          <td>9,747 바이트</td>
+      </tr>
+      <tr>
+          <td>(2) 표현을 바꾼 것</td>
+          <td>16,921 바이트</td>
+          <td><strong>4,395 바이트</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>주목할 것은 마지막 칸입니다. <strong>양쪽 다 gzip 으로 눌렀는데도 표현을 바꾼 쪽이 절반 이하입니다.</strong> gzip 은 반복되는 키를 잘 지우지만, &ldquo;타임스탬프가 60초 간격으로 규칙적이다&rdquo; 나 &ldquo;status 가 전부 같다&rdquo; 같은 <strong>구조적 사실은 모릅니다.</strong> 그건 데이터를 아는 사람만 알 수 있습니다.</p>
+<p>물론 압축하지 않은 (2)의 16,921바이트는 압축한 (1)의 9,747바이트보다 큽니다. 둘은 대체재가 아니라 보완재입니다. 다만 순서가 있습니다. <strong>표현을 고치면 압축한 뒤에도 이득이 남고, 파싱 비용까지 함께 줄어듭니다.</strong> 압축은 잘못된 표현에 대한 사후 처리입니다.</p>
+<h3 id="2-기본값은-공짜로-깔고-예외만-적는다">2) 기본값은 공짜로 깔고 예외만 적는다<a href="#2-기본값은-공짜로-깔고-예외만-적는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>마리오는 스테이지 전체의 지면을 헤더 <strong>4비트</strong> 로 결정하고, 구덩이만 오브젝트로 적었습니다. 16가지 지형 패턴이 32바이트 테이블에 들어 있습니다. 설정 파일에서 기본값을 생략하는 것, 데이터베이스에 DEFAULT 를 두는 것과 같은 구조입니다.</p>
+<h3 id="3-저장과-계산은-언제든-맞바꿀-수-있다">3) 저장과 계산은 언제든 맞바꿀 수 있다<a href="#3-저장과-계산은-언제든-맞바꿀-수-있다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>엘리트는 저장 공간이 없어서 계산을 택했고, 노 맨즈 스카이는 사람의 시간이 없어서 계산을 택했습니다. 캐시를 둘 것인가 매번 계산할 것인가, 비정규화할 것인가 조인할 것인가는 같은 축 위의 결정입니다. <strong>어느 쪽이 옳은지는 무엇이 더 부족한지에 달려 있습니다.</strong></p>
+<h3 id="4-자기-단위를-하드웨어의-단위에-맞춘다">4) 자기 단위를 하드웨어의 단위에 맞춘다<a href="#4-자기-단위를-하드웨어의-단위에-맞춘다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>마리오의 세계가 16 x 16 픽셀 블록으로 이루어진 것은 패미콤이 팔레트를 그 단위로만 고를 수 있었기 때문입니다. 단위를 맞춰 놓으니 어트리뷰트 테이블이 저절로 만들어졌습니다. 오늘날로 옮기면 캐시 라인, 페이지 크기, 네트워크 MTU, 디스크 블록에 자료구조를 맞추는 일입니다. <strong>경계를 억지로 넘나들면 그 비용은 항상 청구됩니다.</strong></p>
+<h3 id="5-예산을-숫자로-쓰고-설계를-거기에-맞춘다">5) 예산을 숫자로 쓰고 설계를 거기에 맞춘다<a href="#5-예산을-숫자로-쓰고-설계를-거기에-맞춘다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>마리오의 렌더러는 프레임당 4픽셀을 미리 그리고, 마리오의 최고 속도는 프레임당 2.5픽셀입니다. 이 두 숫자가 같은 표에서 정해졌습니다. 게임 디자인과 하드웨어 예산이 따로 놀지 않았다는 뜻입니다.</p>
+<p>지금도 같습니다. &ldquo;이 API 는 200ms 안에 응답한다&rdquo; 를 먼저 정하고, 그 예산 안에서 무엇을 할 수 있는지 역산하는 것과, 만들어 놓고 나중에 재는 것은 결과가 완전히 다릅니다.</p>
+<h3 id="6-못-하는-것을-정확히-알면-안-해도-되는-것이-보인다">6) 못 하는 것을 정확히 알면, 안 해도 되는 것이 보인다<a href="#6-못-하는-것을-정확히-알면-안-해도-되는-것이-보인다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 값진 것이 이겁니다.</p>
+<p>코나미 MSX2 팀은 &ldquo;가로 스크롤이 안 된다&rdquo; 를 정확히 알았습니다. 보통은 여기서 우회로를 찾습니다. R#18 을 편법으로 쓰거나, 타일 모드로 후퇴하거나. 실제로 다른 게임들은 그렇게 했습니다.</p>
+<p>메탈기어는 다른 질문을 했습니다. <strong>&ldquo;가로로 스크롤해야만 하나?&rdquo;</strong></p>
+<p>그 질문의 답이 장르 하나를 만들었습니다.</p>
+<p>우리도 매일 비슷한 자리에 섭니다. 이 라이브러리가 이걸 지원하지 않는다, 이 API 에는 이 필드가 없다, 이 데이터베이스는 이런 쿼리를 못 한다. 대부분은 우회로를 찾는 게 맞습니다. 하지만 가끔은 <strong>요구사항 자체가 진짜 요구사항이 아닐</strong> 때가 있고, 그걸 알아보는 것이 기술적 역량입니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이 시리즈를 시작할 때 던진 문제는 이것이었습니다. &ldquo;대단하다더라&rdquo; 를 &ldquo;이렇게 동작한다&rdquo; 로 바꾸는 것.</p>
+<p>다섯 편에 걸쳐 확인한 것을 마지막으로 한 줄씩 남깁니다.</p>
+<ul>
+<li><strong><a href="/posts/20260803-8bit-hardware-limits-01/">Part 1</a></strong> — 6502 와 Z80 에는 곱셈 명령이 없고, 패미콤은 팔레트를 16 x 16 픽셀 단위로만 고를 수 있으며, VRAM 을 만질 수 있는 시간은 한 프레임의 7.6%인 2,273 사이클입니다.</li>
+<li><strong><a href="/posts/20260803-8bit-hardware-limits-02/">Part 2</a></strong> — 마리오의 월드 1-1 은 101바이트이고, 구름과 수풀의 CHR 타일 번호는 한 바이트도 다르지 않으며, 물리는 4.4 와 8.8 고정소수점과 7항짜리 테이블 네 개로 되어 있습니다.</li>
+<li><strong><a href="/posts/20260803-8bit-hardware-limits-03/">Part 3</a></strong> — 엘리트의 우주 2,048개 항성계는 씨앗 6바이트에서 나오고, 은하가 8개인 것은 바이트를 여덟 번 회전하면 제자리로 오기 때문이며, 회전에는 삼각함수가 쓰이지 않습니다.</li>
+<li><strong><a href="/posts/20260803-8bit-hardware-limits-04/">Part 4</a></strong> — 메탈기어의 방 하나는 48바이트이고, 스프라이트 32개는 실질적으로 캐릭터 16개이며, 경보에는 방 번호가 붙어 있어서 그 방을 벗어나면 풀립니다.</li>
+<li><strong>Part 5 (이 글)</strong> — 생성은 커졌고, 전복은 독립했고, 압축은 자리를 옮겼습니다.</li>
+</ul>
+<p>세 작품의 공통점을 하나만 꼽으라면, <strong>자기 기계를 정확히 알고 있었다</strong> 는 것입니다.</p>
+<p>40KB 라는 것을, 2,273 사이클이라는 것을, 스캔라인당 8개라는 것을 정확히 알았기 때문에 그 숫자에 맞는 설계가 나왔습니다. 짐작으로 만들고 나중에 재는 방식이었다면 어느 것도 나오지 않았을 겁니다.</p>
+<p>우리가 쓰는 기계는 그때보다 백만 배쯤 빠르고 백만 배쯤 큽니다. 그래서 정확히 알기가 훨씬 어려워졌습니다. 그게 아마 지금 우리가 치르는 대가일 겁니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/.kkrieger">.kkrieger (Wikipedia)</a> — 96KB 3D FPS, 절차적 에셋 생성</li>
+<li><a href="https://en.wikipedia.org/wiki/Farbrausch">Farbrausch (Wikipedia)</a> — 데모그룹과 .theprodukkt</li>
+<li><a href="https://en.wikipedia.org/wiki/No_Man%27s_Sky">No Man&rsquo;s Sky (Wikipedia)</a> — 64비트 씨앗과 1,800경 개의 행성</li>
+<li><a href="https://elite.bbcelite.com/">Elite on the 6502 (Mark Moxon)</a> — 엘리트 알고리듬의 근거</li>
+<li><a href="https://gist.github.com/1wErt3r/4048722">SMBDIS.ASM — Super Mario Bros. Disassembly (doppelganger)</a> — 마리오 분석의 근거</li>
+<li><a href="https://github.com/GuillianSeed/MetalGear">MetalGear — MSX2 메탈기어 주석 disassembly (GuillianSeed)</a> — 메탈기어 분석의 근거</li>
+<li><a href="/posts/20260803-8bit-hardware-limits-01/">8비트의 벽을 넘은 게임들 Part 1: 그 기계들은 무엇을 못 했는가</a></li>
+<li><a href="/posts/20260803-8bit-hardware-limits-02/">8비트의 벽을 넘은 게임들 Part 2: 슈퍼 마리오브라더스, 레벨을 그리지 않고 서술하다</a></li>
+<li><a href="/posts/20260803-8bit-hardware-limits-03/">8비트의 벽을 넘은 게임들 Part 3: 엘리트, 우주를 6바이트에 담다</a></li>
+<li><a href="/posts/20260803-8bit-hardware-limits-04/">8비트의 벽을 넘은 게임들 Part 4: 메탈기어, 못 그리는 것을 안 그려도 되게 만들다</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-04/" class="button inline next">
+         [<span class="button__text">8비트의 벽을 넘은 게임들 Part 4: 메탈기어, 못 그리는 것을 안 그려도 되게 만들다</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

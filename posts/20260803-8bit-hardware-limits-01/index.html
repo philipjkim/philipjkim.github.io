@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>8비트의 벽을 넘은 게임들 Part 1: 그 기계들은 무엇을 못 했는가 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="1980년대 8비트 게임기가 실제로 무엇을 못 했는지 데이터시트 수준에서 확인합니다. 곱셈 명령이 없는 CPU, 16x16 픽셀 단위로만 색을 고를 수 있는 화면, 한 프레임의 7.6%뿐인 VRAM 접근 시간을 숫자로 재고, 그래서 개발자에게 남은 선택지가 압축·생성·전복 셋뿐이었음을 보입니다." />
+<meta name="keywords" content="game, retro-gaming, nes, msx, programming, algorithm, optimization, hardware" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-01/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="8비트의 벽을 넘은 게임들 Part 1: 그 기계들은 무엇을 못 했는가">
+<meta property="og:description" content="1980년대 8비트 게임기가 실제로 무엇을 못 했는지 데이터시트 수준에서 확인합니다. 곱셈 명령이 없는 CPU, 16x16 픽셀 단위로만 색을 고를 수 있는 화면, 한 프레임의 7.6%뿐인 VRAM 접근 시간을 숫자로 재고, 그래서 개발자에게 남은 선택지가 압축·생성·전복 셋뿐이었음을 보입니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-01/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-03 09:06:15 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-01/">8비트의 벽을 넘은 게임들 Part 1: 그 기계들은 무엇을 못 했는가</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-03</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/retro-gaming/">retro-gaming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/nes/">nes</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/msx/">msx</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/optimization/">optimization</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/hardware/">hardware</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="스크린샷-한-장보다-작은-게임">스크린샷 한 장보다 작은 게임<a href="#스크린샷-한-장보다-작은-게임" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>슈퍼 마리오브라더스가 담긴 카트리지의 ROM 용량은 <strong>40KB</strong> 입니다. 프로그램 32KB, 그림 데이터 8KB. 이게 전부입니다.</p>
+<p>이 게임의 한 장면을 오늘날의 화면에서 캡처해 PNG 로 저장하면 보통 수백 KB 가 나옵니다. <strong>게임 하나가 그 게임의 스크린샷 한 장보다 작습니다.</strong> 32개 스테이지, 여덟 가지 배경음악, 마리오의 물리 엔진, 적 AI, 점수 계산, 타이틀 화면이 전부 저 40KB 안에 있습니다.</p>
+<p>이런 얘기는 레트로 게임 커뮤니티에서 흔히 감탄의 소재로 소비됩니다. 그런데 감탄에서 멈추면 남는 게 없습니다. 이 시리즈에서 하려는 것은 <strong>&ldquo;대단하다더라&quot;를 &ldquo;이렇게 동작한다&quot;로 바꾸는 일</strong> 입니다.</p>
+<p>그러려면 순서가 있습니다. 어떤 기법이 왜 필요했는지 이해하려면, 먼저 <strong>그 기계가 정확히 무엇을 못 했는지</strong> 를 알아야 합니다. 그래서 이 첫 편에는 게임이 거의 나오지 않습니다. 대신 하드웨어 데이터시트를 읽습니다.</p>
+<h3 id="이-시리즈의-구성">이 시리즈의 구성<a href="#이-시리즈의-구성" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>전체 다섯 편이고, 세 작품을 다룹니다. 세 작품은 각각 <strong>다른 방식으로</strong> 한계를 넘었습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>편</th>
+          <th>주제</th>
+          <th>작품</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Part 1 (이 글)</strong></td>
+          <td>무대 설정 — 하드웨어가 못 한 것들</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td>Part 2</td>
+          <td><strong>압축</strong> — 데이터를 작게 만든다</td>
+          <td>슈퍼 마리오브라더스 (패미콤, 1985)</td>
+      </tr>
+      <tr>
+          <td>Part 3</td>
+          <td><strong>생성</strong> — 데이터를 아예 갖지 않는다</td>
+          <td>엘리트 (BBC Micro, 1984)</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td><strong>전복</strong> — 못 그리는 것을 안 그려도 되게 만든다</td>
+          <td>메탈기어 (MSX2, 1987)</td>
+      </tr>
+      <tr>
+          <td>Part 5</td>
+          <td>마무리 — 제약이 사라진 시대에 남은 것</td>
+          <td>—</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 글에서 인용하는 수치는 전부 1차 출처에서 확인한 것입니다. 패미콤 쪽은 NESdev Wiki 의 하드웨어 문서, MSX2 쪽은 야마하와 ASCII 가 1985년에 낸 <strong>V9938 MSX-VIDEO Technical Data Book</strong> 을 직접 봤습니다. 인터넷에 흔히 도는 &ldquo;카더라&rdquo; 중에는 사실과 다른 것이 섞여 있어서, 확인되지 않은 것은 쓰지 않았습니다.</p>
+<hr>
+<h2 id="1-cpu-곱셈이-없는-세계">1. CPU: 곱셈이 없는 세계<a href="#1-cpu-곱셈이-없는-세계" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>먼저 두 기계의 두뇌부터 봅니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>패미콤 (1983)</th>
+          <th>MSX / MSX2 (1983 / 1985)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CPU</td>
+          <td>리코 RP2A03 (MOS 6502 코어)</td>
+          <td>자일로그 Z80A</td>
+      </tr>
+      <tr>
+          <td>클럭</td>
+          <td><strong>1.789773 MHz</strong> (NTSC)</td>
+          <td><strong>3.579545 MHz</strong></td>
+      </tr>
+      <tr>
+          <td>레지스터</td>
+          <td>A, X, Y (각 8비트)</td>
+          <td>A, B, C, D, E, H, L + 대체 세트</td>
+      </tr>
+  </tbody>
+</table>
+<p>MSX 의 3.579545 MHz 라는 어정쩡한 숫자는 NTSC 컬러 부반송파 주파수입니다. 영상 신호와 클럭을 하나로 묶으면 발진기를 하나만 쓰면 되니까, 그 주파수를 그대로 시스템 클럭으로 삼은 것입니다. MSX 표준에서는 이 클럭이 카트리지 슬롯의 42번 핀으로도 나갑니다.</p>
+<p>숫자만 보면 Z80 이 두 배 빠릅니다. 다만 Z80 은 명령 하나에 쓰는 클럭 수(M-cycle, T-state)가 6502 보다 많아서, 실제 체감 성능 차이는 클럭 비율만큼 나지는 않습니다.</p>
+<h3 id="문제는-속도가-아니라-명령어입니다">문제는 속도가 아니라 명령어입니다<a href="#문제는-속도가-아니라-명령어입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>정말 중요한 것은 클럭이 아닙니다. <strong>두 CPU 모두 곱셈 명령이 없다</strong> 는 점입니다.</p>
+<p>6502 가 제공하는 산술 명령은 딱 두 개입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>명령</th>
+          <th>뜻</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>ADC</code></td>
+          <td>캐리를 포함해 메모리를 누산기에 더한다</td>
+      </tr>
+      <tr>
+          <td><code>SBC</code></td>
+          <td>캐리를 빌림으로 써서 메모리를 누산기에서 뺀다</td>
+      </tr>
+  </tbody>
+</table>
+<p>여기에 시프트 네 개(<code>ASL</code>, <code>LSR</code>, <code>ROL</code>, <code>ROR</code>)가 있을 뿐입니다. 곱셈도 나눗셈도 없습니다. Z80 도 마찬가지입니다. 곱셈 명령 <code>MLT</code> 는 한참 뒤에 나온 후속 칩 Z180 에서야 추가됐습니다.</p>
+<p>이게 왜 문제냐면, 게임에서 곱셈은 도처에 있기 때문입니다.</p>
+<ul>
+<li>화면에 무언가를 찍으려면 <code>y * 화면폭 + x</code> 로 주소를 계산해야 합니다.</li>
+<li>속도에 시간을 곱해 위치를 갱신해야 합니다.</li>
+<li>3D 를 그리려면 회전 행렬을 곱해야 합니다.</li>
+<li>타일맵에서 <code>(행, 열)</code> 로 오프셋을 구하려면 행에 열 수를 곱해야 합니다.</li>
+</ul>
+<p>곱셈이 없으면 어떻게 해야 할까요. 방법은 세 가지뿐입니다.</p>
+<p><strong>방법 1: 시프트와 덧셈으로 직접 만든다.</strong> 곱하는 수를 2의 거듭제곱의 합으로 분해하는 고전적인 방법입니다. Go 로 쓰면 이렇게 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 8비트 x 8비트 -&gt; 16비트 곱셈을 시프트와 덧셈만으로 구현합니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 6502/Z80 에서 실제로 쓰던 방식과 같은 구조입니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">mulShiftAdd</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kt">uint8</span><span class="p">)</span><span class="w"> </span><span class="kt">uint16</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="kt">uint16</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">acc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">uint16</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">b</span><span class="o">&amp;</span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 현재 비트가 서 있으면 누산기를 더한다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">result</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">acc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">acc</span><span class="w"> </span><span class="o">&lt;&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">// 다음 자릿수를 위해 두 배</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">b</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>동작은 하지만 느립니다. 6502 에서 이 루프를 어셈블리로 짜면 8비트 곱셈 하나에 <strong>수십에서 백 사이클</strong> 이 듭니다. 뒤에서 보겠지만 한 프레임에 쓸 수 있는 시간이 2,273 사이클밖에 없다는 점을 생각하면, 프레임마다 곱셈을 수십 번 해야 하는 로직은 성립하지 않습니다.</p>
+<p><strong>방법 2: 미리 계산해서 ROM 에 넣는다.</strong> 곱하는 값의 범위가 좁으면 표를 만들어 두는 편이 압도적으로 빠릅니다. 조회는 <code>LDA table,X</code> 한 번, 4 사이클입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 화면 폭이 32타일일 때, 행 번호로 오프셋을 구하는 표.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 곱셈 한 번(수십 사이클)이 배열 조회 한 번(4 사이클)으로 바뀝니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">var</span><span class="w"> </span><span class="nx">rowOffset</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">30</span><span class="p">]</span><span class="kt">uint16</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="mi">96</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">160</span><span class="p">,</span><span class="w"> </span><span class="mi">192</span><span class="p">,</span><span class="w"> </span><span class="mi">224</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="mi">288</span><span class="p">,</span><span class="w"> </span><span class="mi">320</span><span class="p">,</span><span class="w"> </span><span class="mi">352</span><span class="p">,</span><span class="w"> </span><span class="mi">384</span><span class="p">,</span><span class="w"> </span><span class="mi">416</span><span class="p">,</span><span class="w"> </span><span class="mi">448</span><span class="p">,</span><span class="w"> </span><span class="mi">480</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">544</span><span class="p">,</span><span class="w"> </span><span class="mi">576</span><span class="p">,</span><span class="w"> </span><span class="mi">608</span><span class="p">,</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="mi">672</span><span class="p">,</span><span class="w"> </span><span class="mi">704</span><span class="p">,</span><span class="w"> </span><span class="mi">736</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="mi">768</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w"> </span><span class="mi">832</span><span class="p">,</span><span class="w"> </span><span class="mi">864</span><span class="p">,</span><span class="w"> </span><span class="mi">896</span><span class="p">,</span><span class="w"> </span><span class="mi">928</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>방법 3: 애초에 곱셈이 필요 없게 설계한다.</strong> 가장 급진적이고, 가장 효과가 큰 방법입니다. 화면 폭을 32처럼 2의 거듭제곱으로 잡으면 곱셈이 시프트 다섯 번으로 바뀝니다. 좌표를 절대값이 아니라 증분으로 관리하면 매 프레임 곱할 일이 없어집니다.</p>
+<p>Part 2 에서 볼 마리오의 물리 엔진과 Part 3 에서 볼 엘리트의 3D 연산은 <strong>둘 다 방법 2와 3의 조합</strong> 입니다. 우연이 아닙니다. 곱셈이 없다는 하나의 제약이 두 게임에서 같은 형태의 해법을 강제한 것입니다.</p>
+<hr>
+<h2 id="2-화면-픽셀을-직접-찍을-수-없다">2. 화면: 픽셀을 직접 찍을 수 없다<a href="#2-화면-픽셀을-직접-찍을-수-없다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>오늘날 그래픽 프로그래밍의 기본 모델은 프레임버퍼입니다. 화면 크기만 한 메모리가 있고, 원하는 픽셀에 원하는 색을 씁니다.</p>
+<p><strong>패미콤에는 그런 게 없습니다.</strong> 화면 크기만 한 메모리를 둘 여유가 없었기 때문입니다. 256 x 240 화면을 픽셀당 1바이트로 잡으면 60KB 입니다. 1983년의 메모리 가격으로 가정용 게임기에 그만한 RAM 을 넣는 것은 어림도 없는 일이었습니다. 참고로 패미콤 본체의 작업용 RAM 은 <strong>2KB</strong> 입니다.</p>
+<p>그래서 패미콤은 완전히 다른 모델을 씁니다. 화면을 <strong>미리 정해진 그림 조각(타일)의 격자</strong> 로 봅니다.</p>
+<h3 id="패미콤-ppu-의-구조">패미콤 PPU 의 구조<a href="#패미콤-ppu-의-구조" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>해상도</td>
+          <td>256 x 240</td>
+      </tr>
+      <tr>
+          <td>타일 크기</td>
+          <td>8 x 8 픽셀</td>
+      </tr>
+      <tr>
+          <td>네임테이블</td>
+          <td>32 x 30 타일</td>
+      </tr>
+      <tr>
+          <td>타일 종류</td>
+          <td>한 번에 256개 (CHR 4KB 당)</td>
+      </tr>
+  </tbody>
+</table>
+<p>화면 전체를 표현하는 데이터는 <strong>32 x 30 = 960바이트</strong> 입니다. 각 바이트는 &ldquo;여기에 몇 번 타일을 놓아라&rdquo; 는 지시일 뿐입니다. 60KB 가 960바이트가 됐습니다. 압축률로 치면 64배입니다.</p>
+<p>물론 공짜는 아닙니다. <strong>화면에 있는 모든 것이 8픽셀 격자에 정렬돼야 합니다.</strong> 격자에서 벗어난 위치에 무언가를 그리고 싶으면 타일이 아니라 스프라이트를 써야 하고, 스프라이트는 개수가 정해져 있습니다.</p>
+<h3 id="색은-더-심각한-제약입니다">색은 더 심각한 제약입니다<a href="#색은-더-심각한-제약입니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>타일 데이터는 픽셀당 2비트입니다. 즉 <strong>타일 하나가 쓸 수 있는 색은 네 가지</strong> 이고, 그중 0번은 투명(배경색)이라 실질적으로 세 가지입니다.</p>
+<p>그러면 &ldquo;어느 네 가지 색&quot;인지는 어떻게 정할까요. 여기가 진짜 제약입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>팔레트</td>
+          <td>배경용 4개 + 스프라이트용 4개</td>
+      </tr>
+      <tr>
+          <td>팔레트당 색</td>
+          <td>4색</td>
+      </tr>
+      <tr>
+          <td>0번 엔트리</td>
+          <td>배경과 스프라이트가 <strong>공유</strong> (backdrop)</td>
+      </tr>
+      <tr>
+          <td>전체 색상 수</td>
+          <td>6비트 값 = 64가지 출력</td>
+      </tr>
+      <tr>
+          <td>어트리뷰트 1바이트가 담당하는 범위</td>
+          <td>32 x 32 픽셀 (4 x 4 타일)</td>
+      </tr>
+      <tr>
+          <td><strong>팔레트를 고를 수 있는 최소 단위</strong></td>
+          <td><strong>16 x 16 픽셀 (2 x 2 타일)</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>마지막 줄이 핵심입니다. 팔레트는 타일마다 고를 수 있는 게 아니라 <strong>16 x 16 픽셀 블록마다</strong> 고를 수 있습니다. 다시 말해 나란히 붙은 타일 네 개는 반드시 같은 팔레트를 씁니다.</p>
+<p>이 제약이 패미콤 게임의 그림체를 통째로 결정했습니다. 배경에 색이 화려한 물체와 수수한 물체를 딱 붙여 놓을 수가 없습니다. 그래서 패미콤 배경 그림들은 색 덩어리가 16픽셀 단위로 뭉쳐 있고, 경계선이 격자에 맞춰져 있습니다. 예술적 선택이 아니라 어트리뷰트 테이블의 구조가 그렇게 만든 것입니다.</p>
+<h3 id="스프라이트-격자-밖으로-나가는-유일한-통로">스프라이트: 격자 밖으로 나가는 유일한 통로<a href="#스프라이트-격자-밖으로-나가는-유일한-통로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>캐릭터는 8픽셀 격자에 맞춰 움직일 수 없습니다. 그래서 스프라이트가 있습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>스프라이트 총 개수</td>
+          <td><strong>64개</strong> (OAM, 하나당 4바이트)</td>
+      </tr>
+      <tr>
+          <td>크기</td>
+          <td>8 x 8 또는 8 x 16</td>
+      </tr>
+      <tr>
+          <td>팔레트</td>
+          <td>스프라이트용 4개 중 하나 (4색, 0번은 투명)</td>
+      </tr>
+      <tr>
+          <td><strong>한 스캔라인에 표시 가능한 개수</strong></td>
+          <td><strong>8개</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>마지막 줄이 8비트 게임의 겉모습을 지배한 제약입니다. <strong>가로 한 줄에 스프라이트가 9개 이상 걸치면 9번째부터는 그냥 안 그려집니다.</strong></p>
+<p>마리오는 16 x 16 크기라 8 x 8 스프라이트 네 개를 씁니다. 즉 마리오 한 명이 어떤 스캔라인에서 스프라이트 슬롯 두 개를 먹습니다. 적이 셋 있으면 벌써 여덟 개입니다. 여기서 하나만 더 늘어나면 무언가가 사라집니다.</p>
+<p>당시 게임에서 캐릭터가 깜빡거리는 현상을 본 적이 있을 겁니다. 그건 버그가 아니라 <strong>의도된 해법</strong> 입니다. 스프라이트 목록의 우선순위를 매 프레임 회전시키면, 9번째 스프라이트가 매번 다른 놈이 되면서 전부 절반씩 보이게 됩니다. 아무것도 안 보이는 것보다는 깜빡이는 게 낫다는 판단입니다.</p>
+<p>참고로 이 8개 제한을 감지하는 오버플로 플래그는 <strong>하드웨어 버그가 있어서</strong> 오탐과 미탐이 둘 다 발생합니다. 그래서 이 플래그를 신뢰하고 게임 로직을 짠 개발자는 거의 없습니다.</p>
+<h3 id="msx2-는-다른-방식으로-어렵습니다">MSX2 는 다른 방식으로 어렵습니다<a href="#msx2-는-다른-방식으로-어렵습니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>MSX2 의 비디오 칩은 야마하 V9938 입니다. 패미콤 PPU 와는 설계 철학이 다릅니다.</p>
+<p>야마하 매뉴얼이 말하는 MSX2 의 핵심 신기능은 세 가지입니다.</p>
+<ul>
+<li>Full bit-mapped mode</li>
+<li>Color palette (9비트 x 16패턴)</li>
+<li>More sprites per horizontal line</li>
+</ul>
+<p>첫 줄이 중요합니다. <strong>MSX2 에는 비트맵 모드가 있습니다.</strong> 픽셀을 직접 찍을 수 있다는 뜻이고, 패미콤이 못 하는 일입니다. 메탈기어가 쓴 GRAPHIC 4 모드(BASIC 의 <code>SCREEN 5</code>)의 사양은 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>종류</td>
+          <td><strong>Bit-mapped Graphics Mode</strong></td>
+      </tr>
+      <tr>
+          <td>화면 크기</td>
+          <td>256 x 212 (또는 256 x 192)</td>
+      </tr>
+      <tr>
+          <td>색</td>
+          <td>512색 중 16색</td>
+      </tr>
+      <tr>
+          <td>스프라이트 모드</td>
+          <td>Sprite mode 2</td>
+      </tr>
+      <tr>
+          <td><strong>화면 하나당 VRAM</strong></td>
+          <td><strong>32KB</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>자유를 얻은 대가가 마지막 줄입니다. 화면 한 장이 32KB 입니다. 이 숫자가 Part 4 에서 메탈기어의 운명을 결정합니다.</p>
+<h3 id="v9938-의-스프라이트">V9938 의 스프라이트<a href="#v9938-의-스프라이트" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>SPRITE MODE 1 (MSX1 호환)</th>
+          <th>SPRITE MODE 2 (MSX2)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>총 개수</td>
+          <td>32개</td>
+          <td>32개</td>
+      </tr>
+      <tr>
+          <td>크기</td>
+          <td>8 x 8 또는 16 x 16</td>
+          <td>8 x 8 또는 16 x 16</td>
+      </tr>
+      <tr>
+          <td><strong>한 수평 라인당</strong></td>
+          <td><strong>4개</strong></td>
+          <td><strong>8개</strong></td>
+      </tr>
+      <tr>
+          <td>색 지정 단위</td>
+          <td>스프라이트 하나에 한 색</td>
+          <td><strong>수평 라인마다 한 색</strong></td>
+      </tr>
+      <tr>
+          <td>겹칠 때</td>
+          <td>2색까지</td>
+          <td>CC 비트로 색을 OR 하면 4색까지</td>
+      </tr>
+  </tbody>
+</table>
+<p>MSX1 시절의 악명 높은 제약이 &ldquo;스프라이트 하나는 한 가지 색&quot;이었습니다. 캐릭터에 색을 두 개 쓰려면 스프라이트를 두 장 겹쳐야 했고, 그러면 라인당 4개 제한이 순식간에 찹니다.</p>
+<p>MSX2 의 SPRITE MODE 2 는 이걸 &ldquo;<strong>라인마다</strong> 한 색&quot;으로 완화했습니다. 스프라이트마다 16바이트짜리 색 테이블을 두어서, 16 x 16 스프라이트의 각 가로줄에 다른 색을 줄 수 있습니다. 개선이긴 하지만 <strong>한 가로줄 안에서는 여전히 한 색</strong> 입니다. 캐릭터의 같은 높이에 살색 얼굴과 빨간 모자를 함께 둘 수 없습니다.</p>
+<h3 id="두-기계를-나란히-놓으면">두 기계를 나란히 놓으면<a href="#두-기계를-나란히-놓으면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>패미콤 PPU</th>
+          <th>MSX2 V9938 (GRAPHIC 4)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>화면 구성</td>
+          <td>타일 격자 (32 x 30)</td>
+          <td>비트맵</td>
+      </tr>
+      <tr>
+          <td>해상도</td>
+          <td>256 x 240</td>
+          <td>256 x 212</td>
+      </tr>
+      <tr>
+          <td>동시 발색</td>
+          <td>팔레트 8개 x 4색 / 전체 64색</td>
+          <td>512색 중 16색</td>
+      </tr>
+      <tr>
+          <td>색 지정 단위</td>
+          <td>16 x 16 픽셀 블록</td>
+          <td><strong>픽셀 단위</strong></td>
+      </tr>
+      <tr>
+          <td>스프라이트</td>
+          <td>64개 / 라인당 8개</td>
+          <td>32개 / 라인당 8개</td>
+      </tr>
+      <tr>
+          <td>스프라이트 색</td>
+          <td>스프라이트당 팔레트 1개 (3색)</td>
+          <td>스프라이트의 <strong>가로줄당 1색</strong></td>
+      </tr>
+      <tr>
+          <td>화면 데이터 크기</td>
+          <td>약 1KB</td>
+          <td><strong>32KB</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>정리하면 이렇습니다. 패미콤은 <strong>자유도가 낮은 대신 데이터가 작습니다.</strong> MSX2 는 <strong>자유도가 높은 대신 데이터가 큽니다.</strong> 이 차이가 Part 2 와 Part 4 에서 정반대의 해법을 낳습니다.</p>
+<hr>
+<h2 id="3-시간-한-프레임의-76">3. 시간: 한 프레임의 7.6%<a href="#3-시간-한-프레임의-76" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>용량과 화면 구조에 이어, 세 번째 제약은 시간입니다. 이게 가장 안 알려져 있고, 가장 가혹합니다.</p>
+<p>패미콤에서 <strong>VRAM 에 데이터를 쓸 수 있는 시간은 정해져 있습니다.</strong> PPU 가 화면을 그리는 동안 CPU 가 VRAM 을 건드리면 어떻게 될까요. NESdev 문서는 이렇게 적고 있습니다.</p>
+<blockquote>
+<p>이 레지스터에 접근하면 VRAM 주소가 증가하므로, 수직 블랭킹 구간이나 강제 블랭킹 구간 밖에서는 접근하면 안 된다. 그래픽 글리치가 발생하고, 쓰기의 경우 VRAM 의 예측할 수 없는 주소에 기록된다.</p>
+</blockquote>
+<p>즉 화면을 그리는 중에는 VRAM 을 못 만집니다. 만질 수 있는 시간은 <strong>화면 아래쪽까지 다 그리고 나서 다음 프레임 맨 위로 돌아가기까지의 짧은 틈</strong>, 즉 수직 블랭킹(VBlank)뿐입니다.</p>
+<p>그 틈이 얼마나 되는지 세어 봅시다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>NTSC 기준</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CPU 클럭</td>
+          <td>1.789773 MHz</td>
+      </tr>
+      <tr>
+          <td>스캔라인당 CPU 사이클</td>
+          <td>113과 2/3</td>
+      </tr>
+      <tr>
+          <td>프레임당 CPU 사이클</td>
+          <td>29,780.5</td>
+      </tr>
+      <tr>
+          <td><strong>NMI 이후 VBlank 길이</strong></td>
+          <td><strong>20 스캔라인 = 약 2,273 사이클</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>2,273 / 29,780.5 = 약 <strong>7.6%</strong> 입니다. 한 프레임 시간의 13분의 1 만이 화면을 갱신할 수 있는 시간입니다.</p>
+<h3 id="2273-사이클로-무엇을-할-수-있나">2,273 사이클로 무엇을 할 수 있나<a href="#2273-사이클로-무엇을-할-수-있나" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 먼저 빠져나가는 게 있습니다. 스프라이트 정보 256바이트를 OAM 으로 옮기는 DMA 입니다.</p>
+<blockquote>
+<p>OAM DMA 자체는 정렬이 필요한지에 따라 513 또는 514 사이클이 걸린다.</p>
+</blockquote>
+<p>스프라이트를 쓰는 게임이라면 이건 사실상 고정 비용입니다. 남는 시간은 이렇습니다.</p>
+<pre tabindex="0"><code>2,273 (VBlank)
+ -514 (OAM DMA, 스프라이트 256바이트)
+------
+1,759 사이클
+</code></pre><p>이 1,759 사이클로 배경을 갱신해야 합니다. 배경을 갱신하는 코드는 대략 이런 모양입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">        <span class="c1">; VBlank 안에서 배경 타일을 PPU 로 밀어 넣는 전형적인 루프
+</span></span></span><span class="line"><span class="cl">        <span class="nf">lda</span> <span class="no">buffer</span><span class="p">,</span><span class="no">x</span>    <span class="c1">; 4 사이클 - 준비해 둔 데이터를 읽는다
+</span></span></span><span class="line"><span class="cl">        <span class="nf">sta</span> <span class="no">$2007</span>       <span class="c1">; 4 사이클 - PPUDATA 에 쓰면 VRAM 주소가 자동 증가
+</span></span></span><span class="line"><span class="cl">        <span class="nf">lda</span> <span class="no">buffer</span><span class="err">+</span><span class="mi">1</span><span class="p">,</span><span class="no">x</span>  <span class="c1">; 4
+</span></span></span><span class="line"><span class="cl">        <span class="nf">sta</span> <span class="no">$2007</span>       <span class="c1">; 4
+</span></span></span><span class="line"><span class="cl">        <span class="na">...</span>             <span class="c1">; 루프를 펼쳐서 인덱스 증가와 분기 비용을 없앤다
+</span></span></span></code></pre></div><p>루프를 펼치면 바이트당 8사이클 정도가 듭니다. 펼치지 않고 인덱스 증가와 분기를 넣으면 13사이클까지 올라갑니다. 8사이클로 잡으면,</p>
+<pre tabindex="0"><code>1,759 / 8 = 약 220 바이트
+</code></pre><p>한편 화면 한 장을 구성하는 데이터는 네임테이블 960바이트 + 어트리뷰트 64바이트 = <strong>1,024바이트</strong> 입니다.</p>
+<p><strong>한 프레임에 갱신할 수 있는 양은 화면 전체의 5분의 1 정도입니다.</strong></p>
+<p>여기서 결론이 하나 나옵니다. <strong>패미콤 게임은 매 프레임 화면을 다시 그릴 수 없습니다.</strong> 그러면 화면이 부드럽게 흐르는 마리오는 도대체 어떻게 만든 걸까요. 답은 두 가지의 조합입니다. 하나는 하드웨어 스크롤 레지스터이고, 다른 하나는 <strong>화면 밖에 새로 들어올 세로 한 줄만 매 프레임 채워 넣는 것</strong> 입니다. 세로 한 줄은 30바이트니까 220바이트 예산 안에 넉넉히 들어갑니다.</p>
+<p>이 &ldquo;필요한 만큼만, 제때&rdquo; 라는 원칙이 Part 2 의 중심 주제입니다.</p>
+<h3 id="그래서-나온-트릭-화면-중간에-끼어들기">그래서 나온 트릭: 화면 중간에 끼어들기<a href="#그래서-나온-트릭-화면-중간에-끼어들기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>VBlank 밖에서는 아무것도 못 한다면, 화면 위쪽은 스크롤하고 아래쪽은 고정하는 것 같은 일은 어떻게 할까요.</p>
+<p>두 기계 모두 &ldquo;지금 화면의 어디를 그리는 중인지&rdquo; 를 알아내는 장치를 갖고 있습니다. 접근 방식이 재미있게 다릅니다.</p>
+<p><strong>패미콤: sprite 0 hit.</strong> 0번 스프라이트의 불투명한 픽셀이 배경의 불투명한 픽셀과 겹치는 순간, PPU 가 상태 레지스터에 플래그를 세웁니다. 원래는 충돌 판정용으로 만든 기능입니다. 그런데 개발자들은 이걸 <strong>시계로 썼습니다.</strong> 화면의 특정 위치에 눈에 안 띄는 스프라이트를 하나 박아 두고, 플래그가 설 때까지 CPU 를 루프에서 대기시키다가, 플래그가 서는 순간 스크롤 레지스터를 바꿔 버리는 것입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">wait:</span>   <span class="nf">lda</span> <span class="no">$2002</span>       <span class="c1">; PPUSTATUS 를 읽는다
+</span></span></span><span class="line"><span class="cl">        <span class="nf">bpl</span> <span class="no">wait</span>        <span class="c1">; 비트 6(sprite 0 hit)이 설 때까지 계속 대기
+</span></span></span><span class="line"><span class="cl">        <span class="c1">; --- 여기가 화면의 특정 스캔라인 --- 
+</span></span></span><span class="line"><span class="cl">        <span class="c1">; 이 지점에서 스크롤 레지스터를 바꾸면 위아래가 따로 논다
+</span></span></span></code></pre></div><p>마리오 화면 위쪽의 점수판이 스크롤하지 않고 가만히 있는 이유가 이것입니다. 충돌 감지 기능을 시계로 전용한, 전형적인 8비트식 해법입니다.</p>
+<p><strong>MSX2: 라인 인터럽트.</strong> V9938 은 훨씬 점잖은 방법을 제공합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>레지스터</th>
+          <th>기능</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>R#19</td>
+          <td>인터럽트 라인 레지스터. <strong>지정한 스캔라인을 그리기 시작할 때 인터럽트를 건다</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>CPU 를 루프에 묶어 놓고 기다릴 필요 없이, 원하는 줄 번호를 레지스터에 넣어 두면 됩니다. 2년 늦게 나온 칩답게 설계가 정돈돼 있습니다.</p>
+<hr>
+<h2 id="4-스크롤-가장-비싼-기능">4. 스크롤: 가장 비싼 기능<a href="#4-스크롤-가장-비싼-기능" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>마지막 제약은 스크롤입니다. 이것 하나만으로 Part 4 의 이야기가 절반쯤 결정됩니다.</p>
+<p>패미콤에는 스크롤 레지스터가 있습니다. 값을 쓰면 화면 전체가 픽셀 단위로 밀립니다. 타일 격자 구조라서 새로 들어오는 줄만 채워 주면 됩니다. 앞서 계산했듯 세로 한 줄은 30바이트니까 예산 안입니다.</p>
+<p>MSX 쪽은 사정이 복잡합니다. 세대별로 정리하면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>VDP</th>
+          <th>세대</th>
+          <th>하드웨어 스크롤</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>TMS9918</td>
+          <td>MSX1</td>
+          <td>스크롤 레지스터 <strong>없음</strong>. 다만 타일 모드라 타일맵 768바이트만 옮기면 8픽셀 단위로 밀 수 있음</td>
+      </tr>
+      <tr>
+          <td><strong>V9938</strong></td>
+          <td><strong>MSX2</strong></td>
+          <td><strong>세로 스크롤(R#23)만 있음. 가로는 없음</strong></td>
+      </tr>
+      <tr>
+          <td>V9958</td>
+          <td>MSX2+</td>
+          <td>R#26 / R#27 로 가로 스크롤 지원</td>
+      </tr>
+  </tbody>
+</table>
+<p>V9938 의 R#23 은 &ldquo;표시를 시작할 라인 번호&rdquo; 를 지정하는 레지스터입니다. 세로로는 픽셀 단위로 부드럽게 밀 수 있습니다. <strong>가로로 미는 레지스터는 없습니다.</strong> 야마하 매뉴얼의 컨트롤 레지스터 목록은 #0부터 #23까지이고, 그 안에 가로 스크롤에 해당하는 것이 없습니다. 가로 스크롤은 2년 뒤 V9958 에서야 R#26, R#27 로 추가됐습니다.</p>
+<p>그래서 MSX2 게임 중 세로 스크롤 슈팅은 많고(알레스테, 쿼스), 가로 스크롤 게임은 상대적으로 드뭅니다. 굳이 가로로 밀려면 두 가지 방법뿐입니다.</p>
+<p><strong>방법 1: 타일 모드로 후퇴한다.</strong> GRAPHIC 3(<code>SCREEN 4</code>) 같은 타일 기반 모드를 쓰면 타일맵만 옮기면 되니 가볍습니다. 대신 비트맵 모드의 표현력을 포기해야 합니다.</p>
+<p><strong>방법 2: R#18(adjust register)을 악용한다.</strong> 원래 사용자가 자기 TV 에 맞춰 화면 위치를 조정하라고 만든 레지스터인데, 이걸 1픽셀씩 16단계로 밀면 가로 스크롤처럼 보입니다. 문제가 여럿입니다.</p>
+<ul>
+<li>16픽셀까지만 가능해서 그 이상은 결국 소프트웨어 스크롤이 필요합니다.</li>
+<li>화면 좌우 테두리가 같이 밀려서 깜빡입니다. 스프라이트로 가려야 합니다.</li>
+<li>사용자가 맞춰 놓은 화면 중심 설정을 무시하게 됩니다.</li>
+<li>VDP 의 복사 명령 실행 중에 이 레지스터를 바꾸면 VRAM 이 깨집니다.</li>
+</ul>
+<p>이 편법을 쓴 대표적인 게임이 1989년의 스페이스 맨보우입니다. 문제 목록을 보면 알겠지만, 이건 정공법이 아니라 곡예에 가깝습니다.</p>
+<p><strong>그리고 GRAPHIC 4 는 비트맵입니다.</strong> 소프트웨어로 가로 스크롤을 하려면 화면 32KB 를 통째로 옮겨야 합니다. 3.58MHz Z80 이 한 프레임(약 6만 T-state) 안에 32KB 를 옮기는 것은 불가능합니다. MSX1 처럼 타일맵 768바이트만 옮기는 수법도 비트맵 모드에서는 쓸 수 없습니다.</p>
+<p><strong>1987년에 MSX2 로 가로로 흐르는 액션 게임을 만들라는 것은, 하드웨어가 거부하는 일을 하라는 것과 같았습니다.</strong> 메탈기어가 화면 단위로 뚝뚝 끊어 전환되는 이유가 여기 있습니다. 그리고 그 강제된 화면 전환이 어떻게 스텔스라는 장르의 문법이 되는지가 Part 4 의 내용입니다.</p>
+<hr>
+<h2 id="5-그래서-남은-선택지는-셋">5. 그래서 남은 선택지는 셋<a href="#5-그래서-남은-선택지는-셋" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>지금까지 확인한 제약을 한자리에 모으면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>자원</th>
+          <th>제약</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>저장 공간</td>
+          <td>마리오 카트리지 40KB, 패미콤 작업 RAM 2KB</td>
+      </tr>
+      <tr>
+          <td>연산</td>
+          <td>곱셈 명령 없음. 1.79MHz / 3.58MHz</td>
+      </tr>
+      <tr>
+          <td>화면</td>
+          <td>팔레트는 16 x 16 블록 단위, 스캔라인당 스프라이트 8개</td>
+      </tr>
+      <tr>
+          <td>시간</td>
+          <td>프레임의 7.6%, 약 220바이트만 갱신 가능</td>
+      </tr>
+      <tr>
+          <td>스크롤</td>
+          <td>MSX2 는 가로 스크롤 하드웨어가 아예 없음</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 벽 앞에서 개발자가 취할 수 있는 태도는 결국 세 가지로 수렴합니다. 이 시리즈의 나머지 세 편은 각각 하나씩을 다룹니다.</p>
+<h3 id="압축--데이터를-작게-만든다">압축 — 데이터를 작게 만든다<a href="#압축--데이터를-작게-만든다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 직관적인 길입니다. 넣고 싶은 것은 정해져 있으니, 표현을 바꿔서 자리를 줄입니다.</p>
+<p>슈퍼 마리오브라더스는 레벨을 타일 배열로 저장하지 않습니다. <strong>&ldquo;여기에 이런 것이 있다&rdquo; 는 서술</strong> 로 저장합니다. 32개 스테이지가 몇 KB 에 들어가는 이유입니다. 같은 그림 데이터를 팔레트만 바꿔 두 번 쓰고, 물리 계산은 미리 만든 표로 대체합니다. Part 2 에서 다룹니다.</p>
+<h3 id="생성--데이터를-아예-갖지-않는다">생성 — 데이터를 아예 갖지 않는다<a href="#생성--데이터를-아예-갖지-않는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한 걸음 더 나간 길입니다. 압축의 극한은 압축이 아니라 <strong>저장을 포기하는 것</strong> 입니다.</p>
+<p>1984년의 엘리트는 22KB 안에 항성계 2,048개가 있는 우주를 담았습니다. 항성계 데이터를 저장하지 않았기 때문입니다. 씨앗값 몇 바이트에서 이름, 좌표, 경제, 정부 형태, 기술 수준을 <strong>매번 다시 계산해서</strong> 만들어 냅니다. 저장 공간이 없으면 계산으로 바꾸면 된다는 발상이고, 오늘날 절차적 생성이라 부르는 것의 출발점입니다. Part 3 에서 다룹니다.</p>
+<h3 id="전복--요구사항-자체를-바꾼다">전복 — 요구사항 자체를 바꾼다<a href="#전복--요구사항-자체를-바꾼다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 급진적인 길입니다. 하드웨어가 못 하는 일을 어떻게든 해내는 대신, <strong>그 일을 할 필요가 없는 게임을 만드는 것</strong> 입니다.</p>
+<p>1987년 MSX2 에서 적을 여럿 그리려면 스캔라인당 스프라이트 8개 안에 다 넣어야 합니다. 총알까지 그리면 화면이 금방 찹니다. 가로 스크롤도 안 됩니다. 이 상황에서 나온 답이 <strong>&ldquo;싸우지 않는 게임&rdquo;</strong> 이었습니다. 총을 쏘지 않으면 총알을 그릴 필요가 없고, 화면이 끊어져도 그 끊긴 화면 하나가 경비 구역의 단위가 됩니다. 제약이 게임의 문법이 됐고, 그 문법은 하드웨어가 사라진 뒤에도 30년을 살아남았습니다. Part 4 에서 다룹니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 1 에서는 게임 이야기를 거의 하지 않았습니다. 대신 세 가지 숫자를 확보했습니다.</p>
+<ul>
+<li><strong>연산의 벽.</strong> 6502 와 Z80 모두 곱셈 명령이 없습니다. 산술 명령은 <code>ADC</code> 와 <code>SBC</code> 뿐이고, 곱셈은 시프트와 덧셈으로 만들거나 표로 대체해야 합니다.</li>
+<li><strong>화면의 벽.</strong> 패미콤은 팔레트를 16 x 16 픽셀 블록 단위로만 고를 수 있고, 스캔라인당 스프라이트가 8개입니다. MSX2 는 픽셀을 자유롭게 찍을 수 있지만 화면 한 장이 32KB 이고, 가로 스크롤 하드웨어가 없습니다.</li>
+<li><strong>시간의 벽.</strong> VRAM 을 만질 수 있는 시간은 한 프레임의 7.6%인 2,273 사이클입니다. 스프라이트 DMA 를 빼면 배경에 쓸 수 있는 것은 약 220바이트, 화면 한 장의 5분의 1입니다.</li>
+</ul>
+<p>이 숫자들을 손에 쥐고 있어야 다음 편들의 기법이 왜 그런 모양인지 보입니다. 마리오의 레벨 인코딩은 저 40KB 때문이고, 컬럼 단위 갱신은 저 220바이트 때문이며, 물리 테이블은 곱셈 명령이 없기 때문입니다.</p>
+<p>Part 2 에서는 슈퍼 마리오브라더스를 뜯습니다. 40KB 안에 32개 스테이지를 넣기 위해 레벨을 <strong>그리지 않고 서술하는</strong> 방법, 스크롤하며 컬럼 단위로 조립하는 구조, 그리고 같은 그림을 팔레트만 바꿔 두 번 파는 기법을 봅니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://www.nesdev.org/wiki/Cycle_reference_chart">NESdev Wiki — Cycle reference chart</a> — CPU 클럭, 프레임당 사이클, VBlank 길이</li>
+<li><a href="https://www.nesdev.org/wiki/PPU_attribute_tables">NESdev Wiki — PPU attribute tables</a> — 네임테이블과 어트리뷰트 구조</li>
+<li><a href="https://www.nesdev.org/wiki/PPU_palettes">NESdev Wiki — PPU palettes</a> — 팔레트 구성</li>
+<li><a href="https://www.nesdev.org/wiki/PPU_OAM">NESdev Wiki — PPU OAM</a> — 스프라이트 구조와 sprite 0 hit</li>
+<li><a href="https://www.nesdev.org/wiki/PPU_sprite_evaluation">NESdev Wiki — PPU sprite evaluation</a> — 스캔라인당 스프라이트 8개 제한</li>
+<li><a href="https://www.nesdev.org/wiki/PPU_registers">NESdev Wiki — PPU registers</a> — 렌더링 중 VRAM 접근 문제</li>
+<li><a href="https://www.nesdev.org/wiki/DMA">NESdev Wiki — DMA</a> — OAM DMA 사이클 비용</li>
+<li><a href="https://map.grauw.nl/resources/video/yamaha_v9938.pdf">V9938 MSX-VIDEO Technical Data Book (Yamaha / ASCII, 1985)</a> — MSX2 비디오 칩 공식 매뉴얼</li>
+<li><a href="https://map.grauw.nl/articles/scrolling.php">A guide to scrolling game engines on MSX (MSX Assembly Page)</a> — MSX 세대별 스크롤 구현</li>
+<li><a href="https://www.msx.org/forum/msx-talk/hardware/msx-z80-clock-frequency">MSX Z80 clock frequency (MSX Resource Center)</a> — MSX 시스템 클럭</li>
+<li><a href="https://www.masswerk.at/6502/6502_instruction_set.html">6502 Instruction Set (masswerk)</a> — 6502 산술 명령</li>
+<li><a href="https://en.wikipedia.org/wiki/Zilog_Z180">Zilog Z180 (Wikipedia)</a> — MLT 명령이 Z180 에서 추가된 사실</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-02/" class="button inline prev">
+        &lt; [<span class="button__text">8비트의 벽을 넘은 게임들 Part 2: 슈퍼 마리오브라더스, 레벨을 그리지 않고 서술하다</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260731-lexio-cpu-bot-strategy-04/" class="button inline next">
+         [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

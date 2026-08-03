@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>8비트의 벽을 넘은 게임들 Part 4: 메탈기어, 못 그리는 것을 안 그려도 되게 만들다 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="1987년 MSX2 메탈기어가 하드웨어의 거부를 게임 문법으로 바꾼 과정을 주석 disassembly 로 확인합니다. SCREEN 5 비트맵과 가로 스크롤 부재, 48바이트짜리 방 165개, 스프라이트를 짝지어 색을 늘리고 순서를 섞어 깜빡이는 기법, 원뿔이 아닌 복도형 시야 판정, 그리고 방에 붙어 있는 경보 상태 머신을 다룹니다." />
+<meta name="keywords" content="game, retro-gaming, msx, programming, algorithm, game-design, stealth" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-04/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="8비트의 벽을 넘은 게임들 Part 4: 메탈기어, 못 그리는 것을 안 그려도 되게 만들다">
+<meta property="og:description" content="1987년 MSX2 메탈기어가 하드웨어의 거부를 게임 문법으로 바꾼 과정을 주석 disassembly 로 확인합니다. SCREEN 5 비트맵과 가로 스크롤 부재, 48바이트짜리 방 165개, 스프라이트를 짝지어 색을 늘리고 순서를 섞어 깜빡이는 기법, 원뿔이 아닌 복도형 시야 판정, 그리고 방에 붙어 있는 경보 상태 머신을 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-04/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-03 09:43:31 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-04/">8비트의 벽을 넘은 게임들 Part 4: 메탈기어, 못 그리는 것을 안 그려도 되게 만들다</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-03</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/retro-gaming/">retro-gaming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/msx/">msx</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-design/">game-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/stealth/">stealth</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="세-번째-길">세 번째 길<a href="#세-번째-길" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>앞의 두 편에서 본 전략을 정리하면 이렇습니다.</p>
+<ul>
+<li><a href="/posts/20260803-8bit-hardware-limits-02/">Part 2</a> 슈퍼 마리오브라더스: <strong>데이터를 작게 만든다.</strong> 레벨 오브젝트 2바이트 인코딩.</li>
+<li><a href="/posts/20260803-8bit-hardware-limits-03/">Part 3</a> 엘리트: <strong>데이터를 갖지 않는다.</strong> 씨앗 6바이트에서 우주 전체를 계산.</li>
+</ul>
+<p>둘 다 &ldquo;요구사항은 그대로 두고 구현을 비튼다&rdquo; 는 접근입니다. 1987년 코나미의 MSX2 팀은 세 번째 길을 갔습니다. <strong>요구사항 자체를 바꿨습니다.</strong></p>
+<p>결과물이 메탈기어이고, 그 결과물이 만든 것은 게임 하나가 아니라 <strong>장르 하나</strong> 였습니다.</p>
+<p>이 글은 GuillianSeed 가 공개한 메탈기어(RC750, MSX2, 1987) 전체 주석 disassembly 를 근거로 씁니다. 카트리지는 코나미 MegaROM 방식의 128KB 이고, 뱅크가 0번부터 F번까지 있습니다.</p>
+<hr>
+<h2 id="1-하드웨어가-거부한-것">1. 하드웨어가 거부한 것<a href="#1-하드웨어가-거부한-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260803-8bit-hardware-limits-01/">Part 1</a>에서 야마하 V9938 데이터시트로 확인한 제약을 다시 꺼내 보겠습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>제약</th>
+          <th>내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>스프라이트 총 개수</td>
+          <td>32개</td>
+      </tr>
+      <tr>
+          <td>한 수평 라인당</td>
+          <td><strong>8개</strong> (9번째부터 안 그려짐)</td>
+      </tr>
+      <tr>
+          <td>스프라이트 색</td>
+          <td>수평 라인마다 <strong>한 색</strong></td>
+      </tr>
+      <tr>
+          <td>가로 스크롤 레지스터</td>
+          <td><strong>없음</strong> (V9958 에서야 추가)</td>
+      </tr>
+      <tr>
+          <td>세로 스크롤</td>
+          <td>R#23 으로 가능</td>
+      </tr>
+  </tbody>
+</table>
+<p>여기에 메탈기어가 고른 화면 모드가 더해집니다. disassembly 의 하드웨어 초기화 코드에 답이 그대로 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="c1">;----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Initialize hardware
+</span></span></span><span class="line"><span class="cl"><span class="c1">;
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Enable PSG channels
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Disable sprites
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Set SCREEN 5 mode
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Clear VRAM pages 0 and 1
+</span></span></span><span class="line"><span class="cl"><span class="c1">; ...
+</span></span></span><span class="line"><span class="cl"><span class="c1">;----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">InitHardware:</span>
+</span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">call</span>    <span class="no">DisableSprites</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">call</span>    <span class="no">CHGMOD</span>			    <span class="c1">; Screen 5
+</span></span></span></code></pre></div><p><strong>SCREEN 5</strong>, 즉 V9938 매뉴얼의 GRAPHIC 4 모드입니다. 사양을 다시 보겠습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>값</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>종류</td>
+          <td><strong>Bit-mapped Graphics Mode</strong></td>
+      </tr>
+      <tr>
+          <td>화면 크기</td>
+          <td>256 x 212 (또는 256 x 192)</td>
+      </tr>
+      <tr>
+          <td>색</td>
+          <td>512색 중 16색</td>
+      </tr>
+      <tr>
+          <td>스프라이트 모드</td>
+          <td>Sprite mode 2</td>
+      </tr>
+      <tr>
+          <td><strong>화면 하나당 VRAM</strong></td>
+          <td><strong>32KB</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>비트맵입니다. 픽셀을 자유롭게 찍을 수 있는 대신 <strong>화면 한 장이 32KB</strong> 입니다.</p>
+<p>이 두 가지를 겹치면 결론이 하나 나옵니다.</p>
+<ul>
+<li>가로 스크롤 레지스터가 없으므로 하드웨어가 화면을 밀어 주지 않는다.</li>
+<li>소프트웨어로 밀려면 32KB 를 옮겨야 한다.</li>
+<li>3.58MHz Z80 의 한 프레임은 약 6만 T-state 다. 32KB 를 옮기는 것은 불가능하다.</li>
+<li>MSX1 처럼 타일맵 768바이트만 옮기는 수법은 비트맵 모드에서 쓸 수 없다.</li>
+</ul>
+<p><strong>1987년에 MSX2 로 가로로 흐르는 액션 게임을 만들라는 것은, 하드웨어가 거부하는 일을 하라는 것과 같았습니다.</strong></p>
+<p>당시 기획자였던 코지마 히데오는 2005년 MSX 매거진 인터뷰에서 이렇게 회고합니다.</p>
+<blockquote>
+<p>당시에 캡콤의 인기 아케이드 게임 <em>커맨도</em> 가 있어서, 그것과 비슷한 게임을 MSX 로 만들라는 지시를 받았습니다. 그때는 여섯 방향으로밖에 움직일 수 없었던 걸로 기억합니다. 여섯 방향은 무리였고, 네 방향으로 줄여도 너무 갑갑했습니다. <strong>적을 내보내지 않고도 성립하는 게임을 만드는 수밖에 없었습니다.</strong> 그리고 그것이 메탈기어를 만들 수 있게 해 준 것입니다.</p>
+</blockquote>
+<p>같은 인터뷰에서 총알에 대한 언급도 나옵니다.</p>
+<blockquote>
+<p>(진행자) 메탈기어의 게임 시스템은 MSX 의 하드웨어 제약을 오히려 자기 것으로 썼습니다. 플레이해 보면 화면에 총알이 그렇게 많지 않다는 게 눈에 띕니다.</p>
+<p>(코지마) 가로로도 안 나갔습니다.</p>
+</blockquote>
+<p>참고로 이 인터뷰에서 코지마는 MSX1 이라고 말하지만 실제 메탈기어는 MSX2 용으로 나왔습니다. 번역자도 이 점을 각주로 지적하면서, 기억 착오이거나 구형 하드웨어에서 돌던 프로토타입 얘기일 수 있다고 적어 두었습니다. 어느 쪽인지는 확인되지 않으므로 그대로 옮깁니다.</p>
+<hr>
+<h2 id="2-화면이-끊어진다-그래서-방이-생긴다">2. 화면이 끊어진다, 그래서 방이 생긴다<a href="#2-화면이-끊어진다-그래서-방이-생긴다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>가로로 스크롤할 수 없다면 답은 하나입니다. <strong>화면 단위로 뚝뚝 끊어서 전환합니다.</strong></p>
+<p>이건 후퇴처럼 보이지만, 데이터 관점에서는 엄청난 이득입니다. 스크롤하지 않는다면 화면 하나를 <strong>통째로 한 단위</strong> 로 다룰 수 있고, 그러면 화면 하나를 아주 작게 표현할 수 있습니다.</p>
+<p>disassembly 의 방 렌더링 루틴에 구조가 주석으로 적혀 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="c1">;----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Render room tiles
+</span></span></span><span class="line"><span class="cl"><span class="c1">;
+</span></span></span><span class="line"><span class="cl"><span class="c1">; A room is defined by 8x6 metatiles
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Unpack room metatiles into normal tiles and draw them
+</span></span></span><span class="line"><span class="cl"><span class="c1">;----------------------------------------------------------------------------
+</span></span></span></code></pre></div><p>그리고 메타타일을 푸는 루틴을 보면 메타타일 하나가 <strong>4 x 4 타일</strong> 입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">UnpackMetatiles3:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">b</span><span class="p">,</span> <span class="mi">4</span>			    <span class="c1">; 4	tiles width
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">UnpackMetatiles4:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">hl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="p">(</span><span class="no">de</span><span class="p">),</span> <span class="no">a</span>			    <span class="c1">; Transfer tiles of	the metatile
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">inc</span>	    <span class="no">hl</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">inc</span>	    <span class="no">de</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">djnz</span>    <span class="no">UnpackMetatiles4</span>
+</span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">dec</span>	    <span class="no">c</span>				    <span class="c1">; c 는 4로 시작 = 4 tiles height
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nz</span><span class="p">,</span>	<span class="no">UnpackMetatiles3</span>
+</span></span></code></pre></div><p>계층을 정리하면 이렇습니다.</p>
+<pre tabindex="0"><code>방 (8 x 6 메타타일)  =  48바이트
+        ↓
+메타타일 (4 x 4 타일) =  16바이트, 여러 방이 공유
+        ↓
+타일 (8 x 8 픽셀)
+        ↓
+비트맵 화면 32,768바이트
+</code></pre><p>8 x 6 메타타일 x 4 x 4 타일 x 8 x 8 픽셀 = <strong>256 x 192 픽셀</strong>. SCREEN 5 의 화면 크기와 정확히 맞습니다.</p>
+<p><strong>방 하나가 48바이트입니다.</strong> 화면 하나를 비트맵으로 저장하면 32,768바이트인데, 그 화면을 48바이트로 적었습니다.</p>
+<p>실제 데이터를 세어 봤습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>크기</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>방 지도 (165개 방)</td>
+          <td><strong>8,382 바이트</strong></td>
+      </tr>
+      <tr>
+          <td>메타타일 정의 (6개 타일셋)</td>
+          <td>9,280 바이트</td>
+      </tr>
+      <tr>
+          <td>방 연결 관계</td>
+          <td>624 바이트</td>
+      </tr>
+      <tr>
+          <td>방별 타일셋 지정</td>
+          <td>401 바이트</td>
+      </tr>
+      <tr>
+          <td>방별 적 배치</td>
+          <td>536 바이트</td>
+      </tr>
+      <tr>
+          <td>방별 아이템 배치</td>
+          <td>209 바이트</td>
+      </tr>
+      <tr>
+          <td>경비병 순찰 경로</td>
+          <td>814 바이트</td>
+      </tr>
+      <tr>
+          <td><strong>게임 세계 합계</strong></td>
+          <td><strong>약 20,246 바이트</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>165개 방 중 <strong>161개가 정확히 48바이트</strong> 입니다. 나머지 네 개만 96, 144, 192바이트로 더 큽니다.</p>
+<p>숫자를 비교해 봅시다. 165개 방을 전부 비트맵으로 저장하면 165 x 32,768 = <strong>약 5.4MB</strong> 입니다. 128KB 카트리지에 들어갈 리가 없습니다. 방 지도로 저장하니 8,382바이트, 화면 한 장의 4분의 1입니다.</p>
+<p>월드 1-1 이 101바이트였던 마리오와 발상이 같습니다. 다만 마리오는 <strong>스크롤하기 위해</strong> 컬럼 단위로 잘게 조립해야 했고, 메탈기어는 <strong>스크롤하지 않기 때문에</strong> 방 하나를 한 번에 통째로 그리면 됩니다. 방을 넘어갈 때 잠깐 화면이 멈추는 그 순간이, 32KB 비트맵을 새로 채워 넣는 시간입니다.</p>
+<p><strong>하드웨어가 못 하는 일을 포기했더니 데이터가 작아졌습니다.</strong></p>
+<hr>
+<h2 id="3-스프라이트-32개는-사실-16개다">3. 스프라이트 32개는 사실 16개다<a href="#3-스프라이트-32개는-사실-16개다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이제 캐릭터입니다. V9938 은 스프라이트를 32개 지원하고 한 라인에 8개까지 그립니다. 넉넉해 보이지만 실제로는 그렇지 않습니다.</p>
+<p>문제는 색입니다. Part 1 에서 봤듯 SPRITE MODE 2 의 색 지정은 <strong>수평 라인 단위</strong> 입니다. 한 가로줄 안에서는 여전히 한 색뿐입니다. 캐릭터의 같은 높이에 살색 얼굴과 다른 색 옷을 함께 둘 수 없습니다.</p>
+<p>메탈기어가 이 문제를 어떻게 처리했는지, 스프라이트 갱신 루틴의 주석에 그대로 적혀 있습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="c1">;----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Update sprites colors	and attributes in VRAM from RAM
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Shuffles the sprite layers to	avoid horizontal sprites limit (flickering)
+</span></span></span><span class="line"><span class="cl"><span class="c1">; Sprites are grouped in pairs in order	to get 3 colors	per line
+</span></span></span><span class="line"><span class="cl"><span class="c1">;----------------------------------------------------------------------------
+</span></span></span></code></pre></div><p>두 가지 기법이 한 문단에 들어 있습니다.</p>
+<h3 id="짝지어서-색을-늘린다">짝지어서 색을 늘린다<a href="#짝지어서-색을-늘린다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>&ldquo;스프라이트를 쌍으로 묶어 라인당 3색을 얻는다.&rdquo;</strong></p>
+<p>스프라이트 두 장을 같은 자리에 겹쳐 놓고, 한 장은 옷 부분만, 다른 한 장은 얼굴 부분만 그립니다. 각각은 라인당 한 색이지만 겹치면 두 색이 됩니다. 여기에 CC 비트로 색을 OR 하면 겹친 부분이 세 번째 색이 됩니다.</p>
+<p>대가는 명확합니다. <strong>캐릭터 하나가 스프라이트 두 장을 먹습니다.</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>하드웨어 사양</th>
+          <th>메탈기어의 실질</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>스프라이트 총 개수</td>
+          <td>32개</td>
+          <td><strong>캐릭터 16개</strong></td>
+      </tr>
+      <tr>
+          <td>한 라인당</td>
+          <td>8개</td>
+          <td><strong>한 라인에 캐릭터 4개</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>한 가로줄에 캐릭터 넷.</strong> 스네이크 하나, 경비병 셋이면 이미 꽉 찹니다. 여기서 총알 하나만 더해도 무언가가 사라집니다.</p>
+<h3 id="순서를-섞어서-나눠-깜빡인다">순서를 섞어서 나눠 깜빡인다<a href="#순서를-섞어서-나눠-깜빡인다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>&ldquo;스프라이트 레이어를 섞어 가로 스프라이트 제한(깜빡임)을 피한다.&rdquo;</strong></p>
+<p>한 라인에 아홉 번째 스프라이트가 걸리면 그놈은 안 그려집니다. 그런데 매 프레임 순서를 바꾸면 안 그려지는 놈이 매번 달라집니다. 전부가 절반씩 보이게 되고, 사람 눈에는 깜빡임으로 보입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">UpdateSpritesShuf:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">hl</span><span class="p">,</span>	<span class="no">SprShuffleOffset</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">hl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">add</span>	    <span class="no">a</span><span class="p">,</span> <span class="mi">68</span><span class="no">h</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">and</span>	    <span class="mi">78</span><span class="no">h</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="p">(</span><span class="no">hl</span><span class="p">),</span> <span class="no">a</span>
+</span></span></code></pre></div><p>매 프레임 오프셋에 <code>$68</code> 을 더하고 <code>$78</code> 로 마스킹해서 순환시킵니다. 그 오프셋부터 스프라이트를 VRAM 에 올립니다.</p>
+<p>여기서 <a href="/posts/20260803-8bit-hardware-limits-02/">Part 2</a>를 떠올려 봅시다. 슈퍼 마리오브라더스에도 <code>SpriteShuffler</code> 라는 루틴이 있었고, 하는 일이 정확히 같았습니다.</p>
+<p><strong>패미콤과 MSX2, 다른 회사, 다른 CPU, 다른 비디오 칩. 그런데 스캔라인당 스프라이트 8개라는 같은 제약 앞에서 두 팀이 똑같은 답을 냈습니다.</strong> 아무것도 안 보이는 것보다는 깜빡이는 게 낫다는 판단입니다. 1980년대 게임의 그 특유의 깜빡임은 기술 부족의 흔적이 아니라, 제한된 자원을 공평하게 나누는 스케줄러의 흔적입니다.</p>
+<hr>
+<h2 id="4-총알을-못-그리면-총을-쏘지-않게-만든다">4. 총알을 못 그리면, 총을 쏘지 않게 만든다<a href="#4-총알을-못-그리면-총을-쏘지-않게-만든다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기까지가 재료입니다. 이제 이 재료로 무엇을 만들었는지 봅니다.</p>
+<p><em>커맨도</em> 같은 게임을 만들려면 화면에 적이 여럿 있고 총알이 사방으로 날아다녀야 합니다. 그런데 방금 계산했듯 <strong>한 가로줄에 캐릭터 넷</strong> 이 한계입니다. 스네이크와 경비병 둘, 총알 하나면 끝입니다.</p>
+<p>보통의 해법은 &ldquo;그래도 어떻게든 많이 그린다&rdquo; 입니다. 깜빡임을 감수하고 밀어붙이거나, 총알을 스프라이트가 아닌 다른 방법으로 그리거나.</p>
+<p>메탈기어의 해법은 달랐습니다.</p>
+<blockquote>
+<p>적을 내보내지 않고도 성립하는 게임을 만드는 수밖에 없었습니다.</p>
+</blockquote>
+<p><strong>총을 쏘지 않으면 총알을 그릴 필요가 없습니다.</strong> 적과 마주치지 않으면 적을 여럿 그릴 필요가 없습니다. 화면 하나에 경비병 한둘만 있으면 스프라이트 예산이 남아돕니다.</p>
+<p>그래서 게임의 목표가 뒤집힙니다. 적을 없애는 것이 아니라 <strong>적에게 들키지 않는 것</strong> 이 목표가 됩니다. 전투는 실패의 신호이지 게임의 내용이 아닙니다.</p>
+<p>이 뒤집기의 놀라운 점은, 포기한 것이 하나도 게임의 손해가 아니라는 것입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>하드웨어가 못 하는 것</th>
+          <th>보통의 대응</th>
+          <th>메탈기어의 대응</th>
+          <th>결과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>화면을 가로로 스크롤</td>
+          <td>타일 모드로 후퇴</td>
+          <td>방 단위로 끊는다</td>
+          <td>방 = 경비 구역이라는 단위가 생김</td>
+      </tr>
+      <tr>
+          <td>적과 총알을 많이 그리기</td>
+          <td>깜빡임 감수</td>
+          <td>싸우지 않는 게임</td>
+          <td>긴장감이 전투가 아니라 회피에서 나옴</td>
+      </tr>
+      <tr>
+          <td>넓은 시야 표현</td>
+          <td>—</td>
+          <td>화면 밖은 안 보임</td>
+          <td>다음 방에 뭐가 있는지 모르는 공포</td>
+      </tr>
+      <tr>
+          <td>동시 입력</td>
+          <td>—</td>
+          <td>기능키에 기능 배분</td>
+          <td>무전기, 아이템 메뉴 같은 별도 계층</td>
+      </tr>
+  </tbody>
+</table>
+<p>마지막 줄도 코지마의 회고에 나옵니다.</p>
+<blockquote>
+<p>기능키가 다섯 개 있어서 각각을 쓰기로 했습니다. 예를 들어 F4 키는 무전기를 부릅니다. 컨트롤러에서 키 두 개를 동시에 누르는 건 생각할 수도 없었습니다.</p>
+</blockquote>
+<p>컨트롤러의 버튼이 부족해서 키보드 기능키로 도망친 결과가, 시리즈의 상징이 된 <strong>무전기 시스템</strong> 입니다.</p>
+<hr>
+<h2 id="5-시야는-원뿔이-아니라-복도다">5. 시야는 원뿔이 아니라 복도다<a href="#5-시야는-원뿔이-아니라-복도다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>경비병이 플레이어를 발견하는 판정을 봅시다. 오늘날이라면 시야각을 정하고 내적을 계산하고 레이캐스트를 쏘겠지만, 3.58MHz Z80 에는 그럴 여유가 없습니다.</p>
+<p>메탈기어의 판정은 네 단계입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">ChkLookRight:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">call</span>    <span class="no">ChkViewHorizontal</span>		    <span class="c1">; 플레이어가 같은 가로 띠 안에 있는가
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">nc</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">call</span>    <span class="no">ChkPosLeftRight</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">nc</span>				    <span class="c1">; 적의 등 뒤에 있으면 볼 수 없다
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">neg</span>					    <span class="c1">; 거리를 양수로
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">and</span>	    <span class="mi">0</span><span class="no">F8h</span>			    <span class="c1">; 8의 배수로 맞춤
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">rra</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">rra</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">rra</span>					    <span class="c1">; 타일 개수 단위의 거리
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nz</span><span class="p">,</span>	<span class="no">ChkLookRight2</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">inc</span>	    <span class="no">a</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">ChkLookRight2:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">c</span><span class="p">,</span> <span class="mi">1</span>			    <span class="c1">; 다음 타일로 가는 오프셋
+</span></span></span><span class="line"><span class="cl">		    <span class="c1">; 이어서 ChkViewObstacles 로 떨어진다
+</span></span></span></code></pre></div><ol>
+<li><strong>같은 가로 띠 안에 있는가.</strong></li>
+<li><strong>바라보는 방향 쪽에 있는가.</strong> (등 뒤면 못 봄)</li>
+<li><strong>거리를 타일 개수로 환산한다.</strong> <code>and $F8</code> 후 오른쪽 시프트 세 번, 즉 8로 나눕니다. 나눗셈 명령 없이 마스크와 시프트만 씁니다.</li>
+<li><strong>그 타일들을 하나씩 훑으며 장애물이 있는지 본다.</strong></li>
+</ol>
+<p>여기서 &ldquo;가로 띠&rdquo; 의 폭이 흥미롭습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">ChkViewHorizontal:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">ix</span><span class="err">+</span><span class="no">ACTOR.ID</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">cp</span>	    <span class="no">ID_CAMERA</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">hl</span><span class="p">,</span>	<span class="mi">408</span><span class="no">h</span>			    <span class="c1">; 카메라: H = 시야폭/2, L = 시야폭
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">z</span><span class="p">,</span> <span class="no">ChkViewHorizontal2</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">hl</span><span class="p">,</span>	<span class="mi">60</span><span class="no">Ch</span>			    <span class="c1">; 경비병: H = 시야폭/2, L = 시야폭
+</span></span></span></code></pre></div><table>
+  <thead>
+      <tr>
+          <th>상황</th>
+          <th>시야 폭</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>경비병이 좌우를 볼 때</td>
+          <td><strong>12픽셀</strong> (<code>$0C</code>)</td>
+      </tr>
+      <tr>
+          <td>경비병이 위아래를 볼 때</td>
+          <td><strong>16픽셀</strong> (<code>$10</code>)</td>
+      </tr>
+      <tr>
+          <td>감시 카메라</td>
+          <td><strong>8픽셀</strong> (<code>$08</code>)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>시야가 원뿔이 아닙니다. 폭이 고정된 복도입니다.</strong> 각도가 없으니 삼각함수도, 내적도, 나눗셈도 필요 없습니다. 비교 몇 번과 타일 훑기가 전부입니다.</p>
+<p>Go 로 옮기면 이 정도입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Dir</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">const</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Up</span><span class="w"> </span><span class="nx">Dir</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">iota</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Down</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Left</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Right</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 경비병이 바라보는 방향으로만, 정해진 폭의 복도 안에서만 본다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 각도 계산이 없으므로 곱셈도 삼각함수도 쓰지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">g</span><span class="w"> </span><span class="nx">Guard</span><span class="p">)</span><span class="w"> </span><span class="nf">CanSee</span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">Player</span><span class="p">,</span><span class="w"> </span><span class="nx">room</span><span class="w"> </span><span class="o">*</span><span class="nx">Room</span><span class="p">)</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">band</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 시야 복도의 폭 (픽셀)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Dir</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">Left</span><span class="p">,</span><span class="w"> </span><span class="nx">Right</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">band</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">default</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">band</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">16</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">IsCamera</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">band</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 1) 같은 띠 안에 있는가</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Dir</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">Left</span><span class="p">,</span><span class="w"> </span><span class="nx">Right</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Y</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Y</span><span class="o">-</span><span class="nx">band</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Y</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Y</span><span class="o">+</span><span class="nx">band</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">default</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">X</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">X</span><span class="o">-</span><span class="nx">band</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">X</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">X</span><span class="o">+</span><span class="nx">band</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 2) 바라보는 방향 쪽에 있는가 (등 뒤면 못 본다)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">dist</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Dir</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">Right</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">dist</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">X</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">X</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">Left</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">dist</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">X</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">X</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">Down</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">dist</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Y</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">Up</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">dist</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Y</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">dist</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 3) 거리를 타일 개수로. 나눗셈 대신 마스크와 시프트.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">tiles</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">(</span><span class="nx">dist</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xf8</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">tiles</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">tiles</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 4) 경비병에서 플레이어 쪽으로 타일을 하나씩 훑으며 시선이 막히는지 본다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">!</span><span class="nx">room</span><span class="p">.</span><span class="nf">HasObstacle</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Y</span><span class="p">,</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">Dir</span><span class="p">,</span><span class="w"> </span><span class="nx">tiles</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>그리고 이 판정 앞에 예외 처리가 붙습니다. disassembly 의 <code>ChkSeePlayer</code> 를 보면 이런 것들입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">ChkSeePlayer:</span>
+</span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">AlertMode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">or</span>	    <span class="no">a</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">nz</span>				    <span class="c1">; 경보 중에는 이미 위치를 알고 있다
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">SnakeSprId</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">b</span><span class="p">,</span> <span class="mi">37</span>			    <span class="c1">; 깊은 물 그림자 스프라이트
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">cp</span>	    <span class="no">b</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">z</span>				    <span class="c1">; 깊은 물속의 스네이크는 보이지 않는다
+</span></span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">PlayerAnimation</span><span class="p">)</span>	    <span class="c1">; 7 = 골판지 상자
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">cp</span>	    <span class="mi">7</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nz</span><span class="p">,</span>	<span class="no">ChkSeePlayer2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">; 골판지 상자가 움직이고 있는지 검사한다
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">hl</span><span class="p">,</span>	<span class="no">PlayerSpeedY</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">hl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">inc</span>	    <span class="no">hl</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">or</span>	    <span class="p">(</span><span class="no">hl</span><span class="p">)</span>			    <span class="c1">; 위아래로 움직이는가
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nz</span><span class="p">,</span>	<span class="no">ChkSeePlayer2</span>
+</span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">z</span>				    <span class="c1">; 움직이지 않으면 발각되지 않는다
+</span></span></span></code></pre></div><p>시리즈의 상징이 된 <strong>골판지 상자</strong> 가 여기 있습니다. 규칙은 단순합니다. 상자를 쓰고 <strong>가만히 있으면</strong> 안 보이고, 움직이면 보입니다. 속도 변수 네 개가 전부 0인지만 확인합니다.</p>
+<p>깊은 물에 들어가도 안 보입니다. 이것도 스프라이트를 물 그림자 스프라이트로 갈아 끼우고 그 ID 를 비교하는 것으로 끝냅니다. 별도의 은신 상태 변수도 없습니다.</p>
+<hr>
+<h2 id="6-경보는-방에-붙어-있다">6. 경보는 방에 붙어 있다<a href="#6-경보는-방에-붙어-있다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>메탈기어에서 가장 중요한 시스템은 경보입니다. 그리고 그 경보가 <strong>방 단위</strong> 로 관리된다는 사실이, 하드웨어 제약과 게임 디자인이 만나는 지점입니다.</p>
+<p>경보를 켜는 코드입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">SetAlertMode:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="p">(</span><span class="no">AlertMode</span><span class="p">),</span> <span class="no">a</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="p">(</span><span class="no">AlertModeCopy</span><span class="p">),</span> <span class="no">a</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">Room</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="p">(</span><span class="no">RoomAlert</span><span class="p">),</span> <span class="no">a</span>		    <span class="c1">; 경보가 발생한 방
+</span></span></span></code></pre></div><p><code>RoomAlert</code> — <strong>경보에 방 번호가 붙습니다.</strong> 경보는 전역 상태가 아니라 특정 방의 속성입니다.</p>
+<p>그리고 경보를 끄는 코드입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nl">ChkAlarmEnd:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">TransmiTaken</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">or</span>	    <span class="no">a</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">nz</span>				    <span class="c1">; 발신기를 들고 있으면 경보가 절대 끝나지 않는다
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">AlertMode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">or</span>	    <span class="no">a</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">z</span>				    <span class="c1">; 경보 중이 아님
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">Room</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">cp</span>	    <span class="mi">0</span><span class="no">F0h</span>			    <span class="c1">; 엘리베이터인가
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nc</span><span class="p">,</span>	<span class="no">StopAlert</span>		    <span class="c1">; 엘리베이터에 들어가면 경보 해제
+</span></span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">ChkAlarmEnd2:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="p">(</span><span class="no">Room</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">hl</span><span class="p">,</span>	<span class="no">RoomAlert</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">cp</span>	    <span class="p">(</span><span class="no">hl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nz</span><span class="p">,</span>	<span class="no">StopAlert</span>		    <span class="c1">; 지금 방이 경보 걸린 방이 아니면 해제
+</span></span></span><span class="line"><span class="cl">		    <span class="na">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">ChkEnemyCount:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">call</span>    <span class="no">CountEnemyType</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">cp</span>	    <span class="mi">10</span><span class="no">h</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">z</span><span class="p">,</span> <span class="no">StopAlert</span>		    <span class="c1">; 적이 너무 많으면 해제
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		    <span class="nf">or</span>	    <span class="no">a</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ret</span>	    <span class="no">nz</span>				    <span class="c1">; 적이 남아 있으면 경보 유지
+</span></span></span></code></pre></div><p>규칙을 정리하면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>조건</th>
+          <th>결과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>발신기를 소지 중</td>
+          <td>경보가 <strong>절대</strong> 끝나지 않음</td>
+      </tr>
+      <tr>
+          <td>엘리베이터에 진입</td>
+          <td>경보 해제</td>
+      </tr>
+      <tr>
+          <td>지금 방 != 경보 걸린 방</td>
+          <td><strong>경보 해제</strong></td>
+      </tr>
+      <tr>
+          <td>그 방에 적이 남아 있음</td>
+          <td>경보 유지</td>
+      </tr>
+      <tr>
+          <td>적이 16마리 이상</td>
+          <td>경보 해제 (안전장치)</td>
+      </tr>
+  </tbody>
+</table>
+<p>세 번째 줄이 핵심입니다. <strong>경보가 걸린 방을 벗어나면 경보가 풀립니다.</strong></p>
+<p>플레이 감각으로 옮기면 이렇습니다. 들켰다. 경비병이 몰려온다. 옆방으로 도망친다. 조용해진다. 이 리듬이 메탈기어의 기본 박자이고, 그 박자는 <strong>가로 스크롤이 안 돼서 화면을 방 단위로 끊었기 때문에</strong> 생겼습니다.</p>
+<p>경보 중 몰려오는 경비병의 수도 계산됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">hl</span><span class="p">,</span>	<span class="no">Card8Taken</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">b</span><span class="p">,</span> <span class="mi">8</span>			    <span class="c1">; 카드 8장
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">SetAlertMode2:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">bit</span>	    <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="no">hl</span><span class="p">)</span>			    <span class="c1">; 이 카드를 획득했는가
+</span></span></span><span class="line"><span class="cl">		    <span class="nf">jr</span>	    <span class="no">nz</span><span class="p">,</span>	<span class="no">SetAlertMode3</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">dec</span>	    <span class="no">hl</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">djnz</span>    <span class="no">SetAlertMode2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">SetAlertMode3:</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">ld</span>	    <span class="no">a</span><span class="p">,</span> <span class="no">b</span>
+</span></span><span class="line"><span class="cl">		    <span class="nf">add</span>	    <span class="no">a</span><span class="p">,</span> <span class="mi">3</span>			    <span class="c1">; 최소 리스폰 경비병 수
+</span></span></span></code></pre></div><p>플레이어가 가진 <strong>가장 높은 등급 카드 번호에 3을 더한 값</strong> 이 리스폰 경비병 수가 됩니다. 게임이 진행될수록 카드 등급이 올라가고, 경보가 걸렸을 때 몰려오는 적도 늘어납니다. <strong>난이도 곡선을 별도 테이블 없이 진행도 변수 하나로 만들어 냈습니다.</strong></p>
+<p>Go 로 옮기면 이렇게 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">AlertState</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Active</span><span class="w">    </span><span class="kt">bool</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Room</span><span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="c1">// 경보가 걸린 방. 이 방을 벗어나면 경보가 풀린다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">Respawns</span><span class="w">  </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="w"> </span><span class="o">*</span><span class="nx">AlertState</span><span class="p">)</span><span class="w"> </span><span class="nf">Trigger</span><span class="p">(</span><span class="nx">g</span><span class="w"> </span><span class="o">*</span><span class="nx">Game</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">a</span><span class="p">.</span><span class="nx">Active</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">a</span><span class="p">.</span><span class="nx">Room</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">CurrentRoom</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 가진 카드 중 가장 높은 등급 + 3 이 몰려올 경비병 수가 된다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">highest</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">--</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nf">HasCard</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nx">highest</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">i</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">break</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">a</span><span class="p">.</span><span class="nx">Respawns</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">highest</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="w"> </span><span class="o">*</span><span class="nx">AlertState</span><span class="p">)</span><span class="w"> </span><span class="nf">Update</span><span class="p">(</span><span class="nx">g</span><span class="w"> </span><span class="o">*</span><span class="nx">Game</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">a</span><span class="p">.</span><span class="nx">Active</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">HasTransmitter</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="c1">// 발신기를 들고 있으면 절대 풀리지 않는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nf">IsElevator</span><span class="p">(</span><span class="nx">g</span><span class="p">.</span><span class="nx">CurrentRoom</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">Active</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nx">CurrentRoom</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">Room</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">Active</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// 경보가 걸린 방을 벗어났다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nf">EnemyCount</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">16</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">Active</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// 안전장치</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="nx">g</span><span class="p">.</span><span class="nf">EnemyCount</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nx">a</span><span class="p">.</span><span class="nx">Active</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>상태 머신이 열 줄입니다. 여기에 &ldquo;방&rdquo; 이라는 개념이 없었다면 이 코드는 성립하지 않습니다. 그리고 방이라는 개념은 게임 디자이너가 발명한 것이 아니라 <strong>V9938 에 가로 스크롤 레지스터가 없어서 생긴 것</strong> 입니다.</p>
+<hr>
+<h2 id="7-제약이-문법이-되다">7. 제약이 문법이 되다<a href="#7-제약이-문법이-되다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>메탈기어가 만든 규칙들을 나열해 보면, 거의 전부가 하드웨어의 그림자입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>게임 문법</th>
+          <th>유래한 제약</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>방 단위 경비 구역</td>
+          <td>가로 스크롤 레지스터 없음 + 비트맵 32KB</td>
+      </tr>
+      <tr>
+          <td>옆방으로 도망치면 경보 해제</td>
+          <td>위와 같음</td>
+      </tr>
+      <tr>
+          <td>전투가 아니라 회피가 목표</td>
+          <td>스캔라인당 캐릭터 4개</td>
+      </tr>
+      <tr>
+          <td>총알이 적고 느림</td>
+          <td>위와 같음</td>
+      </tr>
+      <tr>
+          <td>가만히 있으면 안 보이는 골판지 상자</td>
+          <td>속도 변수 검사 한 번으로 끝나는 판정</td>
+      </tr>
+      <tr>
+          <td>시야가 직선으로만 뻗음</td>
+          <td>곱셈 명령 없음, 4방향 이동</td>
+      </tr>
+      <tr>
+          <td>무전기와 아이템 메뉴</td>
+          <td>컨트롤러 동시 입력 불가</td>
+      </tr>
+      <tr>
+          <td>화면 밖은 알 수 없음</td>
+          <td>스크롤 없음</td>
+      </tr>
+  </tbody>
+</table>
+<p>그리고 이 문법들은 하드웨어가 사라진 뒤에도 살아남았습니다. 1998년 플레이스테이션의 메탈기어 솔리드는 3D 폴리곤을 쓰면서도 <strong>구역 단위 경계 상태</strong>, <strong>경보 타이머</strong>, <strong>시야에 들어가면 느낌표</strong>, <strong>숨을 곳</strong> 이라는 문법을 그대로 가져갔습니다. 그다음의 스텔스 게임들도 대부분 그렇습니다.</p>
+<p>코지마 본인도 같은 인터뷰에서 이렇게 말합니다.</p>
+<blockquote>
+<p>3D 폴리곤이 되는 가정용 기기가 나온다는 얘기를 들었을 때, 제일 먼저 든 생각은 &ldquo;드디어 진짜 숨바꼭질 게임을 만들 수 있겠다&rdquo; 였습니다.</p>
+</blockquote>
+<p><strong>제약이 사라지자 하려던 것을 마저 했을 뿐, 하려던 것 자체가 제약에서 태어난 것입니다.</strong></p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 4 에서 확인한 것을 정리하면 이렇습니다.</p>
+<ul>
+<li><strong>메탈기어는 SCREEN 5(GRAPHIC 4) 비트맵 모드를 씁니다.</strong> 화면 한 장이 32KB 이고, V9938 에는 가로 스크롤 레지스터가 없습니다. 가로로 흐르는 화면은 물리적으로 불가능했습니다.</li>
+<li><strong>그래서 화면을 방 단위로 끊었고, 그 결과 방 하나가 48바이트가 됐습니다.</strong> 8 x 6 메타타일, 메타타일 하나가 4 x 4 타일입니다. 165개 방 전체가 8,382바이트, 게임 세계 전부가 약 20,246바이트입니다. 같은 것을 비트맵으로 저장하면 5.4MB 입니다.</li>
+<li><strong>스프라이트 32개는 실질적으로 캐릭터 16개입니다.</strong> 라인당 한 색이라는 제약 때문에 두 장을 겹쳐 3색을 만들고, 그 대가로 한 가로줄에 캐릭터 넷이 한계가 됩니다.</li>
+<li><strong>순서를 매 프레임 섞어 깜빡임으로 분산합니다.</strong> 슈퍼 마리오브라더스의 <code>SpriteShuffler</code> 와 정확히 같은 해법입니다. 다른 회사, 다른 하드웨어, 같은 제약, 같은 답.</li>
+<li><strong>시야는 원뿔이 아니라 폭이 고정된 복도입니다.</strong> 경비병 12픽셀, 위아래 16픽셀, 카메라 8픽셀. 거리는 마스크와 시프트로 타일 수로 환산하고, 그 타일들을 훑어 장애물을 검사합니다.</li>
+<li><strong>경보에는 방 번호가 붙어 있습니다.</strong> 그 방을 벗어나면 경보가 풀립니다. 이 한 줄의 비교가 메탈기어의 기본 리듬을 만듭니다.</li>
+</ul>
+<p>세 편을 관통하는 대비를 마지막으로 정리하겠습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>마리오</th>
+          <th>엘리트</th>
+          <th>메탈기어</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>부족했던 것</td>
+          <td>ROM 용량</td>
+          <td>RAM 용량</td>
+          <td>스프라이트, 스크롤</td>
+      </tr>
+      <tr>
+          <td>전략</td>
+          <td><strong>압축</strong></td>
+          <td><strong>생성</strong></td>
+          <td><strong>전복</strong></td>
+      </tr>
+      <tr>
+          <td>무엇을 했나</td>
+          <td>데이터를 작게</td>
+          <td>데이터를 안 가짐</td>
+          <td>그 데이터가 필요 없게</td>
+      </tr>
+      <tr>
+          <td>세계 데이터</td>
+          <td>4,460 바이트</td>
+          <td>6 바이트</td>
+          <td>20,246 바이트</td>
+      </tr>
+      <tr>
+          <td>대가</td>
+          <td>표현 가능한 오브젝트가 제한됨</td>
+          <td>세부를 손댈 수 없음</td>
+          <td>원래 만들려던 게임을 포기함</td>
+      </tr>
+  </tbody>
+</table>
+<p>메탈기어의 대가가 가장 큽니다. 만들라고 지시받은 게임을 아예 만들지 않았습니다. 그런데 결과적으로 셋 중 가장 오래 남은 것도 메탈기어의 선택입니다. 마리오의 레벨 인코딩과 엘리트의 씨앗 알고리듬은 하드웨어가 나아지면서 필요 없어졌지만, <strong>&ldquo;싸우지 않는 게임&rdquo; 이라는 아이디어는 하드웨어와 무관하기 때문</strong> 입니다.</p>
+<p>Part 5 에서는 이 시리즈를 마무리합니다. 제약이 사라진 시대에 이 세 가지 전략 중 무엇이 남았고, 무엇이 없어졌고, 왜 어떤 사람들은 제약을 일부러 되살리는지를 봅니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://github.com/GuillianSeed/MetalGear">MetalGear — 메탈기어(RC750, MSX2, 1987) 주석 disassembly (GuillianSeed)</a> — 이 글의 모든 코드 인용과 데이터 측정의 근거</li>
+<li><a href="https://www.tumblr.com/thearkhound/185300055888/hideo-kojima-interview-with-msx-magazine-2005">Hideo Kojima interview with MSX Magazine (2005), thearkhound 번역</a> — 코지마 인터뷰 인용</li>
+<li><a href="https://map.grauw.nl/resources/video/yamaha_v9938.pdf">V9938 MSX-VIDEO Technical Data Book (Yamaha / ASCII, 1985)</a> — 스프라이트 및 GRAPHIC 4 사양</li>
+<li><a href="https://map.grauw.nl/articles/scrolling.php">A guide to scrolling game engines on MSX (MSX Assembly Page)</a> — MSX 세대별 스크롤 지원</li>
+<li><a href="/posts/20260803-8bit-hardware-limits-01/">8비트의 벽을 넘은 게임들 Part 1: 그 기계들은 무엇을 못 했는가</a></li>
+<li><a href="/posts/20260803-8bit-hardware-limits-02/">8비트의 벽을 넘은 게임들 Part 2: 슈퍼 마리오브라더스, 레벨을 그리지 않고 서술하다</a></li>
+<li><a href="/posts/20260803-8bit-hardware-limits-03/">8비트의 벽을 넘은 게임들 Part 3: 엘리트, 우주를 6바이트에 담다</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-05/" class="button inline prev">
+        &lt; [<span class="button__text">8비트의 벽을 넘은 게임들 Part 5: 제약이 사라진 시대에 남은 것</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260803-8bit-hardware-limits-03/" class="button inline next">
+         [<span class="button__text">8비트의 벽을 넘은 게임들 Part 3: 엘리트, 우주를 6바이트에 담다</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
