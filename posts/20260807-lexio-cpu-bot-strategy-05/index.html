@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>렉시오 CPU 플레이어 만들기 Part 5: 봇이 아무것도 하지 않는 이유 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Part 1\~4 에서 설계한 렉시오 hard 봇을 실제로 구현했더니 봇이 거의 모든 턴을 패스했습니다. 개별 항은 전부 맞았고 항을 합치는 방식이 틀렸습니다. 평가 함수가 무너지는 네 가지 자리와, 그 회귀 테스트가 엉뚱한 이유로 통과한 이야기를 다룹니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy, debugging, testing" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260807-lexio-cpu-bot-strategy-05/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="렉시오 CPU 플레이어 만들기 Part 5: 봇이 아무것도 하지 않는 이유">
+<meta property="og:description" content="Part 1\~4 에서 설계한 렉시오 hard 봇을 실제로 구현했더니 봇이 거의 모든 턴을 패스했습니다. 개별 항은 전부 맞았고 항을 합치는 방식이 틀렸습니다. 평가 함수가 무너지는 네 가지 자리와, 그 회귀 테스트가 엉뚱한 이유로 통과한 이야기를 다룹니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260807-lexio-cpu-bot-strategy-05/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-07 07:56:13 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+<style>
+  .pagination__pages {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 10px;
+    margin-top: 16px;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .pagination__page {
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .pagination__page:hover {
+    opacity: 1;
+  }
+
+  .pagination__page--current {
+    color: var(--accent);
+    font-weight: bold;
+    opacity: 1;
+  }
+
+  .archive__count {
+    opacity: 0.6;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .archive__year {
+    margin: 40px 0 10px;
+  }
+
+  .archive__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive__item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin: 6px 0;
+  }
+
+  .archive__date {
+    flex: 0 0 auto;
+    opacity: 0.5;
+    font-size: calc(var(--font-size) * 0.85);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/archive/">Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/archive/" >Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260807-lexio-cpu-bot-strategy-05/">렉시오 CPU 플레이어 만들기 Part 5: 봇이 아무것도 하지 않는 이유</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-07</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/debugging/">debugging</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="설계와-구현-사이">설계와 구현 사이<a href="#설계와-구현-사이" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">Part 1</a> 부터 <a href="/posts/20260731-lexio-cpu-bot-strategy-04/">Part 4</a> 까지는 설계안이었습니다. 타일을 정수로 압축하고, 미공개 집합을 복원하고, 손패 분해를 DP 로 풀고, 목적 함수를 정산식에서 유도해 평가 함수의 항을 나열했습니다. 코드 조각은 있었지만 돌려 본 적은 없었습니다.</p>
+<p>이번 편은 그 설계를 실제로 구현해 브라우저에서 5인 게임을 돌려 본 기록입니다. 결과부터 적겠습니다. <strong>봇이 거의 모든 턴을 패스했습니다.</strong></p>
+<p>원인을 추적하고 나서 든 생각은 &ldquo;설계가 틀렸다&quot;가 아니었습니다. 항을 하나씩 뜯어보면 Part 4 가 쓴 대로였고, 개별 함수는 각각 맞는 값을 돌려주고 있었습니다. 틀린 것은 <strong>항을 합치는 방식</strong> 이었고, 그중 일부는 Part 1~4 가 아예 말하지 않은 자리였습니다.</p>
+<p>그래서 이번 편의 주제는 이렇습니다.</p>
+<blockquote>
+<p>평가 함수는 항이 틀려서 무너지는 것이 아니라, <strong>항을 합치는 방식</strong> 에서 무너집니다.</p>
+</blockquote>
+<hr>
+<h2 id="1-증상-아무-일도-일어나지-않는다">1. 증상: 아무 일도 일어나지 않는다<a href="#1-증상-아무-일도-일어나지-않는다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>5인 게임, 사람 하나에 <code>hard</code> 봇 넷입니다. 서버 로그를 요약하면 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">seat 2 policy_key=hard decision=pass
+</span></span><span class="line"><span class="cl">seat 3 policy_key=hard decision=pass
+</span></span><span class="line"><span class="cl">seat 4 policy_key=hard decision=pass
+</span></span><span class="line"><span class="cl">seat 5 policy_key=hard decision=pass
+</span></span><span class="line"><span class="cl">   (사람이 리드 → 봇 4명 전원 패스 → 트릭 종료 → 반복)
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">seat 3 policy_key=hard decision=play   ← 한 라운드에 딱 한 번
+</span></span></code></pre></div><p>봇은 멈추지 않았고, 오류도 없었고, 규칙 위반도 없었습니다. <strong>그냥 아무것도 하지 않았습니다.</strong> 그리고 한 라운드에 딱 한 번 낸 수가 <code>해 2</code> 싱글, 즉 덱에서 가장 강한 타일이었습니다.</p>
+<p>이런 종류의 버그는 코드를 읽어서는 잘 잡히지 않습니다. 예외도 없고, 스택 트레이스도 없고, 어느 함수가 범인인지 가리키는 표지도 없습니다. 각 함수가 개별적으로는 맞기 때문입니다.</p>
+<hr>
+<h2 id="2-진단-코드를-읽지-말고-점수를-찍는다">2. 진단: 코드를 읽지 말고 점수를 찍는다<a href="#2-진단-코드를-읽지-말고-점수를-찍는다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>문제의 국면을 재현해 <strong>후보별 항목 점수를 그대로 출력</strong> 했습니다. 손패 12장은 이렇습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">스트레이트  구름3 별4 달5 해6 구름7
+</span></span><span class="line"><span class="cl">스트레이트  별9 달10 해11 구름12 별13
+</span></span><span class="line"><span class="cl">싱글        달1
+</span></span><span class="line"><span class="cl">싱글        해2
+</span></span></code></pre></div><p>테이블에는 <code>구름8</code> 싱글이 놓여 있고, 봇이 따라가는 상황입니다. 미공개 타일은 47장입니다. 손패 두 뭉치가 전부 5장 메이드라 <a href="/posts/20260731-lexio-cpu-bot-strategy-03/">Part 3</a> 의 분해 플랜으로는 네 번이면 비는 손패이고, 사람이라면 여기서 <code>달1</code> 정도를 흘려보내며 판을 볼 것입니다.</p>
+<p>봇의 점수는 이랬습니다. 가독성을 위해 로그의 타일 표기를 이 시리즈의 표기로 옮겼습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[별9]  total=-4.884  plan=-4.0  lead=0.000  strong=0.417  tempo=0.636
+</span></span><span class="line"><span class="cl">[달1]  total=-1.028  plan= 0.0  lead=0.000  strong=0.900  tempo=0.273
+</span></span><span class="line"><span class="cl">[해2]  total= 0.682  plan= 0.0  lead=1.000  strong=1.000  tempo=0.273  twos=1
+</span></span><span class="line"><span class="cl">PASS   total= 0.059
+</span></span></code></pre></div><p>네 줄에 답이 다 있습니다. <strong>모든 제출이 마이너스이고 패스만 플러스입니다.</strong> 유일하게 플러스인 제출이 덱 최강 타일인 <code>해 2</code> 이고, 관찰된 행동이 정확히 그것이었습니다. 봇은 고장 난 것이 아니라 자기가 받은 점수표에 충실했습니다.</p>
+<blockquote>
+<p>평가 함수로 움직이는 봇을 디버깅할 때 첫 단계는 코드 읽기가 아니라 <strong>항목별 점수 덤프</strong> 입니다.</p>
+</blockquote>
+<p>이 덤프를 공짜로 얻는 방법이 있습니다. <strong>결정 API 를 진단 API 위에 올리는 것</strong> 입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Evaluation 은 후보 하나에 대한 항목별 점수와 합계다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 진단용 구조체가 아니라 결정이 실제로 쓰는 구조체다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">type</span><span class="w"> </span><span class="nx">Evaluation</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Cand</span><span class="w">  </span><span class="o">*</span><span class="nx">Meld</span><span class="w"> </span><span class="c1">// nil 이면 패스</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Terms</span><span class="w"> </span><span class="nx">Terms</span><span class="w"> </span><span class="c1">// 항목별 점수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">Total</span><span class="w"> </span><span class="kt">float64</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Evaluate 는 이번 턴의 모든 후보(패스 포함)를 채점해 그대로 돌려준다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">Evaluate</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cands</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="p">[]</span><span class="nx">Evaluation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Decide 는 Evaluate 의 최댓값을 고를 뿐이다. 자체 판단을 갖지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">Decide</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cands</span><span class="w"> </span><span class="p">[]</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">best</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">Evaluation</span><span class="p">{</span><span class="nx">Total</span><span class="p">:</span><span class="w"> </span><span class="nx">math</span><span class="p">.</span><span class="nf">Inf</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nf">Evaluate</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cands</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">Total</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="nx">best</span><span class="p">.</span><span class="nx">Total</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">best</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">e</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">best</span><span class="p">.</span><span class="nx">Cand</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>진단 경로와 결정 경로가 <strong>같은 계산</strong> 을 쓰기 때문에, 덤프가 실제 결정과 어긋날 수 없습니다. 로그를 위한 별도 코드를 두면 그 코드가 낡아서 거짓말을 하기 시작하는데, 이 구조에서는 그럴 자리가 없습니다.</p>
+<p>그리고 이 덤프가 나오면 진단은 대체로 세 갈래로 갈립니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;봇이 이상한 수를 둔다&#34;] --&gt; B[&#34;후보별 항목 점수 덤프&#34;]
+    B --&gt; C{&#34;모든 제출이&lt;br/&gt;마이너스인가?&#34;}
+    C -- 예 --&gt; D[&#34;기준점 문제&lt;br/&gt;패스 점수 · 상시 감점&#34;]
+    C -- 아니오 --&gt; E{&#34;한 항이 나머지 항의&lt;br/&gt;합보다 큰가?&#34;}
+    E -- 예 --&gt; F[&#34;스케일 문제&lt;br/&gt;정규화 누락&#34;]
+    E -- 아니오 --&gt; G{&#34;두 항이 항상 같이&lt;br/&gt;움직이는가?&#34;}
+    G -- 예 --&gt; H[&#34;중복 계산&lt;br/&gt;같은 근원 값&#34;]
+    G -- 아니오 --&gt; I[&#34;여기서부터 가중치 튜닝&#34;]
+    style A fill:#FFD700,color:#000000
+    style D fill:#FFB6C1,color:#000000
+    style F fill:#FFB6C1,color:#000000
+    style H fill:#FFB6C1,color:#000000
+    style I fill:#90EE90,color:#000000
+</code></pre><p>이번 봇은 왼쪽 세 갈래에 <strong>전부</strong> 걸렸습니다. 하나씩 보겠습니다.</p>
+<hr>
+<h2 id="3-원인-a-목적-함수의-절반이-평가에-없었다">3. 원인 A: 목적 함수의 절반이 평가에 없었다<a href="#3-원인-a-목적-함수의-절반이-평가에-없었다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 4 §1 은 목적을 이렇게 유도했습니다.</p>
+<blockquote>
+<p><code>maximize E[ ( Σ e_j ) - (n-1)·e_i ]</code> 이고, <code>e_i = (i 의 실제 남은 장수) × 2^(i 가 손에 쥔 2 타일의 개수)</code> 입니다.</p>
+<p>봇은 <code>e_i</code> 최소화와 Part 3 의 최소 제출 횟수 최소화를 <strong>함께</strong> 목적에 넣어야 합니다. 앞의 것이 &ldquo;얼마나 남기는가&rdquo;, 뒤의 것이 &ldquo;얼마나 빨리 끝내는가&quot;를 담당합니다.</p>
+</blockquote>
+<p>문장은 맞습니다. 그런데 바로 다음 절인 §2 의 항 목록 ①~⑥ 을 보면 <strong><code>e_i</code> 의 장수 부분에 대응하는 항이 없습니다.</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>항</th>
+          <th>담당하는 것</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>① Plan (<code>plan.Turns - plan.Remaining</code>)</td>
+          <td>턴 수 = &ldquo;얼마나 빨리 끝내는가&rdquo;</td>
+      </tr>
+      <tr>
+          <td>④ Twos (<code>twoDumpValue</code>)</td>
+          <td><code>e_i</code> 중 <code>2^m</code> 배수 부분만</td>
+      </tr>
+      <tr>
+          <td>②③⑤⑥</td>
+          <td>위 둘을 실현하기 위한 보조 항</td>
+      </tr>
+  </tbody>
+</table>
+<p><code>e_i = k · 2^m</code> 에서 ④ 는 <code>2^m</code> 만 다루고, <strong><code>k</code> 자체를 다루는 항이 없습니다.</strong> Part 4 는 ①과 ④가 목적의 두 항에 각각 대응한다고 썼지만, 실제로 대응하는 것은 ①과 &ldquo;④의 지수 부분&quot;입니다.</p>
+<p>그 결과가 이겁니다. ① 은 플랜의 조각 하나를 내면 <code>+1</code> 입니다. <strong>다섯 장짜리 메이드를 내도 <code>+1</code>, 외톨이 싱글 한 장을 내도 <code>+1</code>.</strong> 두 수가 정산에 들어가는 <code>k</code> 를 네 장이나 다르게 만드는데 평가는 둘을 구분하지 못합니다.</p>
+<p>구현에서는 이것이 더 나쁜 형태로 나타났습니다. 장수 항을 <strong>엔드게임 점수 안에만</strong> 두고 긴급도를 곱했더니, <strong>긴급도가 0 인 라운드 대부분 동안 장수가 평가에서 완전히 사라졌습니다.</strong> Part 4 §4 의 <code>u</code> 혼합 구조를 그대로 따르면 자연스럽게 이렇게 됩니다. 승부 모드 점수에 장수 항이 없으면 <code>u = 0</code> 인 구간에서 그 항의 가중치는 무엇을 곱해도 0 입니다.</p>
+<p><strong>수정.</strong> 손패에서 빠지는 비율을 <strong>상시 항</strong> 으로 넣습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Progress 는 이 수로 손패의 몇 할이 빠지는가다. e_i 의 k 부분에 대응한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 엔드게임 전용이 아니라 매 턴 켜져 있어야 한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">progress</span><span class="p">(</span><span class="nx">hand</span><span class="w"> </span><span class="nx">Set</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">cand</span><span class="p">.</span><span class="nx">Count</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">hand</span><span class="p">.</span><span class="nf">Len</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>12장에서 5장 메이드를 내면 <code>5/12 ≈ 0.417</code>, 싱글 한 장이면 <code>1/12 ≈ 0.083</code> 입니다. 이제 둘이 구분됩니다.</p>
+<blockquote>
+<p><strong>조건부로만 켜지는 항은 그 조건 밖에서 존재하지 않는 것과 같습니다.</strong> 목적 함수에 두 항이 있다고 썼으면 평가에도 두 항이 상시로 있어야 합니다.</p>
+</blockquote>
+<p>Part 4 는 &ldquo;항이 여섯 개뿐인 것은 의도한 것&quot;이라고 썼고 그 판단 자체는 지금도 옳다고 생각합니다. 항을 늘리자는 이야기가 아닙니다. <strong>목적 함수에 명시적으로 적어 둔 항 하나가 평가에 아예 없었다</strong> 는 이야기입니다. 유도해 놓고 옮기지 않았습니다.</p>
+<hr>
+<h2 id="4-원인-b-스케일-규율을-한-항에만-적용했다">4. 원인 B: 스케일 규율을 한 항에만 적용했다<a href="#4-원인-b-스케일-규율을-한-항에만-적용했다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 4 §③ 은 이 문제를 아주 정확하게 경고합니다.</p>
+<blockquote>
+<p><strong><code>Key</code> 의 산술 차이를 거리로 쓰면 안 됩니다.</strong> <code>Key</code> 는 순서 비교용 인코딩이지 등간격 점수가 아닙니다. (…) 이 값을 그대로 감점에 넣으면 다른 항이 전부 무의미해지고, 가중치를 아무리 작게 잡아도 <strong>카테고리 경계에서 열여섯 배씩 튀는 계단</strong> 이 남습니다.</p>
+</blockquote>
+<p>옳은 지적입니다. 그런데 <strong>같은 병이 ① 에도 있었습니다.</strong> ① 은 턴 수 차이라 위아래로 열려 있고, 구현에서 <code>-4</code> 까지 내려갔습니다. 나머지 항은 전부 0~1 이었습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[별9]  plan=-4.0   ← 이 한 항이 다른 다섯 항의 합보다 크다
+</span></span></code></pre></div><p><code>별9</code> 를 내면 두 번째 스트레이트가 깨져 남은 조각 수가 크게 늘어나므로 플랜 항이 <code>-4</code> 가 됩니다. 감점 자체는 방향이 맞습니다. 문제는 <strong>크기</strong> 입니다. 다른 다섯 항이 아무리 힘을 모아도 0~1 짜리 다섯 개라 이 항 하나를 넘지 못합니다.</p>
+<p>여기서 중요한 것은 이것이 <strong>가중치 튜닝으로 고칠 수 없는 종류</strong> 라는 점입니다. 가중치를 낮추면 그 항이 죽고, 올리면 그 항만 남습니다. 어떤 값을 넣어도 &ldquo;다른 항과 함께 결정하는&rdquo; 구간이 존재하지 않습니다. 개발 계획상 가중치 튜닝은 시뮬레이터를 붙인 다음의 일이었는데, 그때까지 미룰 수 있는 문제가 아니었습니다.</p>
+<p><strong>수정.</strong> 모든 항을 0~1 로 정규화하고 방향을 &ldquo;클수록 좋다&quot;로 통일합니다. 계획 항은 이렇게 바꿨습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// PlanGain 은 이 수가 플랜을 얼마나 지키는가다. 0..1, 클수록 좋다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">//   extra = 이 수를 내고 난 뒤 늘어난 제출 횟수 (0 이면 플랜대로)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 턴 수의 차이를 그대로 쓰지 않고, 원래 필요한 제출 횟수로 나눠 비율로 만든다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">planGain</span><span class="p">(</span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">extra</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nf">Remaining</span><span class="p">(</span><span class="o">*</span><span class="nx">cand</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">plan</span><span class="p">.</span><span class="nx">Turns</span><span class="w"> </span><span class="c1">// 0 이상</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">extra</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">math</span><span class="p">.</span><span class="nf">Max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">-</span><span class="nb">float64</span><span class="p">(</span><span class="nx">extra</span><span class="p">)</span><span class="o">/</span><span class="nb">float64</span><span class="p">(</span><span class="nx">plan</span><span class="p">.</span><span class="nx">Turns</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Part 4 의 경고를 다시 읽으면, 그것은 <code>Key</code> 라는 특정 인코딩의 문제가 아니었습니다. <strong>가중합의 일반 규칙</strong> 입니다.</p>
+<blockquote>
+<p>가중합에 들어가는 항은 <strong>범위가 같아야 합니다.</strong> 항 하나라도 범위가 다르면 그 항이 사실상 유일한 결정자가 되고, 나머지 항은 그 항의 동률을 끊는 tie-break 로 강등됩니다.</p>
+</blockquote>
+<p>머신러닝에서 <a href="https://en.wikipedia.org/wiki/Feature_scaling">feature scaling</a> 을 먼저 하는 이유와 같습니다. 손으로 짠 평가 함수라고 해서 예외가 되지 않습니다. 규칙은 한 번 선언하고 <strong>모든 항에</strong> 적용해야 합니다.</p>
+<hr>
+<h2 id="5-원인-c-강한-타일-비용을-순위에-비례시켰다">5. 원인 C: 강한 타일 비용을 순위에 비례시켰다<a href="#5-원인-c-강한-타일-비용을-순위에-비례시켰다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 4 §③ 의 <code>overkill</code> 은 <strong>&ldquo;이 트릭을 먹기에 충분한 가장 싼 후보&quot;와의 차이</strong> 입니다. 상대적 낭비를 재는 값이고, 더 싸게 이길 수 있었을 때만 감점합니다.</p>
+<p>구현은 그렇게 하지 않았습니다. 타일이 세면 셀수록 커지는 <strong>상시 벌점</strong> 을 매겼습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[별9]  strong=0.417   ← 미공개가 47장인데 9 가 이미 &#34;강한 타일&#34;
+</span></span><span class="line"><span class="cl">[달1]  strong=0.900
+</span></span></code></pre></div><p>미공개 47장 중에 <code>별9</code> 를 이기는 타일은 세다 지칠 만큼 많습니다. 그런데 봇은 이 타일을 아껴야 할 자산으로 보고 0.417 을 깎았습니다. <strong>모든 제출이 출발선부터 마이너스</strong> 가 된 두 번째 원인입니다.</p>
+<p>이것은 Part 4 가 경고한 바로 그 함정 — 인코딩 값을 그대로 점수로 쓰기 — 에 <strong>다른 문으로</strong> 들어간 것입니다. <code>Key</code> 를 쓰지 않았으니 경고는 피했다고 생각했는데, 타일 번호를 쓰면 같은 곳에 도착합니다.</p>
+<p><strong>수정.</strong> 강한 타일 비용을 <strong>미공개 패로 이길 수 없는 타일</strong> 에만 매깁니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// StrongTileCost 는 이 수가 &#34;아껴 둘 값어치가 있는 타일&#34; 을 얼마나 쓰는가다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 아껴 둘 값어치가 있다는 것은 미공개 패 중 어느 것으로도 이 타일을 이길 수</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 없다는 뜻이다. 그런 타일만 리드권과 마지막 한 방의 자원이 된다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 나머지는 0 이다. 세다고 해서 비싼 것이 아니다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">strongTileCost</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">unseen</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nf">Unseen</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">n</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">cand</span><span class="p">.</span><span class="nx">Tiles</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="nf">unbeatable</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">unseen</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">n</span><span class="o">++</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">cand</span><span class="p">.</span><span class="nx">Count</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>이제 <code>별9</code> 는 0 이고 <code>해2</code> 만 1.0 입니다. 47장 중 <code>별9</code> 보다 강한 타일이 수두룩하니 <code>별9</code> 를 쥐고 있어 봐야 아무것도 보장하지 못하고, 그런 타일은 아껴 두는 것이 아니라 흘려보내는 것이 맞습니다.</p>
+<p>한 가지는 정직하게 밝혀 두겠습니다. 이 척도는 Part 4 의 <code>overkill</code> <strong>과 같은 것이 아닙니다.</strong> <code>overkill</code> 은 &ldquo;이 트릭에 대해 이 수가 과한가&quot;라는 국면 상대적 질문이고, 이쪽은 &ldquo;이 타일이 아껴 둘 값어치가 있는가&quot;라는 손패 절대적 질문입니다. <code>overkill</code> 쪽이 더 정교하고, 이쪽은 계산이 싸며 &ldquo;무엇을 아껴야 하는가&quot;에 더 직접적입니다. 둘 다 있어야 할 수도 있습니다. 어느 쪽이 나은지는 시뮬레이션이 답할 문제이고, 아직 답하지 않았습니다.</p>
+<hr>
+<h2 id="6-원인-d-같은-사실을-두-항이-벌했다">6. 원인 D: 같은 사실을 두 항이 벌했다<a href="#6-원인-d-같은-사실을-두-항이-벌했다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">Part 3</a> §4 와 Part 4 §2 는 같은 혼동을 두 번 경고합니다.</p>
+<blockquote>
+<p>&ldquo;제출 가능성&rdquo;(플랜 비용)과 &ldquo;트릭 승리&rdquo;(리드권)를 한 항에 섞으면 안 됩니다. <strong>상대가 내 조합을 받아쳐도 내가 낸 타일은 이미 손에서 빠졌기 때문입니다.</strong></p>
+</blockquote>
+<p>옳습니다. 그런데 이 경고는 <strong>그 조합에 대해서만</strong> 쓰여 있고, 일반 규칙으로 선언되지는 않았습니다. 그래서 다른 조합의 중복이 그대로 들어왔습니다.</p>
+<p>구현의 템포 항은 &ldquo;이 수를 낸 뒤 남은 <strong>제출 횟수</strong> / 상대 최소 장수&quot;였습니다. 조합을 깨면 남은 제출 횟수가 늘어나므로, <strong>계획 항과 템포 항이 같은 사실을 두 번 벌했습니다.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[별9]  plan=-4.0  tempo=0.636   ← 둘 다 &#34;스트레이트를 깼다&#34; 를 벌하고 있다
+</span></span><span class="line"><span class="cl">[달1]  plan= 0.0  tempo=0.273
+</span></span></code></pre></div><p>가중치를 아무리 돌려도 이 둘은 함께 움직입니다. 서로 다른 두 사실을 재는 것처럼 보이지만 실은 같은 입력을 두 번 읽고 있습니다.</p>
+<p><strong>수정.</strong> 템포는 <strong>들고 있는 장수</strong> 로 잽니다. 계획 파괴는 계획 항이 이미 벌하고 있으니 템포는 그 일을 하지 않습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// TempoRisk 는 &#34;라운드가 지금 속도로 끝나면 내가 뒤처져 있는가&#34; 를 잰다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 입력은 장수뿐이다. 플랜·조각 수를 읽지 않는다. 그것은 PlanGain 의 일이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">tempoRisk</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">*</span><span class="nx">Meld</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">mine</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">Hand</span><span class="p">.</span><span class="nf">Len</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">cand</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">mine</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="nx">cand</span><span class="p">.</span><span class="nx">Count</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">theirs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">minOpponentTiles</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">mine</span><span class="o">+</span><span class="nx">theirs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">mine</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">float64</span><span class="p">(</span><span class="nx">mine</span><span class="o">+</span><span class="nx">theirs</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Part 3·4 의 두 경고를 한 문장의 불변식으로 올리면 이렇게 됩니다.</p>
+<blockquote>
+<p><strong>두 항이 같은 근원 값을 읽어서는 안 됩니다.</strong></p>
+</blockquote>
+<p>두 항이 같은 값을 읽으면 그 값에 사실상 두 배의 가중치가 붙습니다. 그런데 그 두 배는 <code>Weights</code> 어디에도 적혀 있지 않아서, 가중치 표만 보고는 절대 알아챌 수 없습니다. §8 에서 이 불변식을 테스트로 고정하는 방법을 보겠습니다.</p>
+<hr>
+<h2 id="7-원인-e-패스의-기준점이-정의되지-않았다">7. 원인 E: 패스의 기준점이 정의되지 않았다<a href="#7-원인-e-패스의-기준점이-정의되지-않았다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Part 4 §3 은 패스가 이기는 여섯 가지 상황을 정리하고, 그것이 &ldquo;판정 순서가 아니라 독립적인 감점 사유&quot;이며 &ldquo;각 항목을 패스 후보의 점수에 더해 제출 후보와 함께 비교합니다&quot;라고 씁니다.</p>
+<p>그런데 <strong>패스의 기본 점수가 무엇인지는 나오지 않습니다.</strong> 여섯 가지는 전부 baseline 에 얹는 값인데 그 baseline 이 정의되어 있지 않습니다. 패스를 제출과 같은 항 목록으로 채점하려면 각 항이 &ldquo;내지 않음&quot;에 대해 무슨 뜻인지 정해야 하는데, 그 정의가 어디에도 없습니다.</p>
+<p>구현에서 실제로 밟은 지뢰가 이것입니다. 처음에는 패스에 <strong>계획 항 만점</strong> 을 줬습니다. &ldquo;손패를 온전히 지켰으니 계획이 최선&quot;이라는 논리였습니다. 국소적으로는 말이 되지만, 결과는 <strong>아무것도 하지 않는 데 상을 주는 것</strong> 이었습니다. 패스가 1.0 을 깔고 시작하니 어떤 제출도 이길 수 없습니다.</p>
+<p>정산식으로 돌아가면 답이 분명합니다. <code>net_i</code> 는 손패를 지켜서 좋아지지 않습니다. <strong>손패를 지키는 것은 <code>e_i</code> 를 그대로 두는 것</strong> 이고, 그것은 목적 함수 기준으로 아무 이득이 아닙니다.</p>
+<p><strong>수정.</strong> 패스는 제출이 아니므로 제출처럼 채점하지 않습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// passScore 는 패스의 점수다. 제출 후보와 같은 항 목록으로 채점하지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 패스는 아무것도 털지 않고(Progress=0), 아무것도 이기지 않으며(Lead=0),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 아무 자원도 쓰지 않는다(StrongTileCost=0). 따라서 값은 baseline 하나뿐이다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Part 4 §3 의 여섯 가지 사유는 이 baseline 을 올리는 요소로 얹는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="nx">HardPolicy</span><span class="p">)</span><span class="w"> </span><span class="nf">passScore</span><span class="p">(</span><span class="nx">v</span><span class="w"> </span><span class="nx">GameView</span><span class="p">,</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">Plan</span><span class="p">)</span><span class="w"> </span><span class="kt">float64</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">PassBaseline</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">s</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">W</span><span class="p">.</span><span class="nx">Tempo</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">tempoRisk</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span><span class="w"> </span><span class="c1">// 참는 동안 상대는 줄어든다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>PassBaseline</code> 은 &ldquo;제출이 이만큼은 되어야 낼 값어치가 있다&quot;는 문턱이고, 그 자체가 튜닝 대상입니다. 중요한 것은 <strong>패스가 다른 항으로부터 점수를 벌 수 없다</strong> 는 점입니다. 벌 수 있게 두는 순간 봇은 가만히 있는 것으로 점수를 쌓습니다.</p>
+<hr>
+<h2 id="8-가장-값진-교훈-테스트가-엉뚱한-이유로-통과했다">8. 가장 값진 교훈: 테스트가 엉뚱한 이유로 통과했다<a href="#8-가장-값진-교훈-테스트가-엉뚱한-이유로-통과했다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>원인을 다 찾은 뒤 회귀 테스트를 세 개 썼습니다.</p>
+<ol>
+<li>리드할 때 5장짜리 메이드를 골라야 한다</li>
+<li>덱 최강 타일을 첫 리드에 버리면 안 된다</li>
+<li>손패가 가득한데 패스하면 안 된다</li>
+</ol>
+<p>전부 통과했습니다. 그런데 확인 삼아 <strong>평가 항을 하나씩 지워 봤더니 테스트가 그대로 통과했습니다.</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>무엇을 망가뜨렸나</th>
+          <th>테스트 결과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Progress 항을 상수 0 으로</td>
+          <td><strong>통과</strong></td>
+      </tr>
+      <tr>
+          <td>TempoRisk 를 원래의 잘못된 식으로 되돌림</td>
+          <td><strong>통과</strong></td>
+      </tr>
+      <tr>
+          <td>PlanGain 의 정규화를 제거</td>
+          <td><strong>통과</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>이유는 단순합니다. 후보는 여러 항의 <strong>가중합</strong> 으로 뽑히므로, 한 항이 죽어도 다른 항이 우연히 같은 후보를 1등으로 만들 수 있습니다. &ldquo;다섯 장짜리를 골랐다&quot;는 검사는 그것을 고른 이유가 Progress 항인지 TempoRisk 항인지 구분하지 못합니다. <strong>최댓값 하나만 검사하면 나머지 항 전부가 사실상 테스트되지 않습니다.</strong></p>
+<p><strong>해결.</strong> 선택 결과 대신 <strong>항 값 자체</strong> 를 검사합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// ① 항의 값을 직접 고정한다. &#34;5장짜리가 뽑힌다&#34; 가 아니라 &#34;5/12 다&#34;.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">TestProgress_ScalesWithTileCount</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">viewWithHand12</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">five</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">evalOf</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nf">meld</span><span class="p">(</span><span class="s">&#34;별9 달10 해11 구름12 별13&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">one</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">evalOf</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nf">meld</span><span class="p">(</span><span class="s">&#34;달1&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">got</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">five</span><span class="p">.</span><span class="nx">Terms</span><span class="p">.</span><span class="nx">Progress</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="o">/</span><span class="mf">12.0</span><span class="p">;</span><span class="w"> </span><span class="p">!</span><span class="nf">nearly</span><span class="p">(</span><span class="nx">got</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;5장 메이드 Progress = %v, want %v&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">got</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="nx">got</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">one</span><span class="p">.</span><span class="nx">Terms</span><span class="p">.</span><span class="nx">Progress</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="o">/</span><span class="mf">12.0</span><span class="p">;</span><span class="w"> </span><span class="p">!</span><span class="nf">nearly</span><span class="p">(</span><span class="nx">got</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;싱글 Progress = %v, want %v&#34;</span><span class="p">,</span><span class="w"> </span><span class="nx">got</span><span class="p">,</span><span class="w"> </span><span class="nx">want</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// ② 불변식을 직접 검사한다: TempoRisk 는 플랜을 읽지 않는다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 같은 장수를 남기는 두 수는, 하나가 조합을 깨더라도 TempoRisk 가 같아야 한다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 다르면 TempoRisk 가 PlanGain 과 같은 근원 값을 읽고 있다는 증거다.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="nf">TestTempoRisk_DoesNotReadPlan</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">viewWithHand12</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">breaks</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">evalOf</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nf">meld</span><span class="p">(</span><span class="s">&#34;별9&#34;</span><span class="p">))</span><span class="w">   </span><span class="c1">// 스트레이트를 깬다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="nx">keeps</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">evalOf</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">,</span><span class="w"> </span><span class="nf">meld</span><span class="p">(</span><span class="s">&#34;달1&#34;</span><span class="p">))</span><span class="w">    </span><span class="c1">// 아무것도 깨지 않는다</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nf">nearly</span><span class="p">(</span><span class="nx">breaks</span><span class="p">.</span><span class="nx">Terms</span><span class="p">.</span><span class="nx">TempoRisk</span><span class="p">,</span><span class="w"> </span><span class="nx">keeps</span><span class="p">.</span><span class="nx">Terms</span><span class="p">.</span><span class="nx">TempoRisk</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;TempoRisk 가 플랜 파괴에 반응한다: %v vs %v — PlanGain 과 중복이다&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="nx">breaks</span><span class="p">.</span><span class="nx">Terms</span><span class="p">.</span><span class="nx">TempoRisk</span><span class="p">,</span><span class="w"> </span><span class="nx">keeps</span><span class="p">.</span><span class="nx">Terms</span><span class="p">.</span><span class="nx">TempoRisk</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>세 번째로, 항을 만드는 순수 함수는 입출력 표로 따로 고정합니다. <code>planGain</code> 처럼 <code>(plan, cand)</code> 만 받는 함수는 게임 상태 없이도 표 하나로 전부 검사할 수 있습니다.</p>
+<p>두 번째 테스트가 특히 마음에 듭니다. <strong>&ldquo;두 항이 같은 사실을 읽지 않는다&quot;는 불변식을 테스트로 직접 표현</strong> 한 것이라, 나중에 누가 템포 식을 다시 건드려 플랜을 읽게 만들면 그 자리에서 잡힙니다. 코드 리뷰에서 사람이 알아채기를 기대하지 않아도 됩니다.</p>
+<p>그리고 절차 하나를 규칙으로 굳혔습니다.</p>
+<blockquote>
+<p>평가 함수를 고쳤으면 <strong>항을 하나씩 지워 보고 테스트가 실패하는지</strong> 확인합니다. 실패하지 않으면 그 항은 테스트되지 않은 것입니다.</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Mutation_testing">뮤테이션 테스팅</a> 의 발상을 손으로 하는 셈입니다. 평가 함수처럼 <strong>여러 항이 하나의 스칼라로 뭉개지는 코드</strong> 에서는 이 확인이 특히 값집니다. 뭉개진 뒤의 값만 보는 테스트는 거의 언제나 통과하기 때문입니다.</p>
+<p>Part 4 §6 이 말한 ablation(&ldquo;모든 후보에서 같은 값이 되는 항은 행동을 바꾸지 못한다&rdquo;)과는 목적이 다릅니다. 그쪽은 <strong>항이 쓸모 있는가</strong> 를 묻고, 이쪽은 <strong>테스트가 쓸모 있는가</strong> 를 묻습니다. 둘 다 필요합니다.</p>
+<hr>
+<h2 id="9-고치고-나서">9. 고치고 나서<a href="#9-고치고-나서" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>같은 손패, 같은 국면입니다.</p>
+<p><strong>리드 상황</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>후보</th>
+          <th style="text-align: right">수정 전</th>
+          <th style="text-align: right">수정 후</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>구름3 별4 달5 해6 구름7</code> (스트레이트)</td>
+          <td style="text-align: right">-0.354</td>
+          <td style="text-align: right"><strong>1.351</strong></td>
+      </tr>
+      <tr>
+          <td><code>별9 달10 해11 구름12 별13</code> (스트레이트)</td>
+          <td style="text-align: right">-0.708</td>
+          <td style="text-align: right"><strong>1.356</strong> ← 선택</td>
+      </tr>
+      <tr>
+          <td><code>해2</code> 한 장</td>
+          <td style="text-align: right">+0.682 ← 선택</td>
+          <td style="text-align: right">0.617</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>팔로우 상황 (테이블에 <code>구름8</code> 싱글)</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>후보</th>
+          <th style="text-align: right">수정 전</th>
+          <th style="text-align: right">수정 후</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>달1</code> 한 장</td>
+          <td style="text-align: right">-1.028</td>
+          <td style="text-align: right"><strong>0.817</strong> ← 선택</td>
+      </tr>
+      <tr>
+          <td><code>해2</code> 한 장</td>
+          <td style="text-align: right">+0.682</td>
+          <td style="text-align: right">0.617</td>
+      </tr>
+      <tr>
+          <td>패스</td>
+          <td style="text-align: right">+0.059 ← 선택</td>
+          <td style="text-align: right">-0.163</td>
+      </tr>
+  </tbody>
+</table>
+<p>행동은 이렇게 바뀌었습니다.</p>
+<ul>
+<li>리드할 때 5장 메이드를 낸다 (전에는 <code>해2</code> 싱글)</li>
+<li>따라갈 때 남는 타일을 흘려보낸다 (전에는 패스)</li>
+<li><code>해2</code> 를 아껴 둔다 (전에는 제일 먼저 버림)</li>
+</ul>
+<p><strong>여기서 한 가지를 분명히 하겠습니다.</strong> 이것은 &ldquo;고쳤더니 강해졌다&quot;가 아니라 <strong>&ldquo;고쳤더니 말이 되는 수를 두기 시작했다&rdquo;</strong> 입니다. <code>hard</code> 가 <code>easy</code> 보다 실제로 강한지는 아직 모릅니다. Part 4 §6 에서 정한 대로 라운드당 평균 정산 수지를 충분한 표본으로 재야 답할 수 있는 질문이고, 그 측정은 아직 하지 않았습니다. 위 두 표는 <strong>한 국면의 점수</strong> 일 뿐이고, 그것으로 세기를 주장할 수는 없습니다.</p>
+<p>가중치도 마찬가지입니다. 지금 값은 항의 범위를 맞춘 뒤 손으로 잡은 초기값이며, <strong>권장값이 아닙니다.</strong> 튜닝은 시뮬레이터를 붙인 다음의 일입니다.</p>
+<p>한 가지 경계는 지켰습니다. 이번 수정에서도 <strong>모든 항의 입력은 자기 손패와 공개 정보뿐</strong> 입니다. 봇이 상대 손패를 들여다보는 항은 하나도 들어가지 않았습니다.</p>
+<hr>
+<h2 id="10-part-14-를-이렇게-고쳐-읽어-주십시오">10. Part 1~4 를 이렇게 고쳐 읽어 주십시오<a href="#10-part-14-를-이렇게-고쳐-읽어-주십시오" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<table>
+  <thead>
+      <tr>
+          <th>편</th>
+          <th>절</th>
+          <th>문제</th>
+          <th>수정</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Part 4</td>
+          <td>§2 항 분해</td>
+          <td><code>e_i</code> 의 장수 항이 ①~⑥ 에 없다. ① 은 턴 수라 5장과 1장을 구분 못 한다</td>
+          <td>손패에서 빠지는 비율을 <strong>상시 항</strong> 으로 추가</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td>§2 항 분해</td>
+          <td>항마다 범위가 다르다 (① 은 열린 정수, 나머지는 비율)</td>
+          <td>모든 항을 0~1 로 정규화하고 방향 통일</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td>§③ 과잉 살상</td>
+          <td>경고가 <code>Key</code> 에만 적용됐다</td>
+          <td><strong>가중합의 일반 규칙</strong> 으로 승격</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td>§3 전략적 패스</td>
+          <td>패스의 기본 점수 정의가 없다</td>
+          <td>패스는 제출과 다른 것으로 채점, baseline 명시</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td>§4 모드 전환</td>
+          <td>장수 항을 엔드게임 점수에만 두면 평시에 사라진다</td>
+          <td>장수는 상시, 엔드게임은 <strong>가중치만</strong> 올림</td>
+      </tr>
+      <tr>
+          <td>Part 3</td>
+          <td>§4 / Part 4 §2</td>
+          <td>특정 혼동만 경고하고 일반 규칙이 없다</td>
+          <td>&ldquo;두 항이 같은 근원 값을 읽지 않는다&rdquo; 불변식 선언</td>
+      </tr>
+      <tr>
+          <td>Part 4</td>
+          <td>§6 검증</td>
+          <td>지표와 튜닝은 다루지만 평가 함수 테스트 방법이 없다</td>
+          <td><strong>항 값 검사 + 항 제거 검증</strong> 추가</td>
+      </tr>
+  </tbody>
+</table>
+<p>일곱 줄 중 다섯 줄이 Part 4 입니다. 항을 나열하는 절이 가장 새기 쉬운 자리였습니다. 개별 항을 설명할 때는 그 항 안에서 말이 되면 넘어가게 되는데, 정작 버그는 <strong>항과 항 사이</strong> 에 있었습니다.</p>
+<hr>
+<h2 id="11-지금의-항-구성">11. 지금의 항 구성<a href="#11-지금의-항-구성" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>모든 항은 0~1 이고 클수록 좋습니다. 감점 항은 가중치에 음수 부호를 붙여 더합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>항</th>
+          <th>정의</th>
+          <th>상시 여부</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Progress</td>
+          <td>낸 장수 / 손패 장수</td>
+          <td>상시</td>
+      </tr>
+      <tr>
+          <td>PlanGain</td>
+          <td><code>1 - 추가 제출 횟수 / 최소 제출 횟수</code></td>
+          <td>상시</td>
+      </tr>
+      <tr>
+          <td>LeadRetention</td>
+          <td><code>1 - 상대가 받을 확률</code></td>
+          <td>상시</td>
+      </tr>
+      <tr>
+          <td>StrongTileCost</td>
+          <td>미공개 패로 못 이기는 타일의 비율</td>
+          <td>상시 (감점)</td>
+      </tr>
+      <tr>
+          <td>TempoRisk</td>
+          <td><code>내 장수 / (내 장수 + 상대 최소 장수)</code></td>
+          <td>상시 (감점)</td>
+      </tr>
+      <tr>
+          <td>TwoDisposal</td>
+          <td><code>2 장수 / 4 × 긴급도</code></td>
+          <td>엔드게임</td>
+      </tr>
+      <tr>
+          <td>EndgameBlock</td>
+          <td><code>(1 - 상대가 받을 확률) × 긴급도</code></td>
+          <td>엔드게임</td>
+      </tr>
+      <tr>
+          <td>EndgameShed</td>
+          <td><code>낸 장수 비율 × 긴급도</code></td>
+          <td>엔드게임</td>
+      </tr>
+      <tr>
+          <td>패스</td>
+          <td>baseline 상수 + TempoRisk 만</td>
+          <td>—</td>
+      </tr>
+  </tbody>
+</table>
+<p>Part 4 의 여섯 항과 비교하면 승부 모드의 상시 항은 다섯 개이고, Progress 하나가 늘었습니다. 엔드게임 항들은 긴급도가 0 인 동안 자동으로 0 이 되므로, 승부 모드에서 실제로 경쟁하는 항은 다섯 개입니다.</p>
+<p>Part 4 가 정한 &ldquo;항을 적게 유지한다&quot;는 원칙은 그대로 지켰습니다. 다만 그 원칙이 <strong>목적 함수에 적어 둔 항을 빼도 된다는 뜻은 아니었습니다.</strong> 줄여야 할 것은 보조 항이지 목적 그 자체가 아닙니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 편에서 배운 것을 세 줄로 줄이면 이렇습니다.</p>
+<blockquote>
+<p><strong>첫째,</strong> 평가 함수 봇을 디버깅할 때 첫 단계는 코드 읽기가 아니라 항목별 점수 덤프입니다. 결정 API 를 진단 API 위에 올려 두면 그 덤프가 공짜입니다.</p>
+<p><strong>둘째,</strong> 가중합의 항은 범위가 같아야 하고, 서로 같은 근원 값을 읽어서는 안 되며, 조건부로만 켜지는 항은 그 조건 밖에서 없는 것과 같습니다. 셋 다 가중치 튜닝으로는 고칠 수 없습니다.</p>
+<p><strong>셋째,</strong> 최댓값 하나만 검사하는 테스트는 나머지 항을 테스트하지 않습니다. 항 값을 직접 검사하고, 항을 지워 보고 테스트가 실패하는지 확인하십시오.</p>
+</blockquote>
+<p>Part 1~4 를 쓸 때 스스로에게 붙인 조건이 &ldquo;이 글은 설계안이다&quot;였습니다. 그 조건은 정직했지만, 설계안이 어디까지 정직할 수 있는지에는 한계가 있습니다. 이번 네 가지 결함 중 둘은 Part 4 가 <strong>이미 옳게 경고해 둔 함정</strong> 이었고, 다른 문으로 그대로 걸어 들어갔습니다. 규칙을 글로 적어 두는 것과 그 규칙을 코드가 어기지 못하게 만드는 것은 다른 일입니다.</p>
+<p>그래서 이 시리즈에서 가장 실용적인 산출물은 결국 평가 함수의 항 목록이 아니라, <strong>그 목록이 무너지는 방식을 잡아내는 테스트</strong> 라고 생각합니다. 항은 앞으로도 계속 바뀔 것입니다. 불변식은 그대로 남습니다.</p>
+<p>다음으로 할 일은 정해져 있습니다. 시뮬레이터를 붙여 라운드당 평균 정산 수지를 재고, 좌석을 회전시켜 분산을 줄이고, 그 위에서 가중치를 튜닝하는 것입니다. 그 결과가 나오기 전까지 &ldquo;<code>hard</code> 가 <code>easy</code> 보다 강하다&quot;는 문장은 쓰지 않겠습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://boardgamegeek.com/boardgame/19184/lexio">LEXIO (BoardGameGeek)</a></li>
+<li><a href="https://lexio.co.kr/bbs/board.php?bo_table=0102">렉시오 공식 게임방법 (디다노니아)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling">Feature scaling (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mutation_testing">Mutation testing (Wikipedia)</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-04/">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260806-jeff-dean-leaves-google-discovery-loop/" class="button inline next">
+         [<span class="button__text">제프 딘, 27년 만에 구글을 떠나다 — Discovery Loop 이라는 다음 장</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
