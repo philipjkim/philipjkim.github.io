@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>제프 딘, 27년 만에 구글을 떠나다 — Discovery Loop 이라는 다음 장 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="구글 수석과학자 제프 딘이 2026년 8월 5일 27년 만에 구글을 떠나 Discovery Loop 을 공동창업했습니다. 그가 구글에서 만든 것들과, 새 회사가 하려는 &#34;과학적 방법의 자동화&#34; 가 무엇인지 정리했습니다." />
+<meta name="keywords" content="AI, people, google, startup, distributed-systems, research" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260806-jeff-dean-leaves-google-discovery-loop/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="제프 딘, 27년 만에 구글을 떠나다 — Discovery Loop 이라는 다음 장">
+<meta property="og:description" content="구글 수석과학자 제프 딘이 2026년 8월 5일 27년 만에 구글을 떠나 Discovery Loop 을 공동창업했습니다. 그가 구글에서 만든 것들과, 새 회사가 하려는 &#34;과학적 방법의 자동화&#34; 가 무엇인지 정리했습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260806-jeff-dean-leaves-google-discovery-loop/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-06 15:58:35 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+<style>
+  .pagination__pages {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 10px;
+    margin-top: 16px;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .pagination__page {
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .pagination__page:hover {
+    opacity: 1;
+  }
+
+  .pagination__page--current {
+    color: var(--accent);
+    font-weight: bold;
+    opacity: 1;
+  }
+
+  .archive__count {
+    opacity: 0.6;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .archive__year {
+    margin: 40px 0 10px;
+  }
+
+  .archive__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive__item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin: 6px 0;
+  }
+
+  .archive__date {
+    flex: 0 0 auto;
+    opacity: 0.5;
+    font-size: calc(var(--font-size) * 0.85);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/archive/">Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/archive/" >Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260806-jeff-dean-leaves-google-discovery-loop/">제프 딘, 27년 만에 구글을 떠나다 — Discovery Loop 이라는 다음 장</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-06</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/ai/">AI</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/people/">people</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/google/">google</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/startup/">startup</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/distributed-systems/">distributed-systems</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/research/">research</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="2026년-8월-5일-한꺼번에-터진-두-개의-소식">2026년 8월 5일, 한꺼번에 터진 두 개의 소식<a href="#2026년-8월-5일-한꺼번에-터진-두-개의-소식" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2026년 8월 5일, 순다르 피차이(Sundar Pichai)와 데미스 허사비스(Demis Hassabis)는 구글 공식 블로그에 「The next chapter of our AI momentum」이라는 공동 명의의 글을 올렸습니다. 내용은 두 가지였습니다.</p>
+<p>하나는 허사비스가 Google DeepMind CEO 자리에서 물러나 <strong>Google DeepMind 의장 겸 알파벳 수석과학자(Chief Scientist of Alphabet)</strong> 로 옮긴다는 것이었습니다. 다른 하나는, 그 수석과학자 자리를 지금까지 지키고 있던 사람이 회사를 떠난다는 것이었습니다.</p>
+<blockquote>
+<p>&ldquo;After an incredible 27-year run, Jeff Dean is at a moment where he wants to try something new, and we&rsquo;re excited to support him in that.&rdquo;</p>
+<p>— 순다르 피차이, blog.google</p>
+</blockquote>
+<p>제프 딘(Jeff Dean)이 27년 만에 구글을 떠납니다. 혼자가 아니라 산자이 게마왓(Sanjay Ghemawat), 오리올 비냘스(Oriol Vinyals), 쿽 레(Quoc Le)와 함께입니다. 네 사람이 세운 회사의 이름은 <strong>Discovery Loop</strong> 입니다.</p>
+<p>이 글에서는 세 가지를 다룹니다. 제프 딘이 어떤 사람인지, 구글에서 27년 동안 무엇을 만들었는지, 그리고 Discovery Loop 이 하겠다고 선언한 일이 무엇인지입니다.</p>
+<hr>
+<h2 id="1-제프-딘이라는-사람">1. 제프 딘이라는 사람<a href="#1-제프-딘이라는-사람" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>제프 딘은 1968년생으로, 미네소타대학교에서 컴퓨터과학·경제학 학사(1990)를, 워싱턴대학교에서 컴퓨터과학 박사(1996)를 받았습니다. 구글에는 1999년 중반에 합류했고, 사번은 30번이었습니다. 회사 전체 인원이 25명 남짓이던 시절입니다.</p>
+<p>그가 개발자 커뮤니티에서 갖는 위상을 보여 주는 일화가 있습니다. 2007년 만우절, 구글 엔지니어 켄턴 바다(Kenton Varda)가 당시 인터넷에서 유행하던 &ldquo;척 노리스 사실(Chuck Norris Facts)&rdquo; 을 패러디해 사내에 「Jeff Dean Facts」라는 사이트를 만들었습니다.</p>
+<blockquote>
+<p>&ldquo;제프 딘은 컴파일러에게 경고한다.&rdquo;</p>
+<p>&ldquo;제프 딘은 어느 날 함수를 너무 최적화한 나머지 호출되기도 전에 반환하게 만들었고, 그래서 비동기 API 를 발명할 수밖에 없었다.&rdquo;</p>
+</blockquote>
+<p>바다는 익명으로 사내 메일을 뿌렸지만, 딘은 서버 로그를 뒤져서 작성자를 찾아냈다고 합니다. 농담으로 시작한 이 사이트는 프로그래머 밈이 되어 20년 가까이 살아남았습니다.</p>
+<p>밈이 아니라 사실 쪽을 보자면, 딘과 게마왓은 구글에서 <strong>Senior Fellow</strong> 직급을 가진 유이한 두 사람이었습니다. 2018년 뉴요커에 실린 제임스 소머스(James Somers)의 「The Friendship That Made Google Huge」는 두 사람이 한 대의 화면 앞에 나란히 앉아 페어 프로그래밍으로 구글의 핵심 인프라를 짜 온 과정을 다룬 글입니다. 이번에 두 사람이 함께 나간 것은, 그 기사를 읽은 사람에게는 별로 놀랍지 않은 소식이기도 합니다.</p>
+<hr>
+<h2 id="2-구글에서의-27년-1--웹을-감당하는-인프라">2. 구글에서의 27년 (1) — 웹을 감당하는 인프라<a href="#2-구글에서의-27년-1--웹을-감당하는-인프라" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>딘이 합류하던 시기의 구글은 &ldquo;웹 전체를 색인한다&rdquo; 는 목표와 &ldquo;그걸 감당할 컴퓨터가 없다&rdquo; 는 현실 사이에 끼어 있었습니다. 이 시기 그가 게마왓과 함께 만든 것들은, 지금 우리가 분산 시스템이라고 부르는 분야의 교과서 목차와 거의 일치합니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>시스템</th>
+          <th>발표</th>
+          <th>무엇인가</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>검색 인덱싱·서빙 시스템</td>
+          <td>1999~</td>
+          <td>구글 검색의 색인/서빙 스택을 다섯 세대에 걸쳐 재설계</td>
+      </tr>
+      <tr>
+          <td>Protocol Buffers</td>
+          <td>~2001</td>
+          <td>구조화 데이터 직렬화 포맷. 지금도 gRPC 의 기반</td>
+      </tr>
+      <tr>
+          <td>MapReduce</td>
+          <td>OSDI 2004</td>
+          <td>수천 대의 평범한 서버에 대규모 배치 처리를 분산시키는 프로그래밍 모델</td>
+      </tr>
+      <tr>
+          <td>Bigtable</td>
+          <td>OSDI 2006</td>
+          <td>페타바이트급 반정형 데이터 스토리지</td>
+      </tr>
+      <tr>
+          <td>LevelDB</td>
+          <td>2011</td>
+          <td>임베디드 키-값 스토어. RocksDB 등 수많은 파생 프로젝트의 조상</td>
+      </tr>
+      <tr>
+          <td>Spanner</td>
+          <td>OSDI 2012</td>
+          <td>전 세계에 흩어진 노드 위에서 강한 일관성을 제공하는 분산 데이터베이스</td>
+      </tr>
+  </tbody>
+</table>
+<p>이 목록의 파급력은 구글 밖에서 더 잘 보입니다. MapReduce 논문은 하둡(Hadoop)을 낳았고, Bigtable 논문은 HBase 와 카산드라(Cassandra) 계열 설계에 직접 영향을 주었으며, Spanner 는 CockroachDB·YugabyteDB 같은 &ldquo;NewSQL&rdquo; 흐름의 원형이 되었습니다. 2000년대 후반~2010년대 빅데이터 생태계의 상당 부분이, 구글이 내부 문제를 풀려고 쓴 논문 몇 편에서 갈라져 나왔습니다.</p>
+<p>이 업적으로 딘과 게마왓은 2012년 <strong>ACM Prize in Computing</strong> 을 공동 수상했습니다. Spanner 는 2025년 <strong>ACM SIGMOD Systems Award</strong> 를 받았고, 딘의 논문 네 편이 SIGOPS Hall of Fame 에 올라 있습니다.</p>
+<hr>
+<h2 id="3-구글에서의-27년-2--딥러닝으로의-전환">3. 구글에서의 27년 (2) — 딥러닝으로의 전환<a href="#3-구글에서의-27년-2--딥러닝으로의-전환" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>2011년, 딘은 앤드류 응(Andrew Ng), 그렉 코라도(Greg Corrado)와 함께 <strong>Google Brain</strong> 을 시작했습니다. 여기서부터 그의 경력은 인프라 엔지니어에서 AI 연구 리더로 넘어갑니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>결과물</th>
+          <th>시기</th>
+          <th>딘의 관여</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DistBelief</td>
+          <td>2012</td>
+          <td>수천 대 머신에 신경망 학습을 분산시킨 1세대 시스템</td>
+      </tr>
+      <tr>
+          <td>&ldquo;고양이 뉴런&rdquo; 논문</td>
+          <td>2012</td>
+          <td>대규모 비지도 학습으로 고수준 특징이 창발함을 보인 논문의 공저자</td>
+      </tr>
+      <tr>
+          <td>word2vec</td>
+          <td>2013</td>
+          <td>단어 임베딩. Mikolov·Chen·Corrado 와 공저</td>
+      </tr>
+      <tr>
+          <td>TensorFlow</td>
+          <td>2015</td>
+          <td>DistBelief 의 후계. 오픈소스로 공개되며 딥러닝 프레임워크 표준이 됨</td>
+      </tr>
+      <tr>
+          <td>Knowledge Distillation</td>
+          <td>2015</td>
+          <td>힌턴(Hinton)·비냘스와 함께 쓴, 모델 압축의 표준 기법</td>
+      </tr>
+      <tr>
+          <td>TPU</td>
+          <td>2015~</td>
+          <td>신경망 전용 가속기. 추론 비용 구조를 바꿔 놓음</td>
+      </tr>
+      <tr>
+          <td>Sparsely-Gated MoE</td>
+          <td>2017</td>
+          <td>오늘날 프런티어 모델 대부분이 쓰는 mixture-of-experts 의 원형 논문 공저</td>
+      </tr>
+      <tr>
+          <td>Pathways / PaLM</td>
+          <td>2021~2022</td>
+          <td>대규모 멀티모달·희소 모델을 위한 차세대 학습 인프라와 그 위의 LLM</td>
+      </tr>
+      <tr>
+          <td>Gemini</td>
+          <td>2023~</td>
+          <td>전체 기술 공동 리드(co-technical lead)</td>
+      </tr>
+  </tbody>
+</table>
+<p>직책으로 보면 2018년 4월부터 2023년 4월까지 구글 AI 전체를 총괄했고, Google Brain 과 DeepMind 가 Google DeepMind 로 통합된 2023년 4월부터 이번 퇴사까지는 <strong>수석과학자(Chief Scientist)</strong> 였습니다.</p>
+<p>여기까지의 이력을 한 문장으로 줄이면 이렇게 됩니다. <strong>웹 스케일 인프라를 만든 사람이, 그 인프라 위에서 딥러닝을 돌릴 방법을 만들고, 다시 그 위에서 프런티어 모델을 만들었습니다.</strong> 칩부터 제품까지 전 계층을 실제로 만들어 본 사람은 업계 전체에 몇 명 되지 않습니다. 이 사실은 뒤에서 Discovery Loop 을 이해할 때 다시 등장합니다.</p>
+<p>그 밖의 이력으로는 미국공학한림원(NAE) 회원(2009), IEEE 존 폰 노이만 메달(2021), ACM·AAAS 펠로가 있습니다.</p>
+<hr>
+<h2 id="4-떠나는-말">4. 떠나는 말<a href="#4-떠나는-말" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>딘은 X 에 퇴사를 알리면서 구글에서의 27년을 &ldquo;놀라운 여정&rdquo; 이라고 표현했습니다. 사내 고별 메일에는 이런 문장이 있었다고 알려졌습니다.</p>
+<blockquote>
+<p>&ldquo;어릴 적 저는 많은 사람이 쓰는 소프트웨어를 만드는 데 보탬이 되고 싶다는 꿈을 꿨습니다. 지금 구글에는 10억 명 넘는 사람이 쓰는 제품이 열세 개 있습니다.&rdquo;</p>
+</blockquote>
+<p>그가 합류할 때 25명이던 회사는 19만 명이 되었습니다.</p>
+<hr>
+<h2 id="5-discovery-loop--과학적-방법-자체를-자동화한다">5. Discovery Loop — 과학적 방법 자체를 자동화한다<a href="#5-discovery-loop--과학적-방법-자체를-자동화한다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="창업자-네-명">창업자 네 명<a href="#창업자-네-명" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>이름</th>
+          <th>구글에서의 직전 역할</th>
+          <th>대표 업적</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>제프 딘</strong> (CEO)</td>
+          <td>수석과학자</td>
+          <td>MapReduce, Bigtable, Spanner, TensorFlow, Gemini 공동 리드</td>
+      </tr>
+      <tr>
+          <td><strong>산자이 게마왓</strong></td>
+          <td>Senior Fellow</td>
+          <td>Google File System, MapReduce, Bigtable, Spanner, LevelDB</td>
+      </tr>
+      <tr>
+          <td><strong>쿽 레</strong></td>
+          <td>Google Brain 공동 창립자</td>
+          <td>seq2seq(공저), 신경망 구조 탐색(NAS), AutoML</td>
+      </tr>
+      <tr>
+          <td><strong>오리올 비냘스</strong></td>
+          <td>Google DeepMind 연구 부사장</td>
+          <td>seq2seq(공저), AlphaStar, Gemini 공동 리드</td>
+      </tr>
+  </tbody>
+</table>
+<p>Discovery Loop 홈페이지는 이 팀을 &ldquo;AI 분야 최다 피인용 연구자 세 명과 분산 시스템 분야 최다 피인용 연구자 두 명&rdquo; 이라고 소개합니다. 회사는 앤스로픽·OpenAI 와 같은 <strong>공익법인(public benefit corporation)</strong> 형태로 세워졌습니다.</p>
+<h3 id="문제-정의-과학적-발견에는-병목이-있다">문제 정의: &ldquo;과학적 발견에는 병목이 있다&rdquo;<a href="#문제-정의-과학적-발견에는-병목이-있다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>회사 홈페이지의 첫 문장은 이렇게 시작합니다.</p>
+<blockquote>
+<p>&ldquo;과학적 방법은 인류가 고안한 가장 위대한 도구 중 하나입니다. 그러나 그 실행은 오늘날의 수작업으로는 확장하기 어려운 반복적 실험 루프로 이루어져 있습니다. 실험을 제안하고, 구현해서 돌리고, 결과를 살펴보고, 접근법을 다듬어 다시 반복하는 것입니다.&rdquo;</p>
+</blockquote>
+<p>핵심 주장은 단순합니다. 과학의 진보는 지금까지 <strong>사람이 순차적으로 도는 루프</strong> 에 묶여 있었고, 많은 영역에서 이 과정은 여전히 지독하게 느리고 노동집약적이라는 것입니다.</p>
+<h3 id="접근-루프-전체를-병렬로-돌린다">접근: 루프 전체를 병렬로 돌린다<a href="#접근-루프-전체를-병렬로-돌린다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Discovery Loop 이 만들겠다는 것은 이 루프 전체를 자동화하는 시스템입니다. 프런티어 AI 모델과 대규모 컴퓨팅 인프라를 결합해 실험을 제안하고, 실행하고, 평가에서 배우는 과정을 기계가 돌립니다.</p>
+<p>발상의 전환점은 여기입니다. <strong>사람이 AI 를 도구로 쓰는 연구가 아니라, AI 자체가 연구자가 되어 수천 개의 실험 루프를 동시에 도는 구조</strong> 입니다. 순차 실행이 병렬 실행으로 바뀌면 반복 주기가 압축되고, 딘의 표현대로라면 결과물의 양과 질이 함께 올라갑니다.</p>
+<blockquote>
+<p>&ldquo;실험의 양과 질을 둘 다 얻게 될 것이고, 그것이 과학적 돌파구와 진전으로 이어질 것입니다.&rdquo;</p>
+<p>— 제프 딘, TechCrunch 인터뷰</p>
+</blockquote>
+<p>회사가 제시한 로드맵은 3단계입니다.</p>
+<ol>
+<li><strong>머신러닝에서 시작한다.</strong> 먼저 ML 연구·엔지니어링 과정 자체를 자동화합니다.</li>
+<li><strong>자기 자신을 첫 고객으로 삼는다.</strong> 그렇게 얻은 자동화된 ML 능력으로 자사의 기술 스택을 빠르게 최적화한 뒤 다른 영역으로 넓힙니다.</li>
+<li><strong>그랜드 챌린지로 확장한다.</strong> 측정 가능한 결과가 있는 학습 루프라면 과학·공학의 어떤 영역이든 풀 수 있다고 보고, 궁극적으로는 미국공학한림원(NAE)의 그랜드 챌린지 — 더 나은 의약품 설계, 보건 정보학, 태양광의 경제성 확보, 깨끗한 물 공급, 사이버 공간 보안, 그리고 과학적 발견을 위한 도구 자체의 개발 — 를 겨냥합니다.</li>
+</ol>
+<p>2단계가 이 계획의 핵심입니다. ML 연구를 자동화하는 시스템을 만들어 그 시스템으로 자기 자신을 개선한다는 것은, 곧 <strong>재귀적 자기개선(recursive self-improvement)</strong> 의 공학적 버전입니다. 이것이 성립하면 나머지 영역으로의 확장은 시간 문제가 되고, 성립하지 않으면 회사의 로드맵 전체가 1단계에서 멈춥니다.</p>
+<h3 id="왜-하필-이-네-명인가">왜 하필 이 네 명인가<a href="#왜-하필-이-네-명인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>홈페이지는 이 팀의 강점을 기술력이 아니라 <strong>규모의 경험</strong> 으로 설명합니다.</p>
+<blockquote>
+<p>&ldquo;우리의 상대적 강점은 기술적 능력만이 아닙니다. 우리가 이전에 만들어 본 시스템의 전례 없는 규모입니다. 우리는 칩, 하드웨어 인프라, 소프트웨어 인프라, ML 모델, 제품에 이르는 진정한 풀스택 깊이를 갖고 있습니다.&rdquo;</p>
+</blockquote>
+<p>수천 개의 실험을 병렬로 돌리는 시스템은 결국 스케줄링·스토리지·장애 복구 문제이고, 그건 MapReduce 와 Spanner 를 만든 사람들의 홈그라운드입니다. 여기에 신경망 구조 탐색을 개척한 쿽 레와 Gemini 를 이끈 비냘스가 붙는 조합입니다. &ldquo;실험 루프 자동화&rdquo; 라는 아이디어 자체는 새롭지 않지만, 이 조합이 그걸 하겠다고 나선 것은 다른 이야기입니다.</p>
+<h3 id="투자와-구글과의-관계">투자와 구글과의 관계<a href="#투자와-구글과의-관계" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>항목</th>
+          <th>내용</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>공동 리드</td>
+          <td>Radical Ventures, Khosla Ventures</td>
+      </tr>
+      <tr>
+          <td>참여</td>
+          <td>Lightspeed, Kleiner Perkins, Doerr Capital, 그리고 <strong>알파벳</strong></td>
+      </tr>
+      <tr>
+          <td>라운드 규모·기업가치</td>
+          <td><strong>비공개</strong></td>
+      </tr>
+      <tr>
+          <td>구글의 역할</td>
+          <td>창립 투자자(founding investor) 겸 클라우드 파트너, 초기 컴퓨트 제공</td>
+      </tr>
+  </tbody>
+</table>
+<p>가장 특이한 대목은 구글이 자기 수석과학자가 나가서 만든 회사의 투자자이자 인프라 공급자라는 점입니다. 피차이는 블로그에서 &ldquo;우리는 Discovery Loop 과 창립 투자자이자 클라우드 파트너로 계속 협력할 것&rdquo; 이라고 밝혔습니다. 인재 유출을 막지 못했다면 지분과 클라우드 매출로 연결고리를 남기는 쪽을 택한 셈입니다.</p>
+<p>한편 현재 시점의 Discovery Loop 은 아직 회사라기보다 선언에 가깝습니다. 보도에 따르면 직원도 없고 사무실도 없으며, 창업자들이 꼽은 당면 과제는 &ldquo;일할 공간 구하기&rdquo; 였습니다. 홈페이지에도 &ldquo;린하고, 대면으로 일하는 팀(a lean, in-person team)&rdquo; 을 만드는 중이라고 적혀 있습니다.</p>
+<hr>
+<h2 id="6-구글에-남은-자리">6. 구글에 남은 자리<a href="#6-구글에-남은-자리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>딘의 퇴사는 같은 날 발표된 조직 개편의 일부였습니다.</p>
+<ul>
+<li><strong>데미스 허사비스</strong>: Google DeepMind CEO → <strong>Google DeepMind 의장 + 알파벳 수석과학자</strong>. 일상 운영에서 물러나 AGI 관련 전략·글로벌 이슈에 집중하며, 2021년부터 겸직해 온 아이소모픽 랩스(Isomorphic Labs) CEO 는 유지합니다.</li>
+<li><strong>코라이 카북추오글루(Koray Kavukcuoglu)</strong>: DeepMind CTO 겸 구글 Chief AI Architect → <strong>Google DeepMind SVP</strong>, 피차이 직속. Gemini 모델 개발, 프런티어 AI 연구, Gemini 앱·개발자 팀을 총괄합니다. 그의 첫 과제는 Gemini 4 입니다.</li>
+</ul>
+<p>시장의 반응은 좋지 않았습니다. 발표 당일 알파벳 주가는 <strong>4~5%가량 하락</strong> 했습니다(블룸버그는 약 4%, TheNextWeb 은 약 5%로 보도해 매체마다 수치가 조금씩 다릅니다). 무엇보다 Gemini 의 기술 공동 리드 두 명 — 제프 딘과 오리올 비냘스 — 이 새 Gemini 책임자 발표와 <strong>같은 날</strong> 함께 회사를 떠났다는 사실이 부담으로 읽혔습니다.</p>
+<p>다만 피차이의 블로그 원문에는 회사 이름 &ldquo;Discovery Loop&rdquo; 도, 비냘스와 쿽 레의 이름도 등장하지 않습니다. 공식 발표는 &ldquo;머신러닝·과학·공학 분야의 발견을 가속하는 독립 공익법인&rdquo; 이라고만 표현했고, 구체적인 내용은 회사 홈페이지와 언론 보도에서 나왔습니다.</p>
+<hr>
+<h2 id="7-이-뉴스를-어떻게-읽을-것인가">7. 이 뉴스를 어떻게 읽을 것인가<a href="#7-이-뉴스를-어떻게-읽을-것인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="낙관적으로-읽으면">낙관적으로 읽으면<a href="#낙관적으로-읽으면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지난 몇 년간 AI 업계의 목표는 대체로 &ldquo;더 좋은 모델&rdquo; 이었습니다. Discovery Loop 의 목표는 그보다 한 단계 위입니다. <strong>모델을 만드는 과정 자체를 자동화하는 것</strong> 이고, 그 능력을 과학 전반으로 일반화하는 것입니다. 알파폴드(AlphaFold)가 단백질 구조라는 하나의 문제에서 보여 준 것을 &ldquo;측정 가능한 학습 루프가 있는 모든 문제&rdquo; 로 확장하겠다는 시도로 볼 수 있습니다.</p>
+<p>이 팀이 특별한 이유는 그 시도가 결국 인프라 문제로 귀결되기 때문입니다. 수천 개 실험의 병렬 실행, 결과 저장, 장애 복구, 컴퓨트 스케줄링은 창업자들이 20년 동안 해 온 일 바로 그것입니다.</p>
+<h3 id="회의적으로-읽으면">회의적으로 읽으면<a href="#회의적으로-읽으면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>경계선은 &ldquo;측정 가능한 결과가 있는 학습 루프&rdquo; 라는 조건에 있습니다. ML 연구는 이 조건을 잘 만족합니다. 벤치마크 점수라는 명확한 목적 함수가 있고, 실험을 코드로 완전히 표현할 수 있으며, 물리적 실험 없이 컴퓨트만으로 루프가 닫힙니다. 그래서 1단계는 그럴듯합니다.</p>
+<p>문제는 신약 개발이나 재료 과학처럼 <strong>실험이 물질 세계에서 일어나는 영역</strong> 입니다. 여기서는 병렬 실행의 상한이 컴퓨트가 아니라 실험실, 시약, 임상시험 기간에 걸립니다. 루프의 &ldquo;실행&rdquo; 단계가 자동화되지 않으면 나머지를 아무리 빨리 돌려도 전체 속도는 그대로입니다.</p>
+<p>더 근본적인 한계는 창업자 본인이 짚었습니다. 비냘스는 현재 모델의 약점으로 <strong>&ldquo;이 모델들이 시도해 볼 새로운 아이디어를 어떻게 떠올리는가&rdquo;</strong> 를 꼽았습니다. 실험을 실행하고 평가하는 부분은 자동화하기 쉽지만, 애초에 무엇을 실험할지 제안하는 부분 — 즉 가설 생성 — 이야말로 과학에서 가장 어려운 단계입니다. 루프의 나머지가 아무리 빨라져도 이 단계가 평범하면, 나오는 것은 평범한 결과의 대량 생산일 뿐입니다.</p>
+<h3 id="남는-질문">남는 질문<a href="#남는-질문" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>그래서 이 창업은 두 개의 베팅이 겹쳐 있습니다. <strong>하나는 ML 연구 자동화가 실제로 자기 개선 루프를 닫을 수 있는가이고, 다른 하나는 그 능력이 물질 세계의 과학으로 넘어갈 수 있는가입니다.</strong> 첫 번째가 성공하고 두 번째가 실패해도 회사는 충분히 가치 있는 기업이 될 수 있습니다. 둘 다 성공하면 이야기가 완전히 달라집니다.</p>
+<p>27년간 한 회사에 있던 사람이 나갈 만한 이유로는, 어느 쪽이든 나쁘지 않아 보입니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="1차-자료">1차 자료<a href="#1차-자료" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://blog.google/company-news/inside-google/message-ceo/next-chapter-ai-momentum/">The next chapter of our AI momentum</a> — Sundar Pichai &amp; Demis Hassabis, blog.google, 2026-08-05</li>
+<li><a href="https://www.discoveryloop.com/">Discovery Loop 공식 홈페이지</a> — 미션·접근법·창업 팀, 2026</li>
+<li><a href="https://radical.vc/our-investment-in-discovery-loop/">Our Investment in Discovery Loop</a> — Radical Ventures, 2026</li>
+<li><a href="https://research.google/people/jeff/">Jeffrey Dean 연구자 프로필</a> — Google Research</li>
+</ul>
+<h3 id="보도-2026년-8월">보도 (2026년 8월)<a href="#보도-2026년-8월" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://techcrunch.com/2026/08/05/jeff-dean-and-other-top-ai-researchers-are-leaving-google-to-launch-their-own-startup/">Jeff Dean and other top AI researchers are leaving Google to launch their own startup</a> — TechCrunch, 2026-08-05</li>
+<li><a href="https://www.cnbc.com/2026/08/05/google-chief-scientist-jeff-dean-leaving-company-after-27-years.html">Google&rsquo;s AI reshuffle: Chief scientist Jeff Dean exits and Demis Hassabis steps down as DeepMind CEO</a> — CNBC, 2026-08-05</li>
+<li><a href="https://www.unite.ai/jeff-dean-leaves-google-to-automate-the-scientific-method-with-discovery-loop/">Jeff Dean Leaves Google to Automate the Scientific Method With Discovery Loop</a> — Unite.AI, 2026-08</li>
+<li><a href="https://siliconangle.com/2026/08/05/google-reveals-big-shake-ai-teams-jeff-dean-leaves-demis-hassabis-moves-upstairs/">Google reveals big shakeup in its AI teams as Jeff Dean leaves and Demis Hassabis moves upstairs</a> — SiliconANGLE, 2026-08-05</li>
+<li><a href="https://thenextweb.com/news/google-deepmind-shakeup-hassabis-jeff-dean-vinyals-discovery-loop">Google named the new boss of Gemini 4. Both of Gemini&rsquo;s co-leads quit the same day</a> — TheNextWeb, 2026-08</li>
+<li><a href="https://9to5google.com/2026/08/05/demis-hassabis-deepmind/">Demis Hassabis no longer DeepMind CEO to focus on new AGI role, Jeff Dean departs</a> — 9to5Google, 2026-08-05</li>
+</ul>
+<h3 id="배경-자료-과거-자료임을-밝힙니다">배경 자료 (과거 자료임을 밝힙니다)<a href="#배경-자료-과거-자료임을-밝힙니다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Jeff_Dean">Jeff Dean</a> — Wikipedia (경력·학력·수상 연도 확인용)</li>
+<li><a href="https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge">The Friendship That Made Google Huge</a> — James Somers, The New Yorker, 2018-12-10</li>
+<li><a href="https://slate.com/technology/2013/01/jeff-dean-facts-how-a-google-programmer-became-the-chuck-norris-of-the-internet.html">Jeff Dean facts: How a Google programmer became the Chuck Norris of the Internet</a> — Slate, 2013-01</li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260806-dalmuti-vs-lexio-03/" class="button inline next">
+         [<span class="button__text">달무티 vs 렉시오 Part 3: 인원, 운, 정치, 그리고 무엇을 살 것인가</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
