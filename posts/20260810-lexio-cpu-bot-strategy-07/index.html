@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>렉시오 CPU 플레이어 만들기 Part 7: 코드 없이 보는 easy 봇과 hard 봇의 차이 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Part 1 부터 Part 6 까지는 코드와 수식이 많았습니다. 이번 편은 개발이나 수학을 모르는 분도 읽을 수 있게, 렉시오 CPU 두 종류가 각각 무엇을 보고 수를 고르는지, 둘을 어떻게 겨루게 했고 결과가 어땠는지, 그리고 무엇은 아직 말할 수 없는지를 정리했습니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, strategy, game-design, simulation, statistics, guide" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-07/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="렉시오 CPU 플레이어 만들기 Part 7: 코드 없이 보는 easy 봇과 hard 봇의 차이">
+<meta property="og:description" content="Part 1 부터 Part 6 까지는 코드와 수식이 많았습니다. 이번 편은 개발이나 수학을 모르는 분도 읽을 수 있게, 렉시오 CPU 두 종류가 각각 무엇을 보고 수를 고르는지, 둘을 어떻게 겨루게 했고 결과가 어땠는지, 그리고 무엇은 아직 말할 수 없는지를 정리했습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-07/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-10 09:10:46 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+<style>
+  .pagination__pages {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 10px;
+    margin-top: 16px;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .pagination__page {
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .pagination__page:hover {
+    opacity: 1;
+  }
+
+  .pagination__page--current {
+    color: var(--accent);
+    font-weight: bold;
+    opacity: 1;
+  }
+
+  .archive__count {
+    opacity: 0.6;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .archive__year {
+    margin: 40px 0 10px;
+  }
+
+  .archive__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive__item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin: 6px 0;
+  }
+
+  .archive__date {
+    flex: 0 0 auto;
+    opacity: 0.5;
+    font-size: calc(var(--font-size) * 0.85);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/archive/">Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/archive/" >Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-07/">렉시오 CPU 플레이어 만들기 Part 7: 코드 없이 보는 easy 봇과 hard 봇의 차이</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-10</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/game-design/">game-design</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/simulation/">simulation</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/statistics/">statistics</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="이-글은-누구를-위한-것인가">이 글은 누구를 위한 것인가<a href="#이-글은-누구를-위한-것인가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">Part 1</a> 부터 <a href="/posts/20260810-lexio-cpu-bot-strategy-06/">Part 6</a> 까지는 비트마스크, 동적 계획법, 평가 함수, 확률 모델 같은 이야기로 채워져 있습니다. 렉시오를 좋아하지만 개발자는 아닌 분에게는 읽을 이유가 없는 글입니다.</p>
+<p>이번 편은 그 여섯 편의 <strong>결론만</strong> 을 코드와 수식 없이 옮긴 것입니다. 렉시오 규칙을 아는 분이라면 누구나 읽을 수 있습니다. 다루는 것은 셋입니다.</p>
+<ol>
+<li>두 CPU 는 각각 무엇을 보고 수를 고르는가</li>
+<li>둘을 어떻게 겨루게 했고, 결과가 어땠는가</li>
+<li>그 결과로 무엇은 말할 수 있고, 무엇은 여전히 말할 수 없는가</li>
+</ol>
+<p>세 번째가 이 글에서 가장 중요합니다. 숫자를 보여 주는 글은 많지만, 그 숫자가 무엇을 증명하지 <strong>못</strong> 하는지까지 적는 글은 드뭅니다.</p>
+<p>이 시리즈가 전제하는 규칙은 발행사 디다노니아의 공식 게임방법 문서를 따릅니다. 이 글에 필요한 만큼만 옮기면 이렇습니다.</p>
+<ul>
+<li>타일은 숫자 1~15 가 <strong>구름·별·달·해</strong> 네 문양으로 각각 존재해 <strong>60장</strong> 입니다. 5인 게임에서 전부 사용하고, 한 사람이 <strong>12장</strong> 을 받습니다</li>
+<li>숫자 서열은 3 &lt; 4 &lt; … &lt; 15 &lt; 1 &lt; <strong>2</strong>, 문양 서열은 구름 &lt; 별 &lt; 달 &lt; <strong>해</strong> 입니다. 그래서 가장 약한 타일이 <strong>구름 3</strong>, 가장 강한 타일이 <strong>해 2</strong> 입니다</li>
+<li>정산은 라운드가 끝났을 때 남은 장수만큼 물어내되, <strong>손에 쥔 2 한 장마다 그 금액이 두 배</strong> 가 됩니다</li>
+</ul>
+<hr>
+<h2 id="1-두-cpu-는-어떻게-다른가">1. 두 CPU 는 어떻게 다른가<a href="#1-두-cpu-는-어떻게-다른가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-easy-봇--규칙-세-줄짜리-cpu">1.1 easy 봇 — 규칙 세 줄짜리 CPU<a href="#11-easy-봇--규칙-세-줄짜리-cpu" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>easy</code> 봇은 판을 읽지 않습니다. 지금 낼 수 있는 수만 보고, 고정된 규칙으로 고릅니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;내 차례&#34;] --&gt; B[&#34;낼 수 있는 수를&lt;br/&gt;전부 나열&#34;]
+    B --&gt; C{&#34;지금 테이블에&lt;br/&gt;패가 깔려 있나?&#34;}
+
+    C -- &#34;깔려 있다 (받아치는 상황)&#34; --&gt; D{&#34;받을 수 있는&lt;br/&gt;수가 있나?&#34;}
+    D -- &#34;없다&#34; --&gt; E[&#34;패스&#34;]
+    D -- &#34;있다&#34; --&gt; F[&#34;가장 약한 패로 받는다&lt;br/&gt;(최소한으로 받기)&#34;]
+
+    C -- &#34;비어 있다 (내가 리드)&#34; --&gt; G[&#34;손에서 가장 약한 타일이&lt;br/&gt;들어가는 수만 남긴다&#34;]
+    G --&gt; H[&#34;그중 장수가 가장 많은 수&lt;br/&gt;(같으면 더 약한 쪽)&#34;]
+    H --&gt; I[&#34;제출&#34;]
+    F --&gt; I
+    style A fill:#FFD700,color:#000000
+    style E fill:#FFB6C1,color:#000000
+    style I fill:#90EE90,color:#000000
+</code></pre><p>두 줄로 줄이면 이렇습니다.</p>
+<ul>
+<li><strong>받을 때</strong>: 이길 수 있는 가장 싼 패로 받습니다. 못 받으면 패스합니다</li>
+<li><strong>리드할 때</strong>: 손에서 제일 약한 타일을 반드시 끼워서, 최대한 여러 장을 텁니다</li>
+</ul>
+<p>나쁘지 않은 원칙입니다. 약한 타일부터 처리하고 손패를 빨리 줄입니다. 다만 <strong>앞을 내다보지 않습니다.</strong> 지금 이 수를 내면 남은 손패로 몇 번에 끝낼 수 있는지, 상대가 받을 수 있는지, 2 를 언제 털어야 하는지를 전혀 고려하지 않습니다.</p>
+<h3 id="12-hard-봇--점수를-매겨-고르는-cpu">1.2 hard 봇 — 점수를 매겨 고르는 CPU<a href="#12-hard-봇--점수를-매겨-고르는-cpu" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><code>hard</code> 봇은 낼 수 있는 모든 수에 점수를 매기고 가장 높은 것을 냅니다. <strong>패스도 하나의 후보로 놓고</strong> 같이 점수를 매깁니다.</p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;내 차례&#34;] --&gt; B[&#34;판 상태 정리&lt;br/&gt;· 아직 아무도 못 본 타일이 무엇인지&lt;br/&gt;· 각 상대가 몇 장 남았는지&lt;br/&gt;· 라운드가 얼마나 급한지&#34;]
+    B --&gt; C[&#34;내 손패를 최소 몇 번에&lt;br/&gt;다 낼 수 있는지 계산&#34;]
+    C --&gt; D[&#34;낼 수 있는 수를 전부 나열&#34;]
+    D --&gt; E[&#34;각 수마다 계산:&lt;br/&gt;이 수를 상대 중 누군가&lt;br/&gt;받을 수 있을 확률&#34;]
+    E --&gt; F[&#34;수마다 점수 매기기&#34;]
+
+    F --&gt; G[&#34;&lt;b&gt;좋은 점&lt;/b&gt;&lt;br/&gt;· 손패를 많이 턴다&lt;br/&gt;· 최소 횟수 계획을 안 깬다&lt;br/&gt;· 라운드 막바지에 많이 턴다&lt;br/&gt;· 라운드 막바지에 상대가 못 받는 패&#34;]
+    F --&gt; H[&#34;&lt;b&gt;나쁜 점&lt;/b&gt;&lt;br/&gt;· 아무도 못 이기는 귀한 타일을 쓴다&lt;br/&gt;· 내고 나서도 손에 많이 남는다&#34;]
+
+    G --&gt; I[&#34;합산 점수&#34;]
+    H --&gt; I
+    I --&gt; J{&#34;테이블에 패가&lt;br/&gt;깔려 있나?&#34;}
+    J -- &#34;깔려 있다&#34; --&gt; K[&#34;패스도 후보에 넣는다&lt;br/&gt;(작은 기본 점수만 받음)&#34;]
+    J -- &#34;비어 있다&#34; --&gt; L[&#34;패스는 불가&#34;]
+    K --&gt; M[&#34;가장 점수가 높은 수&#34;]
+    L --&gt; M
+    M --&gt; N{&#34;동점인가?&#34;}
+    N -- &#34;아니오&#34; --&gt; O[&#34;제출&#34;]
+    N -- &#34;예&#34; --&gt; P[&#34;동점 규칙:&lt;br/&gt;1. 제출이 패스를 이긴다&lt;br/&gt;2. 장수가 적은 쪽&lt;br/&gt;3. &lt;b&gt;더 약한 패&lt;/b&gt;&lt;br/&gt;(강한 건 손에 남긴다)&#34;]
+    P --&gt; O
+
+    M -.-&gt; Q[&#34;0.1초를 넘기거나 계산에 실패하면&lt;br/&gt;easy 가 대신 한 수 둔다&#34;]
+    style A fill:#FFD700,color:#000000
+    style G fill:#90EE90,color:#000000
+    style H fill:#FFB6C1,color:#000000
+    style O fill:#90EE90,color:#000000
+    style Q fill:#DDA0DD,color:#000000
+</code></pre><p>핵심 차이는 셋입니다.</p>
+<ol>
+<li><strong>미공개 타일을 셉니다.</strong> 렉시오는 60장을 다섯 명이 전부 나눠 갖습니다. 그래서 &ldquo;내가 못 본 타일&quot;은 <strong>반드시 누군가의 손에 있습니다.</strong> <code>hard</code> 는 이걸 이용해 &ldquo;이 수를 상대가 받을 수 있을 확률&quot;을 계산합니다.</li>
+<li><strong>손패 계획을 세웁니다.</strong> 남은 타일을 최소 몇 번에 다 낼 수 있는지 계산해 두고, 그 계획을 깨는 수에 벌점을 줍니다. 해 문양 플러시 재료 다섯 장 중 한 장을 페어에 끼워 쓰면 플러시가 무너지는데, <code>easy</code> 는 그걸 보지 않습니다.</li>
+<li><strong>라운드가 얼마나 급한지 압니다.</strong> 누군가 손패를 거의 비웠으면 지금이 마지막 기회일 수 있으므로 기준이 달라집니다.</li>
+</ol>
+<hr>
+<h2 id="2-어떻게-겨루게-했는가">2. 어떻게 겨루게 했는가<a href="#2-어떻게-겨루게-했는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-문제-렉시오는-운이-크다">2.1 문제: 렉시오는 운이 크다<a href="#21-문제-렉시오는-운이-크다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>두 CPU 중 뭐가 나은지 재는 것은 생각보다 까다롭습니다. <strong>좋은 패를 받으면 아무렇게나 둬도 이기기 때문입니다.</strong> 몇 판 돌려보고 &ldquo;이쪽이 더 잘 두는 것 같다&quot;고 말하는 것은 거의 의미가 없습니다.</p>
+<h3 id="22-해결-같은-패를-양쪽에-똑같이-나눠준다">2.2 해결: 같은 패를 양쪽에 똑같이 나눠준다<a href="#22-해결-같은-패를-양쪽에-똑같이-나눠준다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>브리지 대회에서 쓰는 방식을 그대로 썼습니다. <strong>똑같은 딜을 여러 번 재사용합니다.</strong></p>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[&#34;딜 하나&lt;br/&gt;(60장을 섞어&lt;br/&gt;5명에게 12장씩)&#34;] --&gt; B[&#34;배치 1&lt;br/&gt;hard 1명 + easy 4명&lt;br/&gt;hard 가 1번 자리&#34;]
+    A --&gt; C[&#34;배치 2·3·4·5&lt;br/&gt;hard 가 2·3·4·5번 자리&#34;]
+    A --&gt; D[&#34;배치 6&lt;br/&gt;easy 1명 + hard 4명&lt;br/&gt;easy 가 1번 자리&#34;]
+    A --&gt; E[&#34;배치 7·8·9·10&lt;br/&gt;easy 가 2·3·4·5번 자리&#34;]
+
+    B --&gt; F[&#34;같은 딜로&lt;br/&gt;10경기&#34;]
+    C --&gt; F
+    D --&gt; F
+    E --&gt; F
+    style A fill:#FFD700,color:#000000
+    style F fill:#90EE90,color:#000000
+</code></pre><p>같은 패를 두 CPU 가 모두 잡아보게 하면 <strong>운이 상쇄됩니다.</strong> 좋은 패가 들어와서 이긴 것인지, 잘 둬서 이긴 것인지 구분할 수 있게 됩니다.</p>
+<p>자리를 다섯 군데로 돌리는 것에도 이유가 있습니다. 렉시오에서는 순서에 따라 유불리가 있고, 특히 &ldquo;혼자만 다른 CPU&quot;라는 자리 자체가 유불리를 만듭니다. 그래서 <strong>양방향</strong> 으로 겨룹니다. <code>hard</code> 하나가 <code>easy</code> 넷과 겨루는 판, 그리고 <code>easy</code> 하나가 <code>hard</code> 넷과 겨루는 판을 모두 만듭니다.</p>
+<h3 id="23-몇-판을-돌렸나">2.3 몇 판을 돌렸나<a href="#23-몇-판을-돌렸나" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>무엇</th>
+          <th>판 수</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>가중치 조정 과정 (148가지 설정을 각각 640판)</td>
+          <td>약 <strong>9만 5천 판</strong></td>
+      </tr>
+      <tr>
+          <td>최종 검증</td>
+          <td><strong>3,840 판</strong></td>
+      </tr>
+      <tr>
+          <td>진단·측정용 실행</td>
+          <td>약 1만 판</td>
+      </tr>
+  </tbody>
+</table>
+<p>한 판이 3~10라운드이므로, 라운드로 세면 <strong>50만 라운드</strong> 가 넘습니다. 사람이 하루 100판씩 두어도 2년 반이 걸리는 양입니다.</p>
+<h3 id="24-조정용-패와-검증용-패를-갈랐다">2.4 조정용 패와 검증용 패를 갈랐다<a href="#24-조정용-패와-검증용-패를-갈랐다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이것이 결과를 믿을 수 있게 만드는 핵심 장치입니다.</p>
+<p><strong>시험 문제로 공부하고 그 시험을 보면 점수가 잘 나오는 게 당연합니다.</strong> 가중치를 맞출 때 쓴 딜로 성능을 재면 &ldquo;얼마나 잘 외웠는지&quot;를 재는 것이지 실력을 재는 것이 아닙니다.</p>
+<p>그래서 딜을 두 묶음으로 완전히 갈랐습니다.</p>
+<ul>
+<li><strong>조정용(64가지 딜)</strong>: 가중치를 맞출 때만 씁니다</li>
+<li><strong>검증용(128가지 딜)</strong>: 조정 과정에서 <strong>한 번도 보지 않습니다.</strong> 최종 성적표는 여기서만 냅니다</li>
+</ul>
+<p>두 묶음이 절대 겹치지 않는다는 것은 자동 테스트로 고정해 두었습니다.</p>
+<h3 id="25-라운드-수를-나눠서-쟀다">2.5 라운드 수를 나눠서 쟀다<a href="#25-라운드-수를-나눠서-쟀다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>3라운드, 5라운드, 10라운드 판을 따로 재고 <strong>셋 다</strong> 통과해야 합격으로 봤습니다.</p>
+<p>긴 판에서 크게 이기고 짧은 판에서 조금씩 지면 평균으로는 이기는 것처럼 보입니다. 그런데 라운드 수는 플레이어가 고릅니다. 짧은 판을 고른 사람에게 약한 CPU 가 붙으면 안 됩니다.</p>
+<hr>
+<h2 id="3-결과">3. 결과<a href="#3-결과" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>아래 숫자는 전부 <strong>검증용 딜</strong> 에서 나온 것입니다. 조정 과정에서 한 번도 보지 않은 패입니다.</p>
+<h3 id="31-등수-분포">3.1 등수 분포<a href="#31-등수-분포" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>다섯 명이 두므로, 아무렇게나 둬도 각 등수가 20% 씩 나와야 정상입니다.</p>
+<p><strong>5라운드 판 (1,280경기)</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>1등</th>
+          <th>2등</th>
+          <th>3등</th>
+          <th>4등</th>
+          <th>꼴찌</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>easy</code></td>
+          <td>16.0%</td>
+          <td>19.1%</td>
+          <td>20.6%</td>
+          <td>21.1%</td>
+          <td><strong>23.2%</strong></td>
+      </tr>
+      <tr>
+          <td><code>hard</code></td>
+          <td><strong>26.8%</strong></td>
+          <td>21.8%</td>
+          <td>19.2%</td>
+          <td>17.8%</td>
+          <td>14.4%</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>10라운드 판 (1,280경기)</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>1등</th>
+          <th>2등</th>
+          <th>3등</th>
+          <th>4등</th>
+          <th>꼴찌</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>easy</code></td>
+          <td>13.1%</td>
+          <td>18.1%</td>
+          <td>20.6%</td>
+          <td>21.7%</td>
+          <td><strong>26.5%</strong></td>
+      </tr>
+      <tr>
+          <td><code>hard</code></td>
+          <td><strong>27.9%</strong></td>
+          <td>22.6%</td>
+          <td>18.9%</td>
+          <td>18.1%</td>
+          <td>12.4%</td>
+      </tr>
+  </tbody>
+</table>
+<p><code>hard</code> 는 1등을 <strong><code>easy</code> 의 두 배 넘게</strong> 합니다. 꼴찌는 절반 이하입니다. 그리고 <strong>판이 길어질수록 격차가 벌어집니다.</strong> 운이 상쇄될 시간이 길어지기 때문입니다.</p>
+<h3 id="32-맞대결">3.2 맞대결<a href="#32-맞대결" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>&ldquo;혼자만 다른 CPU&rdquo; 한 명이 나머지 넷의 평균보다 잘했는지를 셌습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>판 길이</th>
+          <th><code>hard</code> 가 앞선 비율</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>5라운드</td>
+          <td><strong>67.0%</strong></td>
+      </tr>
+      <tr>
+          <td>10라운드</td>
+          <td><strong>74.5%</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>10라운드 판이면 <strong>네 판 중 세 판</strong> 에서 <code>hard</code> 가 앞섭니다.</p>
+<h3 id="33-돈으로-환산하면">3.3 돈으로 환산하면<a href="#33-돈으로-환산하면" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>렉시오 정산은 라운드가 끝났을 때 <strong>남은 장수</strong> 만큼 물어내되, <strong>손에 쥔 2 한 장마다 그 금액이 두 배</strong> 가 됩니다. 3장을 남겼는데 그중 2 가 한 장이면 3 이 아니라 6 을 뭅니다. 두 장이면 12 입니다. 그래서 등수보다 &ldquo;얼마나 깔끔하게 끝냈는가&quot;가 훨씬 중요합니다.</p>
+<p>라운드당 평균 정산은 <code>hard</code> 가 <strong>+1.2</strong>, <code>easy</code> 가 <strong>−1.2</strong> 입니다. 10라운드 한 판이면 <strong>약 12점 차이</strong> 가 납니다. 2 없이 3장을 남기고 끝나는 흔한 패배가 3점이니, <strong>판당 네 번쯤 더 진 셈</strong> 입니다.</p>
+<p>이 구조 때문에 <code>hard</code> 의 &ldquo;2 를 쥔 채 끝나는 비율 1.3%&rdquo;(<code>easy</code> 는 4.4%)가 특히 크게 작용합니다. 2 를 안고 끝나는 사고를 3분의 1 로 줄인 것이 격차의 상당 부분을 만듭니다.</p>
+<h3 id="34-왜-이겼는가">3.4 왜 이겼는가<a href="#34-왜-이겼는가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>아래는 <strong>경기 등수가 아니라 라운드 단위</strong> 지표입니다. 한 경기는 여러 라운드로 이루어지고, 정산은 라운드마다 일어납니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><code>easy</code></th>
+          <th><code>hard</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>라운드에서 먼저 손패를 비우는 비율</td>
+          <td>20.6%</td>
+          <td>19.4%</td>
+      </tr>
+      <tr>
+          <td>라운드가 끝났을 때 남은 장수</td>
+          <td>3.44장</td>
+          <td><strong>3.07장</strong></td>
+      </tr>
+      <tr>
+          <td>2 를 손에 쥔 채 끝나는 비율</td>
+          <td>4.4%</td>
+          <td><strong>1.3%</strong></td>
+      </tr>
+      <tr>
+          <td>라운드당 제출 횟수</td>
+          <td>6.21회</td>
+          <td>5.25회</td>
+      </tr>
+  </tbody>
+</table>
+<p>재미있는 것은 <strong>먼저 나가는 비율은 오히려 <code>hard</code> 가 약간 낮다</strong> 는 점입니다. <code>hard</code> 가 경기 등수에서 앞서는 이유는 라운드를 더 많이 이겨서가 아니라 <strong>못 이긴 라운드에서 덜 잃어서</strong> 입니다.</p>
+<ul>
+<li>끝났을 때 손에 남은 장수가 0.4장 적습니다</li>
+<li><strong>2 를 쥔 채 끝나는 일이 3분의 1 이하입니다.</strong> 렉시오에서 2 를 안고 끝나면 벌점이 두 배가 되므로 이것이 가장 크게 작용합니다</li>
+<li>제출 횟수가 적습니다. 한 번에 더 많이 턴다는 뜻입니다</li>
+</ul>
+<p>한마디로 <strong><code>easy</code> 는 자주 나가고 크게 지고, <code>hard</code> 는 비슷하게 나가고 적게 집니다.</strong></p>
+<hr>
+<h2 id="4-그래서-hard-가-더-똑똑하다고-단정할-수-있는가">4. 그래서 hard 가 더 똑똑하다고 단정할 수 있는가<a href="#4-그래서-hard-가-더-똑똑하다고-단정할-수-있는가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-단정할-수-있는-것">4.1 단정할 수 있는 것<a href="#41-단정할-수-있는-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong><code>hard</code> 는 <code>easy</code> 보다 확실히 강합니다.</strong> 이건 자신 있게 말할 수 있습니다.</p>
+<ul>
+<li>검증용 딜 3,840경기에서 라운드 수 세 종류 모두 이겼습니다</li>
+<li>통계적으로 우연이 아닙니다. 가장 보수적으로 잡아도 라운드당 최소 +1.08점 앞섭니다</li>
+<li><strong>조정에 쓴 딜에서 얻은 성적(+1.25)과 검증용 딜 성적(+1.21)이 거의 같습니다.</strong> 이건 &ldquo;시험 문제만 외운 게 아니다&quot;라는 뜻이라 특히 중요합니다</li>
+<li>0.1초 판단 시간 제한을 한 번도 넘기지 않았습니다. 실제로 그 실력으로 둡니다</li>
+</ul>
+<h3 id="42-단정할-수-없는-것">4.2 단정할 수 <strong>없는</strong> 것<a href="#42-단정할-수-없는-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>&ldquo;똑똑하다&quot;와 &ldquo;<code>easy</code> 보다 낫다&quot;는 다른 말입니다.</strong></p>
+<ol>
+<li>
+<p><strong>사람과 겨뤄본 적이 없습니다.</strong> <code>easy</code> 는 규칙 세 줄짜리 CPU 입니다. 그걸 이겼다고 사람 상대로 잘한다는 보장은 없습니다. 사람은 CPU 가 못 하는 것을 합니다. 예를 들면 상대의 버릇을 읽습니다.</p>
+</li>
+<li>
+<p><strong><code>hard</code> 는 상대를 읽지 않습니다.</strong> 미공개 타일이 무엇인지는 세지만, <strong>누가 무엇을 가졌을지는 추측하지 않습니다.</strong> &ldquo;저 사람이 아까 해 문양을 안 냈으니 해가 부족할 것&quot;이라는 추론을 전혀 하지 못합니다. 사람 상대로는 이것이 큰 약점이 될 수 있습니다.</p>
+</li>
+<li>
+<p><strong>매번 똑같이 둡니다.</strong> 두 CPU 모두 같은 상황에서 항상 같은 수를 냅니다. 사람이 여러 판 하면 패턴을 외울 수 있고, 그러면 실제 체감 난이도는 측정치보다 훨씬 낮아집니다.</p>
+</li>
+<li>
+<p><strong>5인 경기, 한 가지 규칙에서만 쟀습니다.</strong> 다른 인원수나 다른 정산 방식은 재보지 않았습니다.</p>
+</li>
+<li>
+<p><strong>평가 함수가 옳다는 보장은 없습니다.</strong> <code>hard</code> 는 &ldquo;손패를 많이 턴다&rdquo;, &ldquo;귀한 타일을 아낀다&rdquo; 같은 항목에 점수를 매겨 고릅니다. 이 항목들이 렉시오의 실제 좋은 수와 얼마나 맞는지는 <code>easy</code> 를 이겼다는 사실만으로는 알 수 없습니다.</p>
+</li>
+<li>
+<p><strong>아직 설명 못 한 것이 하나 있습니다.</strong> &ldquo;2 를 털어라&quot;는 항목을 꺼도 성적이 오히려 조금 좋아집니다. 그런데 그 항목을 끄면 2 를 쥔 채 끝나는 비율은 올라갑니다. <strong>2 를 터는 일을 이 항목이 아니라 다른 항목이 하고 있고, 이 항목은 그 위에 덧대는 과잉일 가능성이 있습니다.</strong> 아직 안 봤습니다.</p>
+</li>
+</ol>
+<h3 id="43-실제로-있었던-함정-하나">4.3 실제로 있었던 함정 하나<a href="#43-실제로-있었던-함정-하나" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 결과에 이르기까지 있었던 일을 적어 두겠습니다. 숫자를 어디까지 믿어야 하는지에 대한 감각이 되기 때문입니다.</p>
+<p>처음 측정했을 때 <strong><code>hard</code> 가 <code>easy</code> 보다 라운드당 1.5점 지고 있었습니다.</strong> 여러 편에 걸쳐 설계한 전략이 규칙 세 줄짜리 CPU 에게 지고 있었던 것입니다.</p>
+<p>원인을 찾는 데 <strong>가설을 세 번 틀렸습니다.</strong> 전부 &ldquo;평가 항목 중 하나가 잘못 설계됐다&quot;는 방향이었고, 셋 다 측정으로 기각됐습니다.</p>
+<p>진짜 원인은 전략이 아니라 <strong>확률 계산 실수</strong> 였습니다. &ldquo;이 수를 상대 중 누군가 받을 수 있는가&quot;를 계산할 때, 상대 넷을 <strong>서로 독립적으로</strong> 취급하고 있었습니다. 그런데 렉시오는 60장을 전부 나눠 가지므로 상대 넷은 미공개 타일 <strong>전부</strong> 를 나눠 갖고 있습니다. 서로 독립일 수가 없습니다.</p>
+<p>그래서 이런 일이 벌어졌습니다. 제가 <strong>달 2</strong> 를 내려고 하는데 그것을 이길 수 있는 <strong>해 2</strong> 가 아직 안 나왔다면, <strong>해 2 는 반드시 누군가 갖고 있으므로 제 달 2 는 100% 받힙니다.</strong> 그런데 계산기는 68% 라고 답했습니다. 그 32% 가 평가에 &ldquo;손에서 가장 센 타일을 내라&quot;는 보상으로 들어갔고, CPU 는 <strong>별 3 리드를 달 2 로 받는</strong> 짓을 하고 있었습니다. 트릭은 이기고 라운드는 잃는 수입니다.</p>
+<p><strong>곱셈을 덧셈으로 바꾸는 한 줄을 고치자, 가중치를 하나도 건드리지 않았는데 −1.4 가 +0.7 이 되었습니다.</strong></p>
+<p>교훈은 이렇습니다. <strong>평가 전략이 아무리 훌륭해도 거기 들어가는 숫자가 틀리면 소용없습니다.</strong> 그리고 그 차이는 코드를 읽어서는 잘 안 보입니다. 실제로 돌려서 재봐야 보입니다. 이 이야기의 전체 과정은 <a href="/posts/20260810-lexio-cpu-bot-strategy-06/">Part 6</a> 에 있습니다.</p>
+<hr>
+<h2 id="5-앞으로-해볼-만한-것">5. 앞으로 해볼 만한 것<a href="#5-앞으로-해볼-만한-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>우선순위 순입니다.</p>
+<h3 id="51-사람과-겨루게-하고-그-판을-기록한다">5.1 사람과 겨루게 하고 그 판을 기록한다<a href="#51-사람과-겨루게-하고-그-판을-기록한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 중요합니다. <strong>지금 있는 근거는 전부 &ldquo;CPU 대 CPU&quot;입니다.</strong> 사람과의 판을 기록해 두면 CPU 가 어떤 국면에서 사람에게 지는지 볼 수 있습니다.</p>
+<p>특히 볼 것은 이것입니다. 사람이 CPU 의 패턴을 몇 판 만에 읽어내는가.</p>
+<h3 id="52-상대-손패를-추측하게-한다">5.2 상대 손패를 추측하게 한다<a href="#52-상대-손패를-추측하게-한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지금 <code>hard</code> 는 &ldquo;미공개 타일이 무엇인가&quot;까지만 압니다. <strong>&ldquo;누가 무엇을 갖고 있을 것 같은가&quot;는 전혀 모릅니다.</strong></p>
+<p>렉시오에서 사람이 쓰는 가장 기본적인 추론이 여기 있습니다.</p>
+<ul>
+<li>저 사람이 아까 낮은 싱글에 패스했다 → 낮은 싱글이 없다</li>
+<li>저 사람이 해 문양 플러시를 안 냈다 → 해 타일이 부족하다</li>
+<li>저 사람이 남은 두 장으로 페어를 노린다 → 리드를 뺏기면 안 된다</li>
+</ul>
+<p>이걸 넣으면 <code>easy</code> 상대 성적보다 <strong>사람 상대 성적</strong> 이 크게 달라질 가능성이 있습니다.</p>
+<h3 id="53-무작위성을-조금-넣는다">5.3 무작위성을 조금 넣는다<a href="#53-무작위성을-조금-넣는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지금은 매번 똑같이 둡니다. 점수가 비슷한 후보 중에서 가끔 다른 것을 고르게 하면 패턴 읽기가 어려워집니다.</p>
+<p>다만 <strong>강해지려고 넣는 게 아니라 덜 지루하려고 넣는 것</strong> 이므로, 얼마나 약해지는지를 재고 결정해야 합니다.</p>
+<h3 id="54-남은-이상-현상을-본다">5.4 남은 이상 현상을 본다<a href="#54-남은-이상-현상을-본다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>§4.2 의 여섯 번째 항목입니다. &ldquo;2 를 털어라&rdquo; 항목이 왜 도움이 안 되는지 밝힙니다. 다른 항목이 같은 일을 중복해서 하고 있다면 정리할 수 있습니다.</p>
+<h3 id="55-난이도를-나눈다">5.5 난이도를 나눈다<a href="#55-난이도를-나눈다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지금 <code>hard</code> 는 &ldquo;최대한 잘 두는 것&quot;을 목표로 합니다. 그런데 <strong>혼자 하기 모드의 목적은 이기는 게 아니라 재미있는 판을 만드는 것</strong> 입니다.</p>
+<p>판단 시간을 줄이거나, 계획 깊이를 얕게 하거나, 일부러 몇 % 는 두 번째로 좋은 수를 두게 하면 중간 난이도를 만들 수 있습니다. 지금 있는 도구로 각 설정이 얼마나 약해지는지 바로 잴 수 있습니다.</p>
+<h3 id="56-다른-인원수와-규칙에서-재본다">5.6 다른 인원수와 규칙에서 재본다<a href="#56-다른-인원수와-규칙에서-재본다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>5인 한 가지 조건에서만 쟀습니다. 인원수가 달라지면 미공개 타일 수가 달라지므로 확률 계산의 무게가 달라집니다. 옮겨가서도 성립하는지 확인이 필요합니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>세 줄로 줄이면 이렇습니다.</p>
+<blockquote>
+<p><strong>첫째,</strong> <code>easy</code> 는 이번 턴만 보고 가장 싼 수를 냅니다. <code>hard</code> 는 아직 안 나온 타일을 세고, 손패를 몇 번에 비울지 계획하고, 라운드가 얼마나 급한지까지 보고 점수를 매겨 고릅니다.</p>
+<p><strong>둘째,</strong> 같은 딜을 양쪽에 똑같이 나눠주고 자리를 돌려 운을 지운 뒤, 조정에 쓰지 않은 딜로만 성적을 냈습니다. <code>hard</code> 가 라운드당 약 1.2점 앞섭니다. 이긴 이유는 라운드를 더 많이 이겨서가 아니라 <strong>못 이긴 라운드에서 덜 잃어서</strong> 입니다.</p>
+<p><strong>셋째,</strong> 그래도 <code>hard</code> 가 사람보다 잘 둔다는 뜻은 아닙니다. 사람과 겨뤄본 적이 없고, 상대가 무엇을 들고 있을지 추측하지 않으며, 매번 똑같이 둡니다.</p>
+</blockquote>
+<p>가장 오래 기억할 만한 것은 세 번째 줄입니다. <strong>&ldquo;A 를 이겼다&quot;와 &ldquo;잘한다&quot;는 다른 문장입니다.</strong> 무엇을 상대로 이겼는지를 함께 적지 않으면, 숫자는 실제보다 훨씬 큰 것을 증명하는 것처럼 보입니다.</p>
+<p>더 깊이 들어가고 싶은 분을 위해 시리즈 전체의 지도를 남겨 둡니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>편</th>
+          <th>다루는 것</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">Part 1</a></td>
+          <td>타일 60장을 정수 하나로 압축하는 표현과 easy 봇</td>
+      </tr>
+      <tr>
+          <td><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">Part 2</a></td>
+          <td>hard 봇이 무엇을 아는가 — 미공개 타일 카운팅</td>
+      </tr>
+      <tr>
+          <td><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">Part 3</a></td>
+          <td>hard 봇이 자기 손패를 어떻게 보는가 — 분해 플랜</td>
+      </tr>
+      <tr>
+          <td><a href="/posts/20260731-lexio-cpu-bot-strategy-04/">Part 4</a></td>
+          <td>hard 봇이 무엇을 결정하는가 — 수 평가와 정산 기대값</td>
+      </tr>
+      <tr>
+          <td><a href="/posts/20260807-lexio-cpu-bot-strategy-05/">Part 5</a></td>
+          <td>구현했더니 봇이 아무것도 하지 않았던 이야기</td>
+      </tr>
+      <tr>
+          <td><a href="/posts/20260810-lexio-cpu-bot-strategy-06/">Part 6</a></td>
+          <td>측정 도구를 만들고, 봇이 약한 이유를 네 번 만에 찾은 이야기</td>
+      </tr>
+      <tr>
+          <td><strong>Part 7 (이 글)</strong></td>
+          <td>코드 없이 보는 결론</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://lexio.co.kr/bbs/board.php?bo_table=0102">렉시오 공식 게임방법 (디다노니아)</a></li>
+<li><a href="https://boardgamegeek.com/boardgame/19184/lexio">LEXIO (BoardGameGeek)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Duplicate_bridge">Duplicate bridge (Wikipedia)</a> — 같은 딜을 재사용해 운을 지우는 방식</li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets">Training, validation, and test data sets (Wikipedia)</a> — 조정용 패와 검증용 패를 가르는 이유</li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-04/">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</a></li>
+<li><a href="/posts/20260807-lexio-cpu-bot-strategy-05/">렉시오 CPU 플레이어 만들기 Part 5: 봇이 아무것도 하지 않는 이유</a></li>
+<li><a href="/posts/20260810-lexio-cpu-bot-strategy-06/">렉시오 CPU 플레이어 만들기 Part 6: 봇이 약한지 어떻게 아는가</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-06/" class="button inline next">
+         [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 6: 봇이 약한지 어떻게 아는가</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>렉시오 CPU 플레이어 만들기 Part 6: 봇이 약한지 어떻게 아는가 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Part 5 는 브라우저에서 한 판 돌려 찾은 결함을 고쳤습니다. 그 방법으로는 &#34;조금 약하다&#34;를 찾을 수 없어 시뮬레이터를 만들었더니, 도구가 전략을 재기도 전에 구현 버그부터 잡아냈습니다. 그리고 봇이 약한 이유를 세 번 틀리고 네 번째에 찾았습니다. 평가 함수는 처음부터 옳았고, 확률이 틀렸습니다." />
+<meta name="keywords" content="game, board-game, card-game, programming, golang, algorithm, strategy, debugging, testing, simulation, probability" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-06/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/code.min.d529ea4b2fb8d34328d7d31afc5466d5f7bc2f0bc9abdd98b69385335d7baee4.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/syntax.min.a0773cce9310cb6d8ed23e50f005448facf29a53001b57e038828daa466b25c0.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://philipjkim.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="렉시오 CPU 플레이어 만들기 Part 6: 봇이 약한지 어떻게 아는가">
+<meta property="og:description" content="Part 5 는 브라우저에서 한 판 돌려 찾은 결함을 고쳤습니다. 그 방법으로는 &#34;조금 약하다&#34;를 찾을 수 없어 시뮬레이터를 만들었더니, 도구가 전략을 재기도 전에 구현 버그부터 잡아냈습니다. 그리고 봇이 약한 이유를 세 번 틀리고 네 번째에 찾았습니다. 평가 함수는 처음부터 옳았고, 확률이 틀렸습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-06/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-10 08:51:18 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+<style>
+  .pagination__pages {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 10px;
+    margin-top: 16px;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .pagination__page {
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .pagination__page:hover {
+    opacity: 1;
+  }
+
+  .pagination__page--current {
+    color: var(--accent);
+    font-weight: bold;
+    opacity: 1;
+  }
+
+  .archive__count {
+    opacity: 0.6;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .archive__year {
+    margin: 40px 0 10px;
+  }
+
+  .archive__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive__item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin: 6px 0;
+  }
+
+  .archive__date {
+    flex: 0 0 auto;
+    opacity: 0.5;
+    font-size: calc(var(--font-size) * 0.85);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/archive/">Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/archive/" >Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-06/">렉시오 CPU 플레이어 만들기 Part 6: 봇이 약한지 어떻게 아는가</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-10</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/board-game/">board-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/card-game/">card-game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/programming/">programming</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/golang/">golang</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/algorithm/">algorithm</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/debugging/">debugging</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/testing/">testing</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/simulation/">simulation</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/probability/">probability</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="눈으로-한-판-돌려서는-못-보는-것">눈으로 한 판 돌려서는 못 보는 것<a href="#눈으로-한-판-돌려서는-못-보는-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20260807-lexio-cpu-bot-strategy-05/">Part 5</a> 에서 고친 결함은 눈에 보이는 것이었습니다. 봇이 거의 모든 턴을 패스했고, 브라우저에서 5인 게임을 한 판 돌리자 바로 드러났습니다.</p>
+<p>그 방법에는 한계가 분명합니다.</p>
+<ul>
+<li>봇이 100% 패스한다 → 한 판이면 보입니다</li>
+<li>봇이 라운드당 1.4점씩 잃는다 → 몇 판을 돌려도 느낄 수 없습니다</li>
+</ul>
+<p>렉시오는 딜 운의 분산이 큽니다. 좋은 패를 받은 판과 나쁜 패를 받은 판의 차이가 정책의 차이보다 훨씬 크기 때문에, 사람이 몇 판 보고 &ldquo;이 봇이 좀 약한 것 같다&quot;고 말하는 것은 근거가 되지 못합니다. 측정 도구 없이 가중치를 만지면 더 나쁩니다. 고쳤다고 생각한 것이 실은 운이었는지 확인할 방법이 없습니다.</p>
+<p>그래서 이번 편의 주제는 이렇습니다.</p>
+<blockquote>
+<p><strong>측정 도구가 없으면 무엇을 못 보는가.</strong></p>
+</blockquote>
+<p>결론을 미리 적지 않겠습니다. 순서대로 따라가 주십시오. 도구를 만들자마자 그 도구가 눈으로는 절대 못 찾았을 버그를 잡아냈고, 그다음 그 도구로 &ldquo;왜 약한가&quot;를 물었더니 <strong>세 번 틀리고 네 번째에</strong> 진짜 원인을 찾았습니다.</p>
+<p>각 절은 가급적 <strong>가설 → 검증 → 결과</strong> 의 형태로 씁니다. 틀린 가설도 그대로 남겨 두었습니다. 틀린 가설을 지우면 글이 &ldquo;처음부터 알고 있었다&quot;처럼 읽히는데, 실제로는 전혀 그렇지 않았습니다.</p>
+<hr>
+<h2 id="1-시뮬레이터가-답할-것과-답하지-않을-것">1. 시뮬레이터가 답할 것과 답하지 않을 것<a href="#1-시뮬레이터가-답할-것과-답하지-않을-것" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>만들기 전에 범위를 의도적으로 갈랐습니다.</p>
+<p><strong>답한다:</strong></p>
+<ul>
+<li>같은 seed 로 두 번 돌리면 같은 결과가 나오는가</li>
+<li>경기가 끝나는가, 규칙 불변식이 유지되는가</li>
+<li>한 판에 얼마나 걸리는가</li>
+<li>지표가 어느 방향으로 움직이는가</li>
+</ul>
+<p><strong>답하지 않는다:</strong></p>
+<ul>
+<li><code>hard</code> 가 <code>easy</code> 보다 강한가</li>
+<li>가중치를 어떻게 잡을 것인가</li>
+</ul>
+<p>뒤의 둘은 다음 단계입니다. 이 구분이 중요한 이유가 있습니다. <strong>도구 자체가 맞는지 확인하지 않은 채로 전략 결과를 해석하면, 도구의 버그를 전략의 성질로 오해합니다.</strong> 이번에 실제로 그럴 뻔했습니다.</p>
+<hr>
+<h2 id="2-설계-딜-운을-지우는-방법">2. 설계: 딜 운을 지우는 방법<a href="#2-설계-딜-운을-지우는-방법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>봇 A 와 봇 B 중 어느 쪽이 센지 재려면 딜 운을 지워야 합니다. <a href="https://en.wikipedia.org/wiki/Duplicate_bridge">듀플리케이트 브리지</a> 의 방식을 그대로 씁니다. <strong>같은 딜을 모든 배치에 돌립니다.</strong></p>
+<p>5인 경기에서는 이렇게 됩니다.</p>
+<ul>
+<li><code>hard</code> 1명 + <code>easy</code> 4명을 만들고, focal 좌석을 다섯 자리로 회전</li>
+<li><code>easy</code> 1명 + <code>hard</code> 4명도 똑같이 다섯 자리로 회전</li>
+<li>한 seed 에 10경기</li>
+</ul>
+<p>양방향이 필요한 이유가 있습니다. <strong>한쪽 방향만 쓰면 &ldquo;혼자 다른 정책&quot;이라는 위치 자체의 효과와 정책의 효과가 섞입니다.</strong> 렉시오에서 혼자 다르게 두는 자리는 그 자체로 유불리가 있습니다.</p>
+<p>지표는 승률이 아니라 <strong>라운드당 평균 정산 수지</strong> 입니다. 렉시오의 목적은 등수가 아니라 금액이고, 2등이 1등보다 많이 버는 국면이 실제로 있습니다. 정산이 남은 장수 × 2 의 개수만큼 배수로 붙는 구조이기 때문입니다.</p>
+<p>보조 지표로 유효 장수, 2 보유 종료율, 평균 제출 횟수, 1위 종료율을 함께 냅니다. 핵심 지표가 움직였을 때 <strong>왜</strong> 움직였는지 설명하는 데 씁니다. 뒤에서 이 보조 지표들이 결정적으로 쓰입니다.</p>
+<hr>
+<h2 id="3-도구가-만들어지자마자-잡은-버그">3. 도구가 만들어지자마자 잡은 버그<a href="#3-도구가-만들어지자마자-잡은-버그" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>시뮬레이터를 붙이고 <strong>첫 실행에서</strong> 에러가 났습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">seed 6220984448682280624: seed 12326882709662356735 round 2 seat 4
+</span></span><span class="line"><span class="cl">policy &#34;hard-seat-4&#34;: context deadline exceeded
+</span></span></code></pre></div><p><code>hard</code> 봇의 판단 한도는 100ms 입니다. 그걸 넘겼습니다.</p>
+<h3 id="가설-1-한도가-너무-빡빡한-것-아닌가">가설 1: 한도가 너무 빡빡한 것 아닌가<a href="#가설-1-한도가-너무-빡빡한-것-아닌가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 먼저 떠오르는 생각이고, <strong>가장 위험한 생각</strong> 입니다. 예산을 늘리면 에러는 사라집니다.</p>
+<p>다행히 설계 문서에 이 유혹을 미리 막아 둔 규칙이 있었습니다.</p>
+<blockquote>
+<p>정상 판단이 한도에 근접하면 예산을 바로 늘리지 않고, benchmark 로 병목과 memoization 누락부터 확인한다.</p>
+</blockquote>
+<p>그래서 예산을 건드리지 않고 국면부터 잡았습니다.</p>
+<h3 id="검증-1-느린-국면을-포획한다">검증 1: 느린 국면을 포획한다<a href="#검증-1-느린-국면을-포획한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>임시로 정책을 감싸 시간을 재고, 한도를 넘긴 국면의 손패를 그대로 찍었습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">SLOW 123.638959ms hand=[3C 3D 4C 4H 5D 7C 9C 10C 11H 12C 12D 2C] field=0 played=0
+</span></span></code></pre></div><p><strong>국면이 전혀 특별하지 않습니다.</strong> 라운드 첫 수, 손패 12장(=풀핸드), 필드는 비어 있습니다. 게임 시작 직후 리드하는 가장 흔한 상황입니다.</p>
+<p>여기서 이상한 점이 하나 더 있었습니다. Part 5 작업 때 만든 benchmark 는 <strong>같은 12장 손패에서 4.9ms</strong> 를 기록했습니다. 25배 차이입니다.</p>
+<h3 id="가설-2-안전도-추정이-병목이다">가설 2: 안전도 추정이 병목이다<a href="#가설-2-안전도-추정이-병목이다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>판단은 크게 셋으로 나뉩니다. 후보 생성, 손패 계획, 안전도 추정. 셋을 따로 재봤습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">후보 생성        202µs   groups=36  (flush 21, single 12, pair 3)
+</span></span><span class="line"><span class="cl">손패 계획        536µs
+</span></span><span class="line"><span class="cl">안전도 추정  125,338µs   ← worst 6.8ms, 그게 flush
+</span></span></code></pre></div><p><strong>안전도 추정이 99% 이상입니다.</strong> 그리고 flush 후보 하나당 6.8ms 인데, 그런 후보가 21개입니다.</p>
+<h3 id="원인-세는-것과-만드는-것을-헷갈렸다">원인: 세는 것과 만드는 것을 헷갈렸다<a href="#원인-세는-것과-만드는-것을-헷갈렸다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>안전도 추정은 &ldquo;미공개 타일로 만들 수 있는, 이 수를 이기는 조합이 몇 개인가&quot;를 셉니다. 대부분의 카테고리는 닫힌 식으로 셉니다. 그런데 <strong>목표가 flush 일 때만 무늬별 5장 부분집합을 전부 만들어서 하나씩 비교하고 있었습니다.</strong></p>
+<p>라운드 초반이면 미공개가 48장, 한 무늬에 12장쯤입니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">C(12,5) = 792       (무늬 하나)
+</span></span><span class="line"><span class="cl">× 4 무늬  ≈ 3,168    (한 번의 개수 세기)
+</span></span><span class="line"><span class="cl">× flush 후보 21개 ≈ 66,528  (한 번의 판단)
+</span></span></code></pre></div><p>각 조합마다 족보 판정과 비교를 돌리니 100ms 를 넘깁니다.</p>
+<p><strong>benchmark 가 왜 4.9ms 였는지도 이제 설명됩니다.</strong> benchmark 는 셔플된 덱에서 앞 12장을 잘라 썼는데, 하필 flush 후보가 적은 손패였습니다. <strong>입력에 따라 25배가 갈리는 함수를 benchmark 하나로 대변시킨 것이 실수였습니다.</strong></p>
+<h3 id="수정-열거하지-말고-센다">수정: 열거하지 말고 센다<a href="#수정-열거하지-말고-센다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>flush 는 순위를 위에서부터 차례로 비교합니다. 그러면 <strong>후보가 목표를 처음 앞지르는 자리</strong> 를 기준으로 경우를 나눌 수 있습니다.</p>
+<ul>
+<li>그 자리보다 위는 목표와 정확히 같아야 한다</li>
+<li>그 자리는 목표보다 크되 바로 윗자리보다는 작아야 한다</li>
+<li>그 아래는 더 작은 것들 중 아무거나 (= 이항계수 한 번)</li>
+</ul>
+<p>다섯 자리를 훑으면 끝납니다. 부분집합을 하나도 만들지 않습니다.</p>
+<p>여기에 두 가지를 보정합니다.</p>
+<ul>
+<li>순위가 완전히 같고 무늬가 더 강하면 이깁니다 → 1을 더한다</li>
+<li>한 무늬 5장이 연속이면 그건 flush 가 아니라 straight flush 라 따로 세어집니다 → 뺀다. 무늬마다 런은 열세 개 이하라 이건 열거해도 쌉니다</li>
+</ul>
+<p><strong>결과: 같은 국면의 안전도 추정이 125ms 에서 1.5ms 로 줄었습니다 (83배).</strong> 판단 전체는 약 2~3ms 입니다. 100ms 한도에 40배 여유가 생겼습니다.</p>
+<h3 id="검증-2-새-계산이-맞는지-확인한다">검증 2: 새 계산이 맞는지 확인한다<a href="#검증-2-새-계산이-맞는지-확인한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>닫힌 식은 틀려도 그럴듯한 숫자를 냅니다. 그래서 <strong>전수 열거 oracle 과 대조</strong> 했습니다. 무늬가 섞인 집합, 무늬가 몰린 집합, 목표 자체가 flush 인 경우를 따로 돌립니다.</p>
+<p>여기서 한 번 더 실수할 뻔했습니다. 처음 쓴 대조 테스트가 <strong>덱 전체(55장)를 미공개 더미로</strong> 두는 바람에, oracle 이 <code>C(55,5) = 3,478,761</code> 개를 훑어야 했고 2분이 지나도 끝나지 않았습니다. 무늬마다 6장씩만 남겨 <code>C(24,5) = 42,504</code> 로 줄였습니다. <strong>oracle 은 정확해야지 크면 안 됩니다.</strong></p>
+<p>그리고 이 테스트가 진짜로 결함을 잡는지 확인하려고 구현을 일부러 세 가지로 망가뜨렸습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>망가뜨린 것</th>
+          <th>잡혔나</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>무늬 동률 항 삭제</td>
+          <td>실패로 잡힘</td>
+      </tr>
+      <tr>
+          <td>straight flush 차감 삭제</td>
+          <td>실패로 잡힘</td>
+      </tr>
+      <tr>
+          <td>하위 개수 off-by-one</td>
+          <td>실패로 잡힘</td>
+      </tr>
+  </tbody>
+</table>
+<p>셋 다 잡혔습니다. Part 5 §8 에서 &ldquo;테스트가 엉뚱한 이유로 통과하더라&quot;를 겪은 뒤로 생긴 습관입니다.</p>
+<h3 id="이-절의-교훈">이 절의 교훈<a href="#이-절의-교훈" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>눈으로 한 판 돌려서는 이 버그를 절대 못 찾습니다.</strong> 브라우저에서 <code>hard</code> 로 몇 판을 돌려도, 판단이 100ms 를 넘기면 fallback 이 조용히 <code>easy</code> 로 대신 두기 때문에 화면에서는 그냥 &ldquo;봇이 좀 소극적이네&rdquo; 정도로 보입니다.</li>
+<li><strong>측정 도구가 전략을 재기도 전에 구현의 결함부터 잡아냈습니다.</strong> 도구를 먼저 만드는 이유가 여기 있습니다.</li>
+<li><strong>benchmark 하나로 최악을 대변시키면 안 됩니다.</strong> 입력에 따라 25배가 갈리면, 최악을 만드는 입력을 따로 고정해야 합니다.</li>
+<li><strong>한도를 넘겼을 때 한도부터 늘리는 것은 진단이 아니라 은폐입니다.</strong></li>
+</ol>
+<hr>
+<h2 id="4-조용히-대신-처리하는-경로가-지표를-오염시킨다">4. 조용히 대신 처리하는 경로가 지표를 오염시킨다<a href="#4-조용히-대신-처리하는-경로가-지표를-오염시킨다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>방금 이야기와 짝을 이루는 문제입니다.</p>
+<p>production 은 <code>hard</code> 를 fallback 으로 감싸서 서비스합니다. 실패하거나 한도를 넘기면 <code>easy</code> 가 한 번 대신 둡니다. 테이블이 멈추지 않게 하려는 것이고, 옳은 설계입니다.</p>
+<p>그런데 시뮬레이터를 만들 때 갈림길이 생깁니다.</p>
+<p><strong>선택지 A: 감싸지 않은 <code>hard</code> 를 잰다.</strong> 순수한 정책의 성능이 나옵니다. 그런데 그건 <strong>아무도 상대하지 않는 봇</strong> 의 숫자입니다. 실제로 서비스되는 것은 감싸인 쪽입니다.</p>
+<p><strong>선택지 B: 감싸인 채로 잰다.</strong> 실제로 서비스되는 것을 잽니다. 그런데 fallback 이 일어난 판의 <code>hard</code> 좌석은 <strong>부분적으로 <code>easy</code> 를 둔 좌석</strong> 입니다. 그 판의 숫자는 <code>hard</code> 의 것이 아닙니다.</p>
+<h3 id="함정-어느-쪽을-골라도-숫자는-깔끔하다">함정: 어느 쪽을 골라도 숫자는 깔끔하다<a href="#함정-어느-쪽을-골라도-숫자는-깔끔하다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 진짜 무서운 것은, <strong>어느 쪽을 골라도 숫자가 깔끔하게 나온다</strong> 는 점입니다. 소수점 넷째 자리까지 가지런한 표가 나오고, 방향도 일관되고, 표준편차도 그럴듯합니다. <strong>그 숫자가 무엇의 숫자인지만 말할 수 없습니다.</strong></p>
+<p>§3 의 한도 초과 결함이 살아 있던 동안 실제로 그 상태였습니다. 만약 그때 지표부터 해석했다면 &ldquo;hard 가 easy 보다 약하다&quot;는 결론을 얻었을 것이고, 그건 절반은 전략 때문이고 절반은 timeout 때문인 숫자였을 겁니다.</p>
+<h3 id="해결-세어서-함께-보고한다">해결: 세어서 함께 보고한다<a href="#해결-세어서-함께-보고한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>B 를 고르되, <strong>fallback 횟수를 보고서에 함께 담습니다.</strong> 실패와 시간 초과를 나눠 셉니다. 0 이 아니면 그 실행의 지표는 해석하지 않습니다.</p>
+<p>정책 배선도 한 곳으로 합쳤습니다. 원래 게임 서비스 안에 있던 registry 구성을 봇 패키지로 옮겨, 시뮬레이터와 서비스가 같은 정의를 쓰게 했습니다. 배선이 두 벌이면 언젠가 갈라지고, 갈라지면 <strong>검증한 것과 서비스하는 것이 다른 상태</strong> 가 됩니다.</p>
+<p>fallback 횟수는 로그를 세지 않고 hook 으로 셉니다. 로그 줄을 세면 보고되는 숫자가 로그 문구에 묶여서, 메시지를 다듬는 순간 지표가 깨집니다.</p>
+<h3 id="검증">검증<a href="#검증" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>&ldquo;fallback 이 0회다&quot;를 테스트로 고정했습니다. 그리고 이 테스트가 진짜로 잡는지 확인하려고 판단 한도를 <strong>100ms 에서 1µs 로</strong> 낮춰봤습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">hard fell back 3329 times (0 failures, 3329 timeouts), want none
+</span></span></code></pre></div><p>잡힙니다. 이 테스트는 §3 의 버그가 다시 들어오면 즉시 실패합니다.</p>
+<p><em>(이 문장은 두 달 뒤에 틀린 것으로 드러납니다. 마지막 절을 봐 주십시오.)</em></p>
+<h3 id="이-절의-교훈-1">이 절의 교훈<a href="#이-절의-교훈-1" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>폴백·재시도·기본값처럼 &ldquo;조용히 대신 처리해 주는 경로&quot;는 측정할 때 반드시 횟수를 함께 내야 합니다.</strong> 그러지 않으면 그 경로가 지표를 오염시키는데, <strong>오염된 지표도 깔끔해 보입니다.</strong></p>
+<hr>
+<h2 id="5-아무것도-바꾸지-않은-반복은-재현성을-검사하지-않는다">5. 아무것도 바꾸지 않은 반복은 재현성을 검사하지 않는다<a href="#5-아무것도-바꾸지-않은-반복은-재현성을-검사하지-않는다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>작은 이야기지만 짚고 갈 만합니다.</p>
+<p>CI 에 넣을 재현성 검사를 처음에는 &ldquo;같은 인자로 두 번 돌려서 결과가 같은지 본다&quot;로 쓰려다 멈췄습니다.</p>
+<p><strong>같은 실행을 반복하면 시계나 난수를 읽지 않는다는 것만 확인됩니다.</strong> 병렬 실행에서 결과가 갈리는 진짜 원인은 그게 아니라, seed 가 끝난 순서에 결과가 딸려가는 것입니다. worker 수가 같으면 끝나는 순서도 대체로 같아서, 반복 실행은 그 문제를 그냥 통과시킵니다.</p>
+<p>이건 겪어 본 함정입니다. 앞선 작업에서 부동소수점 합을 worker 별로 모았다가 코어 수에 따라 결과가 달라진 적이 있습니다. 부동소수점 덧셈은 결합법칙이 성립하지 않습니다.</p>
+<p>그래서 smoke 는 <strong>worker 수를 1 과 4 로 바꿔서</strong> 돌립니다. 단위 테스트는 1/2/3/7 로 더 넓게 고정합니다.</p>
+<p>일반화하면 이렇습니다.</p>
+<blockquote>
+<p><strong>재현성 검사는 &ldquo;무엇을 바꿔도 같아야 하는가&quot;를 먼저 정하고, 그 축을 실제로 바꿔야 합니다. 아무것도 바꾸지 않은 반복은 재현성을 검사하지 않습니다.</strong></p>
+</blockquote>
+<hr>
+<h2 id="6-그래서-hard-는-강한가">6. 그래서 hard 는 강한가<a href="#6-그래서-hard-는-강한가" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>측정 환경은 14코어 darwin/arm64, 5인 경기, 라운드 5 입니다.</p>
+<h3 id="실행-시간">실행 시간<a href="#실행-시간" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>규모</th>
+          <th>worker</th>
+          <th>시간</th>
+          <th>경기당</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>16 seed (160경기)</td>
+          <td>1</td>
+          <td>3.1s</td>
+          <td>19ms</td>
+      </tr>
+      <tr>
+          <td>64 seed (640경기)</td>
+          <td>1</td>
+          <td>13.1s</td>
+          <td>20ms</td>
+      </tr>
+      <tr>
+          <td>64 seed (640경기)</td>
+          <td>14</td>
+          <td>4.0s</td>
+          <td>6ms</td>
+      </tr>
+  </tbody>
+</table>
+<p>실행 시간은 제약이 아닙니다. 수백 seed 를 돌려도 분 단위에서 끝납니다.</p>
+<h3 id="지표">지표<a href="#지표" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<table>
+  <thead>
+      <tr>
+          <th>seed 집합</th>
+          <th>그룹</th>
+          <th>라운드당 수지</th>
+          <th>표준편차</th>
+          <th>1위 종료</th>
+          <th>제출/라운드</th>
+          <th>유효 장수</th>
+          <th>2 보유 종료</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>tuning 64</td>
+          <td>easy</td>
+          <td><strong>+1.401</strong></td>
+          <td>6.80</td>
+          <td>0.284</td>
+          <td>6.251</td>
+          <td>3.110</td>
+          <td>0.029</td>
+      </tr>
+      <tr>
+          <td>tuning 64</td>
+          <td>hard</td>
+          <td><strong>−1.401</strong></td>
+          <td>5.73</td>
+          <td>0.116</td>
+          <td>4.797</td>
+          <td>3.426</td>
+          <td>0.009</td>
+      </tr>
+      <tr>
+          <td>held-out 64</td>
+          <td>easy</td>
+          <td><strong>+1.454</strong></td>
+          <td>6.70</td>
+          <td>0.282</td>
+          <td>6.355</td>
+          <td>3.072</td>
+          <td>0.030</td>
+      </tr>
+      <tr>
+          <td>held-out 64</td>
+          <td>hard</td>
+          <td><strong>−1.454</strong></td>
+          <td>5.56</td>
+          <td>0.118</td>
+          <td>4.831</td>
+          <td>3.413</td>
+          <td>0.008</td>
+      </tr>
+  </tbody>
+</table>
+<p>fallback 은 640경기에서 <strong>0회</strong> 입니다. 그래서 이 숫자는 해석해도 됩니다.</p>
+<h3 id="읽기">읽기<a href="#읽기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>현재 가중치의 <code>hard</code> 는 <code>easy</code> 보다 약합니다.</strong> 라운드당 약 1.4점을 잃습니다. tuning 과 held-out 양쪽에서 같은 방향이고, 16 seed(1.49)와 64 seed(1.40)도 가깝습니다. 딜 운으로 흔들리는 숫자가 아닙니다.</p>
+<p>크기는 아직 믿지 않습니다. 방향과 함께 볼 것은 보조 지표입니다.</p>
+<ul>
+<li><strong>1위 종료율 0.116 대 0.284.</strong> <code>hard</code> 가 먼저 나가는 일이 절반 이하입니다</li>
+<li><strong>제출 횟수 4.80 대 6.25.</strong> 여전히 덜 냅니다</li>
+<li><strong>유효 장수 3.43 대 3.11.</strong> 끝날 때 더 들고 있습니다</li>
+<li><strong>2 보유 종료율 0.009 대 0.030.</strong> 2 는 확실히 털어냅니다</li>
+</ul>
+<p>읽으면 이렇습니다. <strong>Part 5 에서 고친 &ldquo;거의 모든 턴을 패스한다&quot;가 완전히 해소된 것이 아니라, 과하게 조심스러운 쪽으로 남아 있습니다.</strong> 2 를 털어내는 항은 의도대로 작동합니다.</p>
+<p>즉 Part 5 의 수정은 <strong>증상을 없앴지만 성향까지 옮기지는 못했습니다.</strong> 극단적인 결함은 눈에 보였고 고쳤는데, 남은 편향은 눈에 보이지 않았고 이제야 숫자로 보입니다.</p>
+<h3 id="여기서-가중치를-만지지-않은-이유">여기서 가중치를 만지지 않은 이유<a href="#여기서-가중치를-만지지-않은-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가중치를 지금 만지고 싶은 유혹이 큽니다. 참았습니다. 측정 도구가 맞는지 확인하는 단계와 그 도구로 전략을 고치는 단계를 섞으면, 도구를 자기 결론에 맞춰 손보게 됩니다.</p>
+<p>결과적으로 이 판단이 옳았습니다. <strong>이 시점에 가중치를 만졌다면 다음 절의 진짜 원인은 영영 나오지 않았을 겁니다.</strong> 증상을 가중치로 덮을 수 있다는 것이 이 이야기에서 가장 위험한 부분입니다.</p>
+<p><code>hard</code> 의 표준편차(5.73)가 <code>easy</code>(6.80)보다 작은 것도 흥미로운 신호입니다. 더 조심스러운 봇의 분산이 작다는 건 말이 되지만, 그게 &ldquo;안정적&quot;인지 &ldquo;소극적&quot;인지는 이 숫자만으로 정할 수 없습니다.</p>
+<hr>
+<h2 id="7-범인-찾기-가설-세-개가-틀리고-네-번째에-잡았다">7. 범인 찾기: 가설 세 개가 틀리고 네 번째에 잡았다<a href="#7-범인-찾기-가설-세-개가-틀리고-네-번째에-잡았다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>시뮬레이터는 &ldquo;hard 가 라운드당 1.4점 지고 있다&quot;까지만 말해 주었습니다. <strong>왜</strong> 인지는 말해 주지 않았습니다. 거기서부터 네 번을 시도했고 세 번 틀렸습니다.</p>
+<h3 id="71-첫-단서-항-하나를-지우면-이긴다">7.1 첫 단서: 항 하나를 지우면 이긴다<a href="#71-첫-단서-항-하나를-지우면-이긴다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>각 평가항의 가중치를 0 으로 두고 재는 ablation 을 돌렸습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>지운 항</th>
+          <th>라운드당 수지</th>
+          <th>기준선 대비</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>(기준선)</td>
+          <td>−1.582</td>
+          <td>—</td>
+      </tr>
+      <tr>
+          <td><strong>LeadRetention</strong></td>
+          <td><strong>+0.310</strong></td>
+          <td><strong>+1.892</strong></td>
+      </tr>
+      <tr>
+          <td>EndgameBlock</td>
+          <td>−1.378</td>
+          <td>+0.204</td>
+      </tr>
+      <tr>
+          <td>Progress</td>
+          <td>−1.780</td>
+          <td>−0.198</td>
+      </tr>
+      <tr>
+          <td>StrongTileCost</td>
+          <td>−2.014</td>
+          <td>−0.432</td>
+      </tr>
+      <tr>
+          <td>PlanGain</td>
+          <td>−2.672</td>
+          <td>−1.090</td>
+      </tr>
+  </tbody>
+</table>
+<p>기준선은 이 ablation 실행에서 나온 값이라 §6 의 −1.401 과 정확히 같지는 않습니다. 중요한 것은 열의 상대 차이입니다.</p>
+<p><code>LeadRetention</code> 하나가 나머지 여덟 항을 합친 것보다 큰 피해를 줍니다. <a href="/posts/20260807-lexio-cpu-bot-strategy-05/">Part 5 §11</a> 의 표에 있듯 이 항의 정의는 <code>1 - 상대가 받을 확률</code>, 즉 &ldquo;이 수가 안 받힐 확률&quot;입니다.</p>
+<p>여기서 &ldquo;범인을 찾았다&quot;고 생각했습니다. <strong>틀렸습니다. 찾은 것은 증상이 나타나는 자리였지 원인이 아니었습니다.</strong></p>
+<h3 id="72-가설-1-강한-타일을-보상한다">7.2 가설 1: 강한 타일을 보상한다<a href="#72-가설-1-강한-타일을-보상한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 자연스러운 읽기입니다. 안 받히는 패는 정의상 강한 패이므로, 이 항은 &ldquo;센 걸 내라&quot;고 말하는 셈입니다. 그런데 <code>StrongTileCost</code> 가 정확히 그걸 막으려고 있습니다. 둘이 싸우는 것 아닐까.</p>
+<p><strong>검증.</strong> <code>LeadRetention</code> 에 <code>(1 - StrongTileCost)</code> 를 곱해 봤습니다. 강한 타일을 쓸 때는 이 보상을 주지 않는다는 뜻입니다.</p>
+<p><strong>결과.</strong> −1.582 에서 −1.351 로. 거의 그대로입니다.</p>
+<p><strong>왜 틀렸나.</strong> <code>StrongTileCost</code> 는 &ldquo;남은 미공개 중 아무것도 이길 수 없는 타일&quot;만 셉니다. 라운드 초반에는 미공개가 48장이라 그런 타일이 거의 없어서, <strong>이 항 자체가 초반에는 무력</strong> 합니다. 곱해 봐야 1 을 곱하는 것과 같았습니다.</p>
+<h3 id="73-가설-2-부호가-반대다">7.3 가설 2: 부호가 반대다<a href="#73-가설-2-부호가-반대다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>렉시오에는 &ldquo;필요 없는 트릭에 폭탄을 쓰지 마라&quot;는 원칙이 있습니다. 그렇다면 안 받히는 패는 보상이 아니라 <strong>비용</strong> 이어야 합니다. 아껴야 할 자산이니까요.</p>
+<p><strong>검증.</strong> 가중치를 음수까지 쓸어 봤습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>가중치</th>
+          <th>라운드당 수지</th>
+          <th>2 보유 종료율</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>+0.70</td>
+          <td>−1.582</td>
+          <td>0.010</td>
+      </tr>
+      <tr>
+          <td>0</td>
+          <td>+0.310</td>
+          <td>0.031</td>
+      </tr>
+      <tr>
+          <td>−0.35</td>
+          <td>+0.424</td>
+          <td>0.033</td>
+      </tr>
+      <tr>
+          <td>−0.60 (block=0)</td>
+          <td>−1.684</td>
+          <td>0.149</td>
+      </tr>
+      <tr>
+          <td>−0.70 (block=−0.4)</td>
+          <td>−2.221</td>
+          <td>0.189</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>결과.</strong> 조금 좋아지긴 하는데 <strong>0 을 못 이깁니다.</strong> 그리고 비용을 세게 매기면 봇이 2 를 껴안고 죽습니다. 2 보유 종료율이 0.031 에서 0.189 로 폭등합니다. 렉시오 정산은 남은 2 의 개수만큼 배수가 붙으므로 이건 재앙입니다.</p>
+<h3 id="74-가설-3-초반에만-비용이어야-한다">7.4 가설 3: 초반에만 비용이어야 한다<a href="#74-가설-3-초반에만-비용이어야-한다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>2 를 껴안는 게 문제라면 후반에는 비용을 매기지 않으면 됩니다. 코드에 이미 <code>urgency</code>(상대가 손패를 얼마나 비웠는지)가 있으니 <code>(1 - urgency)</code> 를 곱하면 됩니다. 초반엔 아끼고 후반엔 털어라.</p>
+<p>게다가 이러면 <code>EndgameBlock</code>(= <code>(1 - 받힐 확률) × urgency</code>)과 정확히 상보 관계가 됩니다. <strong>초반엔 안 받히는 패가 아껴야 할 자산, 후반엔 써야 할 무기.</strong> 아주 그럴듯한 모델입니다.</p>
+<p><strong>검증.</strong> 가중치 × <code>EndgameBlock</code> 격자로 쓸었습니다.</p>
+<p><strong>결과.</strong> 최선이 +0.668 이었습니다. 같은 격자 안에서 <code>LeadRetention</code> 을 0 으로 둔 칸(+0.892)을 여전히 못 이깁니다. 이 칸이 §7.3 의 +0.310 보다 높은 것은 <code>EndgameBlock</code> 도 함께 움직였기 때문입니다.</p>
+<p>이 시점까지 아홉 가지 형태를 시도했고 <strong>전부 0 보다 나빴습니다.</strong> &ldquo;이 항은 어떤 형태로도 쓸모가 없다, 지워야 한다&quot;는 결론이 보였습니다.</p>
+<p>그런데 지우면 문제가 생깁니다. <code>LeadRetention</code> 과 <code>EndgameBlock</code> 이 받힐 확률을 쓰는 <strong>유일한 두 자리</strong> 입니다. 둘 다 지우면 <a href="/posts/20260731-lexio-cpu-bot-strategy-02/">Part 2</a> 와 Part 4 에서 공들여 만든 안전도 추정 테이블 전체가 죽은 코드가 됩니다.</p>
+<h3 id="75-이상한-것을-봤다-크기가-상관없다">7.5 이상한 것을 봤다: 크기가 상관없다<a href="#75-이상한-것을-봤다-크기가-상관없다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>포기하기 전에 가중치를 아주 작게 해 봤습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>가중치</th>
+          <th>라운드당 수지</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>+0.7000</td>
+          <td>−1.582</td>
+      </tr>
+      <tr>
+          <td>+0.0500</td>
+          <td>−1.140</td>
+      </tr>
+      <tr>
+          <td>+0.0050</td>
+          <td>−1.146</td>
+      </tr>
+      <tr>
+          <td><strong>0</strong></td>
+          <td><strong>+0.310</strong></td>
+      </tr>
+      <tr>
+          <td>−0.0050</td>
+          <td>+0.296</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong><code>+0.005</code> 가 <code>+0.7</code> 과 거의 같은 피해를 줍니다.</strong> 크기가 140배 달라져도 결과가 같고, 0 에서만 뜁니다.</p>
+<p>가중치 0.005 짜리 항은 순위를 바꿀 힘이 없습니다. 다른 항들이 <strong>정확히 동점</strong> 일 때가 아니라면요.</p>
+<p>코드를 봤더니 후보 선택 함수에 이런 규칙이 있었습니다.</p>
+<blockquote>
+<p>총점이 같으면 <strong>약한 조합</strong> 을 낸다. 같은 일을 하는 두 수라면 싼 타일을 쓰는 쪽이 낫다. 강한 타일은 손에 남아 있을 때 더 값어치가 있다.</p>
+</blockquote>
+<p><strong>이 항은 평가항이 아니라 동점 처리기였습니다.</strong> 아주 작은 값이라도 더해지는 순간 동점이 성립하지 않아, 의도적으로 만들어 둔 그 규칙이 <strong>아예 실행되지 않았습니다.</strong></p>
+<h3 id="76-손으로-재구성한-국면에서는-재현이-안-됐다">7.6 손으로 재구성한 국면에서는 재현이 안 됐다<a href="#76-손으로-재구성한-국면에서는-재현이-안-됐다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>원인을 알았다고 생각하고 회귀 테스트를 쓰려고, 나쁜 수가 나올 법한 국면을 손으로 만들었습니다.</p>
+<p><strong>테스트가 통과했습니다.</strong> 봇은 그 국면에서 올바른 수를 골랐습니다.</p>
+<p>손패와 필드는 맞췄는데도 재현이 안 됩니다. 무엇이 그 수를 나쁘게 만드는지가 <strong>제가 적어 둘 생각을 한 것 바깥에</strong> 있었던 겁니다. 미공개 더미의 구성, 좌석별 남은 장수, 이미 나간 타일.</p>
+<p>그래서 시뮬레이터가 <strong>실제 국면을 그대로 포획</strong> 하게 만들었습니다. 두 설정이 같은 국면에서 다른 결정을 내리는 지점을 모으고, 국면 전체를 담고, 그 라운드의 정산 손실 순으로 정렬합니다. 한쪽만 실제로 두고 다른 쪽은 계산만 합니다. 두 경기를 따로 돌려 비교하면 <strong>이미 갈라진 국면끼리 비교</strong> 하게 되어 어느 한 선택에 대해서도 말해 주는 게 없기 때문입니다.</p>
+<p>나온 국면이 전부 같은 모양이었습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>필드</th>
+          <th>낸 것</th>
+          <th>항을 끄면</th>
+          <th>라운드 정산</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>3H</code></td>
+          <td><strong><code>2D</code></strong></td>
+          <td><code>4S</code></td>
+          <td>−28</td>
+      </tr>
+      <tr>
+          <td>(리드)</td>
+          <td><strong><code>13D 13S</code></strong></td>
+          <td><code>3C 3H</code></td>
+          <td>−26</td>
+      </tr>
+      <tr>
+          <td><code>3S</code></td>
+          <td><strong><code>2H</code></strong></td>
+          <td><code>4D</code></td>
+          <td>−24</td>
+      </tr>
+      <tr>
+          <td><code>4S</code></td>
+          <td><strong><code>1D</code></strong></td>
+          <td><code>7D</code></td>
+          <td>−24</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>가장 싼 리드를 손에서 가장 강한 타일로 받고 있었습니다.</strong> 3 을 2 로 받으면 트릭은 이기고 라운드는 잃습니다.</p>
+<h3 id="77-가설-4-확률-자체가-틀렸다">7.7 가설 4: 확률 자체가 틀렸다<a href="#77-가설-4-확률-자체가-틀렸다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>여기서 질문을 바꿨습니다. <strong>&ldquo;이 항이 왜 나쁜가&quot;가 아니라 &ldquo;이 항에 들어가는 숫자가 맞는가&rdquo;.</strong></p>
+<p><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method">몬테카를로</a> 로 대조했습니다. 미공개 더미를 좌석들에게 실제로 나눠 주고 누가 받을 수 있는지 세는, 아주 단순한 코드입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>수</th>
+          <th>추정</th>
+          <th>실제</th>
+          <th>오차</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>4S</code></td>
+          <td>1.0000</td>
+          <td>1.0000</td>
+          <td>0.0000</td>
+      </tr>
+      <tr>
+          <td><strong><code>2D</code></strong></td>
+          <td><strong>0.6837</strong></td>
+          <td><strong>1.0000</strong></td>
+          <td><strong>−0.3163</strong></td>
+      </tr>
+      <tr>
+          <td><code>13D 13S</code></td>
+          <td>0.8788</td>
+          <td>0.9450</td>
+          <td>−0.0662</td>
+      </tr>
+  </tbody>
+</table>
+<p><code>2D</code> 를 낼 때 받힐 확률이 실제로는 <strong>정확히 1</strong> 인데, 추정기는 <strong>0.68</strong> 을 냅니다.</p>
+<p>왜 정확히 1 인가. <strong>렉시오는 60장을 전부 나눠 갖습니다.</strong> 산 더미가 없습니다. 그러므로 미공개 타일은 <strong>반드시 누군가의 손에 있습니다.</strong> <code>2D</code> 를 이기는 것은 <code>2S</code> 하나뿐이고, <code>2S</code> 가 미공개라면 누군가 그걸 들고 있습니다. 확률이 아니라 확정입니다.</p>
+<p>추정기는 좌석마다 확률을 구해 <code>1 - ∏(1 - pᵢ)</code> 로 합치고 있었습니다. 좌석들이 <strong>독립으로 뽑는다</strong> 고 본 겁니다. 그런데 좌석들은 하나의 더미를 <strong>나눠 가집니다.</strong> 특정 조합 하나는 어느 한 손에 통째로 있거나 아무 손에도 없으므로, &ldquo;i 좌석이 그걸 다 갖는다&quot;는 두 좌석에 동시에 성립할 수 없습니다. <a href="https://en.wikipedia.org/wiki/Mutual_exclusivity">배반 사건</a> 이라 곱이 아니라 <strong>더해야</strong> 합니다.</p>
+<p>코드에는 이런 주석까지 달려 있었습니다.</p>
+<blockquote>
+<p>좌석들은 하나의 더미를 나눠 가지므로 독립이 아니다. 하지만 정책은 &ldquo;누군가 받는다&quot;에 대한 단일한 숫자가 필요하고, 대안은 테이블이 감당할 수 없는 결합 모델이다.</p>
+</blockquote>
+<p><strong>대안은 복잡한 결합 모델이 아니라 덧셈 하나였습니다.</strong></p>
+<h3 id="78-고친-결과">7.8 고친 결과<a href="#78-고친-결과" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>수식 한 줄을 바꿨습니다. 곱을 합으로.</p>
+<ul>
+<li>몬테카를로 대조 최대 오차: <strong>0.32 → 0.007</strong></li>
+<li>회귀 fixture 4개: 전부 통과</li>
+<li><strong>가중치는 하나도 바꾸지 않았습니다.</strong></li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th>지표</th>
+          <th>전</th>
+          <th>후</th>
+          <th>(<code>easy</code>)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>tuning 64 seed</td>
+          <td>−1.401</td>
+          <td><strong>+0.714</strong></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>held-out 128 seed</td>
+          <td>−1.493</td>
+          <td><strong>+0.684</strong></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>1위 종료율</td>
+          <td>0.115</td>
+          <td>0.194</td>
+          <td>0.206</td>
+      </tr>
+      <tr>
+          <td>제출/라운드</td>
+          <td>4.82</td>
+          <td>5.25</td>
+          <td>6.21</td>
+      </tr>
+      <tr>
+          <td>유효 장수</td>
+          <td>3.43</td>
+          <td><strong>3.07</strong></td>
+          <td>3.44</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p><strong>평가 함수는 처음부터 옳았습니다. 평가 함수에 들어가는 확률이 틀렸습니다.</strong></p>
+</blockquote>
+<p>이건 Part 1~4 의 설계를 부정하지 않습니다. 다만 자축할 일도 아닙니다. <strong>이 사실을 알아내는 데 왜 그렇게 오래 걸렸는지</strong> 가 이 절의 값어치입니다.</p>
+<h3 id="79-돌아본-경로">7.9 돌아본 경로<a href="#79-돌아본-경로" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TD
+    A[&#34;hard 가 라운드당 1.4점 진다&#34;] --&gt; B[&#34;ablation: LeadRetention 이 범인&#34;]
+    B --&gt; C[&#34;가설 1: 강한 타일을 보상한다&#34;]
+    C -- &#34;−1.35, 거의 그대로&#34; --&gt; D[&#34;가설 2: 부호가 반대다&#34;]
+    D -- &#34;0 을 못 이김&#34; --&gt; E[&#34;가설 3: 초반에만 비용이다&#34;]
+    E -- &#34;0 을 못 이김&#34; --&gt; F[&#34;가중치 크기를 훑는다&#34;]
+    F -- &#34;140배 바꿔도 같음&#34; --&gt; G[&#34;평가항이 아니라 동점 처리기&#34;]
+    G --&gt; H[&#34;실제 국면을 자동 포획&#34;]
+    H -- &#34;3 을 2 로 받는다&#34; --&gt; I[&#34;가설 4: 숫자가 틀렸다&#34;]
+    I --&gt; J[&#34;좌석을 독립으로 합치고 있었다&#34;]
+    style A fill:#FFD700,color:#000000
+    style C fill:#FFB6C1,color:#000000
+    style D fill:#FFB6C1,color:#000000
+    style E fill:#FFB6C1,color:#000000
+    style J fill:#90EE90,color:#000000
+</code></pre><h3 id="710-이-절의-교훈">7.10 이 절의 교훈<a href="#710-이-절의-교훈" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>틀린 항을 찾는 것과 왜 틀렸는지 아는 것은 다릅니다.</strong> ablation 은 범인이 있는 자리를 알려 주지 범인을 알려 주지 않습니다. 이유를 세 번 틀렸고, 그동안 만든 수정안은 전부 증상 치료였습니다.</li>
+<li><strong>가중치 크기를 훑으면 그 항이 하는 일이 드러납니다.</strong> 응답이 매끄럽지 않고 0 에서만 계단이 있으면, 순위 문제가 아니라 동점 문제입니다.</li>
+<li><strong>손으로 재구성한 국면에서는 버그가 재현되지 않습니다.</strong> 국면의 어느 부분이 중요한지 사람이 미리 알 수 없기 때문입니다. fixture 는 자동으로 추출해야 합니다.</li>
+<li><strong>확률 모델을 쓰는 코드가 이상하면, 항을 고치기 전에 확률부터 실제 값과 대조합니다.</strong> 몬테카를로는 짜기 쉽고, 아이디어가 틀린 것과 숫자가 틀린 것은 완전히 다른 문제입니다.</li>
+<li><strong>&ldquo;근사할 수밖에 없다&quot;는 주석은 의심할 만합니다.</strong> 그렇게 적어 두면 아무도 다시 보지 않습니다.</li>
+</ol>
+<hr>
+<h2 id="8-보정-테이블도-같이-죽어-있었다">8. 보정 테이블도 같이 죽어 있었다<a href="#8-보정-테이블도-같이-죽어-있었다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>추정 모델을 고쳤더니 짝이 되는 문제가 드러났습니다.</p>
+<p>앞 편들에서 만든 보정 테이블은 &ldquo;미공개 더미에서 <strong>한 손</strong> 을 뽑았을 때 그 손이 받을 수 있는가&quot;를 보정하도록 적합돼 있었습니다. 모델을 고치면서 정책이 묻는 값은 &ldquo;<strong>누구든</strong> 받을 수 있는가&quot;가 되었습니다. <strong>정의역이 달라졌으므로, 테이블은 이제 아무도 묻지 않는 값을 보정합니다.</strong></p>
+<p>생성기가 런타임과 같은 함수를 쓰도록 계산을 한 곳으로 합치고 재생성했습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>항목 수</th>
+          <th>평균 보정 크기</th>
+          <th>최대</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>v1</td>
+          <td>86</td>
+          <td>0.0787</td>
+          <td>0.3915</td>
+      </tr>
+      <tr>
+          <td>v2</td>
+          <td>77</td>
+          <td>0.0647</td>
+          <td>0.3045</td>
+      </tr>
+  </tbody>
+</table>
+<p>재생성 후 지표는 거의 그대로였습니다 (+0.714 → +0.711). 그런데 <strong>보정 크기가 줄었습니다.</strong> 옛 테이블이 하던 일의 상당 부분이 <strong>모델의 오류를 메우는 것</strong> 이었다는 뜻입니다.</p>
+<blockquote>
+<p><strong>보정 테이블·캘리브레이션·룩업은 입력 분포에 묶여 있습니다.</strong> 입력을 만드는 코드를 고치면 테이블도 다시 만들어야 하고, 생성기와 런타임이 같은 계산을 두 번 구현하면 갈라지는 순간 테이블은 조용히 무의미해집니다.</p>
+</blockquote>
+<h3 id="나중에-붙인-한-줄">나중에 붙인 한 줄<a href="#나중에-붙인-한-줄" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한참 뒤에 이 표에 <strong>몇 인 경기로 만든 표인지</strong> 를 적어 넣었습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span><span class="nt">&#34;generator_version&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nt">&#34;seed&#34;</span><span class="p">:</span> <span class="mi">20260806</span><span class="p">,</span> <span class="nt">&#34;situations&#34;</span><span class="p">:</span> <span class="mi">40000</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"> <span class="nt">&#34;samples_each&#34;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span> <span class="nt">&#34;player_count&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="err">...</span><span class="p">}</span>
+</span></span></code></pre></div><p>인원이 달라지면 덱 크기와 손패 장수가 달라지므로, 보정값은 <strong>측정한 인원에서만</strong> 의미를 갖습니다. 지금은 5인 표 하나뿐이고 추정기가 표를 고르지도 않습니다. 그래도 적어 두지 않으면, 나중에 인원별 표를 둘 때 <strong>무엇으로 만든 표인지 구분할 방법이 없습니다.</strong></p>
+<p>같은 seed·situations·samples 로 다시 생성해 보정값이 전부 동일함을 확인했습니다. 항목이 늘어난 만큼 체크섬만 바뀝니다.</p>
+<p>이것도 위 교훈의 연장입니다. <strong>테이블이 어떤 가정 위에서 만들어졌는지는 테이블 안에 적혀 있어야 합니다.</strong> 밖에 적어 두면 표만 옮겨 가고 가정은 따라가지 않습니다.</p>
+<hr>
+<h2 id="9-튜닝과-held-out-검증">9. 튜닝과 held-out 검증<a href="#9-튜닝과-held-out-검증" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>여기서부터는 평범합니다. 어려운 부분은 이미 끝났습니다.</p>
+<p>tuning seed 64개에서 <a href="https://en.wikipedia.org/wiki/Coordinate_descent">좌표하강</a> 4 sweep, 148회 평가를 돌렸습니다. 움직인 항만 옮기면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>sweep</th>
+          <th>항</th>
+          <th>전</th>
+          <th>후</th>
+          <th>점수</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>StrongTileCost</td>
+          <td>0.900</td>
+          <td>1.125</td>
+          <td>+0.815</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>Progress</td>
+          <td>1.400</td>
+          <td>1.750</td>
+          <td>+0.818</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>LeadRetention</td>
+          <td>0.700</td>
+          <td>0.525</td>
+          <td>+0.900</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>PlanGain</td>
+          <td>1.000</td>
+          <td>1.250</td>
+          <td>+0.910</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>LeadRetention</td>
+          <td>0.525</td>
+          <td><strong>0.000</strong></td>
+          <td>+1.020</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>EndgameBlock</td>
+          <td>0.800</td>
+          <td><strong>1.600</strong></td>
+          <td>+1.205</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>PlanGain</td>
+          <td>1.250</td>
+          <td>1.500</td>
+          <td>+1.253</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>+0.711 에서 +1.253 으로 올라갔습니다.</strong></p>
+<p>재미있는 것은 <code>LeadRetention</code> 이 결국 0 이 되었다는 점입니다. 확률을 고친 뒤에도 그렇습니다. 다만 이제 피해가 1.89 가 아니라 0.33 이고, <strong>구조적 결함이 아니라 크기 문제</strong> 입니다. 리드를 지키는 값어치는 손패를 비우는 항들이 이미 담고 있고, 따로 값을 매기면 필요 없는 트릭을 사게 됩니다.</p>
+<p>반대로 같은 생각을 &ldquo;라운드 종료가 얼마나 가까운가&quot;로 눌러 놓은 <code>EndgameBlock</code> 은 <strong>두 배가 되었습니다.</strong> §7.4 에서 제가 손으로 세우려던 모델(&ldquo;초반엔 자산, 후반엔 무기&rdquo;)을 탐색이 스스로 찾아낸 셈입니다. <strong>제가 손으로 넣었을 때는 안 됐고, 확률을 고친 뒤에 탐색에 맡기니 됐습니다.</strong></p>
+<p>held-out 128 seed 를 라운드 수 세 가지로 나눠 돌렸습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>cell</th>
+          <th>경기</th>
+          <th>라운드당 수지</th>
+          <th>95% 신뢰구간</th>
+          <th>판정</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3라운드</td>
+          <td>1280</td>
+          <td>+1.1910</td>
+          <td>+0.907 ~ +1.476</td>
+          <td>통과</td>
+      </tr>
+      <tr>
+          <td>5라운드</td>
+          <td>1280</td>
+          <td>+1.2037</td>
+          <td>+0.980 ~ +1.428</td>
+          <td>통과</td>
+      </tr>
+      <tr>
+          <td>10라운드</td>
+          <td>1280</td>
+          <td>+1.2324</td>
+          <td>+1.075 ~ +1.390</td>
+          <td>통과</td>
+      </tr>
+      <tr>
+          <td><strong>전체</strong></td>
+          <td>3840</td>
+          <td><strong>+1.2090</strong></td>
+          <td><strong>+1.077 ~ +1.341</strong></td>
+          <td><strong>통과</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>tuning 에서 +1.253, held-out 에서 +1.209 입니다. <strong>차이가 0.04 로 과적합의 흔적이 없습니다.</strong></p>
+<p>cell 을 나눈 이유가 있습니다. 긴 판에서 이기고 짧은 판에서 져서 전체로 이기는 봇은 내보낼 것이 아닙니다. 라운드 수는 플레이어가 고릅니다.</p>
+<p>이제 Part 5 마지막에 쓰지 않겠다고 했던 문장을 쓸 수 있습니다. <strong><code>hard</code> 는 <code>easy</code> 보다 강합니다.</strong> 라운드당 약 1.2점입니다.</p>
+<hr>
+<h2 id="10-아직-안-푼-것-하나">10. 아직 안 푼 것 하나<a href="#10-아직-안-푼-것-하나" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>수정 후 ablation 을 다시 돌렸더니 <code>TwoDisposal</code> 이 소폭 해롭습니다. 지우면 +0.103 입니다.</p>
+<p>이상한 것은, 이 항을 지우면 <strong>2 보유 종료율이 0.019 에서 0.037 로 오르는데도 수지가 좋아진다</strong> 는 점입니다. 2 를 털어내는 일을 이 항이 아니라 다른 항이 하고 있고, 이 항이 하는 일은 그 위에 덧대는 과잉일 가능성이 있습니다.</p>
+<p>아직 안 봤습니다. 다음 편 감입니다.</p>
+<hr>
+<h2 id="에필로그-4-의-그-검사가-배포를-두-번-막았다">에필로그: §4 의 그 검사가 배포를 두 번 막았다<a href="#에필로그-4-의-그-검사가-배포를-두-번-막았다" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>§4 에서 &ldquo;fallback 이 0회다&quot;를 테스트로 고정했고, 그것이 §3 의 버그를 다시 잡아 줄 거라고 썼습니다. 두 달도 안 되어 그 검사가 스스로 문제가 됩니다.</p>
+<h3 id="먼저-병렬화를-시도했다가-되돌렸다">먼저: 병렬화를 시도했다가 되돌렸다<a href="#먼저-병렬화를-시도했다가-되돌렸다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>테스트가 느려서 <code>t.Parallel()</code> 을 62개에 넣어 봤습니다. <strong>12.4초가 7.8초</strong> 가 됩니다. 그리고 되돌렸습니다.</p>
+<p><code>hard</code> 에 100ms 벽시계 데드라인이 있어서 <strong>CPU 경합이 fallback 을 일으킵니다.</strong> 그러면 &ldquo;fallback 이 0회다&rdquo;, &ldquo;worker 수를 바꿔도 같은 결과다&rdquo;(§5), &ldquo;같은 가중치는 갈라지지 않는다&quot;가 <strong>전부 무너집니다.</strong> <code>-race</code> 로는 매번, 병렬화만으로도 17회 중 1회 재현됐습니다.</p>
+<p>대신 라운드 수를 줄였습니다. 이 테스트들이 보는 것은 집계와 탐색 동작이지 경기 길이가 아닙니다. <strong>seed 수는 줄이지 않았습니다.</strong> worker 독립성 검사가 여러 seed 를 필요로 하고, 그걸 줄이면 그 검사가 아무것도 하지 않게 됩니다. 12.4초에서 7.3초가 되었습니다.</p>
+<p>여기서 한 걸음 더 갔어야 했습니다. <strong>경합을 원인으로 지목하고 경합을 없애는 데서 멈췄습니다.</strong> &ldquo;병렬화가 없어도 러너가 느리면 같은 일이 난다&quot;까지 가지 못했고, 진짜 원인인 &ldquo;벽시계 한도를 지표 검사에 썼다&quot;는 그대로 남았습니다.</p>
+<h3 id="그리고-ci-가-두-번-연속-실패했다">그리고: CI 가 두 번 연속 실패했다<a href="#그리고-ci-가-두-번-연속-실패했다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>main 에 머지한 뒤 CI 가 두 번 연속 실패했습니다. 배포가 나가지 못했습니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">--- FAIL: TestRunExperimentReportsThatHardNeverGaveUp
+</span></span><span class="line"><span class="cl">    hard fell back 1 times (0 failures, 1 timeouts), want none
+</span></span></code></pre></div><p>로컬에서는 통과합니다.</p>
+<p>원인은 단순합니다. <code>hard</code> 의 판단 한도는 <strong>벽시계</strong> 100ms 이고, 검사는 <strong>정확히 0회</strong> 를 요구했습니다. 벽시계는 기계가 얼마나 바쁜지에 달려 있습니다. 공유 러너에서 약 2,300번의 판단 중 <strong>한 번</strong> 이 한도를 넘겼습니다. 정책에는 아무 문제가 없습니다.</p>
+<h3 id="결정-0-이-아니라-비율">결정: 0 이 아니라 비율<a href="#결정-0-이-아니라-비율" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>이 검사의 값어치는 판단에 124ms 가 걸리던 <strong>구조적 결함</strong> (§3)을 잡은 것이었습니다. 그런 결함은 <strong>정도가 아니라 종류가 다릅니다.</strong> 재 보면 이렇습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>fallback 비율</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>정상</td>
+          <td>0.00% (2,257 판단 중 0회)</td>
+      </tr>
+      <tr>
+          <td>CI 플레이크</td>
+          <td>0.04% (1회)</td>
+      </tr>
+      <tr>
+          <td>데드라인을 1µs 로 망가뜨림</td>
+          <td><strong>44~48%</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>1% 를 한계로 뒀습니다. 잡음보다 20배 위, 구조적 결함보다 40배 아래입니다.</strong></p>
+<p>곁가지로 하나가 더 드러났습니다. 지금까지 fallback 을 세면서 <strong>분모가 없었습니다.</strong> 횟수만으로는 &ldquo;긴 실행에서 한 번&quot;과 &ldquo;짧은 실행에서 한 번&quot;을 구분할 수 없습니다. 판단 횟수를 함께 세기 시작했습니다.</p>
+<p>가중치를 직접 넣어 정책을 만드는 자리가 <strong>넷</strong> 있었습니다. 전부 계수하는 helper 하나를 지나게 했습니다. 하나라도 빠뜨리면 <strong>분모만 작아져 비율이 부풀려집니다.</strong></p>
+<p>그리고 작업 중에 <strong>테스트가 자기 상수를 들고 있는 것</strong> 을 발견했습니다. 패키지 상수를 100% 로 바꿔도 테스트는 여전히 1% 로 실패했습니다. 규칙이 두 벌이면 한쪽만 고쳐 놓고 고쳤다고 믿게 됩니다.</p>
+<h3 id="이-에필로그의-교훈">이 에필로그의 교훈<a href="#이-에필로그의-교훈" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<ol>
+<li><strong>벽시계 한도를 지표 검사에 쓰면, 그 검사는 알고리즘이 아니라 기계의 상태를 재게 됩니다.</strong> 공유 러너에서 한 번 늦은 것과 알고리즘이 두 자릿수 배 느린 것은 종류가 다른 사건인데, <code>== 0</code> 은 둘을 같게 봅니다.</li>
+<li><strong>임계값은 두 분포 사이의 빈 곳에 놓아야 합니다.</strong> 0.04% 와 47% 사이라면 1% 는 어느 쪽에도 가깝지 않습니다. 이 여백이 있어야 임계값이 임의로 보이지 않습니다.</li>
+<li><strong>비율을 보고하려면 분모부터 세야 합니다.</strong> 세지 않으면서 &ldquo;몇 번&quot;만 말하고 있었습니다.</li>
+<li><strong>§3 의 교훈(&ldquo;한도를 늘리는 것은 은폐다&rdquo;)은 여전히 유효합니다.</strong> 데드라인은 건드리지 않았습니다. 바꾼 것은 <strong>검사의 해상도</strong> 입니다. 이 둘을 헷갈리면 다시 은폐가 됩니다.</li>
+</ol>
+<p>옳은 원칙이었는데 임계값이 틀렸습니다. 원칙을 세우는 것과 그 원칙을 기계가 판정할 수 있는 형태로 적는 것은 다른 일입니다. Part 5 의 마지막 문단과 같은 이야기입니다.</p>
+<hr>
+<h2 id="마치며">마치며<a href="#마치며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 편을 세 줄로 줄이면 이렇습니다.</p>
+<blockquote>
+<p><strong>첫째,</strong> 측정 도구는 전략을 재기 위해 만들지만, 전략을 재기 전에 구현의 결함부터 잡아냅니다. 그리고 조용히 대신 처리해 주는 경로는 지표를 오염시키는데, 오염된 지표도 깔끔해 보입니다.</p>
+<p><strong>둘째,</strong> 항이 틀렸다는 것과 왜 틀렸는지 아는 것은 다릅니다. ablation 은 범인이 있는 자리를 알려 주지 범인을 알려 주지 않습니다. 세 번 틀린 뒤에야 질문을 &ldquo;이 항이 왜 나쁜가&quot;에서 &ldquo;이 항에 들어가는 숫자가 맞는가&quot;로 바꿨습니다.</p>
+<p><strong>셋째,</strong> 평가 함수는 처음부터 옳았고 확률이 틀렸습니다. 수식 한 줄을 고치자 가중치를 하나도 바꾸지 않았는데 −1.4 가 +0.7 이 되었습니다.</p>
+</blockquote>
+<p>Part 5 를 쓰면서 &ldquo;규칙을 글로 적어 두는 것과 그 규칙을 코드가 어기지 못하게 만드는 것은 다른 일&quot;이라고 썼습니다. 이번 편은 거기에 한 겹을 더합니다. <strong>코드가 어기지 못하게 만든 규칙조차, 무엇을 재고 있는지 틀리면 잘못된 것을 지킵니다.</strong> fallback 검사는 정확히 그 사례였고, <code>1 - ∏(1 - pᵢ)</code> 도 마찬가지였습니다. 식은 잘 짜여 있었고 테스트도 있었지만, 그 식이 대답하는 질문이 게임의 질문과 달랐습니다.</p>
+<p>가장 오래 기억할 만한 것은 이 문장입니다.</p>
+<blockquote>
+<p>&ldquo;근사할 수밖에 없다&quot;고 적어 두면, 아무도 다시 보지 않습니다.</p>
+</blockquote>
+<p>그 주석 아래에 있던 것은 감당할 수 없는 결합 모델이 아니라 덧셈 하나였습니다.</p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://boardgamegeek.com/boardgame/19184/lexio">LEXIO (BoardGameGeek)</a></li>
+<li><a href="https://lexio.co.kr/bbs/board.php?bo_table=0102">렉시오 공식 게임방법 (디다노니아)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Duplicate_bridge">Duplicate bridge (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo method (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mutual_exclusivity">Mutual exclusivity (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coordinate_descent">Coordinate descent (Wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets">Training, validation, and test data sets (Wikipedia)</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-01/">렉시오 CPU 플레이어 만들기 Part 1: 타일 하나를 정수 하나로</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-02/">렉시오 CPU 플레이어 만들기 Part 2: 60비트 카운팅과 확실승수 판정</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-03/">렉시오 CPU 플레이어 만들기 Part 3: 손패 분해 플랜</a></li>
+<li><a href="/posts/20260731-lexio-cpu-bot-strategy-04/">렉시오 CPU 플레이어 만들기 Part 4: 수 평가와 정산 기대값</a></li>
+<li><a href="/posts/20260807-lexio-cpu-bot-strategy-05/">렉시오 CPU 플레이어 만들기 Part 5: 봇이 아무것도 하지 않는 이유</a></li>
+<li><a href="/posts/20260727-climbing-card-games-daifugo-dalmuti-lexio/">대부호부터 렉시오까지: 클라이밍 카드게임의 세계와 전략</a></li>
+</ul>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+      <a href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-07/" class="button inline prev">
+        &lt; [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 7: 코드 없이 보는 easy 봇과 hard 봇의 차이</span>]
+      </a>
+    
+    
+      ::
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260807-lexio-cpu-bot-strategy-05/" class="button inline next">
+         [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 5: 봇이 아무것도 하지 않는 이유</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
