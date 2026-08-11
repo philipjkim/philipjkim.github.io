@@ -100,6 +100,13 @@
       <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.8 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;들어가며-5년-동안-go에-무슨-일이-있었나&#34;&gt;들어가며: 5년 동안 Go에 무슨 일이 있었나&lt;/h2&gt;&#xA;&lt;p&gt;2021~22년에 Go로 서비스를 짜던 시절을 떠올려 봅니다. 그때 우리가 쓰던 버전은 대략 Go 1.16~1.18 언저리였습니다. 제네릭이 없거나(1.18 이전), 갓 도입되어 아직 손에 익지 않았고, &lt;code&gt;interface{}&lt;/code&gt; 와 &lt;code&gt;sort.Slice&lt;/code&gt;, &lt;code&gt;for _, v := range xs { v := v; ... }&lt;/code&gt; 같은 관용구가 일상이었습니다.&lt;/p&gt;&#xA;&lt;p&gt;그로부터 8개의 메이저 릴리스(1.19부터 1.26까지)가 지났습니다. 2026년 6월 현재 stable 버전은 &lt;strong&gt;2026년 2월에 나온 Go 1.26&lt;/strong&gt; 입니다. 이 5년 사이에 언어 자체, 표준 라이브러리, 런타임, 툴체인이 모두 크게 달라졌습니다. 문제는 코드베이스가 그만큼 따라가지 못한다는 점입니다. 많은 프로덕션 코드가 여전히 &amp;ldquo;그때 그렇게 짜던 방식&amp;quot;으로 멈춰 있습니다.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Agentic Coding 시대의 Repo 부트스트래핑 가이드 Part 2: Go &#43; Templ &#43; HTMX To-Do 앱으로 직접 만들어 보기</title>
+      <link>https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/</link>
+      <pubDate>Thu, 28 May 2026 19:03:00 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260528-repo-bootstrapping-guide-02/</guid>
+      <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.7 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;&lt;a href=&#34;../20260528-repo-bootstrapping-guide-01/&#34;&gt;Part 1&lt;/a&gt; 에서는 2026년 5월 기준 de-facto 가 된 spec 문서들의 지형도와 best practices 를 정리했습니다. 2편에서는 가상의 Go + Templ + HTMX 기반 To-Do 앱 &lt;code&gt;gotodo&lt;/code&gt; 를 새로 부트스트래핑한다고 가정하고, 각 문서를 실제로 어떻게 채우는지 발췌 형태로 따라갑니다.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;가상-프로젝트-gotodo&#34;&gt;가상 프로젝트: &lt;code&gt;gotodo&lt;/code&gt;&lt;/h2&gt;&#xA;&lt;p&gt;스택은 다음과 같습니다.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Go 1.23&lt;/strong&gt; — 표준 라이브러리 중심&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://templ.guide&#34;&gt;templ&lt;/a&gt;&lt;/strong&gt; — Go 네이티브 SSR 템플릿 (type-safe)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://htmx.org&#34;&gt;HTMX 2.0&lt;/a&gt;&lt;/strong&gt; — 클라이언트 JS 최소화&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;SQLite + &lt;code&gt;modernc.org/sqlite&lt;/code&gt;&lt;/strong&gt; — CGO 없는 순수 Go 드라이버&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;목표는 단순합니다. 할 일 추가/완료/삭제만 되는 SSR 미니멀 앱. 1인 로컬 사용을 가정합니다.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Go 웹 프레임워크 비교: Chi vs. Gin</title>
       <link>https://philipjkim.github.io/posts/20260307-go-web-framework-chi-vs-gin/</link>
       <pubDate>Sat, 07 Mar 2026 00:21:25 +0900</pubDate>
@@ -112,6 +119,13 @@
       <pubDate>Sat, 07 Mar 2026 00:01:56 +0900</pubDate>
       <guid>https://philipjkim.github.io/posts/20260307-go-html-template-vs-templ-with-htmx/</guid>
       <description>&lt;p&gt;&lt;em&gt;이 글은 Claude Opus 4.6 을 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;p&gt;Go로 SSR 웹 앱을 만들 때 HTMX와 함께 사용할 템플릿 기술로 두 가지 선택지가 있습니다.&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Go 표준 &lt;code&gt;html/template&lt;/code&gt; + 커스텀 PageRenderer (페이지별 독립 템플릿 세트)&lt;/li&gt;&#xA;&lt;li&gt;Templ&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;이 글에서는 두 방식의 장단점을 실무 관점에서 비교합니다.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;타입-안전성&#34;&gt;타입 안전성&lt;/h2&gt;&#xA;&lt;p&gt;가장 큰 갈림길입니다.&lt;/p&gt;&#xA;&lt;p&gt;&lt;code&gt;html/template&lt;/code&gt;은 런타임에 템플릿을 파싱하고 데이터를 바인딩합니다. &lt;code&gt;{{ .Titl }}&lt;/code&gt;이라고 써도 빌드는 통과합니다. 런타임에 빈 문자열이 나오거나 에러가 발생하고 나서야 문제를 알 수 있습니다.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Redis를 활용한 초경량 메시징 전략: Pub-Sub과 Worker Queue 완벽 정리</title>
+      <link>https://philipjkim.github.io/posts/20260226-redis-for-message-queue/</link>
+      <pubDate>Thu, 26 Feb 2026 19:38:55 +0900</pubDate>
+      <guid>https://philipjkim.github.io/posts/20260226-redis-for-message-queue/</guid>
+      <description>&lt;p&gt;Redis를 단순히 &amp;lsquo;캐시&amp;rsquo;로만 쓰고 계신가요? 사실 Redis는 백엔드 엔지니어의 도구 상자에서 가장 다재다능한 &lt;strong&gt;&amp;lsquo;메시지 브로커&amp;rsquo;&lt;/strong&gt; 이기도 합니다. 별도의 무거운 MQ(Message Queue)를 설치하기엔 부담스럽고, 속도는 포기할 수 없을 때 Redis는 최고의 선택지가 됩니다.&lt;/p&gt;&#xA;&lt;p&gt;Go 언어를 이용해 Redis의 두 가지 핵심 메시징 패턴인 &lt;strong&gt;Pub-Sub&lt;/strong&gt;과 &lt;strong&gt;Worker Queue&lt;/strong&gt;를 구현하는 방법을 정리해 보았습니다.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-왜-redis-메시지-큐인가&#34;&gt;1. 왜 Redis 메시지 큐인가?&lt;/h2&gt;&#xA;&lt;p&gt;RabbitMQ나 Kafka는 훌륭하지만, 운영 오버헤드가 큽니다. 반면 Redis는 이미 많은 프로젝트에서 캐시용으로 사용 중이며, 다음과 같은 장점이 있습니다.&lt;/p&gt;</description>
     </item>
     <item>
       <title>GoTHIC 스택으로 JavaScript 없이 모던 웹앱 만들기</title>
