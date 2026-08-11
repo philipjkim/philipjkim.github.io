@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>바둑 가이드 Pt.2: 죽지 않는 법 — 잇기, 두 눈, 그리고 패 :: philipjkim</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pt.1 이 상대 돌을 잡는 법이었다면 Pt.2 는 그 반대편입니다. 내 돌은 어떻게 죽지 않는가 하나의 질문으로 잇기와 끊기, 두 눈과 궁도, 그리고 패까지 이어서 다룹니다. 착수금지의 예외 조항 하나가 이 셋을 전부 관통한다는 것이 이 글의 뼈대입니다. 모든 도해는 활로를 직접 세어 검증했고, 규칙 서술은 한국기원 바둑규칙 조문을 따랐습니다." />
+<meta name="keywords" content="game, baduk, guide, strategy" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://philipjkim.github.io/posts/20260811-go-beginners-guide-pt-2/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T6WPMK9J98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T6WPMK9J98');
+</script>
+
+
+
+<link rel="stylesheet" href="https://philipjkim.github.io/css/bundle.min.2c3aae778f32f30a7cc09b3d6ce908e4d6e407ebd9a0687353a8f5ea93f76377.css">
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://philipjkim.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://philipjkim.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="바둑 가이드 Pt.2: 죽지 않는 법 — 잇기, 두 눈, 그리고 패">
+<meta property="og:description" content="Pt.1 이 상대 돌을 잡는 법이었다면 Pt.2 는 그 반대편입니다. 내 돌은 어떻게 죽지 않는가 하나의 질문으로 잇기와 끊기, 두 눈과 궁도, 그리고 패까지 이어서 다룹니다. 착수금지의 예외 조항 하나가 이 셋을 전부 관통한다는 것이 이 글의 뼈대입니다. 모든 도해는 활로를 직접 세어 검증했고, 규칙 서술은 한국기원 바둑규칙 조문을 따랐습니다." />
+<meta property="og:url" content="https://philipjkim.github.io/posts/20260811-go-beginners-guide-pt-2/" />
+<meta property="og:site_name" content="philipjkim" />
+
+  <meta property="og:image" content="https://philipjkim.github.io/og-image.png">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2026-08-11 10:14:12 &#43;0900 KST" />
+
+
+
+
+
+
+
+
+
+<style>
+  .pagination__pages {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 10px;
+    margin-top: 16px;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .pagination__page {
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .pagination__page:hover {
+    opacity: 1;
+  }
+
+  .pagination__page--current {
+    color: var(--accent);
+    font-weight: bold;
+    opacity: 1;
+  }
+
+  .archive__count {
+    opacity: 0.6;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+
+  .archive__year {
+    margin: 40px 0 10px;
+  }
+
+  .archive__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive__item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin: 6px 0;
+  }
+
+  .archive__date {
+    flex: 0 0 auto;
+    opacity: 0.5;
+    font-size: calc(var(--font-size) * 0.85);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .goban {
+    margin: 20px 0;
+  }
+
+  .goban__svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+   
+  .goban__board {
+    fill: #d9c9a3;
+  }
+
+  .goban__grid {
+    stroke: #4a3f2c;
+    stroke-opacity: 0.75;
+  }
+
+  .goban__label {
+    fill: #4a3f2c;
+    font-family: var(--font);
+  }
+
+  .goban__black {
+    fill: #14140f;
+    stroke: none;
+  }
+
+  .goban__white {
+    fill: #fbfaf6;
+    stroke: #4a3f2c;
+    stroke-opacity: 0.7;
+  }
+
+  .goban__mark {
+    fill: #b3261e;
+    stroke: none;
+  }
+
+  .goban__caption {
+    margin-top: 6px;
+    opacity: 0.6;
+    font-size: calc(var(--font-size) * 0.85);
+  }
+</style>
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    philipjkim
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/archive/">Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator">Hoola Sum Calculator</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/archive/" >Archive</a></li>
+        
+      
+        
+          <li><a href="https://github.com/philipjkim" target="_blank">GitHub</a></li>
+        
+      
+        
+          <li><a href="/dev/hoola-calculator" >Hoola Sum Calculator</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://philipjkim.github.io/posts/20260811-go-beginners-guide-pt-2/">바둑 가이드 Pt.2: 죽지 않는 법 — 잇기, 두 눈, 그리고 패</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2026-08-11</time><span class="post-author">philipjkim</span></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://philipjkim.github.io/tags/game/">game</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/baduk/">baduk</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/guide/">guide</a>&nbsp;
+      
+      #<a href="https://philipjkim.github.io/tags/strategy/">strategy</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p><em>이 글은 Claude Opus 5 를 이용해 초안이 작성되었으며, 이후 퇴고를 거쳤습니다.</em></p>
+<hr>
+<h2 id="들어가며">들어가며<a href="#들어가며" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p><a href="/posts/20250925-go-beginners-guide-pt-1/">Pt.1</a> 에서는 규칙과 예절, 그리고 단수와 축을 다뤘습니다. 요약하면 <strong>상대 돌을 잡는 법</strong> 이었습니다.</p>
+<p>이번 편은 정확히 그 반대편입니다. 질문은 하나뿐입니다.</p>
+<blockquote>
+<p><strong>내 돌은 어떻게 죽지 않는가?</strong></p>
+</blockquote>
+<p>입문자가 첫 판을 끝까지 두지 못하는 이유는 대개 이 질문에 답을 못 해서입니다. 잡는 법만 알면 공격은 할 수 있지만, 내가 쌓아 올린 돌이 왜 통째로 사라지는지는 알 수 없습니다.</p>
+<p>그리고 답의 핵심은 규칙책의 아주 짧은 예외 조항 하나에 걸려 있습니다. 한국기원 바둑규칙 제4조입니다.</p>
+<blockquote>
+<p>착수 시 활로가 없는 곳은 돌을 놓을 수 없다. <strong>단, 상대방의 돌을 따낼 때에는 놓을 수 있다.</strong></p>
+</blockquote>
+<p>Pt.1 은 앞 문장만 소개하고 뒷 문장을 다루지 않았습니다. 그런데 이 뒷 문장이 <strong>두 눈이 왜 필요한지</strong>, <strong>가짜 눈이 왜 가짜인지</strong>, <strong>패가 왜 생기는지</strong> 를 전부 설명합니다. 이 글은 그 한 줄을 세 번 써먹는 이야기입니다.</p>
+<h2 id="표기법">표기법<a href="#표기법" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Pt.1 은 도해에 화살표를 섞어 썼는데, 이번에는 판에 좌표를 붙여 위치를 정확히 가리킬 수 있게 했습니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 122" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__white" cx="70" cy="72" r="13"/>
+    <circle class="goban__mark" cx="104" cy="72" r="4"/>
+  </g>
+</svg>
+</figure>
+
+<table>
+  <thead>
+      <tr>
+          <th>표시</th>
+          <th>뜻</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>검은 돌</td>
+          <td>흑돌</td>
+      </tr>
+      <tr>
+          <td>흰 돌</td>
+          <td>백돌</td>
+      </tr>
+      <tr>
+          <td>아무것도 없는 교차점</td>
+          <td>빈 점</td>
+      </tr>
+      <tr>
+          <td>붉은 점</td>
+          <td>눈여겨볼 자리(급소 등)</td>
+      </tr>
+      <tr>
+          <td>위쪽 <code>a</code>, <code>b</code>, <code>c</code>…</td>
+          <td>열(가로 위치)</td>
+      </tr>
+      <tr>
+          <td>왼쪽 <code>1</code>, <code>2</code>, <code>3</code>…</td>
+          <td>행(세로 위치)</td>
+      </tr>
+  </tbody>
+</table>
+<p>위 그림에서 흑돌은 <code>b1</code> 과 <code>a2</code>, 백돌은 <code>b2</code>, 강조점이 찍힌 곳은 <code>c2</code> 입니다. 본문에서 자리를 가리킬 때 이 좌표를 씁니다.</p>
+<hr>
+<h2 id="1장-돌의-강약--잇기와-끊기">1장. 돌의 강약 — 잇기와 끊기<a href="#1장-돌의-강약--잇기와-끊기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="11-이으면-활로를-합친다">1.1. 이으면 활로를 합친다<a href="#11-이으면-활로를-합친다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>돌 두 점이 떨어져 있는 모양입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 122" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><code>b2</code> 의 활로는 <code>b1</code>, <code>a2</code>, <code>c2</code>, <code>b3</code> 네 곳입니다. <code>d2</code> 도 마찬가지로 네 곳입니다. 얼핏 활로 여덟 개처럼 보이지만, <strong>둘은 별개의 돌</strong> 입니다. 백은 <code>b2</code> 하나만 노려서 네 수면 잡을 수 있습니다.</p>
+<p>이번에는 붙여 놓았습니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 156" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="140" x2="172" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+    <line x1="172" y1="38" x2="172" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><code>c2</code> 와 <code>c3</code> 은 한 덩어리입니다. 이 덩어리의 활로는 <code>c1</code>, <code>b2</code>, <code>d2</code>, <code>b3</code>, <code>d3</code>, <code>c4</code> 여섯 곳이고, <strong>여섯 곳을 전부 막아야</strong> 두 점이 함께 잡힙니다.</p>
+<p>핵심은 숫자 4와 6의 차이가 아닙니다. 이으면 <strong>한 번에 잡히거나 한 번에 살아남는 운명 공동체</strong> 가 된다는 점입니다. 바둑에서 강한 돌이란 활로가 많은 돌이 아니라, 잡히려면 통째로 잡혀야 하는 돌입니다.</p>
+<h3 id="12-빈삼각이-나쁜-이유">1.2. 빈삼각이 나쁜 이유<a href="#12-빈삼각이-나쁜-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>같은 돌 세 개라도 모양에 따라 활로가 달라집니다. 곧게 선 세 점입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 122" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>활로는 <code>b1</code>, <code>c1</code>, <code>d1</code>, <code>a2</code>, <code>e2</code>, <code>b3</code>, <code>c3</code>, <code>d3</code> 여덟 곳입니다.</p>
+<p>이번에는 ㄱ자로 굽은 세 점입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>활로는 <code>b1</code>, <code>c1</code>, <code>a2</code>, <code>d2</code>, <code>a3</code>, <code>c3</code>, <code>b4</code> <strong>일곱 곳</strong> 입니다. 돌을 똑같이 세 개 썼는데 활로가 하나 적습니다.</p>
+<p>이 모양을 <strong>빈삼각(empty triangle)</strong> 이라고 부릅니다. 비어 있는 <code>c3</code> 이 삼각형의 빈 꼭짓점이라 붙은 이름입니다. 초보자가 무의식적으로 가장 많이 만드는 모양이자, 바둑에서 대표적인 악형(惡形)으로 꼽힙니다. 이유는 단순합니다. <strong>돌은 더 썼는데 얻은 것이 더 적기 때문입니다.</strong></p>
+<h3 id="13-끊기면-왜-두-배로-힘든가">1.3. 끊기면 왜 두 배로 힘든가<a href="#13-끊기면-왜-두-배로-힘든가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>대각선으로 놓인 두 점입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><code>b2</code> 와 <code>c3</code> 은 <strong>이어져 있지 않습니다.</strong> 바둑에서 연결은 가로세로 인접만 인정하고 대각은 인정하지 않습니다.</p>
+<p>끊는 자리는 <code>c2</code> 와 <code>b3</code> 두 곳입니다. 백이 <code>c2</code> 에 두면 흑은 <code>b3</code> 에 두어 이을 수 있고, 백이 <code>b3</code> 에 두면 흑은 <code>c2</code> 로 이을 수 있습니다. 이렇게 <strong>둘 중 어느 쪽을 당해도 나머지 하나로 해결되는 관계</strong> 를 맞보기라고 합니다.</p>
+<p>그런데 두 곳을 다 내주면 흑돌은 완전히 두 덩어리가 됩니다. 이것이 끊음이 무서운 진짜 이유입니다. 다음 장에서 보겠지만 <strong>살아 있는 돌이 되려면 눈이 두 개 필요합니다.</strong> 한 덩어리였을 때는 눈 두 개면 충분했는데, 끊겨서 두 덩어리가 되면 <strong>눈 네 개</strong> 를 만들어야 합니다. 공간은 그대로인데 요구 조건만 두 배가 됩니다.</p>
+<blockquote>
+<p><strong>연습문제 1.</strong> 아래에서 백이 <code>c2</code> 에 두어 끊으려 합니다. 흑은 어디에 두어야 할까요?</p>
+</blockquote>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<details>
+<summary>정답 보기</summary>
+<p><code>b3</code> 입니다. <code>b3</code> 은 <code>b2</code> 와 세로로, <code>c3</code> 과 가로로 각각 인접하므로 세 점이 한 덩어리가 됩니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__white" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__black" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><code>c2</code> 로 이으려 해도 그 자리는 이미 백이 차지했습니다. 끊는 자리가 두 곳일 때는 <strong>상대가 한 곳을 차지하는 즉시 나머지 한 곳을 두는 것</strong> 이 원칙입니다.</p>
+</details>
+<hr>
+<h2 id="2장-삶의-조건--두-눈">2장. 삶의 조건 — 두 눈<a href="#2장-삶의-조건--두-눈" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="21-눈이란-무엇인가">2.1. 눈이란 무엇인가<a href="#21-눈이란-무엇인가" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p><strong>눈(眼)</strong> 은 내 돌로 완전히 둘러싸인 빈 점입니다. 정의만 보면 Pt.1 의 &lsquo;집&rsquo;과 비슷하지만, 사활을 이야기할 때 눈은 다르게 읽어야 합니다.</p>
+<blockquote>
+<p>눈은 <strong>상대가 메울 수 없는 활로</strong> 입니다.</p>
+</blockquote>
+<p>왜 메울 수 없는지가 전부입니다. 그리고 그 답은 제4조에 있습니다.</p>
+<h3 id="22-눈이-하나뿐이면-죽는다">2.2. 눈이 하나뿐이면 죽는다<a href="#22-눈이-하나뿐이면-죽는다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>귀에 자리 잡은 흑돌입니다. 바깥은 백이 완전히 둘러쌌습니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__white" cx="104" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>흑 세 점 <code>b1</code>, <code>a2</code>, <code>b2</code> 는 한 덩어리이고, 이 덩어리의 활로를 세어 보면 <strong><code>a1</code> 단 한 곳</strong> 입니다. 그리고 <code>a1</code> 은 귀의 점이라 이웃이 <code>b1</code> 과 <code>a2</code> 둘뿐인데 둘 다 흑돌이므로, 형태상 완벽한 눈입니다.</p>
+<p>여기서 백이 <code>a1</code> 에 두면 어떻게 될까요.</p>
+<p>백돌 <code>a1</code> 자신의 활로는 0입니다. 원칙대로라면 자살수라 둘 수 없습니다. 그런데 그 수는 <strong>동시에 흑 세 점의 마지막 활로를 메웁니다.</strong> 제4조의 예외가 발동합니다.</p>
+<blockquote>
+<p>단, 상대방의 돌을 따낼 때에는 놓을 수 있다.</p>
+</blockquote>
+<p>순서는 이렇습니다. 먼저 흑 세 점이 판에서 걷히고, 그다음에 백돌 <code>a1</code> 의 활로를 셉니다. 흑이 사라졌으니 <code>b1</code> 과 <code>a2</code> 가 빈 점이 되어 백은 멀쩡히 살아 있습니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__white" cx="36" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><strong>눈이 하나뿐인 돌은 반드시 죽습니다.</strong> 눈처럼 생겼어도 그것이 마지막 활로라면, 상대는 언제든 그 자리에 둘 권리를 얻습니다.</p>
+<h3 id="23-눈이-둘이면-잡을-수-없다">2.3. 눈이 둘이면 잡을 수 없다<a href="#23-눈이-둘이면-잡을-수-없다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>같은 자리에 눈을 하나 더 만들었습니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 124 190" width="124" class="goban__svg" role="img" aria-label="바둑판 도해 (3칸 x 5줄)">
+  <rect class="goban__board" x="0" y="0" width="124" height="190" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="104" y2="38"/>
+    <line x1="36" y1="72" x2="104" y2="72"/>
+    <line x1="36" y1="106" x2="104" y2="106"/>
+    <line x1="36" y1="140" x2="104" y2="140"/>
+    <line x1="36" y1="174" x2="104" y2="174"/>
+    <line x1="36" y1="38" x2="36" y2="174"/>
+    <line x1="70" y1="38" x2="70" y2="174"/>
+    <line x1="104" y1="38" x2="104" y2="174"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+    <text x="17" y="178">5</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__white" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__black" cx="36" cy="140" r="13"/>
+    <circle class="goban__black" cx="70" cy="140" r="13"/>
+    <circle class="goban__white" cx="104" cy="140" r="13"/>
+    <circle class="goban__white" cx="36" cy="174" r="13"/>
+    <circle class="goban__white" cx="70" cy="174" r="13"/>
+    <circle class="goban__white" cx="104" cy="174" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>흑돌 <code>b1</code>, <code>a2</code>, <code>b2</code>, <code>b3</code>, <code>a4</code>, <code>b4</code> 는 전부 한 덩어리입니다. 이 덩어리의 활로는 <code>a1</code> 과 <code>a3</code> 두 곳이고, 둘 다 눈입니다.</p>
+<ul>
+<li><code>a1</code>: 이웃은 <code>b1</code>, <code>a2</code> 뿐이고 둘 다 흑</li>
+<li><code>a3</code>: 이웃은 <code>a2</code>, <code>a4</code>, <code>b3</code> 이고 전부 흑</li>
+</ul>
+<p>이제 백이 <code>a1</code> 에 두려고 하면 이렇게 됩니다. 백돌 자신의 활로는 0입니다. 흑을 따내지도 못합니다. <strong>흑에게는 아직 <code>a3</code> 이 남아 있기 때문입니다.</strong> 따냄이 성립하지 않으므로 예외 조항이 적용되지 않고, 그냥 자살수라 둘 수 없습니다. <code>a3</code> 도 마찬가지입니다.</p>
+<p>백은 두 눈 중 어느 쪽에도 손을 댈 수 없습니다. 하나를 메우려면 다른 하나가 먼저 메워져 있어야 하는데, 그러려면 또 다른 하나가 먼저 메워져 있어야 합니다. 순환하는 조건이라 영원히 충족되지 않습니다.</p>
+<blockquote>
+<p><strong>눈이 두 개인 돌은 상대가 몇 수를 두든 절대 잡히지 않습니다.</strong></p>
+</blockquote>
+<p>이것이 바둑에서 유일한 무조건적 안전 보장입니다. 앞으로 판 위에서 내려야 할 거의 모든 판단의 기준선이 여기입니다.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<h3 id="24-눈처럼-생겼지만-눈이-아닌-것">2.4. 눈처럼 생겼지만 눈이 아닌 것<a href="#24-눈처럼-생겼지만-눈이-아닌-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>가장 흔한 함정입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 156" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="140" x2="172" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+    <line x1="172" y1="38" x2="172" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__white" cx="70" cy="38" r="13"/>
+    <circle class="goban__black" cx="104" cy="38" r="13"/>
+    <circle class="goban__white" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__black" cx="104" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><code>c2</code> 의 네 이웃 <code>c1</code>, <code>b2</code>, <code>d2</code>, <code>c3</code> 은 전부 흑입니다. 정의상 눈으로 보입니다.</p>
+<p>그런데 <code>b2</code> 한 점의 활로를 세어 보십시오. <code>a2</code> 는 백, <code>b1</code> 도 백, <code>b3</code> 도 백입니다. 남은 활로는 <code>c2</code> 하나뿐입니다. <strong>이 흑 한 점은 이미 단수에 걸려 있습니다.</strong></p>
+<p>백이 <code>c2</code> 에 두면 제4조 예외가 또 발동합니다. 백돌 자신은 활로가 0이지만 흑 <code>b2</code> 를 따내므로 합법입니다. 따내고 나면 <code>b2</code> 가 비어 백돌의 활로가 되고, 눈이었던 자리는 백돌 차지가 됩니다.</p>
+<p>이런 자리를 <strong>가짜 눈(false eye)</strong> 이라고 합니다. 눈의 조건은 네 이웃이 아니라, <strong>그 이웃들이 끝까지 버틸 수 있는가</strong> 입니다.</p>
+<p>실전에서는 매번 활로를 셀 수 없으니 다음 판별법을 씁니다.</p>
+<blockquote>
+<p>눈 자리의 <strong>대각 방향</strong> 점들을 봅니다.</p>
+<ul>
+<li>중앙이면 대각 네 점 중 <strong>셋 이상</strong></li>
+<li>변이나 귀면 대각점이 <strong>전부</strong></li>
+</ul>
+<p>내 돌이어야 진짜 눈입니다.</p>
+</blockquote>
+<p>위 가짜 눈 예시에서 <code>c2</code> 는 중앙이고 대각 네 점은 <code>b1</code>, <code>d1</code>, <code>b3</code>, <code>d3</code> 인데 흑은 하나도 갖고 있지 않습니다. 반대로 2.3의 <code>a1</code> 은 귀라 대각점이 <code>b2</code> 하나뿐이고 그것이 흑이며, <code>a3</code> 은 변이라 대각점이 <code>b2</code> 와 <code>b4</code> 인데 둘 다 흑입니다. 판별법과 결과가 맞아떨어집니다.</p>
+<p>이 판별법은 경험칙이라 드문 예외가 있습니다. 확신이 서지 않으면 결국 활로를 세는 쪽이 정확합니다.</p>
+<h3 id="25-궁도--공간이-넓으면-산다">2.5. 궁도 — 공간이 넓으면 산다<a href="#25-궁도--공간이-넓으면-산다" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>두 눈을 만들려면 공간이 필요합니다. 내 돌로 둘러싼 빈 공간을 <strong>궁도(宮圖)</strong> 라 하고, 궁도의 넓이와 모양이 삶과 죽음을 결정합니다.</p>
+<p>먼저 세 점짜리 궁도입니다. 흑이 변에 자리 잡았고 바깥은 백이 둘러쌌습니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 122" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="138" cy="38" r="13"/>
+    <circle class="goban__white" cx="172" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__white" cx="172" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__white" cx="138" cy="106" r="13"/>
+    <circle class="goban__white" cx="172" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>흑의 궁도는 <code>a1</code>, <code>b1</code>, <code>c1</code> 세 점입니다. 백이 <strong>가운데인 <code>b1</code></strong> 에 두면 흑은 죽습니다. 이 수를 급소에 둔다고 해서 <strong>치중(置中)</strong> 이라 부릅니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 122" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__white" cx="70" cy="38" r="13"/>
+    <circle class="goban__black" cx="138" cy="38" r="13"/>
+    <circle class="goban__white" cx="172" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__white" cx="172" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__white" cx="138" cy="106" r="13"/>
+    <circle class="goban__white" cx="172" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>흑이 <code>a1</code> 에 두면 백이 <code>c1</code> 에, 흑이 <code>c1</code> 에 두면 백이 <code>a1</code> 에 두어 흑 전체를 따냅니다. 흑이 손을 빼도 백이 남은 자리를 메우면 그만입니다. 세 점으로는 두 눈이 나오지 않습니다. 이 모양을 <strong>직삼궁(直三宮)</strong> 이라 합니다.</p>
+<p>이번에는 한 점 넓혀 네 점짜리 궁도입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 226 122" width="226" class="goban__svg" role="img" aria-label="바둑판 도해 (6칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="226" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="206" y2="38"/>
+    <line x1="36" y1="72" x2="206" y2="72"/>
+    <line x1="36" y1="106" x2="206" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+    <line x1="206" y1="38" x2="206" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+    <text x="206" y="18">f</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="172" cy="38" r="13"/>
+    <circle class="goban__white" cx="206" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="172" cy="72" r="13"/>
+    <circle class="goban__white" cx="206" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__white" cx="138" cy="106" r="13"/>
+    <circle class="goban__white" cx="172" cy="106" r="13"/>
+    <circle class="goban__white" cx="206" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>궁도는 <code>a1</code>~<code>d1</code> 네 점입니다. 급소는 안쪽 두 점 <code>b1</code> 과 <code>c1</code> 인데, 이 둘이 <strong>맞보기</strong> 입니다. 백이 <code>b1</code> 에 치중하면 흑은 <code>c1</code> 에 둡니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 226 122" width="226" class="goban__svg" role="img" aria-label="바둑판 도해 (6칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="226" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="206" y2="38"/>
+    <line x1="36" y1="72" x2="206" y2="72"/>
+    <line x1="36" y1="106" x2="206" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+    <line x1="206" y1="38" x2="206" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+    <text x="206" y="18">f</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__white" cx="70" cy="38" r="13"/>
+    <circle class="goban__black" cx="104" cy="38" r="13"/>
+    <circle class="goban__black" cx="172" cy="38" r="13"/>
+    <circle class="goban__white" cx="206" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="172" cy="72" r="13"/>
+    <circle class="goban__white" cx="206" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__white" cx="138" cy="106" r="13"/>
+    <circle class="goban__white" cx="172" cy="106" r="13"/>
+    <circle class="goban__white" cx="206" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>이제 백 한 점의 활로는 <code>a1</code> 뿐이라 단수입니다. 흑이 <code>a1</code> 에 두어 따내고 나면 궁도는 <code>b1</code> 과 <code>d1</code> 두 곳으로 갈라지고, 각각이 온전한 눈이 됩니다. 흑은 삽니다. 이 모양이 <strong>직사궁(直四宮)</strong> 입니다.</p>
+<p>같은 한 줄인데 세 점은 죽고 네 점은 삽니다. 궁도 한 점의 무게가 이렇습니다.</p>
+<p>모양별 결과를 정리하면 다음과 같습니다. <strong>상대가 급소에 먼저 두었을 때</strong> 의 결과입니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>궁도</th>
+          <th>이름</th>
+          <th>결과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2점</td>
+          <td>—</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>3점 (직선)</td>
+          <td>직삼궁</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>3점 (굽은 모양)</td>
+          <td>곡삼궁</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>4점 (직선)</td>
+          <td>직사궁</td>
+          <td><strong>삶</strong></td>
+      </tr>
+      <tr>
+          <td>4점 (굽은 모양)</td>
+          <td>곡사궁</td>
+          <td><strong>삶</strong></td>
+      </tr>
+      <tr>
+          <td>4점 (번개 모양)</td>
+          <td>번개사궁</td>
+          <td><strong>삶</strong></td>
+      </tr>
+      <tr>
+          <td>4점 (정사각형)</td>
+          <td>정사궁</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>4점 (삿갓 모양)</td>
+          <td>꽃사궁</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>5점 (오궁도화·십자)</td>
+          <td>오궁도화</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>5점 (그 외)</td>
+          <td>—</td>
+          <td><strong>삶</strong></td>
+      </tr>
+      <tr>
+          <td>6점 (매화육궁)</td>
+          <td>매화육궁</td>
+          <td>죽음</td>
+      </tr>
+      <tr>
+          <td>6점 (그 외)</td>
+          <td>—</td>
+          <td><strong>삶</strong></td>
+      </tr>
+      <tr>
+          <td>7점 이상</td>
+          <td>—</td>
+          <td><strong>삶</strong><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></td>
+      </tr>
+  </tbody>
+</table>
+<p>외울 것이 많아 보이지만 실전에서 쓸 결론은 짧습니다.</p>
+<blockquote>
+<p><strong>궁도가 넓을수록 안전합니다. 여섯 점 이상 확보했다면 매화육궁만 피하면 되고, 일곱 점 이상이면 모양을 따질 필요가 없습니다.</strong></p>
+</blockquote>
+<p>반대로 상대 돌을 죽이러 갈 때의 결론도 같은 문장의 뒷면입니다. <strong>궁도를 좁히고, 좁아졌으면 급소에 치중합니다.</strong></p>
+<blockquote>
+<p><strong>연습문제 2.</strong> 아래 두 흑돌은 궁도가 똑같이 네 점입니다. 어느 쪽이 살아 있을까요? 둘 다 백 차례입니다.</p>
+</blockquote>
+<p><strong>[가]</strong></p>
+<figure class="goban">
+<svg viewBox="0 0 226 122" width="226" class="goban__svg" role="img" aria-label="바둑판 도해 (6칸 x 3줄)">
+  <rect class="goban__board" x="0" y="0" width="226" height="122" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="206" y2="38"/>
+    <line x1="36" y1="72" x2="206" y2="72"/>
+    <line x1="36" y1="106" x2="206" y2="106"/>
+    <line x1="36" y1="38" x2="36" y2="106"/>
+    <line x1="70" y1="38" x2="70" y2="106"/>
+    <line x1="104" y1="38" x2="104" y2="106"/>
+    <line x1="138" y1="38" x2="138" y2="106"/>
+    <line x1="172" y1="38" x2="172" y2="106"/>
+    <line x1="206" y1="38" x2="206" y2="106"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+    <text x="206" y="18">f</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="172" cy="38" r="13"/>
+    <circle class="goban__white" cx="206" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="172" cy="72" r="13"/>
+    <circle class="goban__white" cx="206" cy="72" r="13"/>
+    <circle class="goban__white" cx="36" cy="106" r="13"/>
+    <circle class="goban__white" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__white" cx="138" cy="106" r="13"/>
+    <circle class="goban__white" cx="172" cy="106" r="13"/>
+    <circle class="goban__white" cx="206" cy="106" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><strong>[나]</strong></p>
+<figure class="goban">
+<svg viewBox="0 0 158 156" width="158" class="goban__svg" role="img" aria-label="바둑판 도해 (4칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="158" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="138" y2="38"/>
+    <line x1="36" y1="72" x2="138" y2="72"/>
+    <line x1="36" y1="106" x2="138" y2="106"/>
+    <line x1="36" y1="140" x2="138" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="104" cy="38" r="13"/>
+    <circle class="goban__white" cx="138" cy="38" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__white" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="36" cy="106" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__black" cx="104" cy="106" r="13"/>
+    <circle class="goban__white" cx="138" cy="106" r="13"/>
+    <circle class="goban__white" cx="36" cy="140" r="13"/>
+    <circle class="goban__white" cx="70" cy="140" r="13"/>
+    <circle class="goban__white" cx="104" cy="140" r="13"/>
+    <circle class="goban__white" cx="138" cy="140" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<details>
+<summary>정답 보기</summary>
+<p><strong>[가]는 살아 있고 [나]는 죽어 있습니다.</strong></p>
+<p>[가]의 궁도는 <code>a1</code>, <code>b1</code>, <code>c1</code>, <code>d1</code> 네 점이 한 줄로 늘어선 <strong>직사궁</strong> 입니다. 본문에서 본 대로 안쪽 두 점이 맞보기라 백이 어느 쪽에 치중해도 흑이 반대쪽을 차지해 두 눈을 만듭니다.</p>
+<p>[나]의 궁도는 <code>a1</code>, <code>b1</code>, <code>a2</code>, <code>b2</code> 네 점이 정사각형을 이룬 <strong>정사궁</strong> 입니다. 이 모양은 <strong>백이 손을 댈 필요조차 없이 그대로 죽어 있습니다.</strong> 흑이 먼저 안에 두어도 남는 공간이 세 점짜리 굽은 궁도가 되어 두 눈이 나오지 않습니다.</p>
+<p>&ldquo;직사궁은 살고 정사궁은 죽는다&rdquo; 는 바둑 격언이 이것입니다. <strong>궁도는 점의 개수가 아니라 모양이 결정합니다.</strong> 같은 네 점이어도 길게 뻗으면 살고 뭉치면 죽습니다.</p>
+</details>
+<hr>
+<h2 id="3장-끝나지-않는-싸움--패">3장. 끝나지 않는 싸움 — 패<a href="#3장-끝나지-않는-싸움--패" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="31-무한-반복이-가능한-모양">3.1. 무한 반복이 가능한 모양<a href="#31-무한-반복이-가능한-모양" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지금까지의 이야기에는 구멍이 하나 있습니다. 서로 상대 돌을 계속 따낼 수 있는 모양이 존재합니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 156" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="140" x2="172" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+    <line x1="172" y1="38" x2="172" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="36" cy="38" r="13"/>
+    <circle class="goban__black" cx="70" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="38" r="13"/>
+    <circle class="goban__white" cx="138" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__white" cx="70" cy="72" r="13"/>
+    <circle class="goban__white" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="36" cy="106" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__black" cx="36" cy="140" r="13"/>
+    <circle class="goban__black" cx="70" cy="140" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>백 한 점 <code>b2</code> 를 보면 이웃이 <code>b1</code>, <code>a2</code>, <code>b3</code> 전부 흑이고 활로는 <code>c2</code> 하나뿐입니다. 단수입니다.</p>
+<p>흑이 <code>c2</code> 에 둡니다. 흑돌 자신의 활로는 0이지만 백 <code>b2</code> 를 따내므로 제4조 예외로 합법입니다. 세 번째 등장입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 156" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="140" x2="172" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+    <line x1="172" y1="38" x2="172" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="36" cy="38" r="13"/>
+    <circle class="goban__black" cx="70" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="38" r="13"/>
+    <circle class="goban__white" cx="138" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__white" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="36" cy="106" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__black" cx="36" cy="140" r="13"/>
+    <circle class="goban__black" cx="70" cy="140" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>그런데 이제는 방금 둔 흑 한 점 <code>c2</code> 가 단수입니다. 활로가 <code>b2</code> 하나뿐입니다. 백이 <code>b2</code> 에 두면 같은 논리로 흑 한 점을 따내고, 판은 <strong>정확히 처음 모양으로 돌아갑니다.</strong></p>
+<p>막지 않으면 이 자리에서 두 사람이 영원히 돌을 주고받게 됩니다. 그래서 규칙이 하나 붙습니다.</p>
+<h3 id="32-되따냄-금지와-팻감">3.2. 되따냄 금지와 팻감<a href="#32-되따냄-금지와-팻감" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>한국기원 바둑규칙 제6조입니다.</p>
+<blockquote>
+<p>흑과 백이 상대방의 돌 한 개를 번갈아가며 따낼 수 있는 형태를 패라고 하며, 이 경우에는 <strong>다른 곳에 한 번 이상 놓은 다음(팻감 쓰기)에</strong> 패를 따낼 수 있다.</p>
+</blockquote>
+<p>이 모양을 <strong>패(劫)</strong> 라 합니다. 방금 따낸 자리를 곧바로 되따내는 것만 금지되고, 다른 곳에 한 수를 둔 뒤에는 허용됩니다.</p>
+<p>여기서 <strong>팻감</strong> 이라는 개념이 나옵니다. 패를 되따내려면 한 수를 다른 데 써야 하는데, 그 한 수가 상대가 반드시 받아야 할 만큼 위협적이어야 합니다. 상대가 무시하고 패를 이어 버리면 손해만 보기 때문입니다.</p>
+<p>그래서 패싸움은 이런 구조가 됩니다.</p>
+<ol>
+<li>흑이 패를 따냄</li>
+<li>백은 곧바로 되따낼 수 없으므로 다른 곳에 위협적인 수(팻감)를 둠</li>
+<li>흑이 그 팻감에 응수함</li>
+<li>백이 이제 패를 되따냄</li>
+<li>이번엔 흑이 팻감을 씀</li>
+</ol>
+<p><strong>팻감이 먼저 떨어지는 쪽이 패를 내줍니다.</strong> 패는 판 전체의 자원이 걸린 싸움이며, 국지전이 전면전으로 번지는 지점입니다. 입문 단계에서는 &ldquo;패가 나면 급하게 되따내려 하지 말고, 판 다른 곳에 상대가 무시하기 어려운 수가 있는지 먼저 센다&rdquo; 정도만 몸에 익히면 충분합니다.</p>
+<h3 id="33-그래도-반복되면-무승부">3.3. 그래도 반복되면 무승부<a href="#33-그래도-반복되면-무승부" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>패 규칙으로도 막히지 않는 모양이 드물게 나옵니다. 세 개의 패가 얽히거나(3패), 따내지 않고도 같은 형태가 되풀이되는 경우(장생)입니다. 이럴 때는 제9조가 적용됩니다.</p>
+<blockquote>
+<p>동형반복이란 일정한 수순이 경과된 후 최초와 동일한 형태로 되돌아가는 것을 말한다. 3패·장생·순환패·양패·3점 장생 등은 <strong>무승부</strong> 로 한다.</p>
+</blockquote>
+<p>바둑에 무승부가 존재하는 이유입니다. 덤에 0.5집을 붙여 계가상 무승부를 없애 놓고도 규칙에 무승부 조항이 남아 있는 것은, 집 계산이 아니라 <strong>형태의 반복</strong> 때문에 승부가 나지 않는 경우가 있기 때문입니다. 실전에서 마주칠 일은 거의 없습니다.</p>
+<blockquote>
+<p><strong>연습문제 3.</strong> 3.1의 패 모양에서 흑이 <code>c2</code> 에 두어 백 한 점을 따냈습니다. 백은 지금 무엇을 해야 할까요?</p>
+</blockquote>
+<figure class="goban">
+<svg viewBox="0 0 192 156" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 4줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="156" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="140" x2="172" y2="140"/>
+    <line x1="36" y1="38" x2="36" y2="140"/>
+    <line x1="70" y1="38" x2="70" y2="140"/>
+    <line x1="104" y1="38" x2="104" y2="140"/>
+    <line x1="138" y1="38" x2="138" y2="140"/>
+    <line x1="172" y1="38" x2="172" y2="140"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="36" cy="38" r="13"/>
+    <circle class="goban__black" cx="70" cy="38" r="13"/>
+    <circle class="goban__white" cx="104" cy="38" r="13"/>
+    <circle class="goban__white" cx="138" cy="38" r="13"/>
+    <circle class="goban__black" cx="36" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__white" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="36" cy="106" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__white" cx="104" cy="106" r="13"/>
+    <circle class="goban__black" cx="36" cy="140" r="13"/>
+    <circle class="goban__black" cx="70" cy="140" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<details>
+<summary>정답 보기</summary>
+<p><strong><code>b2</code> 에 두어 되따내는 것만은 할 수 없습니다.</strong> 제6조가 금지합니다.</p>
+<p>백이 할 수 있는 선택은 둘입니다.</p>
+<ol>
+<li><strong>판 다른 곳에 팻감을 둔다.</strong> 흑이 받아 주면 다음 차례에 <code>b2</code> 로 되따낼 수 있습니다.</li>
+<li><strong>패를 포기하고 다른 큰 자리를 차지한다.</strong> 흑이 <code>b2</code> 를 메워 패를 없애면 흑 한 점을 확실히 잃지만, 그동안 백은 다른 곳에서 두 수를 벌게 됩니다.</li>
+</ol>
+<p>패는 반드시 이겨야 하는 싸움이 아닙니다. <strong>패로 잃는 것보다 다른 곳에서 얻는 것이 크면 내주는 편이 낫습니다.</strong> 팻감을 센다는 것은 결국 이 비교를 한다는 뜻입니다.</p>
+</details>
+<hr>
+<h2 id="4장-9줄-판에서-쓰기">4장. 9줄 판에서 쓰기<a href="#4장-9줄-판에서-쓰기" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<h3 id="41-귀가-싼-이유">4.1. 귀가 싼 이유<a href="#41-귀가-싼-이유" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>지금까지의 이야기는 전부 &ldquo;공간을 얼마나 싸게 확보하는가&rdquo; 로 수렴합니다. 같은 9집을 만드는 데 드는 돌의 수를 비교해 보겠습니다.</p>
+<p>귀에서 9집을 두르는 모양입니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 192 190" width="192" class="goban__svg" role="img" aria-label="바둑판 도해 (5칸 x 5줄)">
+  <rect class="goban__board" x="0" y="0" width="192" height="190" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="172" y2="38"/>
+    <line x1="36" y1="72" x2="172" y2="72"/>
+    <line x1="36" y1="106" x2="172" y2="106"/>
+    <line x1="36" y1="140" x2="172" y2="140"/>
+    <line x1="36" y1="174" x2="172" y2="174"/>
+    <line x1="36" y1="38" x2="36" y2="174"/>
+    <line x1="70" y1="38" x2="70" y2="174"/>
+    <line x1="104" y1="38" x2="104" y2="174"/>
+    <line x1="138" y1="38" x2="138" y2="174"/>
+    <line x1="172" y1="38" x2="172" y2="174"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+    <text x="17" y="178">5</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="138" cy="38" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="106" r="13"/>
+    <circle class="goban__black" cx="36" cy="140" r="13"/>
+    <circle class="goban__black" cx="70" cy="140" r="13"/>
+    <circle class="goban__black" cx="104" cy="140" r="13"/>
+    <circle class="goban__black" cx="138" cy="140" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p><code>a1</code>~<code>c3</code> 아홉 점이 흑집이고, 울타리로 쓴 돌은 <code>d1</code>, <code>d2</code>, <code>d3</code>, <code>d4</code>, <code>c4</code>, <code>b4</code>, <code>a4</code> <strong>일곱 개</strong> 입니다. 판의 가장자리 두 면을 벽으로 공짜로 쓴 덕분입니다.</p>
+<p>중앙에서 같은 9집을 두르면 이렇게 됩니다.</p>
+<figure class="goban">
+<svg viewBox="0 0 260 258" width="260" class="goban__svg" role="img" aria-label="바둑판 도해 (7칸 x 7줄)">
+  <rect class="goban__board" x="0" y="0" width="260" height="258" rx="4"/>
+  <g class="goban__grid" fill="none" stroke-width="1">
+    <line x1="36" y1="38" x2="240" y2="38"/>
+    <line x1="36" y1="72" x2="240" y2="72"/>
+    <line x1="36" y1="106" x2="240" y2="106"/>
+    <line x1="36" y1="140" x2="240" y2="140"/>
+    <line x1="36" y1="174" x2="240" y2="174"/>
+    <line x1="36" y1="208" x2="240" y2="208"/>
+    <line x1="36" y1="242" x2="240" y2="242"/>
+    <line x1="36" y1="38" x2="36" y2="242"/>
+    <line x1="70" y1="38" x2="70" y2="242"/>
+    <line x1="104" y1="38" x2="104" y2="242"/>
+    <line x1="138" y1="38" x2="138" y2="242"/>
+    <line x1="172" y1="38" x2="172" y2="242"/>
+    <line x1="206" y1="38" x2="206" y2="242"/>
+    <line x1="240" y1="38" x2="240" y2="242"/>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="middle">
+    <text x="36" y="18">a</text>
+    <text x="70" y="18">b</text>
+    <text x="104" y="18">c</text>
+    <text x="138" y="18">d</text>
+    <text x="172" y="18">e</text>
+    <text x="206" y="18">f</text>
+    <text x="240" y="18">g</text>
+  </g>
+  <g class="goban__label" font-size="12" text-anchor="end">
+    <text x="17" y="42">1</text>
+    <text x="17" y="76">2</text>
+    <text x="17" y="110">3</text>
+    <text x="17" y="144">4</text>
+    <text x="17" y="178">5</text>
+    <text x="17" y="212">6</text>
+    <text x="17" y="246">7</text>
+  </g>
+  <g stroke-width="1.5">
+    <circle class="goban__black" cx="70" cy="72" r="13"/>
+    <circle class="goban__black" cx="104" cy="72" r="13"/>
+    <circle class="goban__black" cx="138" cy="72" r="13"/>
+    <circle class="goban__black" cx="172" cy="72" r="13"/>
+    <circle class="goban__black" cx="206" cy="72" r="13"/>
+    <circle class="goban__black" cx="70" cy="106" r="13"/>
+    <circle class="goban__black" cx="206" cy="106" r="13"/>
+    <circle class="goban__black" cx="70" cy="140" r="13"/>
+    <circle class="goban__black" cx="206" cy="140" r="13"/>
+    <circle class="goban__black" cx="70" cy="174" r="13"/>
+    <circle class="goban__black" cx="206" cy="174" r="13"/>
+    <circle class="goban__black" cx="70" cy="208" r="13"/>
+    <circle class="goban__black" cx="104" cy="208" r="13"/>
+    <circle class="goban__black" cx="138" cy="208" r="13"/>
+    <circle class="goban__black" cx="172" cy="208" r="13"/>
+    <circle class="goban__black" cx="206" cy="208" r="13"/>
+  </g>
+</svg>
+</figure>
+
+<p>울타리에 쓴 돌이 <strong>열여섯 개</strong> 입니다. 같은 집을 얻는 데 돌이 두 배 넘게 듭니다.</p>
+<p>&ldquo;귀부터, 다음이 변, 중앙은 마지막&rdquo; 이라는 바둑의 오래된 순서는 취향이 아니라 이 산수에서 나옵니다. <strong>9줄 판에서는 특히 그렇습니다.</strong> 판이 좁아 중앙에 집을 짓겠다고 나서면 네 귀를 전부 내주게 되고, 그러면 이미 계가로 따라잡기 어렵습니다.</p>
+<p>같은 이유로 <strong>사활도 귀가 유리합니다.</strong> 궁도를 벽으로 감싸는 비용이 싸니 같은 돌 수로 더 넓은 궁도를 만들 수 있습니다.</p>
+<h3 id="42-한-수를-두기-전에-확인할-것">4.2. 한 수를 두기 전에 확인할 것<a href="#42-한-수를-두기-전에-확인할-것" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Pt.1 과 이번 편에서 배운 것을 실전 순서로 정리하면 다음과 같습니다. 위에서부터 급한 순서입니다.</p>
+<ol>
+<li><strong>내 돌 중에 단수에 걸린 것이 있는가?</strong> 있으면 잇거나 도망치거나 버릴지 먼저 정합니다.</li>
+<li><strong>내 돌 중에 두 눈이 없는 덩어리가 있는가?</strong> 궁도가 세 점 이하로 좁혀졌다면 이미 위험합니다.</li>
+<li><strong>상대 돌 중에 두 눈이 없는 덩어리가 있는가?</strong> 있으면 궁도를 좁히고, 좁아졌으면 급소에 치중합니다.</li>
+<li><strong>끊을 자리가 있는가, 끊길 자리가 있는가?</strong> 끊기면 눈을 두 배로 만들어야 합니다.</li>
+<li><strong>여기까지 급한 것이 없으면</strong> 아직 임자 없는 귀와 변에서 가장 큰 자리를 찾습니다.</li>
+</ol>
+<p>1번부터 4번까지가 이번 편의 내용이고, 이 넷이 해결되고 나서야 5번이 의미를 가집니다. <strong>입문 단계의 패착은 거의 전부 급한 순서를 뒤집는 데서 나옵니다.</strong></p>
+<h3 id="43-계가-다시-보기">4.3. 계가 다시 보기<a href="#43-계가-다시-보기" class="hanchor" ariaLabel="Anchor">#</a> </h3>
+<p>Pt.1 은 계가를 &ldquo;내 집 + 내가 따낸 돌&rdquo; 로 설명했습니다. 결과는 맞지만, 한국기원 바둑규칙 제11조의 표현은 조금 다릅니다.</p>
+<blockquote>
+<p>각자 잡은 돌로 상대방의 집을 메우며, 집이 많은 쪽이 이긴다.</p>
+</blockquote>
+<p>따낸 돌을 내 점수에 더하는 것이 아니라 <strong>상대 집에 채워 넣어 상대 점수를 깎습니다.</strong> 계산 결과는 같지만 이 표현이 감각적으로 더 정확합니다. 상대 돌 하나를 잡는 것은 내 집 하나를 버는 동시에 상대 집 하나를 지우는 일이며, 그래서 <strong>한 점의 가치는 실질적으로 두 집</strong> 입니다.</p>
+<p>이 관점은 4.2의 우선순위와도 이어집니다. 큰 돌 덩어리를 통째로 잡는 것이 왜 그렇게 결정적인지, 반대로 내 돌을 통째로 죽이는 것이 왜 그 판을 끝내는 일인지가 여기서 설명됩니다.</p>
+<hr>
+<h2 id="정리">정리<a href="#정리" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>이번 편의 뼈대는 규칙책 한 줄이었습니다.</p>
+<blockquote>
+<p>활로가 없는 곳에는 둘 수 없다. 단, 상대방의 돌을 따낼 때에는 놓을 수 있다.</p>
+</blockquote>
+<p>이 예외 조항이 세 번 등장했습니다.</p>
+<table>
+  <thead>
+      <tr>
+          <th>등장</th>
+          <th>결과</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>눈이 하나뿐인 돌</td>
+          <td>상대가 그 눈에 둘 수 있음 → <strong>죽음</strong></td>
+      </tr>
+      <tr>
+          <td>눈이 둘인 돌</td>
+          <td>따냄이 성립하지 않아 둘 수 없음 → <strong>삶</strong></td>
+      </tr>
+      <tr>
+          <td>가짜 눈</td>
+          <td>눈을 떠받치는 돌이 먼저 따내짐 → <strong>죽음</strong></td>
+      </tr>
+      <tr>
+          <td>패</td>
+          <td>서로 따낼 수 있어 무한 반복 → <strong>되따냄 금지</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>그리고 실전에서 기억할 것은 세 문장입니다.</p>
+<ol>
+<li><strong>두 눈이 있으면 절대 잡히지 않는다.</strong> 바둑에서 유일한 무조건적 안전 보장입니다.</li>
+<li><strong>궁도가 넓을수록 안전하다.</strong> 일곱 점 이상이면 모양을 따질 필요가 없습니다.</li>
+<li><strong>귀가 가장 싸다.</strong> 같은 집, 같은 삶을 절반 이하의 돌로 얻습니다.</li>
+</ol>
+<p>Pt.1 의 마무리에서 조급해하지 말라고 적었는데, 이번 편에도 같은 말을 덧붙이고 싶습니다. 두 눈과 궁도는 한 번 읽어서 손에 붙는 종류의 지식이 아닙니다. 9줄 판에서 실제로 죽여 보고 죽어 보는 편이 훨씬 빠릅니다. <strong>직삼궁으로 죽어 본 사람은 다시는 세 점짜리 궁도로 버티려 하지 않습니다.</strong></p>
+<hr>
+<h2 id="references">References<a href="#references" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<ul>
+<li><a href="https://www.baduk.or.kr/story/badukRule.asp">한국기원 바둑규칙</a> — 제4조 착수금지점, 제6조 패, 제8조 빅, 제9조 동형반복, 제11조 계가</li>
+<li><a href="https://baduk.or.kr/story/gameRule.asp">한국기원 경기규정</a> — 덤 6집반</li>
+<li><a href="https://ko.wikipedia.org/wiki/%EA%B6%81%EB%8F%84_%28%EB%B0%94%EB%91%91%29">궁도 (바둑) — 한국어 위키백과</a> — 궁도별 한국어 명칭</li>
+<li><a href="https://senseis.xmp.net/?BasicLivingEyeShapes">Basic living eye shapes — Sensei&rsquo;s Library</a> — 살아 있는 궁도</li>
+<li><a href="https://senseis.xmp.net/?UnsettledEyeShapes">Unsettled eyeshapes — Sensei&rsquo;s Library</a> — 급소가 있는 궁도</li>
+<li><a href="https://senseis.xmp.net/?DeadEyeShapes">Dead eyeshapes — Sensei&rsquo;s Library</a> — 죽은 궁도</li>
+<li><a href="https://senseis.xmp.net/?TwoEyes">Two Eyes — Sensei&rsquo;s Library</a> — 두 눈과 삶</li>
+<li><a href="https://senseis.xmp.net/?Seki">Seki — Sensei&rsquo;s Library</a> — 빅</li>
+<li><a href="/posts/20250925-go-beginners-guide-pt-1/">바둑 가이드: Pt.1. 바둑의 규칙과 예절, 돌 잡는 기술</a></li>
+</ul>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>예외가 하나 있습니다. <strong>빅(seki)</strong> 입니다. 한국기원 바둑규칙 제8조는 &ldquo;흑과 백이 공배를 사이에 두고 대치하여 서로 따낼 수 없는 형태&rdquo; 로 정의하며, 이 경우 두 눈이 없어도 잡히지 않습니다. 다만 빅이 된 자리는 <strong>집계산에서 제외</strong> 됩니다. 잡히지는 않지만 집도 되지 않는, 무승부에 가까운 결말입니다.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>일곱 점 이상은 어떤 모양이든 잡히지 않습니다. 다만 나비칠궁(butterfly seven)이라 불리는 한 모양은 결과가 빅이 되어, 잡히지는 않지만 집도 되지 않습니다. 또한 <strong>귀는 예외가 많습니다.</strong> 귀의 곡사궁, 귀의 직사각형 6궁처럼 중앙·변에서는 살아 있는 모양이 귀에서는 죽는 경우가 있습니다.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </div></div>
+
+  
+    
+<div class="pagination">
+  <div class="pagination__title">
+    <span class="pagination__title-h">Read other posts</span>
+    <hr />
+  </div>
+  <div class="pagination__buttons">
+    
+    
+    
+      <a href="https://philipjkim.github.io/posts/20260810-lexio-cpu-bot-strategy-07/" class="button inline next">
+         [<span class="button__text">렉시오 CPU 플레이어 만들기 Part 7: 코드 없이 보는 easy 봇과 hard 봇의 차이</span>] &gt;
+      </a>
+    
+  </div>
+</div>
+
+
+  
+
+  
+    
+<script src="https://utteranc.es/client.js"
+        repo="philipjkim/philipjkim.github.io"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ 
+    startOnLoad: true,
+    theme: 'dark'  
+  });
+
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.querySelectorAll('code.language-mermaid').forEach((block) => {
+      const pre = block.parentElement;
+      const code = block.textContent;
+      
+      
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      
+      
+      pre.replaceWith(div);
+    });
+    
+    
+    mermaid.run();
+  });
+</script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
